@@ -1,0 +1,13 @@
+"Brian Thomas Jr. - Was in a tier of his own after Harrison, Odunze, Nabers and went to a place with a good QB and minimal competition for targets. He should eventually dominate the outside with his size + speed profile but could take some time behind Kirk."
+
+" Thomas was selected 23rd overall by the Jacksonville Jaguars in the 2024 NFL draft, coming off a season at LSU in which he led the nation in receiving touchdowns. Thomas has prototypical athleticism for this role, at 6’3”, 209 pounds, and a ridiculous 4.33 40 yard dash. When you watch him play, that speed pops out instantly, both in bursts and longer stretches. Combined with good footwork and acceleration on releases, Thomas is liable to burn your favorite corner on any play. "
+
+" A first round receiver with this set of traits out of the draft has never been seen before. He has the body of Tee Higgins and the speed of Brandin Cooks, with the capability to score touchdowns en masse. However, there are flaws to Thomas Jr.’s game. His route running is suspect, as he can struggle to make sharp cuts, and sometimes loses his balance. If he’s to succeed right away, the Jaguars are going to have to treat him like a rookie DK Metcalf, giving him lots of verticals and slants and trusting his athleticism. As previously mentioned, too, Thomas was not the contested catch artist that his frame would suggest, which could prevent him from reaching his touchdown ceiling. "
+
+"I think Thomas could be a good value, especially in home leagues where he'll probably go later than his ADP in best ball right now. If he soaks up a large share of the RZ/EZ targets Ridley got, he could post very solid TD numbers
+
+However, "A first round receiver with this set of traits out of the draft has never been seen before" is false. Calvin Johnson, for one. Bigger, better, and ran a 4.35"
+
+"
+
+I like Thomas but he has a limited route tree as of now and has to iron out the nuances of his game. If he does iron out those things I could see him taking 50% or more of the snaps away from Gabe Davis as the primary X but only if he does iron out things. His routes need lots of refining but he has the potential. Think he'll be a guy who gets you like 20 points every 4-5 weeks with a few nothing games in between. Decent low end flex but I like him for 2025 and beyond. But he's not the highest upside WR that's just untrue. Malik is more explosive and 10x better after the catch and is the #1 in his offense immediately unlike BTJ who has Kirk ahead of him, Marvin is ready to dominate at all 3 levels and everywhere he's needed to if he and Kyler have that connection he'll have a historic year, and Rome has a path to a monster year if Keenan Allen goes down. BTJ has upside but not the most."

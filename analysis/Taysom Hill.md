@@ -1,0 +1,3 @@
+Taysom Hill is either a terrible idea or the best idea you’ve ever had. He gets like 2 points regularly and like 3 times a year he gets 25 and singlehandedly wins you a week. So it being a good idea largely hinges on how many of those good weeks you get. That’s why he’s still never on rosters despite typically ending the year as a top 10 TE. Most people would prefer 5-8 points on a regular basis than 2 and a couple big weeks.
+
+Taysom Hill will have a few start-worthy weekends, yes. Now, do you want to try to predict which weekends those will be? Because I can promise you he will have MORE weekends with less than 2 or 3 points total, and a 25-point explosion doesn’t help me if I can never confidently bring him off the bench.

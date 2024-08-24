@@ -1,0 +1,1 @@
+"Jahan Dotson is going for pennies on the dollar. He showed WR2 talent value his rookie year and perhaps with Curtis Samuel gone and a better QB, he regains that."

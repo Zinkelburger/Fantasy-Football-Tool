@@ -1,0 +1,1 @@
+Eagles are loaded, too many weapons for him to be effective.

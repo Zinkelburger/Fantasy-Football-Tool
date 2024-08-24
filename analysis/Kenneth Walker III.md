@@ -1,0 +1,3 @@
+"The biggest concern with Walker is Zach Charbonnet, and even if Charbonnet gets a more significant role this year, it's still Walker's backfield. He isn't as involved in the passing game as we would like to see, but otherwise, he has been at least an RB2 in the past two seasons. The Seahawks' new regime doesn't have any history to draw tendencies from offensively, but I expect them to run and for Walker to be heavily involved there."
+
+Kenneth Walker III (Pre-season commentary has him as the primary back, even with Charbonnet there) 

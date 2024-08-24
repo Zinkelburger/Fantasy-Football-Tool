@@ -1,0 +1,2 @@
+3rd option on the Rams last year. Like WR61, who cares. 29 years old. Very good player, but maybe not a lot of upside.
+He didn't see any action until late in the 2023 season, when he started putting up 80-90 yards per game, which is pretty good.

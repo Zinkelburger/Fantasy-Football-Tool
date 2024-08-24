@@ -1,0 +1,3 @@
+"Did Green Bay Packers wide receiver Jayden Reed break out as a rookie in 2023? Some could say he did after reeling in 64 passes for 793 yards and eight touchdowns. This upcoming season, though, should see Reed finish with even better stats as he enters Year 2.
+
+Reed was a waiver-wire league-winner last season and surprisingly finished as the WR25 in PPR formats. His strong numbers at the end of the year -- where he scored over 15 PPR fantasy points in seven of the final eight games -- surely helped him finish that high. With a bigger role in store in his second year, the 24-year-old could total over 1,000 receiving yards for the first time in his short career."

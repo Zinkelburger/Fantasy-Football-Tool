@@ -1,0 +1,1 @@
+"Breakout veteran: this sub already knows about Curtis Samuel / Joshua Palmer / etc, so I’m going to take this opportunity to announce that Chris Godwin’s ADP is weirdly low right now, and last I checked he’s going to be playing a lot more slot this year than previously, which should bode very well in PPR leagues. Buy. "

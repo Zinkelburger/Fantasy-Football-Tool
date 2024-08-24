@@ -1,0 +1,1 @@
+"I want Hunter Henry in the late rounds. I’d rather load up on other positions first, because I know Brisette will be the starter and he fed, fed, fed Njoku in Cleveland. I honestly expect the same in NE, although the offense will likely struggle."

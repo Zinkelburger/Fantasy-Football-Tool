@@ -1,0 +1,3 @@
+"I like Jaylen Warren and Najee Harris, but I can see that the Steelers' offense is frustrating, especially with Arthur Smith, Justin Fields, and Russell Wilson. That could lead to an underwhelming fantasy season for Harris or Warren. Warren has more PPR value than Harris and is slowly becoming his own. On the eye test, Warren appears to be a superior, talented player to Najee Harris. Warren is ready for another big year."
+
+"Steelers - Specifically Najee and Warren. Arthur Smith wasn't a good head coach but knows how to scheme the hell out of a run game. And the Steelers arguably did the most in the league to improve their OL going into 2024. Would not be surprised to see a career year for both Najee and Warren with what will be 450-500 combined opportunities."

@@ -1,0 +1,1 @@
+I also like Keon Coleman, the situation is as good as Thomas', if not better. But I think Thomas is a significantly better football player. Coleman is an average separator at best, and though other traits can make up for that, it is worrying. Thomas has his issues too, but I'm happy to bet on superior talent in this case.

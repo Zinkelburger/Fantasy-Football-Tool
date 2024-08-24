@@ -1,0 +1,3 @@
+"Trevor Lawrence; last year, I had to draft him because a sudden run on QBs left me with just him, Rodgers, and Deshaun to pick from and even though the Jags sucked, he was fine enough as a low QB1/high QB2 because the rest of my team was so good. I'd rather wait again for a QB and "settle" for Lawrence than pass up a potential steal at a different position in favor of a more sure thing"
+
+Bad year last year, so going for good value. Post hype, but has a lot of upside.

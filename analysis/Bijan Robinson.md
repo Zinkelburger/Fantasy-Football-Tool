@@ -1,0 +1,13 @@
+"Everyone had high hopes for Bijan, but Arthur Smith got weird with how he used him, and the Falcons' offense was abysmal even when he was on the field.  He ended the year as a Top 10 RB in PPR despite that.  What's changed?  Well, both things.  The Falcons upgraded their talent at quarterback with an early draft pick used at the position and a legitimate veteran in Kirk Cousins while also getting a new coach and letting Smith go.  This season should be a fresh start for Bijan, who could end up as the RB1 Overall if things hit right for the Falcons offense this season."
+
+"Anyone doubting Bijan, London, or Pitts always brings up “but look at last years stats!!!” as if the football terrorist Arthur Smith wasn’t the HC in Atlanta. Cousins is the best QB any of these players has played with, has always supported top 5 WRs, and is behind an extremely good O Line that will give him time in the pocket. Cousins himself may be a viable fantasy QB in deeper leagues.
+
+Additionally, the Falcons have so many weapons on offense that opposing defenses can’t commit to stacking/not stacking the box. I’m grabbing Falcons players wherever I can."
+
+Potential Upside:
+Bijan Robinson is poised for a significant breakout in the 2024 season, primarily due to the departure of Arthur Smith and the addition of Zac Robinson as the offensive coordinator. Zac Robinson, who comes from the Sean McVay coaching tree, is known for utilizing a workhorse back, which bodes well for Bijan. Last season, despite limited usage, Robinson showcased his talent with top-tier efficiency and receiving skills, ranking high in receiving yards and evaded tackles among running backs. With a stronger offensive line and a more dynamic offensive scheme, Robinson has the potential to achieve over 1,800 total yards and 15-plus touchdowns, similar to Christian McCaffrey's best seasons​ (Roto Street Journal)​​ (Pro Football Network)​.
+
+Drawbacks/Things to Keep in Mind:
+While the upside is substantial, there are several factors to consider. The presence of Tyler Allgeier might limit Robinson's touches, especially in goal-line situations. Additionally, while the Falcons have improved their quarterback situation with Kirk Cousins, any injuries or inconsistencies in the passing game could affect Robinson's overall production. It's also important to monitor his usage in the preseason to see how the new coaching staff plans to deploy him​ (FantasyPros)​​ (PFF)​.
+ 
+Bijan Robinson (No Arthur Smith, that is all) 

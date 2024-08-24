@@ -1,0 +1,9 @@
+Polk only had one notable reception [in a preseason game], and it’s the one from the clip below. He made not one, but two defenders miss, and I’m sure I’m not the only one hearing a “WHOOP!” in the back of my mind. Polk also beat a defender on the sideline to find himself open downfield, but Brissett overthrew him out of bounds and didn’t give him an opportunity to make a play on the ball. Through two games I’ve liked what I’ve seen from Polk, and while he likely won’t be a reliable option at WR in redraft leagues this season there is certainly some value to be had in dynasty leagues.
+
+Polk jumped Douglas for starting slot? In the last preseason game, Douglas played 6 slot snaps (all with starters) while Polk played 7 slot snaps (all with backups).
+
+I've been hearing about (rookie) players like Ja'Lynn Polk who could be walking into a starting (WR1) role on the Patriots, but also feel like there is too much unknown there.
+
+There is potential with Polk with a new head coach and a different offense. But last years and most likely the current offense is going to be using pop more, Bourne when he is back.
+
+The rookie wide receiver who is being slept on the most is Polk. He proved in college that he has great route running ability and sure hands. He fell in large part due to his lack of athleticism. The Patriots may have found their top target earner for the foreseeable future. The early season could be a grind as the Patriots navigate Drake Maye’s development and protect the young quarterback from their atrocious offensive line. Still, once the two can establish some chemistry, Polk could take off the final month of the season. Polk is a perfect dart throw after the top 150 players are off the board.

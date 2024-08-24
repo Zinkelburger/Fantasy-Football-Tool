@@ -1,0 +1,3 @@
+Having seen his name pop up occasionally on my feed during training camp I was intrigued. I felt he was alright in this game and I wasn’t blown away by his explosiveness or athleticism. He runs stiff and doesn’t make those quick, explosive cuts that most playmakers have at the NFL level. His field vision was good, as you’ll see in the clip below, but that’s really all.
+In this clip, Shipley catches the ball out of the backfield and, despite not having a defender on him until after he caught the ball, he couldn’t convert third and two. He went down far too easily here without trying to extend for the first down.
+So yeah, I’m not gonna be jumping on the Will Shipley train anytime soon.

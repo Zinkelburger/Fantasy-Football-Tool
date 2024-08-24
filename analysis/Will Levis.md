@@ -1,0 +1,1 @@
+"Now I can absolutely see a scenario where Levis is still a below average real life QB and makes backbreaking decisions to lose games, but I also think they’re going to put up way more yards and points than people are expecting. I feel like people still view them as the ground and pound Titans and they’ll end up being a very high passing volume team."

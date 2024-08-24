@@ -1,0 +1,1 @@
+"Jordan Addison - Was always highly touted through high school and is just a good player, this is a good price for a potential top 15 WR talent in the league."

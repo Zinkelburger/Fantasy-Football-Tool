@@ -1,0 +1,1 @@
+"Lamar Jackson - MVP has another year in Monken offense, but getting older and better as a passer means running less and lacking the same rushing TD upside as Hurts, Richardson and Allen."

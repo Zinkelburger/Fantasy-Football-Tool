@@ -1,0 +1,5 @@
+"I love Monty tho, dude was the RB2 on my championship team last season, pencil him in for 1K and 10TDs."
+
+"If something happens to Gibbs he'll be great. Gibbs will get them to the one yard line and Montgomery will be the one who knocks and gets the TD."
+
+Yes, Jahmyr Gibbs is outstanding and should be expected to take a step forward this year. But Montgomery finished as the RB12 in PPG in '23. Ok, sure--some of that was purely due to being the benefactor of a Gibbs injury. But Gibbs is injured RIGHT NOW! Why is the RB12 from '23 being taken as the RB21? The Lions bolstered their defense, they likely have one of the best OLs in football, and Dan Campbell clearly has a desire to run the ball as much as he can. It doesn't feel right letting leaguemates get an undervalued, high floor RB on a good offense just for me to chase upside that likely will never come with the Rhamondre Stevensons or the Aaron Joneses of the world. 

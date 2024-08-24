@@ -1,0 +1,1 @@
+"I feel like there is a consensus of Lamb and Hill being 1 and 2. But I don't only who would come after I've seen a lot of different videos saying St Brown, Chase or JJ. I'm leaning St Brown due to consistency."

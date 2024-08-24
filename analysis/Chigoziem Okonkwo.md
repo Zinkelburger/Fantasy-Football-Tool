@@ -1,0 +1,1 @@
+Chig is a solid player and was someone I considered including on this but I think when DHop comes back the opportunities might dry up a bit. Also with the addition of Tyler Boyd, I'm not sure how much is left there for Chig, who does block a good amount for the Titans. Overall, he feels like a safe tight end without a very high ceiling.

@@ -1,0 +1,11 @@
+"Someone has to catch the ball and it ain't gonna be Pickens after he gets himself benched for being a basket case."
+
+"He's a great TE to target if you end up punting the position. He'll probably have 2nd most receptions on the team this year"
+
+"Pat Freiermuth. Russ back in Seattle his last few years there liked going to the TE quite a bit, and even Fields had a nice connection with Kmet in Chicago.
+
+Yeah Arthur Smith scares me but they can't run every single play and I think Freiermuth is the clear #2 pass catcher to start the season and a talented player that could turn into a favorite for whichever QB is called upon."
+
+"TE: Pat Friermuth (TE15) is a more creative shout than Jake Ferguson, who is my other answer but is already top ten in the rankings. I’m less confident on Friermuth, but someone has to catch passes on that offense. Pickens’ specialty is contested sideline nonsense. Let Muth be the steady safety valve. Or maybe Russell Wilson will just run into sacks."
+
+The only reliable target [the steelers] have is Pickens, outside of that it's Van Jefferson and Calvin Austin. Pat Freiermuth (TE 13, ADP 114): Muth enters his fourth year after missing 5 games last year and putting up only 308 yards on 32 catches. However, Kenny Pickett and Matt Canada can do that to a man. In 2022, Muth broke out with 63 catches for 732 yards en route to a TE7 finish. This year, the situation is drastically different in Pittsburgh. Russell Wilson is in at QB and the much maligned Arthur Smith is the new offensive coordinator. Diontae Johnson has also been traded to Carolina, taking his nearly 7 targets a game with him. The Steelers added Roman Wilson in the third round and signed Van Jefferson in free agency but I don't imagine they will be major target hogs. Muth is set up for a big season as the number two target on this Steelers team that is potentially quite good. However, the questions for him will be how often he is called on as a blocker and whether or not Roman Wilson eats into a good chuk of his target share. 

@@ -1,0 +1,2 @@
+Imma throw in my hat for Dortch on the cardinals He’s fought his way to a starting position, has some impressive camp highlights, and is gonna be who they go to when teams are so focused on keeping MHJ on lock.
+Just a very good late round dart throw given situation 
