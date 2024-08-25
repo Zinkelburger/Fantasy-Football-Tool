@@ -33,6 +33,8 @@ This receives responses from the browser extension, and records the current pick
 2. Run `python3 filter.py && python3 ask_gpt.py`
 This prints ChatGPT's response to your console. `filter.py` removes picked & irrelevant players so the correct files can be fed to ChatGPT.
 
+3. Update `log/current_team.txt` during your draft
+
 Note you can change the model, I currently have it as `GPT_MODEL = "gpt-4o"`
 
 # Notes/TODO

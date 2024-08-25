@@ -42,6 +42,7 @@ logging.basicConfig(
 latest_file = None
 player_names = set()
 
+
 # Function to save a new player file with a timestamp and append new players
 def save_new_player_file(new_names):
     global latest_file
@@ -49,7 +50,7 @@ def save_new_player_file(new_names):
         # Generate a new filename with the current timestamp
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         new_file = os.path.join(log_dir, f"players_{timestamp}.txt")
-        
+
         # Copy the latest file to the new file, if it exists
         if latest_file and os.path.exists(latest_file):
             shutil.copy(latest_file, new_file)
@@ -64,7 +65,7 @@ def save_new_player_file(new_names):
         with open(new_file, "r") as file:
             lines = file.readlines()
             player_count = len(lines)
-        
+
         pick_file = os.path.join(log_dir, "pick.txt")
         with open(pick_file, "w") as pick:
             pick.write(str(player_count))
@@ -73,15 +74,16 @@ def save_new_player_file(new_names):
         # Update latest_file reference
         latest_file = new_file
 
+
 # HTTP request handler class
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
+        content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
         data = json.loads(post_data)
 
         # Extract player names from POST data
-        new_player_names = data.get('playerNames', [])
+        new_player_names = data.get("playerNames", [])
         new_entries = []
 
         if new_player_names:
@@ -96,23 +98,25 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         # Send a response back to the client
         self.send_response(200)
-        self.send_header('Content-type', 'application/json')
+        self.send_header("Content-type", "application/json")
         self.end_headers()
-        response = {'status': 'success'}
-        self.wfile.write(json.dumps(response).encode('utf-8'))
+        response = {"status": "success"}
+        self.wfile.write(json.dumps(response).encode("utf-8"))
+
 
 # Function to run the server
 def run(server_class=HTTPServer, handler_class=SimpleHTTPRequestHandler, port=8000):
-    server_address = ('', port)
+    server_address = ("", port)
     httpd = server_class(server_address, handler_class)
-    logging.info(f'Starting server on port {port}...')
+    logging.info(f"Starting server on port {port}...")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        logging.info('Server stopped by user.')
+        logging.info("Server stopped by user.")
     finally:
         httpd.server_close()
-        logging.info('Server closed.')
+        logging.info("Server closed.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     run()
