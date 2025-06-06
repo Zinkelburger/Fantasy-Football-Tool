@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Player Name Extractor",
+    "version": "1.0",
+    "description": "Extracts player names and sends them to a Python server.",
+    "permissions": ["activeTab", "scripting", "http://localhost/*"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+      }
+    ],
+    "host_permissions": [
+      "http://localhost/*"
+    ]
+  }
+  
