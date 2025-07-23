@@ -1,4 +1,3 @@
-# main.py
 from OpenAIQuery import OpenAIQuery
 from RedditQuery import RedditQuery
 from FootballPlayer import FootballPlayer
@@ -8,14 +7,16 @@ import re
 import os
 import time
 from typing import List
-from datetime import datetime, timedelta
 
 # Clean player names for Reddit search
 SUFFIXES = ["Jr\.", "Sr\.", "II", "III", "IV", "V"]
+
+
 def clean_name(name: str) -> str:
     # Remove suffixes and strip whitespace
     name = re.sub(r"\s+(?:" + "|".join(SUFFIXES) + r")$", "", name).strip()
     return re.escape(name)
+
 
 # Initialize FootballPlayer instances from CSV
 def init_football_players(csv_path: str) -> List[FootballPlayer]:
@@ -33,13 +34,13 @@ def init_football_players(csv_path: str) -> List[FootballPlayer]:
         )
     return players
 
-# Main workflow
+
 def main():
-    # Configurable
     SUBREDDIT = "fantasyfootball"
     DAYS_BACK = 30
     POST_LIMIT = 100
     COMMENT_LIMIT = 100
+
     OUT_DIR = "data"
     os.makedirs(OUT_DIR, exist_ok=True)
 
@@ -75,17 +76,18 @@ def main():
         # 4) Summarize via OpenAI
         prompt = (
             f"Player: {player.player_name} | Team: {player.team_name} | "
-            f"Position: {player.player_position} | ADP: {player.player_adp}\n"
-            "Summarize the Reddit discussion below focusing on draft-relevant info:\n\n"
+            f"Position/Depth: {player.player_depth} | ADP: {player.player_adp}\n"
+            "Summarize the Reddit discussion below focusing on 2025 draft-relevant info:\n\n"
             f"{comments_text}"
         )
         # optional: save prompt for inspection
-        with open(os.path.join(OUT_DIR, "gpt_query.txt"), "w", encoding="utf-8") as f:
+        with open(
+            os.path.join(OUT_DIR, f"{player.slug}_gpt_query.txt"), "w", encoding="utf-8"
+        ) as f:
             f.write(prompt)
 
         messages = openai_client.create_system_user_query(
-            "You are a professional football analyst giving valuable advice.",
-            prompt
+            "You are a professional football analyst giving valuable advice.", prompt
         )
         summary = openai_client.query(messages)
 
@@ -94,6 +96,7 @@ def main():
             f.write(summary)
 
         print(f"Done: {player.player_name}")
+
 
 if __name__ == "__main__":
     main()
