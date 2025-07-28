@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import list, Optional
 from dotenv import load_dotenv
 import os
 import praw
@@ -46,7 +46,7 @@ class RedditQuery:
 
     def search_subreddit(
         self, subreddit: str, query: str, sort: str = "new", limit: int = 100
-    ) -> List[praw.models.Submission]:
+    ) -> list[praw.models.Submission]:
         """
         Search a subreddit for posts matching a query.
 
@@ -62,9 +62,17 @@ class RedditQuery:
             print(f"Error searching subreddit: {e}")
             raise
 
-    def fetch_comments(
+    def fetch_post_content(self, submission: praw.models.Submission) -> str:
+        """
+        Returns the combined title and body of a post as a single string.
+        """
+        title = submission.title
+        body = submission.selftext
+        return f"Title:{title}\n\nBody:{body}"
+
+    def fetch_comments_flattened(
         self, submission: praw.models.Submission, limit: int = 100
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Fetch comments from a Reddit submission.
 
@@ -73,7 +81,7 @@ class RedditQuery:
             limit (int): Maximum number of comments to fetch
 
         Returns:
-            List[str]: List of comment bodies
+            list[str]: list of comment bodies
         """
         try:
             submission.comments.replace_more(limit=0)
@@ -83,18 +91,64 @@ class RedditQuery:
             print(f"Error fetching comments: {e}")
             return []
 
+    def _traverse_chain(self, comment: praw.models.Comment, current_chain: list[str]):
+        """
+        A recursive helper to traverse a comment chain and add comment bodies to a list.
+        """
+        if isinstance(comment, praw.models.MoreComments):
+            return
+
+        current_chain.append(comment.body)
+
+        for reply in comment.replies:
+            self._traverse_chain(reply, current_chain)
+
+    def fetch_comments_chains(
+        self, submission: praw.models.Submission
+    ) -> list[list[str]]:
+        """
+        Fetches all comments and organizes them into chains.
+
+        Each inner list is a separate comment chain, starting with the top-level comment.
+        Example: [ ["Root Comment 1", "Reply 1.1", "Reply 1.2"], ["Root Comment 2"] ]
+
+        Returns:
+            list[list[str]]: A list of comment chains.
+        """
+        try:
+            # This is crucial: it replaces all "load more comments" links.
+            # limit=None will attempt to fetch every single comment. This can be slow.
+            submission.comments.replace_more(limit=None)
+
+            all_chains = []
+            # Iterate through only the top-level comments
+            for top_level_comment in submission.comments:
+                if isinstance(top_level_comment, praw.models.MoreComments):
+                    continue
+
+                # Start a new list for this specific chain
+                current_chain = []
+                # Use the recursive helper to populate it
+                self._traverse_chain(top_level_comment, current_chain)
+                all_chains.append(current_chain)
+
+            return all_chains
+        except Exception as e:
+            print(f"Error fetching comment chains: {e}")
+            return []
+
     def filter_posts_by_date(
-        self, submissions: List[praw.models.Submission], days_back: int = 7
-    ) -> List[praw.models.Submission]:
+        self, submissions: list[praw.models.Submission], days_back: int = 7
+    ) -> list[praw.models.Submission]:
         """
         Filter submissions by keywords in title and creation date.
 
         Args:
-            submissions (List[praw.models.Submission]): List of submissions to filter
+            submissions (list[praw.models.Submission]): list of submissions to filter
             days_back (int): Number of days to look back
 
         Returns:
-            List[praw.models.Submission]: Filtered submissions
+            list[praw.models.Submission]: Filtered submissions
         """
         cutoff_date = datetime.now() - timedelta(days=days_back)
         cutoff_timestamp = cutoff_date.timestamp()
@@ -107,17 +161,17 @@ class RedditQuery:
         return filtered_posts
 
     def filter_posts_by_keywords(
-        self, submissions: List[praw.models.Submission], keywords: set
-    ) -> List[praw.models.Submission]:
+        self, submissions: list[praw.models.Submission], keywords: set
+    ) -> list[praw.models.Submission]:
         """
         Filter submissions by keywords in title and creation date.
 
         Args:
-            submissions (List[praw.models.Submission]): List of submissions to filter
+            submissions (list[praw.models.Submission]): list of submissions to filter
             keywords (set): Set of keywords to search for in titles
 
         Returns:
-            List[praw.models.Submission]: Filtered submissions
+            list[praw.models.Submission]: Filtered submissions
         """
 
         filtered_posts = []
@@ -127,14 +181,44 @@ class RedditQuery:
 
         return filtered_posts
 
+    def filter_comment_chains_by_keywords(
+        self, chains: list[list[str]], keywords: list[str]
+    ) -> list[list[str]]:
+        """
+        Filters comment chains, keeping only those containing specified keywords.
+
+        Args:
+            chains (list[list[str]]): The comment chains to filter.
+            keywords (list[str]): Keywords to search for (case-insensitive).
+
+        Returns:
+            list[list[str]]: A new list of the matching comment chains.
+        """
+        if not keywords:
+            return chains
+
+        lower_keywords = [k.lower() for k in keywords]
+        filtered_chains = []
+
+        for chain in chains:
+            # Check if any comment in the chain contains any of the keywords
+            if any(
+                keyword in comment.lower()
+                for comment in chain
+                for keyword in lower_keywords
+            ):
+                filtered_chains.append(chain)
+
+        return filtered_chains
+
     def save_posts_to_file(
-        self, submissions: List[praw.models.Submission], filename: str
+        self, submissions: list[praw.models.Submission], filename: str
     ):
         """
         Save submission details to a file.
 
         Args:
-            submissions (List[praw.models.Submission]): List of submissions to save
+            submissions (list[praw.models.Submission]): list of submissions to save
             filename (str): Output filename
         """
         try:

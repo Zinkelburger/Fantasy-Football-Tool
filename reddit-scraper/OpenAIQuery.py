@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import openai
 import os
-from typing import List, Dict, Optional
+from typing import Dict, Optional
 
 
 class OpenAIQuery:
@@ -23,12 +23,12 @@ class OpenAIQuery:
 
         openai.api_key = self.api_key
 
-    def query(self, messages: List[Dict[str, str]], stream: bool = True) -> str:
+    def query(self, messages: list[Dict[str, str]], stream: bool = True) -> str:
         """
         Query OpenAI with a list of messages.
 
         Args:
-            messages (List[Dict[str, str]]): List of message dictionaries
+            messages (list[Dict[str, str]]): list of message dictionaries
             stream (bool): Whether to stream the response
 
         Returns:
@@ -58,7 +58,7 @@ class OpenAIQuery:
 
     def create_system_user_query(
         self, system_prompt: str, user_prompt: str
-    ) -> List[Dict[str, str]]:
+    ) -> list[Dict[str, str]]:
         """
         Create a standard system/user message structure.
 
@@ -67,7 +67,7 @@ class OpenAIQuery:
             user_prompt (str): The user prompt
 
         Returns:
-            List[Dict[str, str]]: Formatted messages for OpenAI
+            list[Dict[str, str]]: Formatted messages for OpenAI
         """
         return [
             {"role": "system", "content": system_prompt},

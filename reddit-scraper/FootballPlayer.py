@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 import pandas as pd
 import re
 
@@ -11,6 +10,7 @@ class FootballPlayer:
     player_position: str
     player_adp: float
     player_depth: str
+    player_nickname: str
 
     @property
     def slug(self) -> str:
@@ -22,7 +22,7 @@ class FootballPlayer:
         return re.sub(r"[^a-z0-9]", "_", s).strip("_")
 
     @classmethod
-    def from_csv(cls, csv_path: str) -> List["FootballPlayer"]:
+    def from_csv(cls, csv_path: str) -> list["FootballPlayer"]:
         """
         Initialize FootballPlayer instances from CSV file.
 
@@ -30,10 +30,10 @@ class FootballPlayer:
             csv_path: Path to the CSV file containing player data
 
         Returns:
-            List of FootballPlayer instances
+            list of FootballPlayer instances
         """
         df = pd.read_csv(csv_path)
-        players: List[FootballPlayer] = []
+        players: list[FootballPlayer] = []
         for row in df.itertuples(index=False):
             players.append(
                 cls(
@@ -42,6 +42,7 @@ class FootballPlayer:
                     player_position=row.Pos,
                     player_adp=row.ADP,
                     player_depth=row.Depth,
+                    player_nickname=row.Nickname,
                 )
             )
         return players
