@@ -6,7 +6,7 @@ deps:
 	go mod tidy
 
 build: deps
-	GOOS=linux GOARCH=amd64 go build -o charmui .
+	GOOS=linux GOARCH=amd64 go build -o draft_assist .
 
 clean:
-	rm -f charmui
+	rm -f draft_assist
