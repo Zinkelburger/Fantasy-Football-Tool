@@ -16,3 +16,5 @@ I’m scared of Deebo with his injury history and how he runs and lack of purdy 
 Last year Aiyuk's ADOT was 13.8.
 Deebo's was 6.6.
 I honestly flip a coin if they're both available.
+
+Aiyuk is having contract holdout negotations, good for Samuel potentially. Aiyuk has played 0 preseason games.

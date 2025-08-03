@@ -12,3 +12,5 @@ Same vein, but this year's keenan allen is cooper kupp. Both have rich injury hi
 i feel like we are going to look back at this season and think "why did we not draft kupp in the early 2nd?"
 
 If that happens the most important factor will be that stafford made it another full season 
+
+Ppl sleeping on Cooper hard. There's a universe where he has the better season and steals the thunder as the Rams WR1 again. I like Cooper more at his ADP than Puka.

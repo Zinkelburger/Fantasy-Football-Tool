@@ -12,4 +12,7 @@ Advance efficiency metrics all say Aiyuk is one of the very best receivers in th
 
 Aiyuk had a true superstar breakout year last year, as a Niners fan I can guarantee he gets more volume than last year - I think Shanahan trusts Purdy more ( understandable PTSD from him having Jimmy G & all the other Niners’ QBs) - and the offense will be more vertical. This will strain the defense even more & be truly balanced
 
-Aiyuk makes me nervous if the contract negotiations fall through and he either holds out or is traded, or worse, put in the doghouse again. 
+Aiyuk makes me nervous if the contract negotiations fall through and he either holds out or is traded, or worse, put in the doghouse again.
+
+He’ll be there. But off of 0 practice and camp.
+Holdout years almost always bring a down year or injuries

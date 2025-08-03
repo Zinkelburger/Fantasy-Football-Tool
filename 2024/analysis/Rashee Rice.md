@@ -13,3 +13,5 @@
 "In this case it’s the fact that they don’t know. If there’s uncertainty around a player, they often don’t have a line."
 
 Rashee will very likely not be suspended. NFL waits till legal processes to play through before suspension. Otherwise, he already would’ve been suspended. His court date is December 9th and will also likely be pushed back or an extensive process.
+
+Rice's ADP is gonna skyrocket if the league officially says there won't be a suspension this season. Steal at his current ADP.
