@@ -55,6 +55,7 @@ def extract_player_stats(csv_path, player_name):
         player_stat = f"Name: {row['Name']}, Team: {row['Team']}, ADP: {row['ADP']}, FantasyPros: {row['FantasyPros']}, ESPN: {row['ESPN']}, Pos: {row['Pos']}, FantasyPros Tier: {row['FantasyPros Tier']}, ECR: {row['ECR']}, ECR vs ADP: {row['ECR vs ADP']}, Depth: {row['Depth']}"
         return player_stat
     else:
+        print(f"Error on player: {player_name}")
         return "No stats found for this player."
 
 
@@ -156,7 +157,7 @@ Consider players from different positions, e.g. TEs and QBs, just give me an ove
 The comments given are often relative to a player's ADP, keep the ADP and current pick in mind.
 Finally, note the players I have on my team currently, and suggest handcuffs for them if you think its a good idea. Don't suggest a QB if I already have one, etc. Give useful advice.
 In your response, note the ADP, ECR, and ESPN rankings for the player and consider their value relative to the pick. Give a summary of the most important players at the end once you are finished your explanations.
-
+Lets throw some darts on rookies too
 Here are the articles and stats:
 {context}
 \n

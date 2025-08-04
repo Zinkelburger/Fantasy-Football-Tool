@@ -23,7 +23,7 @@ func (g *GPT) Ask(q string) (string, error) {
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4Dot1Nano,
 			Messages: []openai.ChatCompletionMessage{
-				{Role: "system", Content: "You are a fantasy football expert."},
+				{Role: "system", Content: "You are a fantasy football expert. Give a summary of who to draft and why."},
 				{Role: "user", Content: q},
 			},
 		})
