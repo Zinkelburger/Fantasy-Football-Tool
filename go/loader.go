@@ -71,38 +71,38 @@ func (d *DataLoader) cleanName(name string) string {
 	return strings.TrimSpace(cleaned)
 }
 
-// FindLatestLogFile finds the latest UNIX timestamped filtered log file.
+// Returns the full path to the file with the highest (most recent) timestamp.
 func (d *DataLoader) FindLatestLogFile() (string, error) {
-	var latestTime int64 = -1
-	var latestFile string
+	var latestTimestamp int64 = -1
+	var latestFilteredFile string
 
-	files, err := os.ReadDir(d.logsDir)
+	dirEntries, err := os.ReadDir(d.logsDir)
 	if err != nil {
 		return "", fmt.Errorf("could not read logs directory '%s': %w", d.logsDir, err)
 	}
 
-	for _, file := range files {
-		filename := file.Name()
+	for _, entry := range dirEntries {
+		filename := entry.Name()
 		if strings.HasPrefix(filename, "filtered_") && strings.HasSuffix(filename, ".csv") {
-			tsString := strings.TrimSuffix(strings.TrimPrefix(filename, "filtered_"), ".csv")
-			unixTime, err := strconv.ParseInt(tsString, 10, 64)
+			timestampStr := strings.TrimSuffix(strings.TrimPrefix(filename, "filtered_"), ".csv")
+			unixTimestamp, err := strconv.ParseInt(timestampStr, 10, 64)
 			if err != nil {
 				log.Printf("Warning: could not parse timestamp from '%s', skipping", filename)
 				continue
 			}
 
-			if unixTime > latestTime {
-				latestTime = unixTime
-				latestFile = filename
+			if unixTimestamp > latestTimestamp {
+				latestTimestamp = unixTimestamp
+				latestFilteredFile = filename
 			}
 		}
 	}
 
-	if latestFile == "" {
-		return "", fmt.Errorf("no filtered log files found in '%s'", d.logsDir)
+	if latestFilteredFile == "" {
+		return "", fmt.Errorf("no filtered_<timestamp>.csv files found in '%s'", d.logsDir)
 	}
 
-	return filepath.Join(d.logsDir, latestFile), nil
+	return filepath.Join(d.logsDir, latestFilteredFile), nil
 }
 
 // FindPlayerNoteFile finds a player's note file using exact matching
