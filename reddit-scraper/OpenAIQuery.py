@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 import os
 from typing import Dict, Optional
 
@@ -13,15 +13,15 @@ class OpenAIQuery:
         If None, loads from environment
         """
         load_dotenv()
-        self.model = model or os.getenv("OPENAI_MODEL")
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.model = model or os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+        api_key = api_key or os.getenv("OPENAI_API_KEY")
 
-        if not self.api_key:
+        if not api_key:
             raise ValueError(
                 "OpenAI API key not found in environment variables or parameters"
             )
 
-        openai.api_key = self.api_key
+        self.client = OpenAI(api_key=api_key)
 
     def query(self, messages: list[Dict[str, str]], stream: bool = True) -> str:
         """
@@ -35,7 +35,7 @@ class OpenAIQuery:
             str: The complete response from OpenAI
         """
         try:
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 stream=stream,
@@ -44,7 +44,7 @@ class OpenAIQuery:
             if stream:
                 concat_response = ""
                 for chunk in response:
-                    content = chunk.choices[0].get("delta", {}).get("content", "")
+                    content = chunk.choices[0].delta.content
                     if content:
                         print(content, end="")
                         concat_response += content

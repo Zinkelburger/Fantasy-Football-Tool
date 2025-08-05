@@ -99,7 +99,7 @@ def main():
 
     reddit_client = RedditQuery()
     openai_client = OpenAIQuery()
-    players: list[FootballPlayer] = FootballPlayer("combined_with_depth.csv")
+    players: list[FootballPlayer] = FootballPlayer.from_csv("combined_with_depth.csv")
 
     for player in players:
         # 1) Find reddit posts about the player
@@ -149,8 +149,14 @@ def main():
         )
         summary = openai_client.query(messages)
 
+        # Save both the debug summary and the .md file for Go code
         summary_file = os.path.join(OUT_DIR, f"{player.slug}_summary.txt")
         with open(summary_file, "w", encoding="utf-8") as f:
+            f.write(summary)
+        
+        # Also save as .md file with clean name for Go code compatibility
+        md_file = os.path.join(OUT_DIR, f"{player.clean_name}.md")
+        with open(md_file, "w", encoding="utf-8") as f:
             f.write(summary)
 
         # === 4. Report Status ===

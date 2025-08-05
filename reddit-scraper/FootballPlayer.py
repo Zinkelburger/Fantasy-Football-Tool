@@ -20,6 +20,15 @@ class FootballPlayer:
         s = self.player_name.lower()
         # replace non-word chars with underscore
         return re.sub(r"[^a-z0-9]", "_", s).strip("_")
+    
+    @property
+    def clean_name(self) -> str:
+        """
+        Clean name for .md files - removes suffixes and keeps spaces.
+        """
+        # Remove suffixes like Jr., Sr., II, III, IV, V
+        name = re.sub(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$", "", self.player_name)
+        return name.strip()
 
     @classmethod
     def from_csv(cls, csv_path: str) -> list["FootballPlayer"]:
@@ -42,7 +51,7 @@ class FootballPlayer:
                     player_position=row.Pos,
                     player_adp=row.ADP,
                     player_depth=row.Depth,
-                    player_nickname=row.Nickname,
+                    player_nickname=getattr(row, 'Nickname', ''),  # Handle missing nickname column gracefully
                 )
             )
         return players
