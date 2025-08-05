@@ -46,7 +46,7 @@ func main() {
 	// 5. Report any missing player files and stop if any are found.
 	if len(missingPlayers) > 0 {
 		fmt.Printf("ERROR: Missing note files for %d players:\n\n", len(missingPlayers))
-		
+
 		for playerName, suggestion := range missingPlayers {
 			if suggestion != "" {
 				fmt.Printf("Couldn't find %s.md. Found %s. Do you want to rename it?\n", playerName, suggestion)
@@ -56,7 +56,7 @@ func main() {
 				log.Printf("Missing note file for '%s', no suggestions", playerName)
 			}
 		}
-		
+
 		fmt.Printf("\nPlease ensure all player note files exist in the analysis directory before running the program.\n")
 		log.Fatalf("Application stopped due to %d missing player note files", len(missingPlayers))
 	}

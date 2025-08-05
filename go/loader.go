@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/sahilm/fuzzy"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
-	"github.com/sahilm/fuzzy"
 )
 
 // DataLoader handles finding draft-related files.
@@ -34,7 +34,7 @@ func NewDataLoader(notesDir, logsDir string) *DataLoader {
 // Returns map of missing players and suggestions for potential matches.
 func (d *DataLoader) TestAvailableNotes(players []Player) (map[string]string, error) {
 	missingPlayers := make(map[string]string)
-	
+
 	// Get all available note files
 	mdFiles, err := filepath.Glob(filepath.Join(d.notesDir, "*.md"))
 	if err != nil {
@@ -44,7 +44,7 @@ func (d *DataLoader) TestAvailableNotes(players []Player) (map[string]string, er
 	// Create a map of available note file names (cleaned)
 	availableNotes := make([]string, 0, len(mdFiles))
 	noteFileMap := make(map[string]string) // cleaned name -> full path
-	
+
 	for _, file := range mdFiles {
 		noteName := strings.TrimSuffix(filepath.Base(file), ".md")
 		cleanedName := d.cleanName(noteName)
@@ -57,7 +57,7 @@ func (d *DataLoader) TestAvailableNotes(players []Player) (map[string]string, er
 	// Check each player
 	for _, player := range players {
 		cleanedPlayerName := d.cleanName(player.Name)
-		
+
 		// Check for exact match first
 		if _, exists := noteFileMap[cleanedPlayerName]; !exists {
 			// No exact match, try fuzzy matching for suggestions
@@ -121,11 +121,11 @@ func (d *DataLoader) FindLatestLogFile() (string, error) {
 func (d *DataLoader) FindPlayerNoteFile(playerName string) (string, error) {
 	cleanedPlayerName := d.cleanName(playerName)
 	noteFilePath := filepath.Join(d.notesDir, cleanedPlayerName+".md")
-	
+
 	if _, err := os.Stat(noteFilePath); os.IsNotExist(err) {
 		return "", fmt.Errorf("no note file found for '%s' at %s", playerName, noteFilePath)
 	}
-	
+
 	return noteFilePath, nil
 }
 
