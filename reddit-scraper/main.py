@@ -6,6 +6,7 @@ import re
 import os
 import time
 import praw
+from typing import Set, Tuple, Optional
 
 # Clean player names for Reddit search
 SUFFIXES = ["Jr\.", "Sr\.", "II", "III", "IV", "V"]
@@ -32,7 +33,7 @@ def generate_player_names(player: FootballPlayer) -> list[str]:
                 player_full_name,
                 player_last_name,
                 player_first_name,
-                player.player_nickname,
+                (player.player_nickname or "").strip(),
             ],
         )
     )
@@ -92,6 +93,48 @@ def get_relevant_posts(
     return discussion_texts
 
 
+def get_processed_slugs(out_dir: str) -> Set[str]:
+    """
+    Detect already-processed players by the presence of their summary files.
+    We treat "<slug>_summary.txt" as the completion marker.
+    """
+    processed: Set[str] = set()
+    if not os.path.isdir(out_dir):
+        return processed
+
+    for filename in os.listdir(out_dir):
+        if filename.endswith("_summary.txt") and len(filename) > len("_summary.txt"):
+            slug = filename[: -len("_summary.txt")]
+            processed.add(slug)
+    return processed
+
+
+def get_last_processed_slug(out_dir: str) -> Optional[str]:
+    """
+    Find the most recently modified "<slug>_summary.txt" and return its slug.
+    If none found, return None.
+    """
+    if not os.path.isdir(out_dir):
+        return None
+
+    newest_mtime: float = -1.0
+    newest_slug: Optional[str] = None
+
+    for filename in os.listdir(out_dir):
+        if not filename.endswith("_summary.txt"):
+            continue
+        path = os.path.join(out_dir, filename)
+        try:
+            mtime = os.path.getmtime(path)
+        except OSError:
+            continue
+        if mtime > newest_mtime:
+            newest_mtime = mtime
+            newest_slug = filename[: -len("_summary.txt")]
+
+    return newest_slug
+
+
 def main():
     DAYS_BACK = 60
     OUT_DIR = "data"
@@ -101,7 +144,29 @@ def main():
     openai_client = OpenAIQuery()
     players: list[FootballPlayer] = FootballPlayer.from_csv("combined_with_depth.csv")
 
-    for player in players:
+    # Detect previously processed players and determine a starting point
+    processed_slugs = get_processed_slugs(OUT_DIR)
+    last_processed = get_last_processed_slug(OUT_DIR)
+
+    start_index = 0
+    if last_processed is not None:
+        # Build slug -> index mapping to resume from the next player in original order
+        slug_to_index = {p.slug: idx for idx, p in enumerate(players)}
+        start_index = slug_to_index.get(last_processed, -1) + 1
+        if start_index < 0:
+            start_index = 0
+
+    if start_index > 0:
+        print(f"Resuming from index {start_index} (after '{last_processed}').")
+    elif processed_slugs:
+        print("Detected existing results; previously processed players will be skipped.")
+
+    for player in players[start_index:]:
+        # Skip any player already processed (idempotent/resumable)
+        if player.slug in processed_slugs:
+            print(f"Skipping {player.player_name} (already processed).")
+            continue
+
         # 1) Find reddit posts about the player
         search_terms = generate_player_names(player)
 
