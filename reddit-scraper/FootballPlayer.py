@@ -27,7 +27,7 @@ class FootballPlayer:
         Clean name for .md files - removes suffixes and keeps spaces.
         """
         # Remove suffixes like Jr., Sr., II, III, IV, V
-        name = re.sub(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$", "", self.player_name)
+        name = re.sub(r"\s+(?:" + "|".join(map(re.escape, ["Jr.", "Sr.", "II", "III", "IV", "V"])) + r")$", "", self.player_name)
         return name.strip()
 
     @classmethod
@@ -44,14 +44,21 @@ class FootballPlayer:
         df = pd.read_csv(csv_path)
         players: list[FootballPlayer] = []
         for row in df.itertuples(index=False):
+            # Handle NaN/empty nickname values by converting to empty string
+            nickname = getattr(row, 'Nickname', '')
+            if pd.isna(nickname):
+                nickname = ''
+            elif not isinstance(nickname, str):
+                nickname = str(nickname) if nickname else ''
+            
             players.append(
                 cls(
-                    player_name=row.Name,
+                    player_name=row.Player,
                     team_name=row.Team,
-                    player_position=row.Pos,
-                    player_adp=row.ADP,
+                    player_position=row.POS,
+                    player_adp=row.Average_ADP,
                     player_depth=row.Depth,
-                    player_nickname=getattr(row, 'Nickname', ''),  # Handle missing nickname column gracefully
+                    player_nickname=nickname,
                 )
             )
         return players

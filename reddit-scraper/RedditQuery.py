@@ -1,4 +1,4 @@
-from typing import list, Optional
+from typing import Optional
 from dotenv import load_dotenv
 import os
 import praw
@@ -119,6 +119,7 @@ class RedditQuery:
             # This is crucial: it replaces all "load more comments" links.
             # limit=None will attempt to fetch every single comment. This can be slow.
             submission.comments.replace_more(limit=None)
+            # can do limit=0 to just get the top level comments
 
             all_chains = []
             # Iterate through only the top-level comments

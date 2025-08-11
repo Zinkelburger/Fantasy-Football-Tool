@@ -4,28 +4,34 @@ from FootballPlayer import FootballPlayer
 
 import re
 import os
+import pathlib
 import time
 import praw
 from typing import Set, Tuple, Optional
 
 # Clean player names for Reddit search
-SUFFIXES = ["Jr\.", "Sr\.", "II", "III", "IV", "V"]
+SUFFIXES = ["Jr.", "Sr.", "II", "III", "IV", "V"]
 SUBREDDIT = "fantasyfootball"
 POST_LIMIT = 50
 
 
-def clean_name(name: str) -> str:
-    # Remove suffixes and strip whitespace
-    name = re.sub(
-        r"\s+(?:" + "|".join(SUFFIXES) + r")$", "", name
-    ).strip()  # explain this more, what
-    return re.escape(name)
+def sanitize_name_for_search(name: str) -> str:
+    # Remove common suffixes and strip whitespace, but do NOT escape the whole name
+    suffix_pattern = r"\s+(?:" + "|".join(map(re.escape, SUFFIXES)) + r")$"
+    name = re.sub(suffix_pattern, "", name).strip()
+    return name
 
 
 def generate_player_names(player: FootballPlayer) -> list[str]:
-    player_full_name = clean_name(player.player_name)
+    player_full_name = sanitize_name_for_search(player.player_name)
     player_last_name = player_full_name.split()[-1]
     player_first_name = player_full_name.split()[0]
+    
+    # Safely handle nickname - ensure it's a string and not None/NaN
+    nickname = ""
+    if player.player_nickname and isinstance(player.player_nickname, str):
+        nickname = player.player_nickname.strip()
+    
     return list(
         filter(
             None,
@@ -33,7 +39,7 @@ def generate_player_names(player: FootballPlayer) -> list[str]:
                 player_full_name,
                 player_last_name,
                 player_first_name,
-                (player.player_nickname or "").strip(),
+                nickname,
             ],
         )
     )
@@ -103,8 +109,10 @@ def get_processed_slugs(out_dir: str) -> Set[str]:
         return processed
 
     for filename in os.listdir(out_dir):
-        if filename.endswith("_summary.txt") and len(filename) > len("_summary.txt"):
-            slug = filename[: -len("_summary.txt")]
+        if filename.endswith(".md") and len(filename) > len(".md"):
+            base = filename[: -len(".md")]
+            # Convert the md base name to a slug in the same way as FootballPlayer.slug
+            slug = re.sub(r"[^a-z0-9]", "_", base.lower()).strip("_")
             processed.add(slug)
     return processed
 
@@ -121,7 +129,7 @@ def get_last_processed_slug(out_dir: str) -> Optional[str]:
     newest_slug: Optional[str] = None
 
     for filename in os.listdir(out_dir):
-        if not filename.endswith("_summary.txt"):
+        if not filename.endswith(".md"):
             continue
         path = os.path.join(out_dir, filename)
         try:
@@ -130,23 +138,33 @@ def get_last_processed_slug(out_dir: str) -> Optional[str]:
             continue
         if mtime > newest_mtime:
             newest_mtime = mtime
-            newest_slug = filename[: -len("_summary.txt")]
+            base = filename[: -len(".md")]
+            newest_slug = re.sub(r"[^a-z0-9]", "_", base.lower()).strip("_")
 
     return newest_slug
+
+
+def _write_stub_md(out_dir: str, player: FootballPlayer, message: str) -> None:
+    md_file = os.path.join(out_dir, f"{player.clean_name}.md")
+    with open(md_file, "w", encoding="utf-8") as f:
+        f.write(message + "\n")
 
 
 def main():
     DAYS_BACK = 60
     OUT_DIR = "data"
-    os.makedirs(OUT_DIR, exist_ok=True)
+    # Ensure OUT_DIR exists relative to this script's directory if run from project root
+    script_dir = pathlib.Path(__file__).resolve().parent
+    out_dir_abs = str((script_dir / OUT_DIR).resolve())
+    os.makedirs(out_dir_abs, exist_ok=True)
 
     reddit_client = RedditQuery()
     openai_client = OpenAIQuery()
     players: list[FootballPlayer] = FootballPlayer.from_csv("combined_with_depth.csv")
 
     # Detect previously processed players and determine a starting point
-    processed_slugs = get_processed_slugs(OUT_DIR)
-    last_processed = get_last_processed_slug(OUT_DIR)
+    processed_slugs = get_processed_slugs(out_dir_abs)
+    last_processed = get_last_processed_slug(out_dir_abs)
 
     start_index = 0
     if last_processed is not None:
@@ -180,19 +198,29 @@ def main():
         )
 
         if not recent_posts:
-            print(f"No recent posts found for {player.player_name}. Skipping.")
+            print(f"No recent posts found for {player.player_name}. Writing stub.")
+            _write_stub_md(
+                out_dir_abs,
+                player,
+                f"No recent discussion found for {player.player_name} in r/{SUBREDDIT} over the past {DAYS_BACK} days.",
+            )
             continue
 
         # === 2. Gather Relevant Discussion from Posts and Comments ===
         discussion_texts = get_relevant_posts(reddit_client, recent_posts, search_terms)
 
         if not discussion_texts:
-            print(f"No relevant discussion found for {player.player_name}. Skipping.")
+            print(f"No relevant discussion found for {player.player_name}. Writing stub.")
+            _write_stub_md(
+                out_dir_abs,
+                player,
+                f"No relevant discussion chains found for {player.player_name} in r/{SUBREDDIT} over the past {DAYS_BACK} days.",
+            )
             continue
 
         # === 3. Save Combined Text and Summarize with OpenAI ===
         reddit_text = "\n\n".join(discussion_texts)
-        reddit_file = os.path.join(OUT_DIR, f"{player.slug}_discussion.txt")
+        reddit_file = os.path.join(out_dir_abs, f"{player.slug}_discussion.txt")
         with open(reddit_file, "w", encoding="utf-8") as f:
             f.write(reddit_text)
 
@@ -205,7 +233,7 @@ def main():
 
         # Save the prompt for inspection
         with open(
-            os.path.join(OUT_DIR, f"{player.slug}_gpt_query.txt"), "w", encoding="utf-8"
+            os.path.join(out_dir_abs, f"{player.slug}_gpt_query.txt"), "w", encoding="utf-8"
         ) as f:
             f.write(prompt)
 
@@ -214,13 +242,8 @@ def main():
         )
         summary = openai_client.query(messages)
 
-        # Save both the debug summary and the .md file for Go code
-        summary_file = os.path.join(OUT_DIR, f"{player.slug}_summary.txt")
-        with open(summary_file, "w", encoding="utf-8") as f:
-            f.write(summary)
-        
-        # Also save as .md file with clean name for Go code compatibility
-        md_file = os.path.join(OUT_DIR, f"{player.clean_name}.md")
+        # Save as .md file with clean name for Go code compatibility
+        md_file = os.path.join(out_dir_abs, f"{player.clean_name}.md")
         with open(md_file, "w", encoding="utf-8") as f:
             f.write(summary)
 
