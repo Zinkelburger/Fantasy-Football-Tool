@@ -26,12 +26,12 @@ def generate_player_names(player: FootballPlayer) -> list[str]:
     player_full_name = sanitize_name_for_search(player.player_name)
     player_last_name = player_full_name.split()[-1]
     player_first_name = player_full_name.split()[0]
-    
+
     # Safely handle nickname - ensure it's a string and not None/NaN
     nickname = ""
     if player.player_nickname and isinstance(player.player_nickname, str):
         nickname = player.player_nickname.strip()
-    
+
     return list(
         filter(
             None,
@@ -177,7 +177,9 @@ def main():
     if start_index > 0:
         print(f"Resuming from index {start_index} (after '{last_processed}').")
     elif processed_slugs:
-        print("Detected existing results; previously processed players will be skipped.")
+        print(
+            "Detected existing results; previously processed players will be skipped."
+        )
 
     for player in players[start_index:]:
         # Skip any player already processed (idempotent/resumable)
@@ -210,7 +212,9 @@ def main():
         discussion_texts = get_relevant_posts(reddit_client, recent_posts, search_terms)
 
         if not discussion_texts:
-            print(f"No relevant discussion found for {player.player_name}. Writing stub.")
+            print(
+                f"No relevant discussion found for {player.player_name}. Writing stub."
+            )
             _write_stub_md(
                 out_dir_abs,
                 player,
@@ -233,7 +237,9 @@ def main():
 
         # Save the prompt for inspection
         with open(
-            os.path.join(out_dir_abs, f"{player.slug}_gpt_query.txt"), "w", encoding="utf-8"
+            os.path.join(out_dir_abs, f"{player.slug}_gpt_query.txt"),
+            "w",
+            encoding="utf-8",
         ) as f:
             f.write(prompt)
 

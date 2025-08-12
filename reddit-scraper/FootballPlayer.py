@@ -20,14 +20,20 @@ class FootballPlayer:
         s = self.player_name.lower()
         # replace non-word chars with underscore
         return re.sub(r"[^a-z0-9]", "_", s).strip("_")
-    
+
     @property
     def clean_name(self) -> str:
         """
         Clean name for .md files - removes suffixes and keeps spaces.
         """
         # Remove suffixes like Jr., Sr., II, III, IV, V
-        name = re.sub(r"\s+(?:" + "|".join(map(re.escape, ["Jr.", "Sr.", "II", "III", "IV", "V"])) + r")$", "", self.player_name)
+        name = re.sub(
+            r"\s+(?:"
+            + "|".join(map(re.escape, ["Jr.", "Sr.", "II", "III", "IV", "V"]))
+            + r")$",
+            "",
+            self.player_name,
+        )
         return name.strip()
 
     @classmethod
@@ -47,14 +53,14 @@ class FootballPlayer:
             # Skip rows with NaN player names
             if pd.isna(row.Player):
                 continue
-                
+
             # Handle NaN/empty nickname values by converting to empty string
-            nickname = getattr(row, 'Nickname', '')
+            nickname = getattr(row, "Nickname", "")
             if pd.isna(nickname):
-                nickname = ''
+                nickname = ""
             elif not isinstance(nickname, str):
-                nickname = str(nickname) if nickname else ''
-            
+                nickname = str(nickname) if nickname else ""
+
             players.append(
                 cls(
                     player_name=row.Player,
