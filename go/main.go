@@ -21,29 +21,45 @@ func main() {
 	// --- Data Loading and Initialization ---
 
 	// 1. Initialize the data loader.
-	dataLoader := NewDataLoader("players", "filtered_logs")
+	// Note: Updated paths - "analysis" for note files, "." for logs directory (where filtered files will be created)
+	dataLoader := NewDataLoader("analysis", ".")
 
-	// 2. Use the loader to find the most recent player data CSV file.
-	playerCSVPath, err := dataLoader.FindLatestLogFile()
-	if err != nil {
-		log.Fatalf("Fatal error finding latest log file: %v", err)
+	// 2. Load player data from static players.csv file (not dynamic log files)
+	// Try multiple possible player data file names
+	playerDataFiles := []string{
+		"players.csv",
+		"combined_with_depth.csv",
+		"go/combined_with_depth.csv", // fallback if running from root
 	}
-	log.Printf("Located latest player data file: %s", playerCSVPath)
-
-	// 3. Load the player data from the discovered file.
-	players, err := LoadPlayers(playerCSVPath)
-	if err != nil {
-		log.Fatalf("Fatal error loading players from %s: %v", playerCSVPath, err)
+	
+	var playerCSVPath string
+	var players []Player
+	
+	for _, filename := range playerDataFiles {
+		if _, err := os.Stat(filename); err == nil {
+			playerCSVPath = filename
+			players, err = LoadPlayers(playerCSVPath)
+			if err == nil {
+				log.Printf("Successfully loaded player data from: %s", playerCSVPath)
+				break
+			}
+			log.Printf("Failed to load players from %s: %v", filename, err)
+		}
 	}
-	log.Printf("Successfully loaded %d players.", len(players))
+	
+	if len(players) == 0 {
+		log.Fatalf("Fatal error: Could not find or load player data from any of: %v", playerDataFiles)
+	}
+	
+	log.Printf("Successfully loaded %d players from %s.", len(players), playerCSVPath)
 
-	// 4. Test that all players have corresponding note files.
+	// 3. Test that all players have corresponding note files.
 	missingPlayers, err := dataLoader.TestAvailableNotes(players)
 	if err != nil {
 		log.Fatalf("Fatal error testing note files: %v", err)
 	}
 
-	// 5. Report any missing player files and stop if any are found.
+	// 4. Report any missing player files and stop if any are found.
 	if len(missingPlayers) > 0 {
 		fmt.Printf("ERROR: Missing note files for %d players:\n\n", len(missingPlayers))
 
@@ -63,7 +79,7 @@ func main() {
 
 	log.Printf("All %d players have corresponding note files.", len(players))
 
-	// 6. Initialize the GPT client.
+	// 5. Initialize the GPT client.
 	gpt, err := NewGPT()
 	if err != nil {
 		log.Fatalf("Fatal error initializing GPT client: %v", err)
@@ -71,7 +87,8 @@ func main() {
 
 	// --- Start UI ---
 
-	// 7. Initialize and run the Bubble Tea UI, passing the loaded data.
+	// 6. Initialize and run the Bubble Tea UI, passing the loaded data.
+	// The UI will handle dynamic log file finding when users start taking picks
 	m := newModel(players, dataLoader, gpt)
 	p := tea.NewProgram(m, tea.WithAltScreen())
 

@@ -26,14 +26,16 @@ const rightWidth = 50 // Increased width for better summary display
 // The model holds the application's state.
 // We've added dataLoader and players so the UI knows about our data.
 type model struct {
-	list       list.Model
-	gpt        *GPT
-	dataLoader *DataLoader
-	players    []Player // The original slice of player data
-	output     string   // Holds the response from ChatGPT
-	querying   bool
-	lastQuery  time.Time
-	notice     string
+	list         list.Model
+	gpt          *GPT
+	dataLoader   *DataLoader
+	players      []Player // The original slice of player data
+	output       string   // Holds the response from ChatGPT
+	querying     bool
+	refreshing   bool     // tracks if we're refreshing player data
+	lastQuery    time.Time
+	lastRefresh  time.Time // tracks when we last refreshed player data
+	notice       string
 }
 
 func newModel(players []Player, loader *DataLoader, g *GPT) model {
@@ -57,22 +59,58 @@ func newModel(players []Player, loader *DataLoader, g *GPT) model {
 	l.SetFilteringEnabled(false)
 
 	return model{
-		list:       l,
-		gpt:        g,
-		dataLoader: loader,
-		players:    players,
-		lastQuery:  time.Now().Add(-5 * time.Second),
+		list:        l,
+		gpt:         g,
+		dataLoader:  loader,
+		players:     players,
+		lastQuery:   time.Now().Add(-5 * time.Second),
+		lastRefresh: time.Now(), // Initialize refresh time
+	}
+}
+
+// autoRefreshCmd returns a command that triggers automatic refresh
+func autoRefreshCmd() tea.Cmd {
+	return tea.Tick(3*time.Second, func(t time.Time) tea.Msg {
+		return autoRefreshMsg(t)
+	})
+}
+
+// refreshPlayerData is a helper function to refresh player data
+func (m model) refreshPlayerData() tea.Cmd {
+	return func() tea.Msg {
+		// Try to find the latest filtered log file
+		latestLogFile, err := m.dataLoader.FindLatestLogFile()
+		if err != nil {
+			// No filtered files found - this is normal at the start
+			log.Printf("No filtered log file found, keeping current data: %v", err)
+			return refreshMsg(m.players) // Return current players unchanged
+		}
+		
+		// Load players from the latest filtered file
+		updatedPlayers, err := LoadPlayers(latestLogFile)
+		if err != nil {
+			log.Printf("Failed to load players from %s: %v", latestLogFile, err)
+			return refreshMsg(m.players) // Return current players unchanged on error
+		}
+		
+		log.Printf("Refreshed player data from %s, loaded %d players", latestLogFile, len(updatedPlayers))
+		return refreshMsg(updatedPlayers)
 	}
 }
 
 /* --------------------------- Bubble Tea ---------------------------------- */
 
-type chatMsg string             // A successful response from ChatGPT
-type errMsg struct{ err error } // An error that occurred during the process
+type chatMsg string                    // A successful response from ChatGPT
+type refreshMsg []Player               // successful refresh of player data
+type autoRefreshMsg time.Time          // automatic refresh trigger
+type errMsg struct{ err error }        // An error that occurred during the process
 
 func (e errMsg) Error() string { return e.err.Error() }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd { 
+	// Start the automatic refresh timer
+	return autoRefreshCmd()
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -80,10 +118,31 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.list.SetSize(msg.Width-rightWidth, msg.Height)
 		return m, nil
 
+	case autoRefreshMsg:
+		// Automatic refresh every 3 seconds (only if not already refreshing/querying)
+		if !m.refreshing && !m.querying {
+			m.refreshing = true
+			m.lastRefresh = time.Time(msg)
+			return m, tea.Batch(m.refreshPlayerData(), autoRefreshCmd())
+		}
+		// If busy, just set up next refresh
+		return m, autoRefreshCmd()
+
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "r":
+			// Manual refresh - still useful for immediate refresh
+			if m.refreshing || m.querying {
+				break
+			}
+			m.notice, m.refreshing = "", true
+			m.output = "" // Clear previous output
+			m.lastRefresh = time.Now()
+			
+			return m, m.refreshPlayerData()
+			
 		case "q":
-			if m.querying {
+			if m.querying || m.refreshing {
 				break
 			}
 			if time.Since(m.lastQuery) < 5*time.Second {
@@ -93,30 +152,72 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.notice, m.querying, m.lastQuery = "", true, time.Now()
 			m.output = "" // Clear previous output before new query
 
-			// This function now runs in the background to process ALL players.
+			// Always refresh player data before ChatGPT query
 			return m, func() tea.Msg {
-				// 1. Build the notes string using the new DataLoader method.
+				// First, refresh player data
+				latestLogFile, err := m.dataLoader.FindLatestLogFile()
+				if err == nil {
+					if updatedPlayers, err := LoadPlayers(latestLogFile); err == nil {
+						log.Printf("Pre-query refresh: loaded %d players from %s", len(updatedPlayers), latestLogFile)
+						// Update the model's players for the ChatGPT query
+						return struct {
+							players []Player
+							msg     string
+						}{updatedPlayers, "refresh_and_query"}
+					}
+				}
+				
+				// If refresh failed, proceed with current players
+				log.Printf("Pre-query refresh failed, using current players")
+				return struct {
+					players []Player
+					msg     string
+				}{m.players, "refresh_and_query"}
+			}
+
+		case "esc", "ctrl+c":
+			return m, tea.Quit
+		}
+
+	// Handle the refresh-and-query message
+	case struct {
+		players []Player
+		msg     string
+	}:
+		if msg.msg == "refresh_and_query" {
+			// Update players and continue with ChatGPT query
+			m.players = msg.players
+			
+			// Rebuild the list items with updated player data
+			items := make([]list.Item, len(m.players))
+			for i, p := range m.players {
+				items[i] = playerItem{fmt.Sprintf("%-4s %-20s %-5s %-3s",
+					p.Rank, p.Name, p.Depth, p.Team)}
+			}
+			m.list.SetItems(items)
+			
+			// Now proceed with ChatGPT query using updated players
+			return m, func() tea.Msg {
+				// Build the notes string using the updated players
 				allNotes, err := m.dataLoader.BuildAllNotes(m.players)
 				if err != nil {
 					return errMsg{err}
 				}
 
-				// 3. This is the new prompt for a field-wide summary.
+				// Get current context
 				pickNum, err := m.dataLoader.LoadCurrentPickNum()
 				if err != nil {
 					log.Printf("Warning: could not load current pick number: %v", err)
 					pickNum = 0
 				}
 
-				// Load the current team, handling any potential error.
 				currentTeam, err := m.dataLoader.LoadCurrentTeam()
 				if err != nil {
 					log.Printf("Warning: could not load current team: %v", err)
 					currentTeam = "[Team not available]"
 				}
 
-				// Now that we have the values in variables, we can safely construct the prompt.
-				// I've also added spaces between the concatenated parts for better formatting.
+				// Construct the prompt
 				prompt := fmt.Sprintf(
 					"It is pick %d of a 2025 fantasy football draft. "+
 						"This is my current team: %s. "+
@@ -127,7 +228,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					pickNum, currentTeam, allNotes,
 				)
 
-				// 4. Ask ChatGPT and return the answer.
+				// Ask ChatGPT and return the answer
 				ans, err := m.gpt.Ask(prompt)
 				if err != nil {
 					log.Printf("Error from GPT API for field summary: %v", err)
@@ -135,10 +236,31 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				return chatMsg(ans)
 			}
-
-		case "esc", "ctrl+c":
-			return m, tea.Quit
 		}
+
+	// This handles the successful refresh of player data
+	case refreshMsg:
+		m.refreshing = false
+		
+		// Only update if the data actually changed
+		if len([]Player(msg)) != len(m.players) || (len(msg) > 0 && msg[0].Name != m.players[0].Name) {
+			m.players = []Player(msg) // Update the players slice
+			
+			// Rebuild the list items with updated player data
+			items := make([]list.Item, len(m.players))
+			for i, p := range m.players {
+				items[i] = playerItem{fmt.Sprintf("%-4s %-20s %-5s %-3s",
+					p.Rank, p.Name, p.Depth, p.Team)}
+			}
+			m.list.SetItems(items)
+			
+			// Only show refresh message if it's a manual refresh
+			if time.Since(m.lastRefresh) < 1*time.Second {
+				m.output = fmt.Sprintf("Refreshed: %d players (updated %s)", 
+					len(m.players), time.Now().Format("15:04:05"))
+			}
+		}
+		return m, nil
 
 	// This handles the successful response from ChatGPT.
 	case chatMsg:
@@ -147,7 +269,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// This handles any errors that occurred in our background function.
 	case errMsg:
-		m.querying = false
+		m.querying, m.refreshing = false, false
 		m.output = lipgloss.NewStyle().Foreground(lipgloss.Color("9")).Render("Error: " + msg.Error())
 		return m, nil
 	}
@@ -172,12 +294,14 @@ func (m model) View() string {
 		BorderForeground(lipgloss.Color("#5d3fd3")).
 		Padding(0, 1)
 
-	rightHeader := headerStyle.Render("q → ChatGPT   Esc → quit")
+	rightHeader := headerStyle.Render("Auto-refresh ON   q → ChatGPT   Esc → quit")
 
 	var body string
 	switch {
 	case m.notice != "":
 		body = lipgloss.NewStyle().Foreground(lipgloss.Color("#ff0000")).Render(m.notice)
+	case m.refreshing:
+		body = "Refreshing player data…"
 	case m.querying:
 		body = "Querying ChatGPT…"
 	default:
