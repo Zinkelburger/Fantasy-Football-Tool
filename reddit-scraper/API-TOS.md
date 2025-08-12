@@ -1,0 +1,1 @@
+I'm pretty sure I can't share the scraped reddit comments. But I have the generated summaries from `gpt-4.1-nano` in `markdown_data/`

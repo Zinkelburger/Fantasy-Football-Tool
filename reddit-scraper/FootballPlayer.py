@@ -44,6 +44,10 @@ class FootballPlayer:
         df = pd.read_csv(csv_path)
         players: list[FootballPlayer] = []
         for row in df.itertuples(index=False):
+            # Skip rows with NaN player names
+            if pd.isna(row.Player):
+                continue
+                
             # Handle NaN/empty nickname values by converting to empty string
             nickname = getattr(row, 'Nickname', '')
             if pd.isna(nickname):
