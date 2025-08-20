@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 )
 
@@ -27,9 +28,15 @@ func LoadPlayers(path string) ([]Player, error) {
 
 	var ps []Player
 	for i, r := range rows {
-		if i == 0 || len(r) < 10 {
+		if i == 0 {  // Skip header
 			continue
 		}
+		
+		// Validate we have enough columns
+		if len(r) < 10 {
+			return nil, fmt.Errorf("CSV row %d has %d columns, expected at least 10", i, len(r))
+		}
+		
 		ps = append(ps, Player{
 			Name:  r[0],
 			Team:  r[1],

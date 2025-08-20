@@ -39,6 +39,7 @@ type FantasyUI struct {
 	mutex       sync.RWMutex
 	autoRefreshTicker *time.Ticker
 	stopChan    chan bool
+	uiUpdateChan chan func()  // Channel for safe UI updates
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
@@ -54,13 +55,40 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT) 
 		gpt:         gpt,
 		lastQuery:   time.Now().Add(-5 * time.Second),
 		lastRefresh: time.Now(),
-		stopChan:    make(chan bool),
+		stopChan:    make(chan bool, 1),  // Buffered to prevent blocking
+		uiUpdateChan: make(chan func(), 10),  // Buffered channel for UI updates
 	}
 	
 	ui.setupUI()
+	ui.startUIUpdateHandler()
 	ui.startAutoRefresh()
 	
 	return ui
+}
+
+// startUIUpdateHandler processes UI updates safely on main thread
+func (ui *FantasyUI) startUIUpdateHandler() {
+	go func() {
+		for {
+			select {
+			case updateFunc := <-ui.uiUpdateChan:
+				updateFunc()  // Execute UI update on main thread
+			case <-ui.stopChan:
+				return
+			}
+		}
+	}()
+}
+
+// safeUIUpdate queues a UI update to be executed on the main thread
+func (ui *FantasyUI) safeUIUpdate(updateFunc func()) {
+	select {
+	case ui.uiUpdateChan <- updateFunc:
+		// Update queued successfully
+	default:
+		// Channel full, skip this update
+		log.Printf("Warning: UI update channel full, skipping update")
+	}
 }
 
 // setupUI creates and arranges all the UI components
@@ -167,14 +195,18 @@ func (ui *FantasyUI) handleChatGPTQuery() {
 	
 	if time.Since(ui.lastQuery) < 5*time.Second {
 		ui.notice = "Wait 5 seconds between ChatGPT queries"
-		ui.updateStatus()
+		ui.updateStatusInternal()
 		return
 	}
 	
 	ui.querying = true
 	ui.lastQuery = time.Now()
-	ui.updateStatus()
-	ui.outputText.ParseMarkdown("")
+	ui.updateStatusInternal()
+	
+	// Clear output safely
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown("")
+	})
 	
 	go ui.performChatGPTQuery()
 }
@@ -191,8 +223,12 @@ func (ui *FantasyUI) handleManualRefresh() {
 	ui.refreshing = true
 	ui.notice = ""
 	ui.lastRefresh = time.Now()
-	ui.updateStatus()
-	ui.outputText.ParseMarkdown("")
+	ui.updateStatusInternal()
+	
+	// Clear output safely
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown("")
+	})
 	
 	go ui.performRefresh(true)
 }
@@ -203,7 +239,12 @@ func (ui *FantasyUI) performChatGPTQuery() {
 	ui.performRefreshInternal()
 	
 	// Build the notes string using the updated players
-	allNotes, err := ui.dataLoader.BuildAllNotes(ui.players)
+	ui.mutex.RLock()
+	currentPlayers := make([]Player, len(ui.players))  // Create safe copy
+	copy(currentPlayers, ui.players)
+	ui.mutex.RUnlock()
+	
+	allNotes, err := ui.dataLoader.BuildAllNotes(currentPlayers)
 	if err != nil {
 		ui.handleError(fmt.Errorf("failed to build notes: %w", err))
 		return
@@ -241,11 +282,14 @@ func (ui *FantasyUI) performChatGPTQuery() {
 		return
 	}
 	
+	// Update UI safely
 	ui.mutex.Lock()
 	ui.querying = false
 	ui.mutex.Unlock()
 	
-	ui.outputText.ParseMarkdown(answer)
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown(answer)
+	})
 	ui.updateStatus()
 }
 
@@ -255,11 +299,15 @@ func (ui *FantasyUI) performRefresh(manual bool) {
 	
 	ui.mutex.Lock()
 	ui.refreshing = false
-	if manual {
-		ui.outputText.ParseMarkdown(fmt.Sprintf("Refreshed: %d players (updated %s)", 
-			len(ui.players), time.Now().Format("15:04:05")))
-	}
+	playerCount := len(ui.players)
 	ui.mutex.Unlock()
+	
+	if manual {
+		ui.safeUIUpdate(func() {
+			ui.outputText.ParseMarkdown(fmt.Sprintf("Refreshed: %d players (updated %s)", 
+				playerCount, time.Now().Format("15:04:05")))
+		})
+	}
 	
 	ui.updateStatus()
 }
@@ -285,11 +333,22 @@ func (ui *FantasyUI) performRefreshInternal() {
 	
 	ui.mutex.Lock()
 	// Only update if the data actually changed
-	if len(updatedPlayers) != len(ui.players) || (len(updatedPlayers) > 0 && len(ui.players) > 0 && updatedPlayers[0].Name != ui.players[0].Name) {
-		ui.players = updatedPlayers
-		ui.playerList.Refresh()
+	shouldUpdate := len(updatedPlayers) != len(ui.players)
+	if !shouldUpdate && len(updatedPlayers) > 0 && len(ui.players) > 0 {
+		shouldUpdate = updatedPlayers[0].Name != ui.players[0].Name
 	}
-	ui.mutex.Unlock()
+	
+	if shouldUpdate {
+		ui.players = updatedPlayers
+		ui.mutex.Unlock()
+		
+		// Refresh UI safely
+		ui.safeUIUpdate(func() {
+			ui.playerList.Refresh()
+		})
+	} else {
+		ui.mutex.Unlock()
+	}
 }
 
 // handleError handles errors by updating the UI
@@ -299,15 +358,23 @@ func (ui *FantasyUI) handleError(err error) {
 	ui.refreshing = false
 	ui.mutex.Unlock()
 	
-	ui.outputText.ParseMarkdown(fmt.Sprintf("**Error:** %s", err.Error()))
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown(fmt.Sprintf("**Error:** %s", err.Error()))
+	})
 	ui.updateStatus()
 }
 
-// updateStatus updates the status label
+// updateStatus updates the status label (public method)
 func (ui *FantasyUI) updateStatus() {
+	ui.mutex.Lock()
+	ui.updateStatusInternal()
+	ui.mutex.Unlock()
+}
+
+// updateStatusInternal updates the status label (must be called with mutex held)
+func (ui *FantasyUI) updateStatusInternal() {
 	var status string
 	
-	ui.mutex.RLock()
 	switch {
 	case ui.notice != "":
 		status = ui.notice
@@ -319,9 +386,10 @@ func (ui *FantasyUI) updateStatus() {
 	default:
 		status = "Ready - Auto-refresh enabled (q: ChatGPT, r: Refresh, Esc: Quit)"
 	}
-	ui.mutex.RUnlock()
 	
-	ui.statusLabel.SetText(status)
+	ui.safeUIUpdate(func() {
+		ui.statusLabel.SetText(status)
+	})
 }
 
 // startAutoRefresh starts the automatic refresh timer
@@ -329,18 +397,19 @@ func (ui *FantasyUI) startAutoRefresh() {
 	ui.autoRefreshTicker = time.NewTicker(3 * time.Second)
 	
 	go func() {
+		defer ui.autoRefreshTicker.Stop()  // Ensure cleanup
+		
 		for {
 			select {
 			case <-ui.autoRefreshTicker.C:
-				ui.mutex.RLock()
+				ui.mutex.Lock()
 				canRefresh := !ui.refreshing && !ui.querying
-				ui.mutex.RUnlock()
+				if canRefresh {
+					ui.refreshing = true
+				}
+				ui.mutex.Unlock()
 				
 				if canRefresh {
-					ui.mutex.Lock()
-					ui.refreshing = true
-					ui.mutex.Unlock()
-					
 					go ui.performRefresh(false)
 				}
 			case <-ui.stopChan:
@@ -356,9 +425,11 @@ func (ui *FantasyUI) stopAutoRefresh() {
 		ui.autoRefreshTicker.Stop()
 	}
 	
+	// Non-blocking send to stop channel
 	select {
 	case ui.stopChan <- true:
-	default:
+	case <-time.After(100 * time.Millisecond):
+		// If we can't send within 100ms, the goroutines are probably already stopped
 	}
 }
 

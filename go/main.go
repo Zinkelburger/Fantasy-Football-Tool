@@ -81,8 +81,10 @@ func main() {
 		errorLabel := widget.NewLabel(errorText)
 		w.SetContent(errorLabel)
 		w.Resize(fyne.NewSize(800, 400))
+		
+		// Show dialog and wait for user to close it
 		w.ShowAndRun()
-		log.Fatalf("Application stopped due to %d missing player note files", len(missingPlayers))
+		log.Printf("Application stopped due to %d missing player note files", len(missingPlayers))
 		return
 	}
 

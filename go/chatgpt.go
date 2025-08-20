@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -19,7 +20,11 @@ func NewGPT() (*GPT, error) {
 }
 
 func (g *GPT) Ask(q string) (string, error) {
-	resp, err := g.cli.CreateChatCompletion(context.TODO(),
+	// Create context with timeout to prevent hanging
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	
+	resp, err := g.cli.CreateChatCompletion(ctx,
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4Dot1Nano,
 			Messages: []openai.ChatCompletionMessage{
