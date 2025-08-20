@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/widget"
 )
 
 func main() {
@@ -61,20 +62,28 @@ func main() {
 
 	// 4. Report any missing player files and stop if any are found.
 	if len(missingPlayers) > 0 {
-		fmt.Printf("ERROR: Missing note files for %d players:\n\n", len(missingPlayers))
-
+		// Show error dialog instead of console output
+		fyneApp := app.New()
+		w := fyneApp.NewWindow("Fantasy Football Tool - Error")
+		
+		errorText := "ERROR: Missing note files for players:\n\n"
 		for playerName, suggestion := range missingPlayers {
 			if suggestion != "" {
-				fmt.Printf("Couldn't find %s.md. Found %s. Do you want to rename it?\n", playerName, suggestion)
+				errorText += "Couldn't find " + playerName + ".md. Found " + suggestion + ". Do you want to rename it?\n"
 				log.Printf("Missing note file for '%s', suggested: %s", playerName, suggestion)
 			} else {
-				fmt.Printf("Couldn't find %s.md. No similar files found.\n", playerName)
+				errorText += "Couldn't find " + playerName + ".md. No similar files found.\n"
 				log.Printf("Missing note file for '%s', no suggestions", playerName)
 			}
 		}
-
-		fmt.Printf("\nPlease ensure all player note files exist in the analysis directory before running the program.\n")
+		errorText += "\nPlease ensure all player note files exist in the analysis directory before running the program."
+		
+		errorLabel := widget.NewLabel(errorText)
+		w.SetContent(errorLabel)
+		w.Resize(fyne.NewSize(800, 400))
+		w.ShowAndRun()
 		log.Fatalf("Application stopped due to %d missing player note files", len(missingPlayers))
+		return
 	}
 
 	log.Printf("All %d players have corresponding note files.", len(players))
@@ -87,14 +96,11 @@ func main() {
 
 	// --- Start UI ---
 
-	// 6. Initialize and run the Bubble Tea UI, passing the loaded data.
-	// The UI will handle dynamic log file finding when users start taking picks
-	m := newModel(players, dataLoader, gpt)
-	p := tea.NewProgram(m, tea.WithAltScreen())
-
-	if _, err := p.Run(); err != nil {
-		log.Fatalf("Error running program: %v", err)
-	}
+	// 6. Initialize and run the Fyne UI, passing the loaded data.
+	fyneApp := app.New()
+	ui := NewFantasyUI(fyneApp, players, dataLoader, gpt)
+	ui.Show()
+	fyneApp.Run()
 
 	log.Println("--- Application Exiting ---")
 }
