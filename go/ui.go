@@ -20,14 +20,17 @@ type FantasyUI struct {
 	// Data
 	players     []Player
 	dataLoader  *DataLoader
-	gpt         *GPT
+	llmManager  *LLMManager
+	settings    *Settings
 	
 	// UI Components
-	playerList  *widget.List
-	outputText  *widget.RichText
-	statusLabel *widget.Label
-	queryButton *widget.Button
-	refreshButton *widget.Button
+	playerList     *widget.List
+	outputText     *widget.RichText
+	statusLabel    *widget.Label
+	queryButton    *widget.Button
+	refreshButton  *widget.Button
+	settingsButton *widget.Button
+	settingsUI     *SettingsUI
 	
 	// State
 	querying    bool
@@ -46,7 +49,7 @@ type FantasyUI struct {
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
-func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT, playerUpdateChan <-chan PlayerUpdate) *FantasyUI {
+func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager *LLMManager, settings *Settings, playerUpdateChan <-chan PlayerUpdate) *FantasyUI {
 	window := app.NewWindow("Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
 	
@@ -55,7 +58,8 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT, 
 		window:      window,
 		players:     players,
 		dataLoader:  loader,
-		gpt:         gpt,
+		llmManager:  llmManager,
+		settings:    settings,
 		lastQuery:   time.Now().Add(-5 * time.Second),
 		lastRefresh: time.Now(),
 		stopChan:    make(chan bool, 1),  // Buffered to prevent blocking
@@ -64,6 +68,9 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT, 
 		pickedPlayers: make([]string, 0),
 		currentPick:   0,
 	}
+	
+	// Initialize settings UI
+	ui.settingsUI = NewSettingsUI(window, settings, llmManager, ui.handleSettingsUpdate)
 	
 	ui.setupUI()
 	ui.startUIUpdateHandler()
@@ -130,13 +137,16 @@ func (ui *FantasyUI) setupUI() {
 	ui.statusLabel = widget.NewLabel("Ready - Listening for draft updates")
 	
 	// Create buttons
-	ui.queryButton = widget.NewButton("Query ChatGPT (q)", ui.handleChatGPTQuery)
+	ui.queryButton = widget.NewButton("Query LLM (q)", ui.handleLLMQuery)
 	ui.refreshButton = widget.NewButton("Manual Refresh (r)", ui.handleManualRefresh)
+	ui.settingsButton = ui.settingsUI.CreateSettingsButton()
 	
 	// Create button container
 	buttonContainer := container.NewHBox(
 		ui.queryButton,
 		ui.refreshButton,
+		widget.NewSeparator(),
+		ui.settingsButton,
 	)
 	
 	// Create header for player list
@@ -181,7 +191,7 @@ func (ui *FantasyUI) setupUI() {
 func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 	switch key.Name {
 	case fyne.KeyQ:
-		ui.handleChatGPTQuery()
+		ui.handleLLMQuery()
 	case fyne.KeyR:
 		ui.handleManualRefresh()
 	case fyne.KeyEscape:
@@ -190,8 +200,8 @@ func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 	}
 }
 
-// handleChatGPTQuery handles ChatGPT query requests
-func (ui *FantasyUI) handleChatGPTQuery() {
+// handleLLMQuery handles LLM query requests
+func (ui *FantasyUI) handleLLMQuery() {
 	ui.mutex.Lock()
 	defer ui.mutex.Unlock()
 	
@@ -200,7 +210,8 @@ func (ui *FantasyUI) handleChatGPTQuery() {
 	}
 	
 	if time.Since(ui.lastQuery) < 5*time.Second {
-		ui.notice = "Wait 5 seconds between ChatGPT queries"
+		providerType := ui.llmManager.GetProviderType()
+		ui.notice = fmt.Sprintf("Wait 5 seconds between %s queries", providerType)
 		ui.updateStatusInternal()
 		return
 	}
@@ -214,7 +225,7 @@ func (ui *FantasyUI) handleChatGPTQuery() {
 		ui.outputText.ParseMarkdown("")
 	})
 	
-	go ui.performChatGPTQuery()
+	go ui.performLLMQuery()
 }
 
 // handleManualRefresh handles manual refresh requests
@@ -239,8 +250,8 @@ func (ui *FantasyUI) handleManualRefresh() {
 	go ui.performRefresh(true)
 }
 
-// performChatGPTQuery runs the ChatGPT query in a goroutine
-func (ui *FantasyUI) performChatGPTQuery() {
+// performLLMQuery runs the LLM query in a goroutine
+func (ui *FantasyUI) performLLMQuery() {
 	// First refresh player data
 	ui.performRefreshInternal()
 	
@@ -284,11 +295,12 @@ func (ui *FantasyUI) performChatGPTQuery() {
 		currentPick, pickedPlayersStr, currentTeam, allNotes,
 	)
 	
-	// Ask ChatGPT and return the answer
-	answer, err := ui.gpt.Ask(prompt)
+	// Ask LLM and return the answer
+	answer, err := ui.llmManager.Ask(prompt)
 	if err != nil {
-		log.Printf("Error from GPT API: %v", err)
-		ui.handleError(fmt.Errorf("ChatGPT error: %w", err))
+		providerType := ui.llmManager.GetProviderType()
+		log.Printf("Error from %s: %v", providerType, err)
+		ui.handleError(fmt.Errorf("%s error: %w", providerType, err))
 		return
 	}
 	
@@ -417,9 +429,11 @@ func (ui *FantasyUI) updateStatusInternal() {
 	case ui.refreshing:
 		status = "Refreshing player data..."
 	case ui.querying:
-		status = "Querying ChatGPT..."
+		providerType := ui.llmManager.GetProviderType()
+		status = fmt.Sprintf("Querying %s...", providerType)
 	default:
-		status = "Ready - Listening for draft updates (q: ChatGPT, r: Refresh, Esc: Quit)"
+		providerType := ui.llmManager.GetProviderType()
+		status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, Esc: Quit)", providerType)
 	}
 	
 	ui.safeUIUpdate(func() {
@@ -467,6 +481,23 @@ func (ui *FantasyUI) stop() {
 	case <-time.After(100 * time.Millisecond):
 		// If we can't send within 100ms, the goroutines are probably already stopped
 	}
+}
+
+// handleSettingsUpdate handles updates to settings from the settings UI
+func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
+	// Update the LLM manager with new settings
+	if err := ui.llmManager.UpdateSettings(settings); err != nil {
+		return fmt.Errorf("failed to update LLM manager: %w", err)
+	}
+	
+	// Update local settings reference
+	ui.settings = settings
+	
+	// Update status to reflect new provider
+	ui.updateStatus()
+	
+	log.Printf("Settings updated successfully. Now using %s", ui.llmManager.GetProviderType())
+	return nil
 }
 
 // Show displays the UI window

@@ -6,6 +6,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/joho/godotenv"
 )
@@ -71,6 +72,7 @@ func main() {
 	if len(missingPlayers) > 0 {
 		// Show error dialog instead of console output
 		fyneApp := app.New()
+		fyneApp.SetIcon(resourceLogoPng)
 		w := fyneApp.NewWindow("Fantasy Football Tool - Error")
 		
 		errorText := "ERROR: Missing note files for players:\n\n"
@@ -97,14 +99,48 @@ func main() {
 
 	log.Printf("All %d players have corresponding note files.", len(players))
 
-	// 5. Initialize the GPT client.
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		log.Fatalf("Fatal error: OPENAI_API_KEY not set in environment or .env file")
-	}
-	gpt, err := NewGPT(apiKey)
+	// 5. Load settings and initialize LLM.
+	settings, err := LoadSettings()
 	if err != nil {
-		log.Fatalf("Fatal error initializing GPT client: %v", err)
+		log.Fatalf("Fatal error loading settings: %v", err)
+	}
+	
+	// Check if any LLM is configured
+	if !settings.HasValidConfig() {
+		// Show settings dialog instead of fatal error
+		fyneApp := app.New()
+		fyneApp.SetIcon(resourceLogoPng)
+		w := fyneApp.NewWindow("Fantasy Football Tool - Configuration Required")
+		
+		warningText := "No LLM is configured!\n\n"
+		warningText += "Please configure either:\n"
+		warningText += "• OpenAI API key, or\n"
+		warningText += "• Local LLM (Ollama)\n\n"
+		warningText += "Click the settings button (gear icon) to configure."
+		
+		warningLabel := widget.NewLabel(warningText)
+		
+		// Create a simple UI with settings button
+		llmManager, _ := NewLLMManager(settings) // May fail, that's OK
+		settingsUI := NewSettingsUI(w, settings, llmManager, nil)
+		settingsBtn := settingsUI.CreateSettingsButton()
+		settingsBtn.Text = "Open Settings"
+		settingsBtn.Resize(fyne.NewSize(120, 40))
+		
+		content := container.NewVBox(
+			warningLabel,
+			container.NewCenter(settingsBtn),
+		)
+		
+		w.SetContent(content)
+		w.Resize(fyne.NewSize(400, 200))
+		w.ShowAndRun()
+		return
+	}
+	
+	llmManager, err := NewLLMManager(settings)
+	if err != nil {
+		log.Fatalf("Fatal error initializing LLM manager: %v", err)
 	}
 
 	// 6. Create communication channel between HTTP server and UI
@@ -121,7 +157,8 @@ func main() {
 
 	// 8. Initialize and run the Fyne UI, passing the loaded data and update channel.
 	fyneApp := app.New()
-	ui := NewFantasyUI(fyneApp, players, dataLoader, gpt, playerUpdateChannel)
+	fyneApp.SetIcon(resourceLogoPng)
+	ui := NewFantasyUI(fyneApp, players, dataLoader, llmManager, settings, playerUpdateChannel)
 	ui.Show()
 	fyneApp.Run()
 
