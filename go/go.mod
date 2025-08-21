@@ -6,6 +6,7 @@ toolchain go1.23.8
 
 require (
 	fyne.io/fyne/v2 v2.5.4
+	github.com/joho/godotenv v1.5.1
 	github.com/sahilm/fuzzy v0.1.1
 	github.com/sashabaranov/go-openai v1.40.1
 )

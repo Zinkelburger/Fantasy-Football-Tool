@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	openai "github.com/sashabaranov/go-openai"
@@ -11,12 +10,11 @@ import (
 
 type GPT struct{ cli *openai.Client }
 
-func NewGPT() (*GPT, error) {
-	key := os.Getenv("OPENAI_API_KEY")
-	if key == "" {
-		return nil, fmt.Errorf("OPENAI_API_KEY not set")
+func NewGPT(apiKey string) (*GPT, error) {
+	if apiKey == "" {
+		return nil, fmt.Errorf("OpenAI API key is empty")
 	}
-	return &GPT{cli: openai.NewClient(key)}, nil
+	return &GPT{cli: openai.NewClient(apiKey)}, nil
 }
 
 func (g *GPT) Ask(q string) (string, error) {

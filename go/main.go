@@ -7,9 +7,16 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// --- Load Environment Variables ---
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Warning: Error loading .env file: %v", err)
+	}
+
 	// --- Logging Setup ---
 	logFile, err := os.OpenFile("program-messages.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -91,7 +98,11 @@ func main() {
 	log.Printf("All %d players have corresponding note files.", len(players))
 
 	// 5. Initialize the GPT client.
-	gpt, err := NewGPT()
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		log.Fatalf("Fatal error: OPENAI_API_KEY not set in environment or .env file")
+	}
+	gpt, err := NewGPT(apiKey)
 	if err != nil {
 		log.Fatalf("Fatal error initializing GPT client: %v", err)
 	}
