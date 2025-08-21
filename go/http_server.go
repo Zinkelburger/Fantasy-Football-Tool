@@ -7,9 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-	"strings"
-	"time"
+	"sync"
 )
 
 // PlayerNamesRequest represents the JSON payload from the browser extension
@@ -17,54 +15,38 @@ type PlayerNamesRequest struct {
 	PlayerNames []string `json:"playerNames"`
 }
 
+// PlayerUpdate represents the data sent to the UI
+type PlayerUpdate struct {
+	PickedPlayers []string
+	PickNumber    int
+}
+
 // HTTPServer handles incoming requests from the browser extension
 type HTTPServer struct {
-	logDir      string
-	playerNames map[string]bool
-	latestFile  string
+	statusDir     string
+	playerNames   map[string]bool
+	updateChannel chan<- PlayerUpdate
+	mutex         sync.RWMutex
 }
 
 // NewHTTPServer creates a new HTTP server instance
-func NewHTTPServer(logDir string) *HTTPServer {
+func NewHTTPServer(statusDir string, updateChannel chan<- PlayerUpdate) *HTTPServer {
 	return &HTTPServer{
-		logDir:      logDir,
-		playerNames: make(map[string]bool),
-		latestFile:  "",
+		statusDir:     statusDir,
+		playerNames:   make(map[string]bool),
+		updateChannel: updateChannel,
 	}
 }
 
-// setupLogDirectory creates the log directory and initializes files
-func (s *HTTPServer) setupLogDirectory() error {
-	// Create log directory if it doesn't exist
-	if err := os.MkdirAll(s.logDir, 0755); err != nil {
-		return fmt.Errorf("failed to create log directory: %w", err)
-	}
-
-	// Delete all existing .txt files initially
-	files, err := os.ReadDir(s.logDir)
-	if err != nil {
-		return fmt.Errorf("failed to read log directory: %w", err)
-	}
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".txt") {
-			filePath := filepath.Join(s.logDir, file.Name())
-			if err := os.Remove(filePath); err != nil {
-				log.Printf("Error deleting file %s: %v", file.Name(), err)
-			}
-		}
-	}
-
-	// Delete the existing draft_script.log file if it exists
-	logFile := filepath.Join(s.logDir, "draft_script.log")
-	if _, err := os.Stat(logFile); err == nil {
-		if err := os.Remove(logFile); err != nil {
-			log.Printf("Error deleting log file %s: %v", logFile, err)
-		}
+// setupStatusDirectory creates the status directory and initializes files
+func (s *HTTPServer) setupStatusDirectory() error {
+	// Create status directory if it doesn't exist
+	if err := os.MkdirAll(s.statusDir, 0755); err != nil {
+		return fmt.Errorf("failed to create status directory: %w", err)
 	}
 
 	// Initialize pick.txt with 0
-	pickFile := filepath.Join(s.logDir, "pick.txt")
+	pickFile := fmt.Sprintf("%s/pick.txt", s.statusDir)
 	if err := os.WriteFile(pickFile, []byte("0"), 0644); err != nil {
 		return fmt.Errorf("failed to initialize pick.txt: %w", err)
 	}
@@ -73,61 +55,28 @@ func (s *HTTPServer) setupLogDirectory() error {
 	return nil
 }
 
-// saveNewPlayerFile saves new player names to a timestamped file
-func (s *HTTPServer) saveNewPlayerFile(newNames []string) error {
-	if len(newNames) == 0 {
-		return nil
-	}
-
-	var newFile string
+// sendPlayerUpdate sends player data to the UI via channel
+func (s *HTTPServer) sendPlayerUpdate(allPlayerNames []string) error {
+	pickNumber := len(allPlayerNames)
 	
-	// If we don't have a latest file yet, create a new one
-	if s.latestFile == "" {
-		// Generate a new filename with the current timestamp (with microseconds for uniqueness)
-		timestamp := time.Now().Format("20060102-150405.000000")
-		newFile = filepath.Join(s.logDir, fmt.Sprintf("players_%s.txt", timestamp))
-		s.latestFile = newFile
-	} else {
-		// Use the existing latest file
-		newFile = s.latestFile
-	}
-
-	// Append new player names to the new file
-	file, err := os.OpenFile(newFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to open new player file: %w", err)
-	}
-	defer file.Close()
-
-	for _, name := range newNames {
-		if _, err := file.WriteString(fmt.Sprintf("%s\n", name)); err != nil {
-			return fmt.Errorf("failed to write player name: %w", err)
-		}
-	}
-
-	log.Printf("Appended new player names to %s", newFile)
-
-	// Update pick.txt with the length of the new file
-	content, err := os.ReadFile(newFile)
-	if err != nil {
-		return fmt.Errorf("failed to read new player file: %w", err)
-	}
-
-	lines := strings.Split(strings.TrimSpace(string(content)), "\n")
-	playerCount := len(lines)
-	if len(lines) == 1 && lines[0] == "" {
-		playerCount = 0
-	}
-
-	pickFile := filepath.Join(s.logDir, "pick.txt")
-	if err := os.WriteFile(pickFile, []byte(fmt.Sprintf("%d", playerCount)), 0644); err != nil {
+	// Update pick.txt file for backwards compatibility
+	pickFile := fmt.Sprintf("%s/pick.txt", s.statusDir)
+	if err := os.WriteFile(pickFile, []byte(fmt.Sprintf("%d", pickNumber)), 0644); err != nil {
 		return fmt.Errorf("failed to update pick.txt: %w", err)
 	}
 
-	log.Printf("Updated pick.txt with player count: %d", playerCount)
+	// Send update via channel (non-blocking)
+	update := PlayerUpdate{
+		PickedPlayers: allPlayerNames,
+		PickNumber:    pickNumber,
+	}
 
-	// Update latest_file reference
-	s.latestFile = newFile
+	select {
+	case s.updateChannel <- update:
+		log.Printf("Sent player update via channel: %d players", len(allPlayerNames))
+	default:
+		log.Printf("Warning: Update channel full, skipping update")
+	}
 
 	return nil
 }
@@ -156,21 +105,38 @@ func (s *HTTPServer) handlePlayerNames(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Process player names
-	var newEntries []string
-	for _, playerName := range request.PlayerNames {
-		if !s.playerNames[playerName] {
-			s.playerNames[playerName] = true
-			newEntries = append(newEntries, playerName)
-			log.Printf("Added player: %s", playerName)
+	// Thread-safe processing of player names
+	s.mutex.Lock()
+	
+	// Check if the complete list has changed
+	hasChanges := false
+	if len(request.PlayerNames) != len(s.playerNames) {
+		hasChanges = true
+	} else {
+		for _, playerName := range request.PlayerNames {
+			if !s.playerNames[playerName] {
+				hasChanges = true
+				break
+			}
 		}
 	}
 
-	// Save new players if any
-	if len(newEntries) > 0 {
-		if err := s.saveNewPlayerFile(newEntries); err != nil {
-			log.Printf("Error saving player file: %v", err)
-			http.Error(w, "Failed to save players", http.StatusInternalServerError)
+	// Update our internal map to match the current state
+	s.playerNames = make(map[string]bool)
+	for _, playerName := range request.PlayerNames {
+		s.playerNames[playerName] = true
+	}
+	
+	allPlayerNames := make([]string, len(request.PlayerNames))
+	copy(allPlayerNames, request.PlayerNames)
+	s.mutex.Unlock()
+
+	// Send update if there were changes
+	if hasChanges {
+		log.Printf("Player list changed, sending update with %d players", len(allPlayerNames))
+		if err := s.sendPlayerUpdate(allPlayerNames); err != nil {
+			log.Printf("Error sending player update: %v", err)
+			http.Error(w, "Failed to process players", http.StatusInternalServerError)
 			return
 		}
 	}
@@ -197,9 +163,9 @@ func (s *HTTPServer) handleOptions(w http.ResponseWriter, r *http.Request) {
 
 // StartHTTPServer starts the HTTP server in a goroutine
 func (s *HTTPServer) StartHTTPServer(port int) {
-	// Setup log directory
-	if err := s.setupLogDirectory(); err != nil {
-		log.Fatalf("Failed to setup log directory: %v", err)
+	// Setup status directory
+	if err := s.setupStatusDirectory(); err != nil {
+		log.Fatalf("Failed to setup status directory: %v", err)
 	}
 
 	// Setup routes
@@ -223,30 +189,12 @@ func (s *HTTPServer) StartHTTPServer(port int) {
 }
 
 // StartHTTPServerAsync starts the HTTP server as a goroutine
-func StartHTTPServerAsync(logDir string, port int) *HTTPServer {
-	server := NewHTTPServer(logDir)
+func StartHTTPServerAsync(statusDir string, port int, updateChannel chan<- PlayerUpdate) *HTTPServer {
+	server := NewHTTPServer(statusDir, updateChannel)
 	
 	go func() {
 		server.StartHTTPServer(port)
 	}()
 	
 	return server
-}
-
-// copyFile copies a file from src to dst
-func copyFile(src, dst string) error {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer srcFile.Close()
-
-	dstFile, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer dstFile.Close()
-
-	_, err = io.Copy(dstFile, srcFile)
-	return err
 }

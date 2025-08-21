@@ -34,16 +34,18 @@ type FantasyUI struct {
 	lastQuery   time.Time
 	lastRefresh time.Time
 	notice      string
+	pickedPlayers []string  // Current list of picked players
+	currentPick   int       // Current pick number
 	
 	// Concurrency
 	mutex       sync.RWMutex
-	autoRefreshTicker *time.Ticker
 	stopChan    chan bool
 	uiUpdateChan chan func()  // Channel for safe UI updates
+	playerUpdateChan <-chan PlayerUpdate  // Channel for receiving player updates from HTTP server
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
-func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT) *FantasyUI {
+func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT, playerUpdateChan <-chan PlayerUpdate) *FantasyUI {
 	window := app.NewWindow("Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
 	
@@ -57,11 +59,14 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, gpt *GPT) 
 		lastRefresh: time.Now(),
 		stopChan:    make(chan bool, 1),  // Buffered to prevent blocking
 		uiUpdateChan: make(chan func(), 10),  // Buffered channel for UI updates
+		playerUpdateChan: playerUpdateChan,
+		pickedPlayers: make([]string, 0),
+		currentPick:   0,
 	}
 	
 	ui.setupUI()
 	ui.startUIUpdateHandler()
-	ui.startAutoRefresh()
+	ui.startPlayerUpdateListener()
 	
 	return ui
 }
@@ -121,7 +126,7 @@ func (ui *FantasyUI) setupUI() {
 	ui.outputText.Wrapping = fyne.TextWrapWord
 	
 	// Create status label
-	ui.statusLabel = widget.NewLabel("Ready - Auto-refresh enabled")
+	ui.statusLabel = widget.NewLabel("Ready - Listening for draft updates")
 	
 	// Create buttons
 	ui.queryButton = widget.NewButton("Query ChatGPT (q)", ui.handleChatGPTQuery)
@@ -166,7 +171,7 @@ func (ui *FantasyUI) setupUI() {
 	
 	// Handle window close
 	ui.window.SetCloseIntercept(func() {
-		ui.stopAutoRefresh()
+		ui.stop()
 		ui.window.Close()
 	})
 }
@@ -179,7 +184,7 @@ func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 	case fyne.KeyR:
 		ui.handleManualRefresh()
 	case fyne.KeyEscape:
-		ui.stopAutoRefresh()
+		ui.stop()
 		ui.window.Close()
 	}
 }
@@ -242,6 +247,9 @@ func (ui *FantasyUI) performChatGPTQuery() {
 	ui.mutex.RLock()
 	currentPlayers := make([]Player, len(ui.players))  // Create safe copy
 	copy(currentPlayers, ui.players)
+	currentPick := ui.currentPick
+	pickedPlayers := make([]string, len(ui.pickedPlayers))
+	copy(pickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
 	
 	allNotes, err := ui.dataLoader.BuildAllNotes(currentPlayers)
@@ -250,28 +258,29 @@ func (ui *FantasyUI) performChatGPTQuery() {
 		return
 	}
 	
-	// Get current context
-	pickNum, err := ui.dataLoader.LoadCurrentPickNum()
-	if err != nil {
-		log.Printf("Warning: could not load current pick number: %v", err)
-		pickNum = 0
-	}
-	
+	// Get current team from status file (fallback)
 	currentTeam, err := ui.dataLoader.LoadCurrentTeam()
 	if err != nil {
 		log.Printf("Warning: could not load current team: %v", err)
 		currentTeam = "[Team not available]"
 	}
 	
+	// Build picked players string
+	pickedPlayersStr := fmt.Sprintf("%s", pickedPlayers)
+	if len(pickedPlayers) == 0 {
+		pickedPlayersStr = "[No players picked yet]"
+	}
+	
 	// Construct the prompt
 	prompt := fmt.Sprintf(
 		"It is pick %d of a 2025 fantasy football draft. "+
-			"This is my current team: %s. "+
+			"These players have been picked so far: %s. "+
+			"Current team info: %s. "+
 			"Output the top several players you think could help me the most along with an explanation, considering their value, upside, and drawbacks. "+
 			"Give a summary of the most important players at the end once you are finished your explanations. "+
 			"The notes for each player are separated by '---start playername---' and '---end playername---'.\n\n"+
 			"Player Notes:\n%s",
-		pickNum, currentTeam, allNotes,
+		currentPick, pickedPlayersStr, currentTeam, allNotes,
 	)
 	
 	// Ask ChatGPT and return the answer
@@ -314,32 +323,57 @@ func (ui *FantasyUI) performRefresh(manual bool) {
 
 // performRefreshInternal does the actual refresh work
 func (ui *FantasyUI) performRefreshInternal() {
-	// Try to find the latest filtered log file
-	latestLogFile, err := ui.dataLoader.FindLatestLogFile()
-	if err != nil {
-		// No filtered files found - this is normal at the start
-		log.Printf("No filtered log file found, keeping current data: %v", err)
+	// Generate filtered player list based on picked players
+	ui.mutex.RLock()
+	pickedPlayers := make(map[string]bool)
+	for _, player := range ui.pickedPlayers {
+		pickedPlayers[player] = true
+	}
+	ui.mutex.RUnlock()
+	
+	// Load all players from static CSV file
+	playerDataFiles := []string{
+		"players.csv",
+		"combined_with_depth.csv",
+		"go/combined_with_depth.csv", // fallback if running from root
+	}
+	
+	var allPlayers []Player
+	var err error
+	
+	for _, filename := range playerDataFiles {
+		if _, statErr := os.Stat(filename); statErr == nil {
+			allPlayers, err = LoadPlayers(filename)
+			if err == nil {
+				break
+			}
+		}
+	}
+	
+	if err != nil || len(allPlayers) == 0 {
+		log.Printf("Failed to load player data for refresh: %v", err)
 		return
 	}
 	
-	// Load players from the latest filtered file
-	updatedPlayers, err := LoadPlayers(latestLogFile)
-	if err != nil {
-		log.Printf("Failed to load players from %s: %v", latestLogFile, err)
-		return
+	// Filter out picked players
+	var filteredPlayers []Player
+	for _, player := range allPlayers {
+		if !pickedPlayers[player.Name] {
+			filteredPlayers = append(filteredPlayers, player)
+		}
 	}
 	
-	log.Printf("Refreshed player data from %s, loaded %d players", latestLogFile, len(updatedPlayers))
+	log.Printf("Filtered players: %d total, %d picked, %d remaining", len(allPlayers), len(ui.pickedPlayers), len(filteredPlayers))
 	
 	ui.mutex.Lock()
 	// Only update if the data actually changed
-	shouldUpdate := len(updatedPlayers) != len(ui.players)
-	if !shouldUpdate && len(updatedPlayers) > 0 && len(ui.players) > 0 {
-		shouldUpdate = updatedPlayers[0].Name != ui.players[0].Name
+	shouldUpdate := len(filteredPlayers) != len(ui.players)
+	if !shouldUpdate && len(filteredPlayers) > 0 && len(ui.players) > 0 {
+		shouldUpdate = filteredPlayers[0].Name != ui.players[0].Name
 	}
 	
 	if shouldUpdate {
-		ui.players = updatedPlayers
+		ui.players = filteredPlayers
 		ui.mutex.Unlock()
 		
 		// Refresh UI safely
@@ -384,7 +418,7 @@ func (ui *FantasyUI) updateStatusInternal() {
 	case ui.querying:
 		status = "Querying ChatGPT..."
 	default:
-		status = "Ready - Auto-refresh enabled (q: ChatGPT, r: Refresh, Esc: Quit)"
+		status = "Ready - Listening for draft updates (q: ChatGPT, r: Refresh, Esc: Quit)"
 	}
 	
 	ui.safeUIUpdate(func() {
@@ -392,16 +426,20 @@ func (ui *FantasyUI) updateStatusInternal() {
 	})
 }
 
-// startAutoRefresh starts the automatic refresh timer
-func (ui *FantasyUI) startAutoRefresh() {
-	ui.autoRefreshTicker = time.NewTicker(3 * time.Second)
-	
+// startPlayerUpdateListener listens for player updates from the HTTP server
+func (ui *FantasyUI) startPlayerUpdateListener() {
 	go func() {
-		defer ui.autoRefreshTicker.Stop()  // Ensure cleanup
-		
 		for {
 			select {
-			case <-ui.autoRefreshTicker.C:
+			case update := <-ui.playerUpdateChan:
+				log.Printf("Received player update: %d players, pick %d", len(update.PickedPlayers), update.PickNumber)
+				
+				ui.mutex.Lock()
+				ui.pickedPlayers = update.PickedPlayers
+				ui.currentPick = update.PickNumber
+				ui.mutex.Unlock()
+				
+				// Trigger a refresh to update the available players list
 				ui.mutex.Lock()
 				canRefresh := !ui.refreshing && !ui.querying
 				if canRefresh {
@@ -412,6 +450,7 @@ func (ui *FantasyUI) startAutoRefresh() {
 				if canRefresh {
 					go ui.performRefresh(false)
 				}
+				
 			case <-ui.stopChan:
 				return
 			}
@@ -419,12 +458,8 @@ func (ui *FantasyUI) startAutoRefresh() {
 	}()
 }
 
-// stopAutoRefresh stops the automatic refresh timer
-func (ui *FantasyUI) stopAutoRefresh() {
-	if ui.autoRefreshTicker != nil {
-		ui.autoRefreshTicker.Stop()
-	}
-	
+// stop stops all background goroutines
+func (ui *FantasyUI) stop() {
 	// Non-blocking send to stop channel
 	select {
 	case ui.stopChan <- true:

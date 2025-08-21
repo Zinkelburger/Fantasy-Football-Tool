@@ -82,38 +82,10 @@ func (d *DataLoader) cleanName(name string) string {
 	return strings.TrimSpace(cleaned)
 }
 
-// Returns the full path to the file with the highest (most recent) timestamp.
+// FindLatestLogFile is deprecated - keeping for backwards compatibility
+// The new system uses direct channel communication instead of file polling
 func (d *DataLoader) FindLatestLogFile() (string, error) {
-	var latestTimestamp int64 = -1
-	var latestFilteredFile string
-
-	dirEntries, err := os.ReadDir(d.logsDir)
-	if err != nil {
-		return "", fmt.Errorf("could not read logs directory '%s': %w", d.logsDir, err)
-	}
-
-	for _, entry := range dirEntries {
-		filename := entry.Name()
-		if strings.HasPrefix(filename, "filtered_") && strings.HasSuffix(filename, ".csv") {
-			timestampStr := strings.TrimSuffix(strings.TrimPrefix(filename, "filtered_"), ".csv")
-			unixTimestamp, err := strconv.ParseInt(timestampStr, 10, 64)
-			if err != nil {
-				log.Printf("Warning: could not parse timestamp from '%s', skipping", filename)
-				continue
-			}
-
-			if unixTimestamp > latestTimestamp {
-				latestTimestamp = unixTimestamp
-				latestFilteredFile = filename
-			}
-		}
-	}
-
-	if latestFilteredFile == "" {
-		return "", fmt.Errorf("no filtered_<timestamp>.csv files found in '%s'", d.logsDir)
-	}
-
-	return filepath.Join(d.logsDir, latestFilteredFile), nil
+	return "", fmt.Errorf("timestamp log files are no longer used - system now uses direct IPC")
 }
 
 // FindPlayerNoteFile finds a player's note file using direct file system access.
