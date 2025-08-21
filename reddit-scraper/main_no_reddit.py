@@ -7,7 +7,6 @@ import pathlib
 from typing import Set, Optional, List, Dict
 
 # ChatGPT API Configuration
-OPENAI_API_KEY = "yee yee"  # Replace with your actual API key
 OPENAI_MODEL = "gpt-5-mini"
 
 # Processing limits
@@ -219,7 +218,7 @@ def main():
 
     os.makedirs(out_dir_abs, exist_ok=True)
 
-    openai_client = OpenAIQuery(model=OPENAI_MODEL, api_key=OPENAI_API_KEY, verbose=True)
+    openai_client = OpenAIQuery(model=OPENAI_MODEL, verbose=True)
     all_players: list[FootballPlayer] = FootballPlayer.from_csv(
         "combined_with_depth.csv"
     )
