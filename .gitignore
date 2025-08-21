@@ -7,3 +7,4 @@ gpt_query
 reddit-scraper/raw_data
 reddit-scraper/__pycache__
 reddit-scraper/.env
+reddit-scraper/venv

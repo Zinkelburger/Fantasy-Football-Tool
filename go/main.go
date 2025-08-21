@@ -96,9 +96,16 @@ func main() {
 		log.Fatalf("Fatal error initializing GPT client: %v", err)
 	}
 
+	// 6. Start the HTTP server for browser extension communication
+	logDir := "log"
+	httpPort := 8000
+	httpServer := StartHTTPServerAsync(logDir, httpPort)
+	log.Printf("HTTP server started on port %d for browser extension communication", httpPort)
+	_ = httpServer // Avoid unused variable warning
+
 	// --- Start UI ---
 
-	// 6. Initialize and run the Fyne UI, passing the loaded data.
+	// 7. Initialize and run the Fyne UI, passing the loaded data.
 	fyneApp := app.New()
 	ui := NewFantasyUI(fyneApp, players, dataLoader, gpt)
 	ui.Show()
