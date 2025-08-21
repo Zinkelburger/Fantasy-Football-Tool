@@ -40,10 +40,10 @@ func main() {
 		"combined_with_depth.csv",
 		"go/combined_with_depth.csv", // fallback if running from root
 	}
-	
+
 	var playerCSVPath string
 	var players []Player
-	
+
 	for _, filename := range playerDataFiles {
 		if _, err := os.Stat(filename); err == nil {
 			playerCSVPath = filename
@@ -55,11 +55,11 @@ func main() {
 			log.Printf("Failed to load players from %s: %v", filename, err)
 		}
 	}
-	
+
 	if len(players) == 0 {
 		log.Fatalf("Fatal error: Could not find or load player data from any of: %v", playerDataFiles)
 	}
-	
+
 	log.Printf("Successfully loaded %d players from %s.", len(players), playerCSVPath)
 
 	// 3. Test that all players have corresponding note files.
@@ -74,7 +74,7 @@ func main() {
 		fyneApp := app.New()
 		fyneApp.SetIcon(resourceLogoPng)
 		w := fyneApp.NewWindow("Fantasy Football Tool - Error")
-		
+
 		errorText := "ERROR: Missing note files for players:\n\n"
 		for playerName, suggestion := range missingPlayers {
 			if suggestion != "" {
@@ -86,11 +86,11 @@ func main() {
 			}
 		}
 		errorText += "\nPlease ensure all player note files exist in the analysis directory before running the program."
-		
+
 		errorLabel := widget.NewLabel(errorText)
 		w.SetContent(errorLabel)
 		w.Resize(fyne.NewSize(800, 400))
-		
+
 		// Show dialog and wait for user to close it
 		w.ShowAndRun()
 		log.Printf("Application stopped due to %d missing player note files", len(missingPlayers))
@@ -104,40 +104,40 @@ func main() {
 	if err != nil {
 		log.Fatalf("Fatal error loading settings: %v", err)
 	}
-	
+
 	// Check if any LLM is configured
 	if !settings.HasValidConfig() {
 		// Show settings dialog instead of fatal error
 		fyneApp := app.New()
 		fyneApp.SetIcon(resourceLogoPng)
 		w := fyneApp.NewWindow("Fantasy Football Tool - Configuration Required")
-		
+
 		warningText := "No LLM is configured!\n\n"
 		warningText += "Please configure either:\n"
 		warningText += "• OpenAI API key, or\n"
 		warningText += "• Local LLM (Ollama)\n\n"
 		warningText += "Click the settings button (gear icon) to configure."
-		
+
 		warningLabel := widget.NewLabel(warningText)
-		
+
 		// Create a simple UI with settings button
 		llmManager, _ := NewLLMManager(settings) // May fail, that's OK
 		settingsUI := NewSettingsUI(w, settings, llmManager, nil)
 		settingsBtn := settingsUI.CreateSettingsButton()
 		settingsBtn.Text = "Open Settings"
 		settingsBtn.Resize(fyne.NewSize(120, 40))
-		
+
 		content := container.NewVBox(
 			warningLabel,
 			container.NewCenter(settingsBtn),
 		)
-		
+
 		w.SetContent(content)
 		w.Resize(fyne.NewSize(400, 200))
 		w.ShowAndRun()
 		return
 	}
-	
+
 	llmManager, err := NewLLMManager(settings)
 	if err != nil {
 		log.Fatalf("Fatal error initializing LLM manager: %v", err)
@@ -145,7 +145,7 @@ func main() {
 
 	// 6. Create communication channel between HTTP server and UI
 	playerUpdateChannel := make(chan PlayerUpdate, 10)
-	
+
 	// 7. Start the HTTP server for browser extension communication
 	statusDir := "status"
 	httpPort := 8000

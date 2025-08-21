@@ -1,11 +1,15 @@
-.PHONY: all deps build test test-verbose test-coverage clean run fmt vet
+.PHONY: all deps build test test-verbose test-coverage clean run fmt vet check watch
 
 all: test build
 
 deps:
 	go mod tidy
 
-build: deps
+# Generate bundled Fyne resources
+resource.go: logo.png
+	fyne bundle -o resource.go logo.png
+
+build: deps resource.go
 	GOOS=linux GOARCH=amd64 go build -o draft_assist .
 
 # Run all tests
@@ -38,7 +42,7 @@ vet: deps
 check: fmt vet test
 
 clean:
-	rm -f draft_assist coverage.out coverage.html
+	rm -f draft_assist coverage.out coverage.html resource.go
 
 # Development workflow - run tests on file changes (requires entr)
 watch:
