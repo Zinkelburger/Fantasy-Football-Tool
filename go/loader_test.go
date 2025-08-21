@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -100,14 +101,14 @@ func TestFindLatestLogFile(t *testing.T) {
 			t.Fatalf("Failed to create test file: %v", err)
 		}
 
-		result, err := loader.FindLatestLogFile()
-		if err != nil {
-			t.Fatalf("Unexpected error: %v", err)
+		_, err := loader.FindLatestLogFile()
+		if err == nil {
+			t.Error("Expected error about direct IPC, but got nil")
 		}
 
-		expectedPath := filepath
-		if result != expectedPath {
-			t.Errorf("Expected %q, got %q", expectedPath, result)
+		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
+		if !strings.Contains(err.Error(), expectedErrorMsg) {
+			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
 		}
 	})
 
@@ -129,14 +130,14 @@ func TestFindLatestLogFile(t *testing.T) {
 			}
 		}
 
-		result, err := loader.FindLatestLogFile()
-		if err != nil {
-			t.Fatalf("Unexpected error: %v", err)
+		_, err := loader.FindLatestLogFile()
+		if err == nil {
+			t.Error("Expected error about direct IPC, but got nil")
 		}
 
-		expectedPath := filepath.Join(logsDir, "filtered_1641081600.csv")
-		if result != expectedPath {
-			t.Errorf("Expected latest file %q, got %q", expectedPath, result)
+		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
+		if !strings.Contains(err.Error(), expectedErrorMsg) {
+			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
 		}
 	})
 
@@ -189,14 +190,14 @@ func TestFindLatestLogFile(t *testing.T) {
 			}
 		}
 
-		result, err := loader.FindLatestLogFile()
-		if err != nil {
-			t.Fatalf("Unexpected error: %v", err)
+		_, err := loader.FindLatestLogFile()
+		if err == nil {
+			t.Error("Expected error about direct IPC, but got nil")
 		}
 
-		expectedPath := filepath.Join(logsDir, validFile)
-		if result != expectedPath {
-			t.Errorf("Expected %q, got %q", expectedPath, result)
+		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
+		if !strings.Contains(err.Error(), expectedErrorMsg) {
+			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
 		}
 	})
 }
@@ -474,8 +475,24 @@ func TestBuildAllNotes(t *testing.T) {
 }
 
 func TestLoadCurrentTeam(t *testing.T) {
-	// Note: This test requires creating the status directory structure
-	// For a full test, you'd want to create a temporary status directory
+	// Create a temporary directory to test in (so we don't interfere with existing status files)
+	tempDir, err := os.MkdirTemp("", "loader_team_test_*")
+	if err != nil {
+		t.Fatalf("Failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Change to temp directory for this test
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
+	defer os.Chdir(originalDir)
+
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
+
 	loader := NewDataLoader("", "")
 
 	// Test default behavior when file doesn't exist
@@ -490,10 +507,28 @@ func TestLoadCurrentTeam(t *testing.T) {
 }
 
 func TestLoadCurrentPickNum(t *testing.T) {
+	// Create a temporary directory to test in (so we don't interfere with existing status files)
+	tempDir, err := os.MkdirTemp("", "loader_pick_test_*")
+	if err != nil {
+		t.Fatalf("Failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Change to temp directory for this test
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current directory: %v", err)
+	}
+	defer os.Chdir(originalDir)
+
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change to temp directory: %v", err)
+	}
+
 	loader := NewDataLoader("", "")
 
 	// Test behavior when file doesn't exist
-	_, err := loader.LoadCurrentPickNum()
+	_, err = loader.LoadCurrentPickNum()
 	if err == nil {
 		t.Error("LoadCurrentPickNum should return error when file doesn't exist")
 	}
