@@ -4,7 +4,8 @@ log/
 filtered_2024
 gpt_query
 2024/.env
-reddit-scraper/raw_data
+reddit-scraper/filtered_data
 reddit-scraper/__pycache__
 reddit-scraper/.env
 reddit-scraper/venv
+go/analysis/

@@ -116,14 +116,16 @@ func (ui *FantasyUI) setupUI() {
 		func() fyne.CanvasObject {
 			return widget.NewLabel("template")
 		},
-		func(id widget.ListItemID, item fyne.CanvasObject) {
+					func(id widget.ListItemID, item fyne.CanvasObject) {
 			ui.mutex.RLock()
 			defer ui.mutex.RUnlock()
 			
 			if id < len(ui.players) {
 				p := ui.players[id]
 				label := item.(*widget.Label)
-				label.SetText(fmt.Sprintf("%-4s %-20s %-5s %-3s", p.Rank, p.Name, p.Depth, p.Team))
+				// Improved formatting with better spacing and Note column
+				label.SetText(fmt.Sprintf("%-5s  %-25s  %-6s  %-4s  %-42s", 
+					p.Rank, p.Name, p.Depth, p.Team, p.Note))
 			}
 		},
 	)
@@ -149,8 +151,9 @@ func (ui *FantasyUI) setupUI() {
 		ui.settingsButton,
 	)
 	
-	// Create header for player list
-	headerLabel := widget.NewLabel(fmt.Sprintf("%-4s %-20s %-5s %-3s", "Rank", "Name", "Depth", "Team"))
+	// Create header for player list with improved spacing and Note column
+	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s  %-25s  %-6s  %-4s  %-42s", 
+		"Rank", "Name", "Depth", "Team", "Note"))
 	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
 	
 	// Create left panel (player list)
