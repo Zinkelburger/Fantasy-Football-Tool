@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"sync"
 	"time"
 
@@ -26,11 +27,23 @@ type FantasyUI struct {
 	// UI Components
 	playerList     *widget.List
 	outputText     *widget.RichText
+	teamList       *widget.List
 	statusLabel    *widget.Label
 	queryButton    *widget.Button
 	refreshButton  *widget.Button
 	settingsButton *widget.Button
 	settingsUI     *SettingsUI
+	
+	// Collapsible controls
+	llmCollapseBtn  *widget.Button
+	teamCollapseBtn *widget.Button
+	llmCollapsed    bool
+	teamCollapsed   bool
+	
+	// Container references for collapsing
+	rightVSplit     *container.Split
+	llmPanel        *fyne.Container
+	teamPanel       *fyne.Container
 	
 	// State
 	querying    bool
@@ -40,6 +53,7 @@ type FantasyUI struct {
 	notice      string
 	pickedPlayers []string  // Current list of picked players
 	currentPick   int       // Current pick number
+	teamPlayers   []Player  // Current team players
 	
 	// Concurrency
 	mutex       sync.RWMutex
@@ -67,6 +81,7 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		playerUpdateChan: playerUpdateChan,
 		pickedPlayers: make([]string, 0),
 		currentPick:   0,
+		teamPlayers:   make([]Player, 0),
 	}
 	
 	// Initialize settings UI
@@ -75,6 +90,9 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 	ui.setupUI()
 	ui.startUIUpdateHandler()
 	ui.startPlayerUpdateListener()
+	
+	// Load initial team data
+	ui.loadTeamData()
 	
 	// Show LLM warning message by default if not configured
 	if !ui.llmManager.IsConfigured() {
@@ -140,6 +158,30 @@ func (ui *FantasyUI) setupUI() {
 	ui.outputText.Scroll = container.ScrollBoth
 	ui.outputText.Wrapping = fyne.TextWrapWord
 	
+	// Create team list
+	ui.teamList = widget.NewList(
+		func() int {
+			ui.mutex.RLock()
+			defer ui.mutex.RUnlock()
+			displayData := ui.getTeamPlayerDisplayData()
+			return len(displayData)
+		},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		func(id widget.ListItemID, item fyne.CanvasObject) {
+			ui.mutex.RLock()
+			defer ui.mutex.RUnlock()
+			
+			displayData := ui.getTeamPlayerDisplayData()
+			if id < len(displayData) {
+				label := item.(*widget.Label)
+				text := displayData[id]
+				label.SetText(text)
+			}
+		},
+	)
+	
 	// Create status label
 	ui.statusLabel = widget.NewLabel("Ready - Listening for draft updates")
 	
@@ -147,6 +189,10 @@ func (ui *FantasyUI) setupUI() {
 	ui.queryButton = widget.NewButton("Query LLM (q)", ui.handleLLMQuery)
 	ui.refreshButton = widget.NewButton("Manual Refresh (r)", ui.handleManualRefresh)
 	ui.settingsButton = ui.settingsUI.CreateSettingsButton()
+	
+	// Create collapse buttons
+	ui.llmCollapseBtn = widget.NewButton("  −  ", ui.toggleLLMCollapse)
+	ui.teamCollapseBtn = widget.NewButton("  −  ", ui.toggleTeamCollapse)
 	
 	// Create button container
 	buttonContainer := container.NewHBox(
@@ -170,17 +216,55 @@ func (ui *FantasyUI) setupUI() {
 		ui.playerList, // center
 	)
 	
-	// Create right panel (output and controls)
-	rightPanel := container.NewBorder(
+	// Create LLM output panel with collapse button
+	llmHeader := container.NewBorder(
+		nil, nil, 
+		widget.NewLabel("LLM Output:"), 
+		ui.llmCollapseBtn,
+		nil,
+	)
+	ui.llmPanel = container.NewBorder(
+		llmHeader, // top
+		nil,       // bottom
+		nil,       // left
+		nil,       // right
+		container.NewScroll(ui.outputText), // center
+	)
+	
+	// Create team header with position columns
+	teamHeaderLabel := widget.NewLabel(fmt.Sprintf("%-4s  %-22s  %-4s", "Pos", "Name", "Team"))
+	teamHeaderLabel.TextStyle = fyne.TextStyle{Bold: true}
+	teamHeader := container.NewBorder(
+		nil, nil,
+		widget.NewLabel("Your Team:"),
+		ui.teamCollapseBtn,
+		nil,
+	)
+	
+	// Create team panel with header and list
+	ui.teamPanel = container.NewBorder(
+		container.NewVBox(teamHeader, teamHeaderLabel), // top
+		nil,                                           // bottom
+		nil,                                           // left
+		nil,                                           // right
+		container.NewScroll(ui.teamList),              // center
+	)
+	
+	// Create right panel as vertical split between LLM output and team
+	ui.rightVSplit = container.NewVSplit(ui.llmPanel, ui.teamPanel)
+	ui.rightVSplit.SetOffset(0.6) // 60% LLM output, 40% team
+	
+	// Create overall panel with buttons and status
+	rightPanelWithControls := container.NewBorder(
 		buttonContainer, // top
 		ui.statusLabel,  // bottom
 		nil,            // left
 		nil,            // right
-		container.NewScroll(ui.outputText), // center
+		ui.rightVSplit, // center
 	)
 	
 	// Create main split container
-	content := container.NewHSplit(leftPanel, rightPanel)
+	content := container.NewHSplit(leftPanel, rightPanelWithControls)
 	content.SetOffset(0.5) // 50/50 split
 	
 	ui.window.SetContent(content)
@@ -261,7 +345,10 @@ func (ui *FantasyUI) handleManualRefresh() {
 		ui.outputText.ParseMarkdown("")
 	})
 	
-	go ui.performRefresh(true)
+	go func() {
+		ui.performRefresh(true)
+		ui.loadTeamData() // Also refresh team data
+	}()
 }
 
 // performLLMQuery runs the LLM query in a goroutine
@@ -561,4 +648,147 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 // Show displays the UI window
 func (ui *FantasyUI) Show() {
 	ui.window.Show()
+}
+
+// sortTeamPlayersByPosition sorts team players by position groups and within each position
+func (ui *FantasyUI) sortTeamPlayersByPosition() []Player {
+	if len(ui.teamPlayers) == 0 {
+		return []Player{}
+	}
+	
+	// Position priority order
+	positionOrder := map[string]int{
+		"QB":  1,
+		"RB":  2, 
+		"WR":  3,
+		"TE":  4,
+		"K":   5,
+		"DST": 6,
+		"DEF": 6, // Alternative defense notation
+	}
+	
+	sorted := make([]Player, len(ui.teamPlayers))
+	copy(sorted, ui.teamPlayers)
+	
+	sort.Slice(sorted, func(i, j int) bool {
+		posI := positionOrder[sorted[i].Pos]
+		posJ := positionOrder[sorted[j].Pos]
+		
+		// If positions are different, sort by position priority
+		if posI != posJ {
+			return posI < posJ
+		}
+		
+		// Within same position, sort by rank (lower rank number = better)
+		return sorted[i].rankNum < sorted[j].rankNum
+	})
+	
+	return sorted
+}
+
+// formatTeamPlayerForDisplay formats a team player for display in the list
+func (ui *FantasyUI) formatTeamPlayerForDisplay(player Player) string {
+	return fmt.Sprintf("%-4s  %-22s  %-4s", player.Pos, player.Name, player.Team)
+}
+
+// getTeamPlayerDisplayData returns formatted team data without position headers
+func (ui *FantasyUI) getTeamPlayerDisplayData() []string {
+	sortedPlayers := ui.sortTeamPlayersByPosition()
+	if len(sortedPlayers) == 0 {
+		return []string{"No players on your team yet"}
+	}
+	
+	var displayData []string
+	
+	for _, player := range sortedPlayers {
+		displayData = append(displayData, ui.formatTeamPlayerForDisplay(player))
+	}
+	
+	return displayData
+}
+
+// toggleLLMCollapse toggles the LLM output panel collapsed state
+func (ui *FantasyUI) toggleLLMCollapse() {
+	ui.mutex.Lock()
+	// Don't allow collapsing if team panel is already collapsed
+	if ui.teamCollapsed && !ui.llmCollapsed {
+		ui.mutex.Unlock()
+		return
+	}
+	
+	ui.llmCollapsed = !ui.llmCollapsed
+	collapsed := ui.llmCollapsed
+	
+	// If we're collapsing LLM and team was collapsed, expand team
+	if collapsed && ui.teamCollapsed {
+		ui.teamCollapsed = false
+	}
+	ui.mutex.Unlock()
+	
+	ui.safeUIUpdate(func() {
+		if collapsed {
+			// Collapse LLM panel by setting offset to nearly 0 (give team panel most space)
+			ui.rightVSplit.SetOffset(0.05)
+			ui.llmCollapseBtn.SetText("  +  ")
+			// Also ensure team panel is expanded
+			ui.teamCollapseBtn.SetText("  −  ")
+		} else {
+			// Restore normal split
+			ui.rightVSplit.SetOffset(0.6)
+			ui.llmCollapseBtn.SetText("  −  ")
+		}
+	})
+}
+
+// toggleTeamCollapse toggles the team panel collapsed state  
+func (ui *FantasyUI) toggleTeamCollapse() {
+	ui.mutex.Lock()
+	// Don't allow collapsing if LLM panel is already collapsed
+	if ui.llmCollapsed && !ui.teamCollapsed {
+		ui.mutex.Unlock()
+		return
+	}
+	
+	ui.teamCollapsed = !ui.teamCollapsed
+	collapsed := ui.teamCollapsed
+	
+	// If we're collapsing team and LLM was collapsed, expand LLM
+	if collapsed && ui.llmCollapsed {
+		ui.llmCollapsed = false
+	}
+	ui.mutex.Unlock()
+	
+	ui.safeUIUpdate(func() {
+		if collapsed {
+			// Collapse team panel by setting offset to nearly 1 (give LLM panel most space)
+			ui.rightVSplit.SetOffset(0.95)
+			ui.teamCollapseBtn.SetText("  +  ")
+			// Also ensure LLM panel is expanded
+			ui.llmCollapseBtn.SetText("  −  ")
+		} else {
+			// Restore normal split
+			ui.rightVSplit.SetOffset(0.6)
+			ui.teamCollapseBtn.SetText("  −  ")
+		}
+	})
+}
+
+// loadTeamData loads the current team data from the file
+func (ui *FantasyUI) loadTeamData() {
+	teamPlayers, err := ui.dataLoader.LoadCurrentTeamPlayers()
+	if err != nil {
+		log.Printf("Warning: could not load team players: %v", err)
+		teamPlayers = []Player{} // Use empty slice on error
+	}
+	
+	ui.mutex.Lock()
+	ui.teamPlayers = teamPlayers
+	ui.mutex.Unlock()
+	
+	// Refresh team list
+	ui.safeUIUpdate(func() {
+		ui.teamList.Refresh()
+	})
+	
+	log.Printf("Loaded %d team players", len(teamPlayers))
 }

@@ -68,7 +68,8 @@ func LoadSettings() (*Settings, error) {
 		case "OPENAI_API_KEY":
 			settings.OpenAIAPIKey = value
 		case "USE_LOCAL_LLM":
-			settings.UseLocalLLM = strings.ToLower(value) == "true"
+			lowerValue := strings.ToLower(value)
+			settings.UseLocalLLM = lowerValue == "true" || lowerValue == "1"
 		case "OLLAMA_MODEL":
 			settings.OllamaModel = value
 		case "OLLAMA_ENDPOINT":

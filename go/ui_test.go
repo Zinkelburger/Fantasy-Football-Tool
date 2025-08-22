@@ -352,12 +352,12 @@ func TestHandleSettingsUpdate(t *testing.T) {
 	ui, _, cleanup := createTestUI(t)
 	defer cleanup()
 
-	// Create new settings
+	// Create new settings with OpenAI (doesn't require external service)
 	newSettings := &Settings{
 		OpenAIAPIKey:   "test-key",
-		UseLocalLLM:    true,
-		OllamaModel:    "test-model",
-		OllamaEndpoint: "http://test:11434",
+		UseLocalLLM:    false,
+		OllamaModel:    "",
+		OllamaEndpoint: "",
 	}
 
 	err := ui.handleSettingsUpdate(newSettings)
