@@ -22,6 +22,8 @@ from typing import Set, Tuple, Optional, List, Dict, NamedTuple
 import json
 from dataclasses import dataclass
 from enum import Enum
+from bs4 import BeautifulSoup
+import glob
 
 # Configuration
 SUFFIXES = ["Jr.", "Sr.", "II", "III", "IV", "V"]
@@ -539,7 +541,8 @@ def save_processing_results(
     player: FootballPlayer, 
     posts_results: List[Dict], 
     raw_dir: str, 
-    filtered_dir: str
+    filtered_dir: str,
+    ff_hound_mentions: List[str] = None
 ) -> Dict[str, any]:
     """Save both raw and filtered results with confidence-based separation."""
     
@@ -610,39 +613,35 @@ def save_processing_results(
             processing_stats['total_original_size'] - processing_stats['total_filtered_size']
         ) / processing_stats['total_original_size']
     
-    # Save filtered content with clear confidence separation for GPT
+    # Combine Reddit content with ff-hound mentions
+    combined_content = combine_reddit_and_ff_hound_content(
+        {
+            'high_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['high_confidence']) if content_by_confidence['high_confidence'] else '',
+            'medium_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['medium_confidence']) if content_by_confidence['medium_confidence'] else '',
+            'low_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['low_confidence']) if content_by_confidence['low_confidence'] else ''
+        },
+        ff_hound_mentions or [],
+        player.player_name
+    )
+    
+    # Save filtered content with simplified structure (only high confidence + ff-hound)
     filtered_file = os.path.join(filtered_dir, f"{player.slug}_filtered_discussion.txt")
     
     with open(filtered_file, "w", encoding="utf-8") as f:
-        f.write(f"REDDIT DISCUSSION ANALYSIS FOR {player.player_name.upper()}\n")
+        f.write(f"FANTASY FOOTBALL ANALYSIS FOR {player.player_name.upper()}\n")
         f.write("=" * 80 + "\n\n")
         
-        # Section 1: High Confidence Matches (Full name, nickname matches)
-        if content_by_confidence['high_confidence']:
-            f.write("SECTION 1: HIGH CONFIDENCE MATCHES\n")
-            f.write("(Full name, nickname, or clear variations matched)\n")
-            f.write("-" * 60 + "\n\n")
-            f.write('\n\n' + '='*80 + '\n\n'.join(content_by_confidence['high_confidence']))
+        if combined_content['high_confidence']:
+            f.write("--- HIGH CONFIDENCE SECTION ---\n\n")
+            f.write(combined_content['high_confidence'])
             f.write("\n\n")
-        
-        # Section 2: Medium Confidence Matches (Last name with football context)
-        if content_by_confidence['medium_confidence']:
-            f.write("SECTION 2: MEDIUM CONFIDENCE MATCHES\n")
-            f.write("(Last name matches with football context - potentially shared with other players)\n")
-            f.write("-" * 60 + "\n\n")
-            f.write('\n\n' + '='*80 + '\n\n'.join(content_by_confidence['medium_confidence']))
-            f.write("\n\n")
-        
-        # Section 3: Low Confidence Matches (Common names, limited context)
-        if content_by_confidence['low_confidence']:
-            f.write("SECTION 3: LOW CONFIDENCE MATCHES\n")
-            f.write("(Common last names or limited context - likely false positives)\n")
-            f.write("-" * 60 + "\n\n")
-            f.write('\n\n' + '='*80 + '\n\n'.join(content_by_confidence['low_confidence']))
-            f.write("\n\n")
-        
-        if not any(content_by_confidence.values()):
+        else:
             f.write(f"No relevant discussion found for {player.player_name}")
+        
+        # Add metadata about ff-hound mentions
+        if ff_hound_mentions:
+            f.write(f"\n\n--- PROCESSING METADATA ---\n")
+            f.write(f"FF Hound mentions found: {len(ff_hound_mentions)}\n")
     
     # Save processing metadata
     metadata_file = os.path.join(filtered_dir, f"{player.slug}_processing_metadata.json")
@@ -684,15 +683,160 @@ def get_processed_players(filtered_dir: str) -> Set[str]:
     return processed
 
 
+def extract_ff_hound_player_mentions(ff_hound_dir: str, player: FootballPlayer) -> List[str]:
+    """
+    Extract player mentions from ff-hound HTML files.
+    
+    Args:
+        ff_hound_dir: Directory containing ff-hound HTML files
+        player: FootballPlayer to search for
+        
+    Returns:
+        List of text snippets containing player mentions
+    """
+    mentions = []
+    
+    # Get all HTML files in the ff-hound directory
+    html_files = glob.glob(os.path.join(ff_hound_dir, "*.html"))
+    
+    if not html_files:
+        return mentions
+    
+    # Create name variations for searching
+    search_terms = generate_player_search_terms(player)
+    
+    for html_file in html_files:
+        try:
+            with open(html_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Parse HTML with BeautifulSoup
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # Find all <p> tags that contain <strong> elements
+            paragraph_tags = soup.find_all('p')
+            
+            for p_tag in paragraph_tags:
+                strong_tags = p_tag.find_all('strong')
+                
+                if not strong_tags:
+                    continue
+                
+                # Check if any strong tag contains our player name
+                p_text = p_tag.get_text()
+                player_mentioned = False
+                
+                for term_type, search_term in search_terms.items():
+                    if not search_term:
+                        continue
+                    
+                    # Normalize both the paragraph text and search term for comparison
+                    normalized_p_text = normalize_name_for_matching(p_text)
+                    normalized_search = normalize_name_for_matching(search_term)
+                    
+                    # Check for full name or nickname matches in strong tags
+                    if term_type in ['full_name', 'nickname', 'full_name_expanded', 'first_middle_last']:
+                        for strong_tag in strong_tags:
+                            strong_text = normalize_name_for_matching(strong_tag.get_text())
+                            if normalized_search in strong_text or strong_text in normalized_search:
+                                player_mentioned = True
+                                break
+                    
+                    # Also check if the search term appears anywhere in the paragraph
+                    if normalized_search in normalized_p_text:
+                        player_mentioned = True
+                        break
+                
+                if player_mentioned:
+                    # Clean up the text and add it to mentions
+                    clean_text = p_tag.get_text().strip()
+                    if clean_text and len(clean_text) > 20:  # Filter out very short mentions
+                        # Get the parent li element if it exists for more context
+                        li_parent = p_tag.find_parent('li')
+                        if li_parent:
+                            context_text = li_parent.get_text().strip()
+                            if context_text and context_text != clean_text:
+                                mentions.append(context_text)
+                            else:
+                                mentions.append(clean_text)
+                        else:
+                            mentions.append(clean_text)
+        
+        except Exception as e:
+            print(f"Error processing ff-hound file {html_file}: {e}")
+            continue
+    
+    return mentions
+
+
+def combine_reddit_and_ff_hound_content(
+    reddit_content_by_confidence: Dict[str, str],
+    ff_hound_mentions: List[str],
+    player_name: str
+) -> Dict[str, str]:
+    """
+    Combine Reddit high-confidence content with ff-hound mentions.
+    Remove medium confidence and simplify the output.
+    
+    Args:
+        reddit_content_by_confidence: Dict with Reddit content by confidence level
+        ff_hound_mentions: List of ff-hound mentions for the player
+        player_name: Name of the player
+        
+    Returns:
+        Dict with combined content for batch processing
+    """
+    combined_content = {}
+    
+    # Start with high confidence Reddit content
+    high_conf_reddit = reddit_content_by_confidence.get('high_confidence', '')
+    
+    # Format ff-hound content
+    ff_hound_content = ""
+    if ff_hound_mentions:
+        ff_hound_content = f"\n\n--- FF HOUND EXPERT ANALYSIS ---\n\n"
+        for i, mention in enumerate(ff_hound_mentions, 1):
+            ff_hound_content += f"{i}. {mention}\n\n"
+    
+    # Combine high confidence Reddit + ff-hound
+    if high_conf_reddit or ff_hound_content:
+        combined_high_confidence = ""
+        
+        if high_conf_reddit:
+            combined_high_confidence += f"=== HIGH CONFIDENCE REDDIT DISCUSSION ===\n{high_conf_reddit}"
+        
+        if ff_hound_content:
+            combined_high_confidence += ff_hound_content
+        
+        combined_content['high_confidence'] = combined_high_confidence
+    else:
+        combined_content['high_confidence'] = ''
+    
+    # Remove medium and low confidence sections entirely
+    combined_content['medium_confidence'] = ''
+    combined_content['low_confidence'] = ''
+    
+    return combined_content
+
+
 def main():
-    """Main execution function with dynamic duplicate detection."""
+    """Main execution function with dynamic duplicate detection and ff-hound integration."""
     # Setup directories
     script_dir = pathlib.Path(__file__).resolve().parent
     raw_dir_abs = str((script_dir / RAW_DIR).resolve())
     filtered_dir_abs = str((script_dir / FILTERED_DIR).resolve())
+    ff_hound_dir_abs = str((script_dir / "ff-hound").resolve())
     
     for directory in [raw_dir_abs, filtered_dir_abs]:
         os.makedirs(directory, exist_ok=True)
+    
+    # Check if ff-hound directory exists
+    ff_hound_available = os.path.isdir(ff_hound_dir_abs)
+    if ff_hound_available:
+        print(f"✅ FF Hound data found at: {ff_hound_dir_abs}")
+    else:
+        print(f"⚠️  FF Hound directory not found at: {ff_hound_dir_abs}")
+        print("   Continuing with Reddit-only processing...")
     
     # Initialize clients and load player data
     reddit_client = RedditQuery()
@@ -718,6 +862,13 @@ def main():
     for i, player in enumerate(remaining_players):
         print(f"\n=== Processing {player.player_name} ({i+1}/{len(remaining_players)}) ===")
         
+        # Extract ff-hound mentions for this player
+        ff_hound_mentions = []
+        if ff_hound_available:
+            print("🔍 Searching ff-hound data...")
+            ff_hound_mentions = extract_ff_hound_player_mentions(ff_hound_dir_abs, player)
+            print(f"📝 Found {len(ff_hound_mentions)} ff-hound mentions")
+        
         # Generate search terms and regex patterns with robust matching
         search_terms = generate_player_search_terms(player)
         pattern_groups = create_player_regex_patterns(search_terms, duplicate_last_names)
@@ -731,15 +882,16 @@ def main():
         
         print(f"Found {len(recent_posts)} recent posts")
         
-        if not recent_posts:
-            print(f"No recent posts found for {player.player_name}")
+        # If no Reddit posts but we have ff-hound mentions, still process
+        if not recent_posts and not ff_hound_mentions:
+            print(f"No recent posts or ff-hound mentions found for {player.player_name}")
             # Create empty filtered file to mark as processed
             empty_file = os.path.join(filtered_dir_abs, f"{player.slug}_filtered_discussion.txt")
             with open(empty_file, "w", encoding="utf-8") as f:
                 f.write(f"No recent discussion found for {player.player_name}")
             continue
         
-        # Process posts with confidence-based filtering
+        # Process Reddit posts with confidence-based filtering
         posts_results = []
         total_compression_saved = 0
         
@@ -756,8 +908,8 @@ def main():
             # Rate limiting
             time.sleep(0.3)
         
-        # Save results with confidence-based separation
-        processing_stats = save_processing_results(player, posts_results, raw_dir_abs, filtered_dir_abs)
+        # Save results with confidence-based separation and ff-hound integration
+        processing_stats = save_processing_results(player, posts_results, raw_dir_abs, filtered_dir_abs, ff_hound_mentions)
         
         # Report efficiency gains with confidence breakdown
         if processing_stats['total_original_size'] > 0:
