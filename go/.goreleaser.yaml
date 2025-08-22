@@ -1,0 +1,168 @@
+project_name: fantasy-football-tool
+
+before:
+  hooks:
+    # Generate Fyne resources before building
+    - fyne bundle -o resource.go logo.png
+    - fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+    - go mod tidy
+
+builds:
+  - id: fantasy-football-tool
+    main: .
+    binary: fantasy-football-tool
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    # Cross-compilation disabled due to CGO/Fyne complexity
+    # Use native builds on each platform for Windows/macOS
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -a
+      - -installsuffix
+      - cgo
+
+archives:
+  - id: default
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: >-
+      {{ .ProjectName }}-
+      {{- title .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      # Include the analysis directory and CSV file
+      - analysis/**
+      - players.csv
+      - status/
+      - README.md
+
+nfpms:
+  - id: fantasy-football-tool-deb
+    package_name: fantasy-football-tool
+    vendor: Fantasy Football Tool
+    homepage: https://github.com/yourusername/fantasy-football-tool
+    maintainer: Your Name <your.email@example.com>
+    description: |-
+      A comprehensive fantasy football draft assistant tool with AI analysis.
+      Includes player analysis, depth charts, and real-time draft tracking.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    section: utils
+    priority: optional
+    file_name_template: >-
+      {{ .ProjectName }}-
+      {{- .Version }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
+    contents:
+      # Include analysis files in /usr/share/fantasy-football-tool/
+      - src: analysis/
+        dst: /usr/share/fantasy-football-tool/analysis/
+        type: tree
+      - src: players.csv
+        dst: /usr/share/fantasy-football-tool/players.csv
+      - src: status/
+        dst: /usr/share/fantasy-football-tool/status/
+        type: tree
+      # Create config directory
+      - dst: /etc/fantasy-football-tool
+        type: dir
+        file_info:
+          mode: 0755
+      # Create user data directory
+      - dst: /var/lib/fantasy-football-tool
+        type: dir
+        file_info:
+          mode: 0755
+    # Scripts disabled for now due to formatting issues
+    # scripts:
+    #   postinstall: echo "Fantasy Football Tool installed successfully!"
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^chore:'
+      - '^style:'
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: 'Bug fixes'
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: 'Performance improvements'
+      regexp: '^.*?perf(\(.+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
+
+release:
+  github:
+    owner: yourusername  # Replace with your GitHub username
+    name: fantasy-football-tool  # Replace with your repo name
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Fantasy Football Tool {{ .Tag }}
+    
+    Welcome to another release of Fantasy Football Tool! This release includes the analysis files and data you need to make informed draft decisions.
+  footer: |
+    ### Installation
+    
+    #### Quick Start (Linux/macOS)
+    ```bash
+    # Download and extract
+    curl -L https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Os }}-{{ .Arch }}.tar.gz | tar xz
+    cd fantasy-football-tool-{{ .Os }}-{{ .Arch }}
+    ./fantasy-football-tool
+    ```
+    
+    #### Package Installation (Linux)
+    ```bash
+    # Debian/Ubuntu
+    wget https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Version }}-x86_64.deb
+    sudo dpkg -i fantasy-football-tool-{{ .Version }}-x86_64.deb
+    
+    # RHEL/Fedora/CentOS
+    wget https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Version }}-x86_64.rpm
+    sudo rpm -i fantasy-football-tool-{{ .Version }}-x86_64.rpm
+    ```
+  name_template: "Fantasy Football Tool {{.ProjectName}} {{.Tag}}"
+
+# Git configuration for releases
+git:
+  ignore_tags:
+    - "{{ .Env.IGNORE_TAG }}"
+
+# Environment validation
+env:
+  - CGO_ENABLED=1

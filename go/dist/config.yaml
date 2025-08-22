@@ -1,0 +1,208 @@
+project_name: fantasy-football-tool
+env:
+  - CGO_ENABLED=1
+release:
+  github:
+    owner: yourusername
+    name: fantasy-football-tool
+  prerelease: auto
+  name_template: Fantasy Football Tool {{.ProjectName}} {{.Tag}}
+  header: |
+    ## Fantasy Football Tool {{ .Tag }}
+
+    Welcome to another release of Fantasy Football Tool! This release includes the analysis files and data you need to make informed draft decisions.
+  footer: |
+    ### Installation
+
+    #### Quick Start (Linux/macOS)
+    ```bash
+    # Download and extract
+    curl -L https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Os }}-{{ .Arch }}.tar.gz | tar xz
+    cd fantasy-football-tool-{{ .Os }}-{{ .Arch }}
+    ./fantasy-football-tool
+    ```
+
+    #### Package Installation (Linux)
+    ```bash
+    # Debian/Ubuntu
+    wget https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Version }}-x86_64.deb
+    sudo dpkg -i fantasy-football-tool-{{ .Version }}-x86_64.deb
+
+    # RHEL/Fedora/CentOS
+    wget https://github.com/yourusername/fantasy-football-tool/releases/download/{{ .Tag }}/fantasy-football-tool-{{ .Version }}-x86_64.rpm
+    sudo rpm -i fantasy-football-tool-{{ .Version }}-x86_64.rpm
+    ```
+  mode: replace
+builds:
+  - id: fantasy-football-tool
+    goos:
+      - linux
+    goarch:
+      - amd64
+    goarm:
+      - "6"
+    gomips:
+      - hardfloat
+    goamd64:
+      - v1
+    targets:
+      - linux_amd64_v1
+    dir: .
+    main: .
+    binary: fantasy-football-tool
+    builder: go
+    gobinary: go
+    command: build
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -a
+      - -installsuffix
+      - cgo
+    env:
+      - CGO_ENABLED=1
+archives:
+  - id: default
+    name_template: '{{ .ProjectName }}- {{- title .Os }}- {{- if eq .Arch "amd64" }}x86_64 {{- else if eq .Arch "386" }}i386 {{- else }}{{ .Arch }}{{ end }} {{- if .Arm }}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - src: analysis/**
+      - src: players.csv
+      - src: status/
+      - src: README.md
+nfpms:
+  - file_name_template: '{{ .ProjectName }}- {{- .Version }}- {{- if eq .Arch "amd64" }}x86_64 {{- else }}{{ .Arch }}{{ end }}'
+    package_name: fantasy-football-tool
+    contents:
+      - src: analysis/
+        dst: /usr/share/fantasy-football-tool/analysis/
+        type: tree
+      - src: players.csv
+        dst: /usr/share/fantasy-football-tool/players.csv
+      - src: status/
+        dst: /usr/share/fantasy-football-tool/status/
+        type: tree
+      - dst: /etc/fantasy-football-tool
+        type: dir
+        file_info:
+          mode: 493
+      - dst: /var/lib/fantasy-football-tool
+        type: dir
+        file_info:
+          mode: 493
+    id: fantasy-football-tool-deb
+    formats:
+      - deb
+      - rpm
+    section: utils
+    priority: optional
+    vendor: Fantasy Football Tool
+    homepage: https://github.com/yourusername/fantasy-football-tool
+    maintainer: Your Name <your.email@example.com>
+    description: |-
+      A comprehensive fantasy football draft assistant tool with AI analysis.
+      Includes player analysis, depth charts, and real-time draft tracking.
+    license: MIT
+    bindir: /usr/bin
+    libdirs:
+      header: /usr/include
+      carchive: /usr/lib
+      cshared: /usr/lib
+snapshot:
+  name_template: '{{ incpatch .Version }}-next'
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+changelog:
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^chore:'
+      - '^style:'
+  sort: asc
+  use: github
+  format: '{{ .SHA }}: {{ .Message }} ({{ with .AuthorUsername }}@{{ . }}{{ else }}{{ .AuthorName }} <{{ .AuthorEmail }}>{{ end }})'
+  groups:
+    - title: Features
+      regexp: ^.*?feat(\(.+\))??!?:.+$
+    - title: Bug fixes
+      regexp: ^.*?fix(\(.+\))??!?:.+$
+      order: 1
+    - title: Performance improvements
+      regexp: ^.*?perf(\(.+\))??!?:.+$
+      order: 2
+    - title: Others
+      order: 999
+dist: dist
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+  gitlab_token: ~/.config/goreleaser/gitlab_token
+  gitea_token: ~/.config/goreleaser/gitea_token
+before:
+  hooks:
+    - fyne bundle -o resource.go logo.png
+    - fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+    - go mod tidy
+source:
+  name_template: '{{ .ProjectName }}-{{ .Version }}'
+  format: tar.gz
+gomod:
+  gobinary: go
+announce:
+  twitter:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+  mastodon:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    server: ""
+  reddit:
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    url_template: '{{ .ReleaseURL }}'
+  slack:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    username: GoReleaser
+  discord:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    author: GoReleaser
+    color: "3888754"
+    icon_url: https://goreleaser.com/static/avatar.png
+  teams:
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    color: '#2D313E'
+    icon_url: https://goreleaser.com/static/avatar.png
+  smtp:
+    subject_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    body_template: 'You can view details from: {{ .ReleaseURL }}'
+  mattermost:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+    title_template: '{{ .ProjectName }} {{ .Tag }} is out!'
+    username: GoReleaser
+  linkedin:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+  telegram:
+    message_template: '{{ mdv2escape .ProjectName }} {{ mdv2escape .Tag }} is out{{ mdv2escape "!" }} Check it out at {{ mdv2escape .ReleaseURL }}'
+    parse_mode: MarkdownV2
+  webhook:
+    message_template: '{ "message": "{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}"}'
+    content_type: application/json; charset=utf-8
+  opencollective:
+    title_template: '{{ .Tag }}'
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out!<br/>Check it out at <a href="{{ .ReleaseURL }}">{{ .ReleaseURL }}</a>'
+  bluesky:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .ReleaseURL }}'
+git:
+  tag_sort: -version:refname
+  ignore_tags:
+    - '{{ .Env.IGNORE_TAG }}'
+github_urls:
+  download: https://github.com
+gitlab_urls:
+  download: https://gitlab.com
