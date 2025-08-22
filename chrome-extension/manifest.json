@@ -1,25 +1,30 @@
 {
-    "manifest_version": 2,
-    "name": "Cross-Browser Player Name Extractor",
-    "version": "1.0",
-    "description": "Extracts player names and sends them to a Python server.",
-    "permissions": ["activeTab", "webRequest", "*://localhost/*"],
-    "background": {
-      "scripts": ["background.js"],
-      "persistent": false
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"],
-        "run_at": "document_idle"
-      }
-    ],
-    "browser_specific_settings": {
-      "gecko": {
-        "id": "your-extension@example.com",
-        "strict_min_version": "48.0"
-      }
+  "manifest_version": 3,
+  "name": "Draft Assistant: Player Extractor",
+  "version": "1.0",
+  "description": "Extracts player names and sends them to a local Python server. Open source at https://github.com/Zinkelburger/Fantasy-Football-Tool",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png"
     }
-  }
-  
+  },
+
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["https://fantasy.espn.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "host_permissions": [
+    "http://localhost/*"
+  ]
+}
