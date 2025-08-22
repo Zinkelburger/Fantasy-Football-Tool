@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -80,127 +79,7 @@ func TestCleanName(t *testing.T) {
 	}
 }
 
-func TestFindLatestLogFile(t *testing.T) {
-	notesDir, logsDir, cleanup := setupTestDir(t)
-	defer cleanup()
 
-	loader := NewDataLoader(notesDir, logsDir)
-
-	t.Run("NoFilesFound", func(t *testing.T) {
-		_, err := loader.FindLatestLogFile()
-		if err == nil {
-			t.Error("Expected error when no filtered files exist")
-		}
-	})
-
-	t.Run("SingleFile", func(t *testing.T) {
-		// Create a single filtered file
-		filename := "filtered_1640995200.csv" // 2022-01-01 00:00:00 UTC
-		filepath := filepath.Join(logsDir, filename)
-		if err := os.WriteFile(filepath, []byte("test"), 0644); err != nil {
-			t.Fatalf("Failed to create test file: %v", err)
-		}
-
-		_, err := loader.FindLatestLogFile()
-		if err == nil {
-			t.Error("Expected error about direct IPC, but got nil")
-		}
-
-		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
-		if !strings.Contains(err.Error(), expectedErrorMsg) {
-			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
-		}
-	})
-
-	t.Run("MultipleFiles", func(t *testing.T) {
-		// Create multiple filtered files with different timestamps
-		files := []struct {
-			name      string
-			timestamp int64
-		}{
-			{"filtered_1640995200.csv", 1640995200}, // 2022-01-01
-			{"filtered_1641081600.csv", 1641081600}, // 2022-01-02 (latest)
-			{"filtered_1640908800.csv", 1640908800}, // 2021-12-31
-		}
-
-		for _, f := range files {
-			filepath := filepath.Join(logsDir, f.name)
-			if err := os.WriteFile(filepath, []byte("test"), 0644); err != nil {
-				t.Fatalf("Failed to create test file %s: %v", f.name, err)
-			}
-		}
-
-		_, err := loader.FindLatestLogFile()
-		if err == nil {
-			t.Error("Expected error about direct IPC, but got nil")
-		}
-
-		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
-		if !strings.Contains(err.Error(), expectedErrorMsg) {
-			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
-		}
-	})
-
-	t.Run("InvalidTimestamp", func(t *testing.T) {
-		// Clean up previous test files
-		os.RemoveAll(logsDir)
-		os.MkdirAll(logsDir, 0755)
-
-		// Create files with invalid timestamps
-		invalidFiles := []string{
-			"filtered_invalid.csv",
-			"filtered_abc123.csv",
-			"filtered_.csv",
-		}
-
-		for _, filename := range invalidFiles {
-			filepath := filepath.Join(logsDir, filename)
-			if err := os.WriteFile(filepath, []byte("test"), 0644); err != nil {
-				t.Fatalf("Failed to create test file %s: %v", filename, err)
-			}
-		}
-
-		_, err := loader.FindLatestLogFile()
-		if err == nil {
-			t.Error("Expected error when no valid timestamp files exist")
-		}
-	})
-
-	t.Run("MixedValidInvalid", func(t *testing.T) {
-		// Clean up and create mix of valid and invalid files
-		os.RemoveAll(logsDir)
-		os.MkdirAll(logsDir, 0755)
-
-		// Valid file
-		validFile := "filtered_1640995200.csv"
-		if err := os.WriteFile(filepath.Join(logsDir, validFile), []byte("test"), 0644); err != nil {
-			t.Fatalf("Failed to create valid test file: %v", err)
-		}
-
-		// Invalid files
-		invalidFiles := []string{
-			"filtered_invalid.csv",
-			"not_filtered_1640995200.csv",
-			"filtered_1640995200.txt",
-		}
-
-		for _, filename := range invalidFiles {
-			if err := os.WriteFile(filepath.Join(logsDir, filename), []byte("test"), 0644); err != nil {
-				t.Fatalf("Failed to create invalid test file %s: %v", filename, err)
-			}
-		}
-
-		_, err := loader.FindLatestLogFile()
-		if err == nil {
-			t.Error("Expected error about direct IPC, but got nil")
-		}
-
-		expectedErrorMsg := "timestamp log files are no longer used - system now uses direct IPC"
-		if !strings.Contains(err.Error(), expectedErrorMsg) {
-			t.Errorf("Expected error message containing %q, got %q", expectedErrorMsg, err.Error())
-		}
-	})
-}
 
 func TestTestAvailableNotes(t *testing.T) {
 	notesDir, logsDir, cleanup := setupTestDir(t)

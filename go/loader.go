@@ -82,11 +82,7 @@ func (d *DataLoader) cleanName(name string) string {
 	return strings.TrimSpace(cleaned)
 }
 
-// FindLatestLogFile is deprecated - keeping for backwards compatibility
-// The new system uses direct channel communication instead of file polling
-func (d *DataLoader) FindLatestLogFile() (string, error) {
-	return "", fmt.Errorf("timestamp log files are no longer used - system now uses direct IPC")
-}
+
 
 // FindPlayerNoteFile finds a player's note file using direct file system access.
 // This is much simpler since we only need exact matches.
