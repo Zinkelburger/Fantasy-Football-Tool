@@ -9,7 +9,11 @@ deps:
 resource.go: logo.png
 	fyne bundle -o resource.go logo.png
 
-build: deps resource.go
+# Generate bundled font resource
+font_resource.go: font/JetBrainsMonoNL-Regular.ttf
+	fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+
+build: deps resource.go font_resource.go
 	GOOS=linux GOARCH=amd64 go build -o draft_assist .
 
 # Run all tests
@@ -42,7 +46,7 @@ vet: deps
 check: fmt vet test
 
 clean:
-	rm -f draft_assist coverage.out coverage.html resource.go
+	rm -f draft_assist coverage.out coverage.html resource.go font_resource.go
 
 # Development workflow - run tests on file changes (requires entr)
 watch:

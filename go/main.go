@@ -158,6 +158,9 @@ func main() {
 	// 8. Initialize and run the Fyne UI, passing the loaded data and update channel.
 	fyneApp := app.New()
 	fyneApp.SetIcon(resourceLogoPng)
+	
+	// Set custom font for the app
+	fyneApp.Settings().SetTheme(&customTheme{})
 	ui := NewFantasyUI(fyneApp, players, dataLoader, llmManager, settings, playerUpdateChannel)
 	ui.Show()
 	fyneApp.Run()
