@@ -77,6 +77,18 @@ def save_new_player_file(new_names):
 
 # HTTP request handler class
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def _set_cors_headers(self):
+        """Set CORS headers for cross-origin requests"""
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+    
+    def do_OPTIONS(self):
+        """Handle CORS preflight requests"""
+        self.send_response(200)
+        self._set_cors_headers()
+        self.end_headers()
+    
     def do_POST(self):
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
@@ -99,6 +111,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         # Send a response back to the client
         self.send_response(200)
         self.send_header("Content-type", "application/json")
+        self._set_cors_headers()
         self.end_headers()
         response = {"status": "success"}
         self.wfile.write(json.dumps(response).encode("utf-8"))

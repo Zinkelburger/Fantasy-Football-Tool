@@ -144,7 +144,7 @@ func main() {
 	}
 
 	// 6. Create communication channel between HTTP server and UI
-	playerUpdateChannel := make(chan PlayerUpdate, 10)
+	playerUpdateChannel := make(chan PlayerUpdate, 1000)
 
 	// 7. Start the HTTP server for browser extension communication
 	statusDir := "status"
