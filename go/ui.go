@@ -76,6 +76,11 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 	ui.startUIUpdateHandler()
 	ui.startPlayerUpdateListener()
 	
+	// Show LLM warning message by default if not configured
+	if !ui.llmManager.IsConfigured() {
+		ui.showLLMNotConfiguredMessage()
+	}
+	
 	return ui
 }
 
@@ -207,6 +212,12 @@ func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 func (ui *FantasyUI) handleLLMQuery() {
 	ui.mutex.Lock()
 	defer ui.mutex.Unlock()
+	
+	// Check if LLM is configured
+	if !ui.llmManager.IsConfigured() {
+		ui.showLLMNotConfiguredMessage()
+		return
+	}
 	
 	if ui.querying || ui.refreshing {
 		return
@@ -414,6 +425,36 @@ func (ui *FantasyUI) handleError(err error) {
 	ui.updateStatus()
 }
 
+// showLLMNotConfiguredMessage shows a warning message when LLM is not configured
+func (ui *FantasyUI) showLLMNotConfiguredMessage() {
+	warningMessage := `# ⚠️ LLM Not Configured
+
+No LLM provider is currently configured. To use the AI analysis features, you need to configure either:
+
+## Option 1: OpenAI
+- Get an API key from [OpenAI](https://platform.openai.com/api-keys)
+- Enter it in the Settings
+
+## Option 2: Local LLM (Ollama)
+- Install and configure Ollama for local AI processing
+- Configure it in the Settings
+
+## How to Configure
+1. Click the **Settings** button (⚙️ gear icon) in the top right
+2. Choose your preferred LLM option
+3. Enter the required credentials/settings
+4. Test the connection
+5. Save and start using AI analysis!
+
+---
+
+**Note:** All other features of the Fantasy Football Tool work perfectly without LLM configuration. The draft tracking, player filtering, and manual refresh functions are fully operational.`
+
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown(warningMessage)
+	})
+}
+
 // updateStatus updates the status label (public method)
 func (ui *FantasyUI) updateStatus() {
 	ui.mutex.Lock()
@@ -436,7 +477,11 @@ func (ui *FantasyUI) updateStatusInternal() {
 		status = fmt.Sprintf("Querying %s...", providerType)
 	default:
 		providerType := ui.llmManager.GetProviderType()
-		status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, Esc: Quit)", providerType)
+		if ui.llmManager.IsConfigured() {
+			status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, Esc: Quit)", providerType)
+		} else {
+			status = "Ready - Listening for draft updates (q: Configure LLM, r: Refresh, Esc: Quit)"
+		}
 	}
 	
 	ui.safeUIUpdate(func() {
@@ -498,6 +543,16 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 	
 	// Update status to reflect new provider
 	ui.updateStatus()
+	
+	// If LLM is now configured, clear the warning message
+	if ui.llmManager.IsConfigured() {
+		ui.safeUIUpdate(func() {
+			ui.outputText.ParseMarkdown("✅ **LLM configured successfully!** You can now use the AI analysis features.")
+		})
+	} else {
+		// Show the warning message if still not configured
+		ui.showLLMNotConfiguredMessage()
+	}
 	
 	log.Printf("Settings updated successfully. Now using %s", ui.llmManager.GetProviderType())
 	return nil

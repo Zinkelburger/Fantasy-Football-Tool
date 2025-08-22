@@ -4,10 +4,7 @@ import (
 	"log"
 	"os"
 
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
 	"github.com/joho/godotenv"
 )
 
@@ -70,31 +67,15 @@ func main() {
 
 	// 4. Report any missing player files and stop if any are found.
 	if len(missingPlayers) > 0 {
-		// Show error dialog instead of console output
-		fyneApp := app.New()
-		fyneApp.SetIcon(resourceLogoPng)
-		w := fyneApp.NewWindow("Fantasy Football Tool - Error")
-
-		errorText := "ERROR: Missing note files for players:\n\n"
+		log.Printf("ERROR: Missing note files for %d players:", len(missingPlayers))
 		for playerName, suggestion := range missingPlayers {
 			if suggestion != "" {
-				errorText += "Couldn't find " + playerName + ".md. Found " + suggestion + ". Do you want to rename it?\n"
 				log.Printf("Missing note file for '%s', suggested: %s", playerName, suggestion)
 			} else {
-				errorText += "Couldn't find " + playerName + ".md. No similar files found.\n"
 				log.Printf("Missing note file for '%s', no suggestions", playerName)
 			}
 		}
-		errorText += "\nPlease ensure all player note files exist in the analysis directory before running the program."
-
-		errorLabel := widget.NewLabel(errorText)
-		w.SetContent(errorLabel)
-		w.Resize(fyne.NewSize(800, 400))
-
-		// Show dialog and wait for user to close it
-		w.ShowAndRun()
-		log.Printf("Application stopped due to %d missing player note files", len(missingPlayers))
-		return
+		log.Fatalf("Application stopped due to %d missing player note files. Please ensure all player note files exist in the analysis directory.", len(missingPlayers))
 	}
 
 	log.Printf("All %d players have corresponding note files.", len(players))
@@ -105,42 +86,16 @@ func main() {
 		log.Fatalf("Fatal error loading settings: %v", err)
 	}
 
-	// Check if any LLM is configured
-	if !settings.HasValidConfig() {
-		// Show settings dialog instead of fatal error
-		fyneApp := app.New()
-		fyneApp.SetIcon(resourceLogoPng)
-		w := fyneApp.NewWindow("Fantasy Football Tool - Configuration Required")
-
-		warningText := "No LLM is configured!\n\n"
-		warningText += "Please configure either:\n"
-		warningText += "• OpenAI API key, or\n"
-		warningText += "• Local LLM (Ollama)\n\n"
-		warningText += "Click the settings button (gear icon) to configure."
-
-		warningLabel := widget.NewLabel(warningText)
-
-		// Create a simple UI with settings button
-		llmManager, _ := NewLLMManager(settings) // May fail, that's OK
-		settingsUI := NewSettingsUI(w, settings, llmManager, nil)
-		settingsBtn := settingsUI.CreateSettingsButton()
-		settingsBtn.Text = "Open Settings"
-		settingsBtn.Resize(fyne.NewSize(120, 40))
-
-		content := container.NewVBox(
-			warningLabel,
-			container.NewCenter(settingsBtn),
-		)
-
-		w.SetContent(content)
-		w.Resize(fyne.NewSize(400, 200))
-		w.ShowAndRun()
-		return
-	}
-
+	// Initialize LLM manager - allow it to fail gracefully if not configured
 	llmManager, err := NewLLMManager(settings)
 	if err != nil {
-		log.Fatalf("Fatal error initializing LLM manager: %v", err)
+		log.Printf("Warning: LLM manager initialization failed: %v", err)
+		log.Printf("Application will start without LLM functionality")
+		// Create a nil LLM manager to indicate no LLM is available
+		llmManager = &LLMManager{
+			settings: settings,
+			provider: nil,
+		}
 	}
 
 	// 6. Create communication channel between HTTP server and UI

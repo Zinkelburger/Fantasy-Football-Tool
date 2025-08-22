@@ -21,6 +21,11 @@ func NewLLMManager(settings *Settings) (*LLMManager, error) {
 		settings: settings,
 	}
 	
+	// If no valid config, don't initialize provider but still return manager
+	if !settings.HasValidConfig() {
+		return manager, nil
+	}
+	
 	if err := manager.InitializeProvider(); err != nil {
 		return nil, err
 	}
@@ -92,13 +97,16 @@ func (m *LLMManager) initializeOllama() error {
 // Ask delegates to the current provider
 func (m *LLMManager) Ask(prompt string) (string, error) {
 	if m.provider == nil {
-		return "", fmt.Errorf("no LLM provider initialized")
+		return "", fmt.Errorf("no LLM provider configured - please configure OpenAI or Ollama in settings")
 	}
 	return m.provider.Ask(prompt)
 }
 
 // GetProviderType returns the current provider type
 func (m *LLMManager) GetProviderType() string {
+	if m.provider == nil {
+		return "None"
+	}
 	if m.settings.UseLocalLLM {
 		return "Ollama"
 	}
@@ -108,6 +116,15 @@ func (m *LLMManager) GetProviderType() string {
 // UpdateSettings updates the manager's settings and reinitializes provider
 func (m *LLMManager) UpdateSettings(settings *Settings) error {
 	m.settings = settings
+	
+	// Clear provider first
+	m.provider = nil
+	
+	// If no valid config, leave provider as nil
+	if !settings.HasValidConfig() {
+		return nil
+	}
+	
 	return m.InitializeProvider()
 }
 
@@ -156,8 +173,10 @@ func (m *LLMManager) SetupOllamaIfNeeded() error {
 
 // IsConfigured returns true if the LLM is properly configured
 func (m *LLMManager) IsConfigured() bool {
-	if m.settings.UseLocalLLM {
-		return m.settings.OllamaModel != "" && m.settings.OllamaEndpoint != "" && IsOllamaRunning(m.settings.OllamaEndpoint)
-	}
-	return m.settings.OpenAIAPIKey != ""
+	return m.provider != nil
+}
+
+// HasValidSettings returns true if the settings have valid configuration (but provider may not be initialized)
+func (m *LLMManager) HasValidSettings() bool {
+	return m.settings.HasValidConfig()
 }

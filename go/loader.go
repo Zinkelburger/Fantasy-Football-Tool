@@ -110,6 +110,70 @@ func (d *DataLoader) LoadCurrentTeam() (string, error) {
 	return "Unknown Team", nil
 }
 
+// LoadCurrentTeamPlayers reads the current team players from status/current_team.txt.
+// Expects one player name per line. If the file contains just a team name, returns empty slice.
+func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
+	content, err := os.ReadFile("status/current_team.txt")
+	if err != nil {
+		return []Player{}, nil // Return empty slice instead of error
+	}
+
+	lines := strings.Split(string(content), "\n")
+	var teamPlayers []Player
+	
+	// Load all available players first to match against
+	playerDataFiles := []string{
+		"players.csv",
+		"combined_with_depth.csv",
+		"go/combined_with_depth.csv", // fallback if running from root
+	}
+	
+	var allPlayers []Player
+	for _, filename := range playerDataFiles {
+		if _, statErr := os.Stat(filename); statErr == nil {
+			allPlayers, err = LoadPlayers(filename)
+			if err == nil {
+				break
+			}
+		}
+	}
+	
+	if err != nil || len(allPlayers) == 0 {
+		return []Player{}, fmt.Errorf("could not load player data: %w", err)
+	}
+	
+	// Create a map for quick player lookup
+	playerMap := make(map[string]Player)
+	for _, player := range allPlayers {
+		playerMap[strings.TrimSpace(player.Name)] = player
+	}
+	
+	// Process each line from current_team.txt
+	for _, line := range lines {
+		playerName := strings.TrimSpace(line)
+		if playerName == "" || playerName == "My Team" {
+			continue // Skip empty lines and default team name
+		}
+		
+		// Look up the player in our data
+		if player, found := playerMap[playerName]; found {
+			teamPlayers = append(teamPlayers, player)
+		} else {
+			// If not found, create a basic player entry
+			teamPlayers = append(teamPlayers, Player{
+				Name:  playerName,
+				Team:  "Unknown",
+				Pos:   "Unknown",
+				Depth: "Unknown",
+				Rank:  "Unknown",
+				Note:  "Player not in database",
+			})
+		}
+	}
+	
+	return teamPlayers, nil
+}
+
 // LoadCurrentPickNum reads the pick number from status/pick.txt.
 func (d *DataLoader) LoadCurrentPickNum() (int, error) {
 	content, err := os.ReadFile("status/pick.txt")
