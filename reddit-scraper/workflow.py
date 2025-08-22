@@ -51,14 +51,15 @@ def check_batch_status():
 
 def show_menu():
     """Display the main menu."""
-    print("\n🚀 FANTASY FOOTBALL BATCH PROCESSOR")
+    print("\n🚀 FANTASY FOOTBALL PROCESSOR")
     print("=" * 40)
     print("1. 📊 Check batch status")
     print("2. 🚀 Submit new batch")
     print("3. 📥 Get batch results")
     print("4. 🧹 Reset (delete batch info)")
     print("5. ❌ Cancel current batch")
-    print("6. 📖 Show README")
+    print("6. ⚡ Live processing (200 players, GPT-5-nano)")
+    print("7. 📖 Show README")
     print("0. 🚪 Exit")
     print("-" * 40)
 
@@ -84,7 +85,7 @@ def main():
         show_menu()
         
         try:
-            choice = input("Enter your choice (0-6): ").strip()
+            choice = input("Enter your choice (0-7): ").strip()
         except KeyboardInterrupt:
             print("\n👋 Goodbye!")
             sys.exit(0)
@@ -141,6 +142,13 @@ def main():
                 print(f"\n⚠️  Cannot cancel batch with status: {status}")
             
         elif choice == "6":
+            print("\n⚡ Starting live processing (first 200 non-K/DST players)...")
+            success = run_command("python live_process.py", "Live processing with GPT-5-nano")
+            if success:
+                print("\n✅ Live processing completed!")
+                print("   Check the markdown_data/ directory for results")
+            
+        elif choice == "7":
             print("\n📖 Opening README...")
             if os.path.exists("README.md"):
                 run_command("cat README.md | head -50", "Showing README preview")

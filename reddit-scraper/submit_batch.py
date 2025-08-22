@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Set, List, Dict
 
 # Configuration
-OPENAI_MODEL = "gpt-5-mini"  # Fixed from gpt-5-mini
+OPENAI_MODEL = "gpt-5-mini"  # Batch processing uses gpt-5-mini, live uses gpt-5-nano-2025-08-07
 EXCLUDED_POSITIONS = ["DST", "K"]
 BATCH_ID_FILE = "batch_info.json"
 

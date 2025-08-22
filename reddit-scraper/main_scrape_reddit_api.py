@@ -270,6 +270,63 @@ def create_player_regex_patterns(search_terms: Dict[str, str], duplicate_last_na
     return pattern_groups
 
 
+def extract_relevant_content_exact_lines(
+    text: str, 
+    pattern_groups: Dict[str, List[re.Pattern]]
+) -> Dict[str, List[Tuple[str, MatchConfidence]]]:
+    """
+    Extract only the exact lines containing player mentions (no context).
+    
+    Returns:
+        Dict mapping confidence level to list of (content, confidence) tuples
+    """
+    if not text or not pattern_groups:
+        return {
+            'high_confidence': [],
+            'medium_confidence': [],
+            'low_confidence': []
+        }
+    
+    lines = text.split('\n')
+    matched_sections_by_confidence = {
+        'high_confidence': [],
+        'medium_confidence': [],
+        'low_confidence': []
+    }
+    
+    # Process each confidence level separately
+    for confidence_level, patterns in pattern_groups.items():
+        if not patterns:
+            continue
+            
+        matched_lines = []
+        
+        # Find all lines that match any pattern at this confidence level
+        for line in lines:
+            for pattern in patterns:
+                if pattern.search(line):
+                    if line.strip():  # Only add non-empty lines
+                        matched_lines.append(line)
+                    break
+        
+        if not matched_lines:
+            continue
+        
+        # Create confidence enum
+        confidence_enum = MatchConfidence.HIGH if confidence_level == 'high_confidence' else \
+                         MatchConfidence.MEDIUM if confidence_level == 'medium_confidence' else \
+                         MatchConfidence.LOW
+        
+        # Join all matched lines for this confidence level
+        section_text = '\n'.join(matched_lines)
+        if section_text.strip():
+            matched_sections_by_confidence[confidence_level].append(
+                (section_text, confidence_enum)
+            )
+    
+    return matched_sections_by_confidence
+
+
 def extract_relevant_content_with_context(
     text: str, 
     pattern_groups: Dict[str, List[re.Pattern]], 
@@ -345,7 +402,7 @@ def extract_relevant_content_with_context(
     return matched_sections_by_confidence
 
 
-def filter_reddit_content(content: str, pattern_groups: Dict[str, List[re.Pattern]]) -> Dict[str, any]:
+def filter_reddit_content(content: str, pattern_groups: Dict[str, List[re.Pattern]], use_exact_lines: bool = True) -> Dict[str, any]:
     """
     Filter Reddit content to extract only relevant portions with confidence levels.
     Returns both the filtered content and metadata about the filtering.
@@ -368,7 +425,12 @@ def filter_reddit_content(content: str, pattern_groups: Dict[str, List[re.Patter
         }
     
     original_length = len(content)
-    relevant_sections_by_confidence = extract_relevant_content_with_context(content, pattern_groups)
+    
+    # Use exact line matching instead of context-based matching
+    if use_exact_lines:
+        relevant_sections_by_confidence = extract_relevant_content_exact_lines(content, pattern_groups)
+    else:
+        relevant_sections_by_confidence = extract_relevant_content_with_context(content, pattern_groups)
     
     filtered_content_by_confidence = {}
     total_sections_found = 0
@@ -472,7 +534,7 @@ def process_reddit_post_efficiently(
     
     # Process post content
     post_content = reddit_client.fetch_post_content(post)
-    post_filter_result = filter_reddit_content(post_content, pattern_groups)
+    post_filter_result = filter_reddit_content(post_content, pattern_groups, use_exact_lines=True)
     
     # Add post content if relevant
     for confidence_level, content in post_filter_result['filtered_content_by_confidence'].items():
@@ -502,7 +564,7 @@ def process_reddit_post_efficiently(
                     break
             
             if has_player_mention:
-                chain_filter_result = filter_reddit_content(chain_text, pattern_groups)
+                chain_filter_result = filter_reddit_content(chain_text, pattern_groups, use_exact_lines=True)
                 
                 # Add chain content by confidence level
                 for confidence_level, content in chain_filter_result['filtered_content_by_confidence'].items():
@@ -537,12 +599,11 @@ def process_reddit_post_efficiently(
     return result
 
 
-def save_processing_results(
+def save_reddit_processing_results(
     player: FootballPlayer, 
     posts_results: List[Dict], 
     raw_dir: str, 
-    filtered_dir: str,
-    ff_hound_mentions: List[str] = None
+    filtered_dir: str
 ) -> Dict[str, any]:
     """Save both raw and filtered results with confidence-based separation."""
     
@@ -613,35 +674,25 @@ def save_processing_results(
             processing_stats['total_original_size'] - processing_stats['total_filtered_size']
         ) / processing_stats['total_original_size']
     
-    # Combine Reddit content with ff-hound mentions
-    combined_content = combine_reddit_and_ff_hound_content(
-        {
+    # Save filtered Reddit content only (no FF Hound processing)
+    filtered_file = os.path.join(filtered_dir, f"{player.slug}_reddit_discussion.txt")
+    
+    with open(filtered_file, "w", encoding="utf-8") as f:
+        f.write(f"REDDIT FANTASY FOOTBALL ANALYSIS FOR {player.player_name.upper()}\n")
+        f.write("=" * 80 + "\n\n")
+        
+        reddit_content = {
             'high_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['high_confidence']) if content_by_confidence['high_confidence'] else '',
             'medium_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['medium_confidence']) if content_by_confidence['medium_confidence'] else '',
             'low_confidence': '\n\n' + '='*80 + '\n\n'.join(content_by_confidence['low_confidence']) if content_by_confidence['low_confidence'] else ''
-        },
-        ff_hound_mentions or [],
-        player.player_name
-    )
-    
-    # Save filtered content with simplified structure (only high confidence + ff-hound)
-    filtered_file = os.path.join(filtered_dir, f"{player.slug}_filtered_discussion.txt")
-    
-    with open(filtered_file, "w", encoding="utf-8") as f:
-        f.write(f"FANTASY FOOTBALL ANALYSIS FOR {player.player_name.upper()}\n")
-        f.write("=" * 80 + "\n\n")
+        }
         
-        if combined_content['high_confidence']:
-            f.write("--- HIGH CONFIDENCE SECTION ---\n\n")
-            f.write(combined_content['high_confidence'])
+        if reddit_content['high_confidence']:
+            f.write("--- HIGH CONFIDENCE REDDIT DISCUSSION ---\n\n")
+            f.write(reddit_content['high_confidence'])
             f.write("\n\n")
         else:
-            f.write(f"No relevant discussion found for {player.player_name}")
-        
-        # Add metadata about ff-hound mentions
-        if ff_hound_mentions:
-            f.write(f"\n\n--- PROCESSING METADATA ---\n")
-            f.write(f"FF Hound mentions found: {len(ff_hound_mentions)}\n")
+            f.write(f"No relevant Reddit discussion found for {player.player_name}")
     
     # Save processing metadata
     metadata_file = os.path.join(filtered_dir, f"{player.slug}_processing_metadata.json")
@@ -909,7 +960,7 @@ def main():
             time.sleep(0.3)
         
         # Save results with confidence-based separation and ff-hound integration
-        processing_stats = save_processing_results(player, posts_results, raw_dir_abs, filtered_dir_abs, ff_hound_mentions)
+        processing_stats = save_reddit_processing_results(player, posts_results, raw_dir_abs, filtered_dir_abs)
         
         # Report efficiency gains with confidence breakdown
         if processing_stats['total_original_size'] > 0:
