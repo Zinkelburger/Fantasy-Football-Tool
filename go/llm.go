@@ -11,14 +11,16 @@ type LLMProvider interface {
 
 // LLMManager manages the current LLM provider
 type LLMManager struct {
-	provider LLMProvider
-	settings *Settings
+	provider      LLMProvider
+	settings      *Settings
+	promptManager *PromptManager
 }
 
 // NewLLMManager creates a new LLM manager
 func NewLLMManager(settings *Settings) (*LLMManager, error) {
 	manager := &LLMManager{
-		settings: settings,
+		settings:      settings,
+		promptManager: NewPromptManager(),
 	}
 	
 	// If no valid config, don't initialize provider but still return manager
@@ -47,7 +49,13 @@ func (m *LLMManager) initializeOpenAI() error {
 		return fmt.Errorf("OpenAI API key is not configured")
 	}
 	
-	gpt, err := NewGPT(m.settings.OpenAIAPIKey)
+	// Load system prompt
+	systemPrompt, err := m.promptManager.LoadSystemPrompt()
+	if err != nil {
+		return fmt.Errorf("failed to load system prompt: %w", err)
+	}
+	
+	gpt, err := NewGPT(m.settings.OpenAIAPIKey, systemPrompt)
 	if err != nil {
 		return fmt.Errorf("failed to initialize OpenAI client: %w", err)
 	}
@@ -90,7 +98,13 @@ func (m *LLMManager) initializeOllama() error {
 		return fmt.Errorf("model test failed: %w", err)
 	}
 	
-	m.provider = NewOllamaClient(m.settings.OllamaEndpoint, m.settings.OllamaModel)
+	// Load system prompt
+	systemPrompt, err := m.promptManager.LoadSystemPrompt()
+	if err != nil {
+		return fmt.Errorf("failed to load system prompt: %w", err)
+	}
+	
+	m.provider = NewOllamaClient(m.settings.OllamaEndpoint, m.settings.OllamaModel, systemPrompt)
 	return nil
 }
 
@@ -179,4 +193,29 @@ func (m *LLMManager) IsConfigured() bool {
 // HasValidSettings returns true if the settings have valid configuration (but provider may not be initialized)
 func (m *LLMManager) HasValidSettings() bool {
 	return m.settings.HasValidConfig()
+}
+
+// GetSystemPrompt returns the current system prompt
+func (m *LLMManager) GetSystemPrompt() (string, error) {
+	return m.promptManager.LoadSystemPrompt()
+}
+
+// GetUserPrompt returns the current user prompt template
+func (m *LLMManager) GetUserPrompt() (string, error) {
+	return m.promptManager.LoadUserPrompt()
+}
+
+// SetSystemPrompt saves a new system prompt
+func (m *LLMManager) SetSystemPrompt(prompt string) error {
+	return m.promptManager.SaveSystemPrompt(prompt)
+}
+
+// SetUserPrompt saves a new user prompt template
+func (m *LLMManager) SetUserPrompt(prompt string) error {
+	return m.promptManager.SaveUserPrompt(prompt)
+}
+
+// BuildUserPrompt constructs the full user prompt with draft context
+func (m *LLMManager) BuildUserPrompt(currentPick int, pickedPlayersStr, currentTeam, allNotes string) (string, error) {
+	return m.promptManager.BuildFullUserPrompt(currentPick, pickedPlayersStr, currentTeam, allNotes)
 }

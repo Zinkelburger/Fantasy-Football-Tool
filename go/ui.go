@@ -152,6 +152,9 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 	ui.startUIUpdateHandler()
 	ui.startPlayerUpdateListener()
 	
+	// Load draft status for all players on startup
+	ui.loadDraftStatusForAllPlayers()
+	
 	// Load initial team data
 	ui.loadTeamData()
 	
@@ -210,7 +213,7 @@ func (ui *FantasyUI) setupUI() {
 				// Update the player index for right-click handling
 				playerLabel.playerIndex = int(id)
 				
-				// Handle emoji status - emojis take up 1 display width but we need consistent spacing
+				// Handle emoji status
 				var statusPart string
 				if p.DraftStatus == "✅" {
 					statusPart = "✅ "
@@ -219,7 +222,7 @@ func (ui *FantasyUI) setupUI() {
 				} else {
 					statusPart = "   "
 				}
-				playerLabel.SetText(fmt.Sprintf("%-5s %-25s %s%-6s %-4s %s", 
+				playerLabel.SetText(fmt.Sprintf("%-5s %-25s %-3s%-6s %-4s %s", 
 					p.Rank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
@@ -528,17 +531,13 @@ func (ui *FantasyUI) performLLMQuery() {
 		pickedPlayersStr = "[No players picked yet]"
 	}
 	
-	// Construct the prompt
-	prompt := fmt.Sprintf(
-		"It is pick %d of a 2025 fantasy football draft. "+
-			"These players have been picked so far: %s. "+
-			"Current team info: %s. "+
-			"Output the top several players you think could help me the most along with an explanation, considering their value, upside, and drawbacks. "+
-			"Give a summary of the most important players at the end once you are finished your explanations. "+
-			"The notes for each player are separated by '---start playername---' and '---end playername---'.\n\n"+
-			"Player Notes:\n%s",
-		currentPick, pickedPlayersStr, currentTeam, allNotes,
-	)
+	// Build the full user prompt with draft context
+	prompt, err := ui.llmManager.BuildUserPrompt(currentPick, pickedPlayersStr, currentTeam, allNotes)
+	if err != nil {
+		log.Printf("Error building user prompt: %v", err)
+		ui.handleError(fmt.Errorf("failed to build user prompt: %w", err))
+		return
+	}
 	
 	// Ask LLM and return the answer
 	answer, err := ui.llmManager.Ask(prompt)

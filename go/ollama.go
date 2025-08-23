@@ -16,15 +16,17 @@ import (
 
 // OllamaClient handles communication with Ollama
 type OllamaClient struct {
-	endpoint string
-	model    string
+	endpoint     string
+	model        string
+	systemPrompt string
 }
 
 // NewOllamaClient creates a new Ollama client
-func NewOllamaClient(endpoint, model string) *OllamaClient {
+func NewOllamaClient(endpoint, model, systemPrompt string) *OllamaClient {
 	return &OllamaClient{
-		endpoint: endpoint,
-		model:    model,
+		endpoint:     endpoint,
+		model:        model,
+		systemPrompt: systemPrompt,
 	}
 }
 
@@ -54,9 +56,15 @@ func (c *OllamaClient) Ask(prompt string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	
+	// Combine system prompt with user prompt
+	fullPrompt := prompt
+	if c.systemPrompt != "" {
+		fullPrompt = c.systemPrompt + "\n\n" + prompt
+	}
+	
 	request := OllamaRequest{
 		Model:  c.model,
-		Prompt: prompt,
+		Prompt: fullPrompt,
 		Stream: false,
 		Options: map[string]interface{}{
 			"temperature": 0.7,
@@ -260,7 +268,7 @@ func ListModels(endpoint string) ([]string, error) {
 
 // TestModel tests if a model is available and working
 func TestModel(endpoint, model string) error {
-	client := NewOllamaClient(endpoint, model)
+	client := NewOllamaClient(endpoint, model, "You are a helpful assistant.")
 	
 	response, err := client.Ask("Hello! Please respond with 'OK' if you can understand this message.")
 	if err != nil {
