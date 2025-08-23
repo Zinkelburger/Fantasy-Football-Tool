@@ -1,4 +1,4 @@
-name: Release (Fixed)
+name: Release (Unified)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -20,138 +20,201 @@ jobs:
       with:
         go-version: '1.23'
 
-    - name: Install tools
+    - name: Install Fyne tools
       run: |
         go install fyne.io/tools/cmd/fyne@latest
         go install github.com/fyne-io/fyne-cross@latest
 
-    - name: Build with fyne-cross and package
+    - name: Build Linux
       working-directory: go
       run: |
-        # Generate Fyne resources
+        # Generate Fyne resources from assets
         fyne bundle -o resource.go logo.png
         fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
-        
-        # Build all platforms with proper app ID
-        echo "Building Linux..."
-        fyne-cross linux -arch=amd64,arm64 -app-id football.draftassistant -name fantasy-football-tool
-        
-        echo "Building Windows..."
-        fyne-cross windows -arch=amd64 -app-id football.draftassistant -name fantasy-football-tool
-        
-        echo "Building macOS..."
-        fyne-cross darwin -arch=amd64,arm64 -app-id football.draftassistant -name fantasy-football-tool
-        
-        # List what was actually built (for debugging)
-        echo "=== Built files ==="
-        find fyne-cross/dist/ -type f -name "*fantasy*" -o -name "*.exe" -o -name "*.app" | head -20
         
         # Create release directory
         mkdir -p releases
         
-        # Package each platform
-        for platform_arch in linux-amd64 linux-arm64 windows-amd64 darwin-amd64 darwin-arm64; do
-          echo "Packaging $platform_arch..."
-          platform=$(echo $platform_arch | cut -d'-' -f1)
-          arch=$(echo $platform_arch | cut -d'-' -f2)
-          
-          # Check if the build actually exists
-          if [ ! -d "fyne-cross/dist/$platform_arch" ]; then
-            echo "Warning: No build found for $platform_arch, skipping..."
-            continue
-          fi
-          
-          # Create platform directory
-          mkdir -p "releases/$platform_arch"
-          
-          # Copy binary with proper naming
-          if [ "$platform" = "windows" ]; then
-            # Find the .exe file
-            exe_file=$(find "fyne-cross/dist/$platform_arch/" -name "*.exe" -type f | head -1)
-            if [ -n "$exe_file" ]; then
-              cp "$exe_file" "releases/$platform_arch/fantasy-football-tool.exe"
-            else
-              echo "ERROR: No .exe file found for Windows build"
-              exit 1
-            fi
-          elif [ "$platform" = "darwin" ]; then
-            # For macOS, look for .app bundle or binary
-            app_bundle=$(find "fyne-cross/dist/$platform_arch/" -name "*.app" -type d | head -1)
-            if [ -n "$app_bundle" ]; then
-              cp -r "$app_bundle" "releases/$platform_arch/"
-              # Also copy the binary if it exists separately
-              binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
-              if [ -n "$binary_file" ]; then
-                cp "$binary_file" "releases/$platform_arch/"
-              fi
-            else
-              # Fallback to binary
-              binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
-              if [ -n "$binary_file" ]; then
-                cp "$binary_file" "releases/$platform_arch/"
-              else
-                echo "ERROR: No binary found for macOS build"
-                exit 1
-              fi
-            fi
-          else
-            # Linux - find the binary
-            binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
-            if [ -n "$binary_file" ]; then
-              cp "$binary_file" "releases/$platform_arch/"
-            else
-              echo "ERROR: No binary found for Linux build"
-              exit 1
-            fi
-          fi
-          
-          # Copy all necessary files
-          cp -r analysis "releases/$platform_arch/"
-          cp -r prompts "releases/$platform_arch/"
-          cp -r status "releases/$platform_arch/"
-          cp -r font "releases/$platform_arch/"
-          cp players.csv "releases/$platform_arch/"
-          cp README.md "releases/$platform_arch/"
-          
-          # Create archive
-          cd releases
-          if [ "$platform" = "windows" ]; then
-            zip -r "fantasy-football-tool-${platform}-${arch}.zip" "$platform_arch"
-          else
-            tar -czf "fantasy-football-tool-${platform}-${arch}.tar.gz" "$platform_arch"
-          fi
-          cd ..
-        done
+        # Build Linux targets using fyne-cross
+        echo "Building Linux amd64..."
+        fyne-cross linux -arch=amd64 --app-id football.draftassistant --name fantasy-football-tool
         
-        # Generate checksums
-        cd releases
-        sha256sum *.tar.gz *.zip > checksums.txt 2>/dev/null || true
+        echo "Building Linux arm64..."
+        fyne-cross linux -arch=arm64 --app-id football.draftassistant --name fantasy-football-tool
+        
+        # Create proper release packages with all required files
+        echo "=== Packaging Linux builds with all required files ==="
+        
+        # Package amd64 build
+        if [ -d "fyne-cross/dist/linux-amd64" ]; then
+          echo "Packaging Linux amd64..."
+          mkdir -p releases/linux-amd64
+          cp -r fyne-cross/dist/linux-amd64/* releases/linux-amd64/ || echo "No amd64 binary files to copy"
+          
+          # Add all required data files
+          cp -r analysis releases/linux-amd64/
+          cp players.csv releases/linux-amd64/
+          cp -r status releases/linux-amd64/
+          cp -r prompts releases/linux-amd64/
+          cp -r font releases/linux-amd64/
+          cp README.md releases/linux-amd64/
+          
+          # Create final archive
+          cd releases
+          tar -czf fantasy-football-tool-linux-amd64.tar.gz -C linux-amd64 .
+          cd ..
+        fi
+        
+        # Package arm64 build
+        if [ -d "fyne-cross/dist/linux-arm64" ]; then
+          echo "Packaging Linux arm64..."
+          mkdir -p releases/linux-arm64
+          cp -r fyne-cross/dist/linux-arm64/* releases/linux-arm64/ || echo "No arm64 binary files to copy"
+          
+          # Add all required data files
+          cp -r analysis releases/linux-arm64/
+          cp players.csv releases/linux-arm64/
+          cp -r status releases/linux-arm64/
+          cp -r prompts releases/linux-arm64/
+          cp -r font releases/linux-arm64/
+          cp README.md releases/linux-arm64/
+          
+          # Create final archive
+          cd releases
+          tar -czf fantasy-football-tool-linux-arm64.tar.gz -C linux-arm64 .
+          cd ..
+        fi
+        
+        echo "=== Linux Build Results ==="
+        ls -la releases/
+        echo "Contents of amd64 package:"
+        tar -tzf releases/fantasy-football-tool-linux-amd64.tar.gz | head -20 || echo "No amd64 archive found"
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
+    - name: Upload Linux artifacts
+      uses: actions/upload-artifact@v4
       with:
-        files: |
-          go/releases/*.tar.gz
-          go/releases/*.zip
-          go/releases/checksums.txt
-        body: |
-          ## Fantasy Football Tool ${{ github.ref_name }}
+        name: linux-builds
+        path: go/releases/
+
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+
+    - name: Install Fyne tools
+      run: |
+        go install fyne.io/tools/cmd/fyne@latest
+        go install github.com/fyne-io/fyne-cross@latest
+
+    - name: Build Windows
+      working-directory: go
+      run: |
+        # Generate Fyne resources from assets
+        fyne bundle -o resource.go logo.png
+        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        
+        # Create release directory
+        mkdir -p releases
+        
+        # Build Windows targets using fyne-cross
+        echo "Building Windows amd64..."
+        fyne-cross windows -arch=amd64 --app-id football.draftassistant --name fantasy-football-tool
+        
+        # Create proper release packages with all required files
+        echo "=== Packaging Windows builds with all required files ==="
+        
+        # Package amd64 build
+        if [ -d "fyne-cross/dist/windows-amd64" ]; then
+          echo "Packaging Windows amd64..."
+          mkdir -p releases/windows-amd64
+          cp -r fyne-cross/dist/windows-amd64/* releases/windows-amd64/ || echo "No Windows binary files to copy"
           
-          **Cross-platform fantasy football draft assistant with AI analysis**
+          # Add all required data files
+          cp -r analysis releases/windows-amd64/
+          cp players.csv releases/windows-amd64/
+          cp -r status releases/windows-amd64/
+          cp -r prompts releases/windows-amd64/
+          cp -r font releases/windows-amd64/
+          cp README.md releases/windows-amd64/
           
-          ### Downloads:
-          - **Windows (x64)**: `fantasy-football-tool-windows-amd64.zip`
-          - **macOS (Intel)**: `fantasy-football-tool-darwin-amd64.tar.gz`
-          - **macOS (Apple Silicon)**: `fantasy-football-tool-darwin-arm64.tar.gz`
-          - **Linux (x64)**: `fantasy-football-tool-linux-amd64.tar.gz`
-          - **Linux (ARM64)**: `fantasy-football-tool-linux-arm64.tar.gz`
-          
-          ### Quick Start:
-          1. Download and extract the archive for your platform
-          2. Set environment variable: `export OPENAI_API_KEY=your_key_here`
-          3. Run: `./fantasy-football-tool` (or `fantasy-football-tool.exe` on Windows)
-          
-          **Note**: You need to set your OpenAI API key as an environment variable for AI features to work.
-          All necessary files (player analysis, data files, etc.) are included in each archive.
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Create final archive
+          cd releases
+          zip -r fantasy-football-tool-windows-amd64.zip windows-amd64/
+          cd ..
+        fi
+        
+        echo "=== Windows Build Results ==="
+        ls -la releases/
+        echo "Contents of Windows package:"
+        unzip -l releases/fantasy-football-tool-windows-amd64.zip | head -20 || echo "No Windows archive found"
+
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-builds
+        path: go/releases/
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+
+    - name: Install Fyne tools
+      run: go install fyne.io/tools/cmd/fyne@latest
+
+    - name: Build and Package macOS App
+      working-directory: go
+      run: |
+        # Ensure the newly installed fyne tool is in the PATH
+        export PATH=$(go env GOPATH)/bin:$PATH
+        
+        # Generate Fyne resources
+        fyne bundle -o resource.go logo.png
+        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        
+        # Create a directory for the final release assets
+        mkdir -p releases
+        
+        # --- Build and package for amd64 (Intel Macs) ---
+        echo "Building for macOS/amd64 (Intel)..."
+        GOARCH=amd64 fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool"
+        
+        # Prepare the archive directory for amd64
+        mkdir -p build_amd64
+        mv "fantasy-football-tool.app" build_amd64/
+        cp -r analysis prompts status font players.csv README.md build_amd64/
+        
+        # Create the final tarball for amd64
+        tar -czf releases/fantasy-football-tool-darwin-amd64.tar.gz -C build_amd64 .
+        
+        # --- Build and package for arm64 (Apple Silicon Macs) ---
+        echo "Building for macOS/arm64 (Apple Silicon)..."
+        GOARCH=arm64 fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool"
+
+        # Prepare the archive directory for arm64
+        mkdir -p build_arm64
+        mv "fantasy-football-tool.app" build_arm64/
+        cp -r analysis prompts status font players.csv README.md build_arm64/
+
+        # Create the final tarball for arm64
+        tar -czf releases/fantasy-football-tool-darwin-arm64.tar.gz -C build_arm64 .
+
+    - name: Upload macOS artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-builds
+        path: go/releases/
