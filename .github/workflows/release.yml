@@ -54,7 +54,6 @@ jobs:
           # Add all required data files
           cp -r analysis releases/linux-amd64/
           cp players.csv releases/linux-amd64/
-          cp -r status releases/linux-amd64/
           cp -r prompts releases/linux-amd64/
           cp -r font releases/linux-amd64/
           cp README.md releases/linux-amd64/
@@ -74,7 +73,6 @@ jobs:
           # Add all required data files
           cp -r analysis releases/linux-arm64/
           cp players.csv releases/linux-arm64/
-          cp -r status releases/linux-arm64/
           cp -r prompts releases/linux-arm64/
           cp -r font releases/linux-arm64/
           cp README.md releases/linux-arm64/
@@ -140,14 +138,13 @@ jobs:
           # Add all required data files
           cp -r analysis releases/windows-amd64/
           cp players.csv releases/windows-amd64/
-          cp -r status releases/windows-amd64/
           cp -r prompts releases/windows-amd64/
           cp -r font releases/windows-amd64/
           cp README.md releases/windows-amd64/
           
-          # Create final archive
+          # Create final archive with consistent structure (files at root level)
           cd releases
-          zip -r fantasy-football-tool-windows-amd64.zip windows-amd64/
+          (cd windows-amd64 && zip -r ../fantasy-football-tool-windows-amd64.zip .)
           cd ..
         fi
         
@@ -185,36 +182,89 @@ jobs:
         # Generate Fyne resources
         fyne bundle -o resource.go logo.png
         fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+
+        # Mac looks for icon.png
+        cp logo.png Icon.png
         
         # Create a directory for the final release assets
         mkdir -p releases
         
-        # --- Build and package for amd64 (Intel Macs) ---
-        echo "Building for macOS/amd64 (Intel)..."
-        GOARCH=amd64 fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool"
-        
-        # Prepare the archive directory for amd64
-        mkdir -p build_amd64
-        mv "fantasy-football-tool.app" build_amd64/
-        cp -r analysis prompts status font players.csv README.md build_amd64/
-        
-        # Create the final tarball for amd64
-        tar -czf releases/fantasy-football-tool-darwin-amd64.tar.gz -C build_amd64 .
-        
-        # --- Build and package for arm64 (Apple Silicon Macs) ---
-        echo "Building for macOS/arm64 (Apple Silicon)..."
-        GOARCH=arm64 fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool"
+        # --- Function to package a specific architecture ---
+        package_macos_arch() {
+          ARCH=$1
+          echo "Building and packaging for macOS/$ARCH..."
 
-        # Prepare the archive directory for arm64
-        mkdir -p build_arm64
-        mv "fantasy-football-tool.app" build_arm64/
-        cp -r analysis prompts status font players.csv README.md build_arm64/
+          # Build the application
+          GOARCH=$ARCH fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
 
-        # Create the final tarball for arm64
-        tar -czf releases/fantasy-football-tool-darwin-arm64.tar.gz -C build_arm64 .
+          # For macOS app bundles, we need to put data files where the app can find them
+          # Since the app looks for files in the current directory, we create a package structure
+          # that includes both the .app and the data files at the same level
+          mkdir -p "darwin-$ARCH"
+          mv "fantasy-football-tool.app" "darwin-$ARCH/"
+          
+          # Copy all required data files next to the .app bundle
+          echo "Copying data files next to the app bundle..."
+          cp -r analysis prompts font players.csv README.md "darwin-$ARCH/"
+          
+          # Create the final archive
+          tar -czf "releases/fantasy-football-tool-darwin-$ARCH.tar.gz" -C "darwin-$ARCH" .
+          
+          # Clean up for the next build
+          rm -rf "darwin-$ARCH"
+        }
+        
+        # --- Build and package for both architectures ---
+        package_macos_arch amd64
+        package_macos_arch arm64
 
     - name: Upload macOS artifacts
       uses: actions/upload-artifact@v4
       with:
         name: macos-builds
         path: go/releases/
+
+  release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Display structure of downloaded files
+      run: ls -la artifacts/
+
+    - name: Prepare release assets
+      run: |
+        mkdir -p release-assets
+        
+        # Copy all build artifacts to release assets directory
+        find artifacts/ -name "*.tar.gz" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.zip" -exec cp {} release-assets/ \;
+        
+        echo "Release assets prepared:"
+        ls -la release-assets/
+
+    - name: Extract version from tag
+      id: get_version
+      run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        name: Release ${{ steps.get_version.outputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        files: |
+          release-assets/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -590,8 +590,8 @@ func (ui *FantasyUI) performRefreshInternal() {
 	
 	// Load all players from static CSV file
 	playerDataFiles := []string{
-		"players.csv",
-		"combined_with_depth.csv",
+		getDataPath("players.csv"),
+		getDataPath("combined_with_depth.csv"),
 		"go/combined_with_depth.csv", // fallback if running from root
 	}
 	

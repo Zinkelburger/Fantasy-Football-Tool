@@ -28,13 +28,13 @@ func main() {
 
 	// 1. Initialize the data loader.
 	// Note: Updated paths - "analysis" for note files, "." for logs directory (where filtered files will be created)
-	dataLoader := NewDataLoader("analysis", ".")
+	dataLoader := NewDataLoader(getDataPath("analysis"), ".")
 
 	// 2. Load player data from static players.csv file (not dynamic log files)
 	// Try multiple possible player data file names
 	playerDataFiles := []string{
-		"players.csv",
-		"combined_with_depth.csv",
+		getDataPath("players.csv"),
+		getDataPath("combined_with_depth.csv"),
 		"go/combined_with_depth.csv", // fallback if running from root
 	}
 
@@ -98,11 +98,33 @@ func main() {
 		}
 	}
 
-	// 6. Create communication channel between HTTP server and UI
+	// 6. Initialize status directory and files if they don't exist
+	statusDir := getDataPath("status")
+	if err := os.MkdirAll(statusDir, 0755); err != nil {
+		log.Fatalf("Failed to create status directory: %v", err)
+	}
+	
+	// Initialize status files with defaults if they don't exist
+	pickFile := statusDir + "/pick.txt"
+	if _, err := os.Stat(pickFile); os.IsNotExist(err) {
+		if err := os.WriteFile(pickFile, []byte("0"), 0644); err != nil {
+			log.Fatalf("Failed to create pick.txt: %v", err)
+		}
+		log.Printf("Created default %s", pickFile)
+	}
+	
+	teamFile := statusDir + "/current_team.txt"
+	if _, err := os.Stat(teamFile); os.IsNotExist(err) {
+		if err := os.WriteFile(teamFile, []byte(""), 0644); err != nil {
+			log.Fatalf("Failed to create current_team.txt: %v", err)
+		}
+		log.Printf("Created default %s", teamFile)
+	}
+
+	// 7. Create communication channel between HTTP server and UI
 	playerUpdateChannel := make(chan PlayerUpdate, 1000)
 
-	// 7. Start the HTTP server for browser extension communication
-	statusDir := "status"
+	// 8. Start the HTTP server for browser extension communication
 	httpPort := 8000
 	httpServer := StartHTTPServerAsync(statusDir, httpPort, playerUpdateChannel)
 	log.Printf("HTTP server started on port %d for browser extension communication", httpPort)
@@ -110,7 +132,7 @@ func main() {
 
 	// --- Start UI ---
 
-	// 8. Initialize and run the Fyne UI, passing the loaded data and update channel.
+	// 9. Initialize and run the Fyne UI, passing the loaded data and update channel.
 	fyneApp := app.New()
 	fyneApp.SetIcon(resourceLogoPng)
 	
