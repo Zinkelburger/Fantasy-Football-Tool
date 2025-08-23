@@ -10,8 +10,56 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/widget"
 )
+
+// PlayerRowLabel extends widget.Label to support right-click for draft status toggle
+type PlayerRowLabel struct {
+	widget.Label
+	ui          *FantasyUI
+	playerIndex int
+}
+
+// NewPlayerRowLabel creates a new player row label with right-click support
+func NewPlayerRowLabel(ui *FantasyUI) *PlayerRowLabel {
+	label := &PlayerRowLabel{
+		Label:       *widget.NewLabel("template"),
+		ui:          ui,
+		playerIndex: -1,
+	}
+	label.ExtendBaseWidget(label)
+	return label
+}
+
+// MouseDown implements desktop.Mouseable interface for right-click detection
+func (p *PlayerRowLabel) MouseDown(event *desktop.MouseEvent) {
+	if p.playerIndex >= 0 && event.Button == desktop.MouseButtonSecondary {
+		// Right-click detected - toggle draft status
+		p.ui.mutex.Lock()
+		p.ui.selectedPlayerIndex = p.playerIndex
+		p.ui.lastSelectedPlayerIndex = p.playerIndex
+		p.ui.mutex.Unlock()
+		p.ui.handleDraftStatusToggle()
+	}
+}
+
+// MouseUp implements desktop.Mouseable interface (required)
+func (p *PlayerRowLabel) MouseUp(event *desktop.MouseEvent) {
+	// Not needed for our use case
+}
+
+// MouseMoved implements desktop.Mouseable interface (required)
+func (p *PlayerRowLabel) MouseMoved(event *desktop.MouseEvent) {
+	// Not needed for our use case
+}
+
+// Tapped implements fyne.Tappable interface for primary click handling
+func (p *PlayerRowLabel) Tapped(event *fyne.PointEvent) {
+	if p.playerIndex >= 0 && p.ui.playerList.OnSelected != nil {
+		p.ui.playerList.OnSelected(widget.ListItemID(p.playerIndex))
+	}
+}
 
 // FantasyUI holds the Fyne UI components and application state
 type FantasyUI struct {
@@ -150,8 +198,7 @@ func (ui *FantasyUI) setupUI() {
 			return len(ui.players) 
 		},
 		func() fyne.CanvasObject {
-			label := widget.NewLabel("template")
-			return label
+			return NewPlayerRowLabel(ui)
 		},
 					func(id widget.ListItemID, item fyne.CanvasObject) {
 			ui.mutex.RLock()
@@ -159,7 +206,10 @@ func (ui *FantasyUI) setupUI() {
 			
 			if id < len(ui.players) {
 				p := ui.players[id]
-				label := item.(*widget.Label)
+				playerLabel := item.(*PlayerRowLabel)
+				// Update the player index for right-click handling
+				playerLabel.playerIndex = int(id)
+				
 				// Handle emoji status - emojis take up 1 display width but we need consistent spacing
 				var statusPart string
 				if p.DraftStatus == "✅" {
@@ -169,7 +219,7 @@ func (ui *FantasyUI) setupUI() {
 				} else {
 					statusPart = "   "
 				}
-				label.SetText(fmt.Sprintf("%-5s %-25s %s%-6s %-4s %s", 
+				playerLabel.SetText(fmt.Sprintf("%-5s %-25s %s%-6s %-4s %s", 
 					p.Rank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
@@ -334,9 +384,23 @@ func (ui *FantasyUI) setupUI() {
 	
 	ui.window.SetContent(ui.mainContainer)
 	
-	// Set up keyboard shortcuts
+	// Set up keyboard shortcuts - use window-level handling to avoid focus issues
 	ui.window.Canvas().SetOnTypedKey(ui.handleKeyPress)
 	ui.window.Canvas().SetOnTypedRune(ui.handleTypedRune)
+	
+	// Add global shortcut handling that works regardless of focus
+	ui.window.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName: fyne.KeyD,
+	}, func(shortcut fyne.Shortcut) {
+		ui.handleDraftStatusToggle()
+	})
+	
+	// Also add space key as global shortcut
+	ui.window.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName: fyne.KeySpace,
+	}, func(shortcut fyne.Shortcut) {
+		ui.handleDraftStatusToggle()
+	})
 	
 	// Handle window close
 	ui.window.SetCloseIntercept(func() {
