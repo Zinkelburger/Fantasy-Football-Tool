@@ -1,0 +1,157 @@
+name: Release (Fixed)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+
+    - name: Install tools
+      run: |
+        go install fyne.io/tools/cmd/fyne@latest
+        go install github.com/fyne-io/fyne-cross@latest
+
+    - name: Build with fyne-cross and package
+      working-directory: go
+      run: |
+        # Generate Fyne resources
+        fyne bundle -o resource.go logo.png
+        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        
+        # Build all platforms with proper app ID
+        echo "Building Linux..."
+        fyne-cross linux -arch=amd64,arm64 -app-id football.draftassistant -name fantasy-football-tool
+        
+        echo "Building Windows..."
+        fyne-cross windows -arch=amd64 -app-id football.draftassistant -name fantasy-football-tool
+        
+        echo "Building macOS..."
+        fyne-cross darwin -arch=amd64,arm64 -app-id football.draftassistant -name fantasy-football-tool
+        
+        # List what was actually built (for debugging)
+        echo "=== Built files ==="
+        find fyne-cross/dist/ -type f -name "*fantasy*" -o -name "*.exe" -o -name "*.app" | head -20
+        
+        # Create release directory
+        mkdir -p releases
+        
+        # Package each platform
+        for platform_arch in linux-amd64 linux-arm64 windows-amd64 darwin-amd64 darwin-arm64; do
+          echo "Packaging $platform_arch..."
+          platform=$(echo $platform_arch | cut -d'-' -f1)
+          arch=$(echo $platform_arch | cut -d'-' -f2)
+          
+          # Check if the build actually exists
+          if [ ! -d "fyne-cross/dist/$platform_arch" ]; then
+            echo "Warning: No build found for $platform_arch, skipping..."
+            continue
+          fi
+          
+          # Create platform directory
+          mkdir -p "releases/$platform_arch"
+          
+          # Copy binary with proper naming
+          if [ "$platform" = "windows" ]; then
+            # Find the .exe file
+            exe_file=$(find "fyne-cross/dist/$platform_arch/" -name "*.exe" -type f | head -1)
+            if [ -n "$exe_file" ]; then
+              cp "$exe_file" "releases/$platform_arch/fantasy-football-tool.exe"
+            else
+              echo "ERROR: No .exe file found for Windows build"
+              exit 1
+            fi
+          elif [ "$platform" = "darwin" ]; then
+            # For macOS, look for .app bundle or binary
+            app_bundle=$(find "fyne-cross/dist/$platform_arch/" -name "*.app" -type d | head -1)
+            if [ -n "$app_bundle" ]; then
+              cp -r "$app_bundle" "releases/$platform_arch/"
+              # Also copy the binary if it exists separately
+              binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
+              if [ -n "$binary_file" ]; then
+                cp "$binary_file" "releases/$platform_arch/"
+              fi
+            else
+              # Fallback to binary
+              binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
+              if [ -n "$binary_file" ]; then
+                cp "$binary_file" "releases/$platform_arch/"
+              else
+                echo "ERROR: No binary found for macOS build"
+                exit 1
+              fi
+            fi
+          else
+            # Linux - find the binary
+            binary_file=$(find "fyne-cross/dist/$platform_arch/" -name "fantasy-football-tool" -type f | head -1)
+            if [ -n "$binary_file" ]; then
+              cp "$binary_file" "releases/$platform_arch/"
+            else
+              echo "ERROR: No binary found for Linux build"
+              exit 1
+            fi
+          fi
+          
+          # Copy all necessary files
+          cp -r analysis "releases/$platform_arch/"
+          cp -r prompts "releases/$platform_arch/"
+          cp -r status "releases/$platform_arch/"
+          cp -r font "releases/$platform_arch/"
+          cp players.csv "releases/$platform_arch/"
+          cp README.md "releases/$platform_arch/"
+          
+          # Create archive
+          cd releases
+          if [ "$platform" = "windows" ]; then
+            zip -r "fantasy-football-tool-${platform}-${arch}.zip" "$platform_arch"
+          else
+            tar -czf "fantasy-football-tool-${platform}-${arch}.tar.gz" "$platform_arch"
+          fi
+          cd ..
+        done
+        
+        # Generate checksums
+        cd releases
+        sha256sum *.tar.gz *.zip > checksums.txt 2>/dev/null || true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          go/releases/*.tar.gz
+          go/releases/*.zip
+          go/releases/checksums.txt
+        body: |
+          ## Fantasy Football Tool ${{ github.ref_name }}
+          
+          **Cross-platform fantasy football draft assistant with AI analysis**
+          
+          ### Downloads:
+          - **Windows (x64)**: `fantasy-football-tool-windows-amd64.zip`
+          - **macOS (Intel)**: `fantasy-football-tool-darwin-amd64.tar.gz`
+          - **macOS (Apple Silicon)**: `fantasy-football-tool-darwin-arm64.tar.gz`
+          - **Linux (x64)**: `fantasy-football-tool-linux-amd64.tar.gz`
+          - **Linux (ARM64)**: `fantasy-football-tool-linux-arm64.tar.gz`
+          
+          ### Quick Start:
+          1. Download and extract the archive for your platform
+          2. Set environment variable: `export OPENAI_API_KEY=your_key_here`
+          3. Run: `./fantasy-football-tool` (or `fantasy-football-tool.exe` on Windows)
+          
+          **Note**: You need to set your OpenAI API key as an environment variable for AI features to work.
+          All necessary files (player analysis, data files, etc.) are included in each archive.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
