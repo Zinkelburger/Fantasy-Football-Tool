@@ -15,7 +15,7 @@ def create_player_stubs():
     analysis_dir.mkdir(exist_ok=True)
     
     # Find CSV file
-    csv_file = go_dir / "combined_with_depth.csv"
+    csv_file = go_dir / "players.csv"
     if not csv_file.exists():
         print(f"ERROR: {csv_file} not found")
         return
@@ -26,19 +26,27 @@ def create_player_stubs():
     with open(csv_file, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         created = 0
-        
+        skipped = 0
+
         for row in reader:
             name = row['Name'].strip()
+            # Sanitize the name to create a valid filename
             clean_name = name.replace('/', '_').replace('\\', '_')
             stub_file = analysis_dir / f"{clean_name}.md"
-            
-            # Simple stub content
-            content = f"# {name}\n\n**Team:** {row['Team']}  \n**Position:** {row['Pos']}  \n\n## Analysis\nPlayer analysis goes here.\n"
-            
-            stub_file.write_text(content, encoding='utf-8')
-            created += 1
+
+            # --- CHANGE: Check if the stub file already exists ---
+            if not stub_file.exists():
+                # Simple stub content
+                content = f"# {name}\n\n**Team:** {row['Team']}  \n**Position:** {row['Pos']}  \n\n## Analysis\n\n"
+                
+                stub_file.write_text(content, encoding='utf-8')
+                created += 1
+            else:
+                skipped += 1
     
-    print(f"Created {created} player stub files")
+    print(f"Created {created} new player stub files.")
+    if skipped > 0:
+        print(f"Skipped {skipped} players that already had a stub file.")
 
 
 def create_status_files():
@@ -47,8 +55,8 @@ def create_status_files():
     status_dir = go_dir / "status"
     status_dir.mkdir(exist_ok=True)
     
-    (status_dir / "pick.txt").write_text("0")
-    (status_dir / "current_team.txt").write_text("My Team")
+    (status_dir / "pick.txt").write_text("")
+    (status_dir / "current_team.txt").write_text("")
     print("Created status files")
 
 
