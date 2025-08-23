@@ -190,21 +190,16 @@ func TestLoadTruncatedNote_FileExists(t *testing.T) {
 
 	note := loadTruncatedNote("Patrick Mahomes")
 
-	if note == "No note" || note == "Error loading" || note == "No analysis" {
+	if note == "No note" || note == "Error loading" || note == "No content" {
 		t.Errorf("Expected valid note content, got '%s'", note)
 	}
 
-	// Should contain "This is a test analysis" (from our test file)
-	if !strings.Contains(note, "This is a test") {
-		t.Errorf("Expected note to contain test content, got '%s'", note)
+	// Should contain "Expected to perform well this season" (the last line from our test file)
+	if !strings.Contains(note, "Expected to perform well this season") {
+		t.Errorf("Expected note to contain last line content, got '%s'", note)
 	}
 
-	// Should be truncated (end with ...)
-	if !strings.HasSuffix(note, "...") {
-		t.Errorf("Expected note to be truncated with '...', got '%s'", note)
-	}
-
-	// Should be around 40 characters or less (plus ...)
+	// Should be around 40 characters or less
 	if len(note) > 45 {
 		t.Errorf("Expected note to be truncated to around 40 chars, got %d chars: '%s'", len(note), note)
 	}
@@ -257,8 +252,9 @@ This is just a header without analysis section.
 
 	note := loadTruncatedNote("Test Player")
 
-	if note != "No analysis" {
-		t.Errorf("Expected 'No analysis' for file without analysis section, got '%s'", note)
+	// Now it should return the last meaningful line, not "No analysis"
+	if !strings.Contains(note, "This is just a header without...") {
+		t.Errorf("Expected note to contain last line content, got '%s'", note)
 	}
 }
 

@@ -34,6 +34,14 @@ type FantasyUI struct {
 	settingsButton *widget.Button
 	settingsUI     *SettingsUI
 	
+	// Note Viewer Components
+	noteViewer      *widget.RichText
+	noteViewerContainer *fyne.Container
+	closeNoteButton *widget.Button
+	noteViewerVisible bool
+	currentViewedPlayer string
+	selectedPlayerIndex int
+	
 	// Collapsible controls
 	llmCollapseBtn  *widget.Button
 	teamCollapseBtn *widget.Button
@@ -44,6 +52,7 @@ type FantasyUI struct {
 	rightVSplit     *container.Split
 	llmPanel        *fyne.Container
 	teamPanel       *fyne.Container
+	mainContainer   *container.Split
 	
 	// State
 	querying    bool
@@ -82,6 +91,7 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		pickedPlayers: make([]string, 0),
 		currentPick:   0,
 		teamPlayers:   make([]Player, 0),
+		selectedPlayerIndex: -1,
 	}
 	
 	// Initialize settings UI
@@ -137,26 +147,58 @@ func (ui *FantasyUI) setupUI() {
 			return len(ui.players) 
 		},
 		func() fyne.CanvasObject {
-			return widget.NewLabel("template")
+			label := widget.NewLabel("template")
+			return label
 		},
-					func(id widget.ListItemID, item fyne.CanvasObject) {
+		func(id widget.ListItemID, item fyne.CanvasObject) {
 			ui.mutex.RLock()
 			defer ui.mutex.RUnlock()
 			
 			if id < len(ui.players) {
 				p := ui.players[id]
 				label := item.(*widget.Label)
-				// Improved formatting with better spacing and Note column
-				label.SetText(fmt.Sprintf("%-5s  %-25s  %-6s  %-4s  %-42s", 
-					p.Rank, p.Name, p.Depth, p.Team, p.Note))
+				// Improved formatting with Status column
+				statusDisplay := p.DraftStatus
+				if statusDisplay == "" {
+					statusDisplay = " " // Space to maintain column alignment
+				}
+				label.SetText(fmt.Sprintf("%-5s  %-25s  %-3s  %-6s  %-4s  %-42s", 
+					p.Rank, p.Name, statusDisplay, p.Depth, p.Team, p.Note))
 			}
 		},
 	)
+	
+	// Add selection handler for clicking players to view notes
+	ui.playerList.OnSelected = func(id widget.ListItemID) {
+		ui.mutex.Lock()
+		ui.selectedPlayerIndex = int(id)
+		if id < len(ui.players) {
+			playerName := ui.players[id].Name
+			ui.mutex.Unlock()
+			ui.showPlayerNote(playerName)
+		} else {
+			ui.mutex.Unlock()
+		}
+	}
 	
 	// Create output text area
 	ui.outputText = widget.NewRichText()
 	ui.outputText.Scroll = container.ScrollBoth
 	ui.outputText.Wrapping = fyne.TextWrapWord
+	
+	// Create note viewer components
+	ui.noteViewer = widget.NewRichText()
+	ui.noteViewer.Scroll = container.ScrollBoth
+	ui.noteViewer.Wrapping = fyne.TextWrapWord
+	ui.closeNoteButton = widget.NewButton("Close Note View", ui.hidePlayerNote)
+	ui.noteViewerContainer = container.NewBorder(
+		nil, // top - will be set dynamically
+		nil,
+		nil,
+		nil,
+		container.NewScroll(ui.noteViewer),
+	)
+	ui.noteViewerVisible = false
 	
 	// Create team list
 	ui.teamList = widget.NewList(
@@ -202,9 +244,9 @@ func (ui *FantasyUI) setupUI() {
 		ui.settingsButton,
 	)
 	
-	// Create header for player list with improved spacing and Note column
-	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s  %-25s  %-6s  %-4s  %-42s", 
-		"Rank", "Name", "Depth", "Team", "Note"))
+	// Create header for player list with Status column
+	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s  %-25s  %-3s  %-6s  %-4s  %-42s", 
+		"Rank", "Name", "St", "Depth", "Team", "Note"))
 	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
 	
 	// Create left panel (player list)
@@ -264,10 +306,10 @@ func (ui *FantasyUI) setupUI() {
 	)
 	
 	// Create main split container
-	content := container.NewHSplit(leftPanel, rightPanelWithControls)
-	content.SetOffset(0.5) // 50/50 split
+	ui.mainContainer = container.NewHSplit(leftPanel, rightPanelWithControls)
+	ui.mainContainer.SetOffset(0.5) // 50/50 split
 	
-	ui.window.SetContent(content)
+	ui.window.SetContent(ui.mainContainer)
 	
 	// Set up keyboard shortcuts
 	ui.window.Canvas().SetOnTypedKey(ui.handleKeyPress)
@@ -286,6 +328,8 @@ func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 		ui.handleLLMQuery()
 	case fyne.KeyR:
 		ui.handleManualRefresh()
+	case fyne.KeySpace:
+		ui.handleDraftStatusToggle()
 	case fyne.KeyEscape:
 		ui.stop()
 		ui.window.Close()
@@ -488,6 +532,8 @@ func (ui *FantasyUI) performRefreshInternal() {
 	
 	if shouldUpdate {
 		ui.players = filteredPlayers
+		// Load draft status for all players
+		ui.loadDraftStatusForAllPlayers()
 		ui.mutex.Unlock()
 		
 		// Refresh UI safely
@@ -565,9 +611,9 @@ func (ui *FantasyUI) updateStatusInternal() {
 	default:
 		providerType := ui.llmManager.GetProviderType()
 		if ui.llmManager.IsConfigured() {
-			status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, Esc: Quit)", providerType)
+			status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, Space: Toggle Draft Status, Esc: Quit)", providerType)
 		} else {
-			status = "Ready - Listening for draft updates (q: Configure LLM, r: Refresh, Esc: Quit)"
+			status = "Ready - Listening for draft updates (q: Configure LLM, r: Refresh, Space: Toggle Draft Status, Esc: Quit)"
 		}
 	}
 	
@@ -791,4 +837,133 @@ func (ui *FantasyUI) loadTeamData() {
 	})
 	
 	log.Printf("Loaded %d team players", len(teamPlayers))
+}
+
+// showPlayerNote displays the full note content for a player in an overlay
+func (ui *FantasyUI) showPlayerNote(playerName string) {
+	// Load the note file content
+	noteFile, err := ui.dataLoader.FindPlayerNoteFile(playerName)
+	if err != nil {
+		log.Printf("Could not find note file for %s: %v", playerName, err)
+		return
+	}
+	
+	content, err := os.ReadFile(noteFile)
+	if err != nil {
+		log.Printf("Could not read note file for %s: %v", playerName, err)
+		return
+	}
+	
+	// Update the note viewer
+	ui.mutex.Lock()
+	ui.currentViewedPlayer = playerName
+	ui.noteViewerVisible = true
+	ui.mutex.Unlock()
+	
+	// Update UI safely
+	ui.safeUIUpdate(func() {
+		// Create header with just player name and close button (no duplicate)
+		headerContainer := container.NewBorder(
+			nil, nil,
+			widget.NewLabel(fmt.Sprintf("Analysis: %s", playerName)),
+			ui.closeNoteButton,
+			nil,
+		)
+		
+		// Update the note viewer container with the new header
+		ui.noteViewerContainer = container.NewBorder(
+			headerContainer,
+			nil,
+			nil,
+			nil,
+			container.NewScroll(ui.noteViewer),
+		)
+		
+		// Set the note content
+		ui.noteViewer.ParseMarkdown(string(content))
+		
+		// Replace the right panel content with note viewer
+		ui.mainContainer.Trailing = ui.noteViewerContainer
+		ui.mainContainer.Refresh()
+	})
+	
+	// Clear the player list selection to allow clicking the same player again
+	ui.safeUIUpdate(func() {
+		ui.playerList.UnselectAll()
+	})
+}
+
+// hidePlayerNote hides the note viewer and returns to normal view
+func (ui *FantasyUI) hidePlayerNote() {
+	ui.mutex.Lock()
+	ui.noteViewerVisible = false
+	ui.currentViewedPlayer = ""
+	ui.mutex.Unlock()
+	
+	// Restore the original right panel
+	ui.safeUIUpdate(func() {
+		// Create right panel with buttons and status again
+		buttonContainer := container.NewHBox(
+			ui.queryButton,
+			ui.refreshButton,
+			ui.settingsButton,
+		)
+		
+		rightPanelWithControls := container.NewBorder(
+			buttonContainer, // top
+			ui.statusLabel,  // bottom
+			nil,            // left
+			nil,            // right
+			ui.rightVSplit, // center
+		)
+		
+		ui.mainContainer.Trailing = rightPanelWithControls
+		ui.mainContainer.Refresh()
+	})
+}
+
+// handleDraftStatusToggle toggles the draft status of the currently selected player
+func (ui *FantasyUI) handleDraftStatusToggle() {
+	ui.mutex.Lock()
+	selectedIndex := ui.selectedPlayerIndex
+	if selectedIndex == -1 || selectedIndex >= len(ui.players) {
+		ui.mutex.Unlock()
+		return
+	}
+	
+	player := &ui.players[selectedIndex]
+	playerName := player.Name
+	
+	// Cycle through: "" -> "✅" -> "❌" -> ""
+	switch player.DraftStatus {
+	case "":
+		player.DraftStatus = "✅"
+	case "✅":
+		player.DraftStatus = "❌"
+	case "❌":
+		player.DraftStatus = ""
+	default:
+		player.DraftStatus = "✅"
+	}
+	
+	newStatus := player.DraftStatus
+	ui.mutex.Unlock()
+	
+	// Update the note file
+	if err := ui.dataLoader.WriteDraftStatusToNote(playerName, newStatus); err != nil {
+		log.Printf("Error updating draft status for %s: %v", playerName, err)
+	}
+	
+	// Refresh the UI
+	ui.safeUIUpdate(func() {
+		ui.playerList.Refresh()
+	})
+}
+
+// loadDraftStatusForAllPlayers loads draft status from note files for all players
+// Must be called with mutex held
+func (ui *FantasyUI) loadDraftStatusForAllPlayers() {
+	for i := range ui.players {
+		ui.players[i].DraftStatus = ui.dataLoader.LoadDraftStatusFromNote(ui.players[i].Name)
+	}
 }

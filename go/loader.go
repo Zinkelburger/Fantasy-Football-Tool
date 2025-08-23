@@ -212,3 +212,67 @@ func (d *DataLoader) BuildAllNotes(players []Player) (string, error) {
 	log.Printf("Built notes for %d players", notesFound)
 	return notes.String(), nil
 }
+
+// WriteDraftStatusToNote writes the draft status to a player's note file
+func (d *DataLoader) WriteDraftStatusToNote(playerName string, status string) error {
+	noteFile, err := d.FindPlayerNoteFile(playerName)
+	if err != nil {
+		return fmt.Errorf("could not find note file for %s: %w", playerName, err)
+	}
+
+	content, err := os.ReadFile(noteFile)
+	if err != nil {
+		return fmt.Errorf("could not read note file for %s: %w", playerName, err)
+	}
+
+	contentStr := string(content)
+	
+	// Remove existing draft status line
+	lines := strings.Split(contentStr, "\n")
+	var filteredLines []string
+	for _, line := range lines {
+		if !strings.HasPrefix(line, "# To Draft:") {
+			filteredLines = append(filteredLines, line)
+		}
+	}
+	
+	// Add new draft status if not empty
+	if status != "" {
+		// Remove trailing empty lines
+		for len(filteredLines) > 0 && strings.TrimSpace(filteredLines[len(filteredLines)-1]) == "" {
+			filteredLines = filteredLines[:len(filteredLines)-1]
+		}
+		filteredLines = append(filteredLines, "", fmt.Sprintf("# To Draft: %s", status))
+	}
+	
+	newContent := strings.Join(filteredLines, "\n")
+	return os.WriteFile(noteFile, []byte(newContent), 0644)
+}
+
+// LoadDraftStatusFromNote loads the draft status from a player's note file
+func (d *DataLoader) LoadDraftStatusFromNote(playerName string) string {
+	noteFile, err := d.FindPlayerNoteFile(playerName)
+	if err != nil {
+		return ""
+	}
+
+	content, err := os.ReadFile(noteFile)
+	if err != nil {
+		return ""
+	}
+
+	lines := strings.Split(string(content), "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "# To Draft:") {
+			// Extract the emoji after "# To Draft: "
+			if len(line) > 12 {
+				status := strings.TrimSpace(line[12:])
+				if status == "✅" || status == "❌" {
+					return status
+				}
+			}
+		}
+	}
+	return ""
+}

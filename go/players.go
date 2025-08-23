@@ -17,6 +17,7 @@ type Player struct {
 	Depth string
 	Rank  string
 	Note  string
+	DraftStatus string // "✅", "❌", or "" (empty)
 	rankNum int // internal field for sorting
 }
 
@@ -50,13 +51,14 @@ func LoadPlayers(path string) ([]Player, error) {
 		note := loadTruncatedNote(r[0])
 		
 		ps = append(ps, Player{
-			Name:    r[0],                    // Name (1st column)
-			Team:    r[1],                    // Team (2nd column)  
-			Pos:     r[2],                    // Pos (3rd column)
-			Depth:   r[4],                    // Depth (5th column)
-			Rank:    r[3],                    // Average_ADP (4th column)
-			Note:    note,
-			rankNum: int(rankNum),
+			Name:        r[0],                    // Name (1st column)
+			Team:        r[1],                    // Team (2nd column)  
+			Pos:         r[2],                    // Pos (3rd column)
+			Depth:       r[4],                    // Depth (5th column)
+			Rank:        r[3],                    // Average_ADP (4th column)
+			Note:        note,
+			DraftStatus: "",                      // Will be loaded by UI
+			rankNum:     int(rankNum),
 		})
 	}
 	
@@ -68,7 +70,8 @@ func LoadPlayers(path string) ([]Player, error) {
 	return ps, nil
 }
 
-// loadTruncatedNote loads the first few words from a player's analysis file
+// loadTruncatedNote loads a truncated note from a player's analysis file
+// Prefers content after "# Analysis" header if present, otherwise uses the last meaningful line
 func loadTruncatedNote(playerName string) string {
 	// Clean the player name for file lookup
 	cleanedName := strings.TrimSpace(playerName)
@@ -84,13 +87,14 @@ func loadTruncatedNote(playerName string) string {
 		return "Error loading"
 	}
 	
-	// Extract just the analysis content (skip the header)
 	lines := strings.Split(string(content), "\n")
+	
+	// First, try to find content after "# Analysis" header
 	analysisStarted := false
 	var analysisLines []string
 	
 	for _, line := range lines {
-		if strings.HasPrefix(line, "## Analysis") {
+		if strings.HasPrefix(strings.TrimSpace(line), "# Analysis") {
 			analysisStarted = true
 			continue
 		}
@@ -99,33 +103,49 @@ func loadTruncatedNote(playerName string) string {
 		}
 	}
 	
-	if len(analysisLines) == 0 {
-		return "No analysis"
+	var textToTruncate string
+	
+	if len(analysisLines) > 0 {
+		// Use analysis section content
+		textToTruncate = strings.Join(analysisLines, " ")
+	} else {
+		// Fall back to last meaningful line
+		for i := len(lines) - 1; i >= 0; i-- {
+			line := strings.TrimSpace(lines[i])
+			if line != "" && !strings.HasPrefix(line, "#") {
+				textToTruncate = line
+				break
+			}
+		}
 	}
 	
-	// Join and truncate to about 40 characters
-	analysisText := strings.Join(analysisLines, " ")
-	words := strings.Fields(analysisText)
-	
-	if len(words) == 0 {
-		return "No analysis"
+	if textToTruncate == "" {
+		return "No content"
 	}
 	
-	// Take first 6-8 words or until we hit ~40 chars
+	// Clean up markdown and formatting
+	textToTruncate = strings.ReplaceAll(textToTruncate, "**", "")
+	textToTruncate = strings.ReplaceAll(textToTruncate, "*", "")
+	textToTruncate = strings.ReplaceAll(textToTruncate, "- ", "")
+	textToTruncate = strings.TrimSpace(textToTruncate)
+	
+	// Truncate to about 40 characters
+	if len(textToTruncate) <= 40 {
+		return textToTruncate
+	}
+	
+	// Find a good breaking point near 40 characters
+	words := strings.Fields(textToTruncate)
 	truncated := ""
-	for i, word := range words {
-		if i > 7 || len(truncated)+len(word)+1 > 40 {
+	for _, word := range words {
+		if len(truncated)+len(word)+1 > 37 { // Leave room for "..."
 			break
 		}
-		if i > 0 {
+		if truncated != "" {
 			truncated += " "
 		}
 		truncated += word
 	}
 	
-	if len(truncated) < len(analysisText) {
-		truncated += "..."
-	}
-	
-	return truncated
+	return truncated + "..."
 }

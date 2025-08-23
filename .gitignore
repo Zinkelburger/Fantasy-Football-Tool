@@ -8,4 +8,4 @@ reddit-scraper/filtered_data
 reddit-scraper/__pycache__
 reddit-scraper/.env
 reddit-scraper/venv
-go/analysis/
+reddit-scraper/markdown_data
