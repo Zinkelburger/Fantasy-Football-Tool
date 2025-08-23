@@ -30,7 +30,7 @@ func (g *GPT) Ask(q string) (string, error) {
 	
 	resp, err := g.cli.CreateChatCompletion(ctx,
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4Dot1Nano,
+			Model: "gpt-5-nano-2025-08-07",
 			Messages: []openai.ChatCompletionMessage{
 				{Role: "system", Content: g.systemPrompt},
 				{Role: "user", Content: q},
