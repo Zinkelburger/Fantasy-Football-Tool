@@ -1,0 +1,14 @@
+Package: fantasy-football-tool
+Version: {{VERSION}}
+Section: games
+Priority: optional
+Architecture: amd64
+Depends: libc6 (>= 2.31), libgl1-mesa-glx, libx11-6, libxrandr2, libxinerama1, libxcursor1, libxi6
+Maintainer: Fantasy Football Tool <noreply@example.com>
+Description: AI-powered fantasy football draft assistant
+ A sophisticated GUI application that helps with fantasy football
+ draft decisions using AI analysis and player data.
+ .
+ This tool provides intelligent recommendations for fantasy football
+ drafts, using AI to analyze player performance and suggest optimal
+ picks based on your league settings and draft position.

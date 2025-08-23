@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -20,93 +20,91 @@ jobs:
       with:
         go-version: '1.23'
 
-    - name: Install dependencies for AppImage
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libfuse2 file libgl1-mesa-dev xorg-dev
+        sudo apt-get install -y libgl1-mesa-dev xorg-dev build-essential
+
+    - name: Install packaging tools
+      run: |
+        sudo apt-get install -y dpkg-dev rpm alien
 
     - name: Install Fyne tools
       run: |
         go install fyne.io/tools/cmd/fyne@latest
 
-    - name: Build Linux AppImage
+    - name: Build binary and create packages
       working-directory: go
       run: |
         # Generate Fyne resources from assets
         fyne bundle -o resource.go logo.png
         fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
-        
-        # Create release directory
-        mkdir -p releases
         
         # Build the Linux binary
         echo "Building Linux binary..."
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o fantasy-football-tool .
         
-        # Create AppDir structure
-        echo "Creating AppImage structure..."
-        mkdir -p AppDir/usr/bin
-        mkdir -p AppDir/usr/share/fantasy-football-tool
-        mkdir -p AppDir/usr/share/applications
-        mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+        # Create package build directory
+        mkdir -p build/deb/DEBIAN
+        mkdir -p build/deb/usr/bin
+        mkdir -p build/deb/usr/share/fantasy-football-tool
+        mkdir -p build/deb/usr/share/applications
+        mkdir -p build/deb/usr/share/icons/hicolor/256x256/apps
+        mkdir -p build/deb/var/lib/fantasy-football-tool/status
         
         # Copy binary
-        cp fantasy-football-tool AppDir/usr/bin/
+        cp fantasy-football-tool build/deb/usr/bin/
         
-        # Copy data files
-        cp -r analysis AppDir/usr/share/fantasy-football-tool/
-        cp players.csv AppDir/usr/share/fantasy-football-tool/
-        cp -r prompts AppDir/usr/share/fantasy-football-tool/
-        cp -r font AppDir/usr/share/fantasy-football-tool/
+        # Copy read-only data files to /usr/share/
+        cp -r analysis build/deb/usr/share/fantasy-football-tool/
+        cp players.csv build/deb/usr/share/fantasy-football-tool/
+        cp -r prompts build/deb/usr/share/fantasy-football-tool/
+        cp -r font build/deb/usr/share/fantasy-football-tool/
+        cp README.md build/deb/usr/share/fantasy-football-tool/
         
-        # Copy icon
-        cp logo.png AppDir/usr/share/icons/hicolor/256x256/apps/fantasy-football-tool.png
-        cp logo.png AppDir/fantasy-football-tool.png
+        # Copy icon and desktop file from dist/
+        cp logo.png build/deb/usr/share/icons/hicolor/256x256/apps/fantasy-football-tool.png
+        cp ../dist/fantasy-football-tool.desktop build/deb/usr/share/applications/
         
-        # Create desktop file
-        cat > AppDir/fantasy-football-tool.desktop << EOF
-        [Desktop Entry]
-        Type=Application
-        Name=Fantasy Football Tool
-        Comment=AI-powered fantasy football draft assistant
-        Exec=fantasy-football-tool
-        Icon=fantasy-football-tool
-        Categories=Game;Sports;
-        EOF
+        # Create control file from template
+        sed 's/{{VERSION}}/1.0.0/g' ../dist/debian/control.template > build/deb/DEBIAN/control
         
-        cp AppDir/fantasy-football-tool.desktop AppDir/usr/share/applications/
+        # Copy debian scripts
+        cp ../dist/debian/postinst build/deb/DEBIAN/
+        cp ../dist/debian/postrm build/deb/DEBIAN/
+        chmod 755 build/deb/DEBIAN/postinst build/deb/DEBIAN/postrm
         
-        # Create AppRun script
-        cat > AppDir/AppRun << 'EOF'
-        #!/bin/bash
-        HERE="$(dirname "$(readlink -f "${0}")")"
-        export PATH="${HERE}/usr/bin:${PATH}"
-        export LD_LIBRARY_PATH="${HERE}/usr/lib:${LD_LIBRARY_PATH}"
-        cd "${HERE}/usr/share/fantasy-football-tool"
-        exec "${HERE}/usr/bin/fantasy-football-tool" "$@"
-        EOF
-        chmod +x AppDir/AppRun
+        # Build .deb package
+        mkdir -p releases
+        dpkg-deb --build build/deb releases/fantasy-football-tool_1.0.0_amd64.deb
         
-        # Download appimagetool
-        wget -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-        chmod +x appimagetool
+        # Convert .deb to .rpm using alien
+        cd releases
+        sudo alien --to-rpm --scripts fantasy-football-tool_1.0.0_amd64.deb
         
-        # Build AppImage
-        echo "Building AppImage..."
-        ./appimagetool AppDir releases/fantasy-football-tool-x86_64.AppImage
+        # Rename RPM to follow standard naming
+        mv *.rpm fantasy-football-tool-1.0.0-1.x86_64.rpm
+        cd ..
         
-        echo "=== Linux Build Results ==="
+        echo "=== Package Build Results ==="
         ls -la releases/
-        file releases/fantasy-football-tool-x86_64.AppImage
+        echo ""
+        echo "DEB package info:"
+        dpkg-deb --info releases/fantasy-football-tool_1.0.0_amd64.deb
+        echo ""
+        echo "Binary dependencies:"
+        ldd fantasy-football-tool | head -10
 
-    - name: Upload Linux artifacts
+    - name: Upload Linux packages
       uses: actions/upload-artifact@v4
       with:
-        name: linux-builds
-        path: go/releases/*.AppImage
+        name: linux-packages
+        path: |
+          go/releases/*.deb
+          go/releases/*.rpm
 
   build-windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Use a native Windows runner
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -119,60 +117,66 @@ jobs:
         go-version: '1.23'
 
     - name: Install Fyne tools
-      run: |
-        go install fyne.io/tools/cmd/fyne@latest
-        go install github.com/fyne-io/fyne-cross@latest
+      run: go install fyne.io/tools/cmd/fyne@latest
 
-    - name: Build Windows
+    - name: Build and Package Windows App
       working-directory: go
+      shell: pwsh # Use PowerShell, the standard for Windows runners
       run: |
+        # Ensure the Fyne tool is available in the current shell's PATH
+        $env:Path += ";$(go env GOPATH)\bin"
+
         # Generate Fyne resources from assets
+        Write-Host "Generating Fyne resources..."
         fyne bundle -o resource.go logo.png
+        if (-not $?) { throw "Failed to bundle logo.png" }
+        
         fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        if (-not $?) { throw "Failed to bundle font resource" }
+
+        # Use 'fyne package' to create a distributable .exe with its icon and manifest
+        # This is the standard way to build a Fyne app for distribution
+        Write-Host "Building Windows executable..."
+        fyne package -os windows --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
+        if (-not $?) { throw "Failed to build Windows executable" }
+
+        # Verify the executable was created
+        if (-not (Test-Path "fantasy-football-tool.exe")) {
+          throw "Expected fantasy-football-tool.exe was not created"
+        }
+
+        # --- Create a clean package structure for the ZIP file ---
+        Write-Host "=== Packaging Windows build ==="
         
-        # Create release directory
-        mkdir -p releases
+        # Create releases directory and staging directory
+        New-Item -ItemType Directory -Force -Path ".\releases"
+        $stagingDir = ".\releases\windows-package"
+        New-Item -ItemType Directory -Force -Path $stagingDir
+
+        # Copy the .exe and all necessary assets to the staging directory
+        Write-Host "Copying files to staging directory..."
+        Copy-Item -Path ".\fantasy-football-tool.exe" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\players.csv" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\font" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\README.md" -Destination $stagingDir -ErrorAction Stop
         
-        # Build Windows targets using fyne-cross
-        echo "Building Windows amd64..."
-        fyne-cross windows -arch=amd64 --app-id football.draftassistant --name fantasy-football-tool
+        # Create the final ZIP file from the contents of the staging directory
+        Write-Host "Creating ZIP archive..."
+        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\releases\fantasy-football-tool-windows-amd64.zip" -Force
+
+        Write-Host "Package structure:"
+        Get-ChildItem -Path $stagingDir
         
-        # Create clean Windows package structure
-        echo "=== Packaging Windows build with clean structure ==="
-        
-        if [ -d "fyne-cross/dist/windows-amd64" ]; then
-          echo "Creating clean Windows package..."
-          mkdir -p releases/windows-package
-          
-          # Copy the exe directly to the package root
-          cp fyne-cross/dist/windows-amd64/*.exe releases/windows-package/ || echo "No exe found"
-          
-          # Copy all data files to package root
-          cp -r analysis releases/windows-package/
-          cp players.csv releases/windows-package/
-          cp -r prompts releases/windows-package/
-          cp -r font releases/windows-package/
-          cp README.md releases/windows-package/
-          
-          # Create single zip with everything at root level
-          cd releases
-          zip -r fantasy-football-tool-windows-amd64.zip windows-package/*
-          cd ..
-          
-          echo "Package structure:"
-          ls -la releases/windows-package/
-        fi
-        
-        echo "=== Windows Build Results ==="
-        ls -la releases/
-        echo "Contents of Windows package:"
-        unzip -l releases/fantasy-football-tool-windows-amd64.zip | head -20 || echo "No Windows archive found"
+        Write-Host "=== Windows Build Results ==="
+        Get-ChildItem -Path ".\releases\"
 
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windows-builds
-        path: go/releases/
+        path: go/releases/*.zip
 
   build-macos:
     runs-on: macos-latest
@@ -263,7 +267,12 @@ jobs:
         path: artifacts
 
     - name: Display structure of downloaded files
-      run: ls -la artifacts/
+      run: |
+        echo "Downloaded artifacts:"
+        find artifacts/ -type f -name "*.deb" -o -name "*.rpm" -o -name "*.zip" | sort
+        echo ""
+        echo "Detailed structure:"
+        ls -la artifacts/*/
 
     - name: Prepare release assets
       run: |
@@ -271,7 +280,75 @@ jobs:
         
         # Copy all build artifacts to release assets directory
         find artifacts/ -name "*.zip" -exec cp {} release-assets/ \;
-        find artifacts/ -name "*.AppImage" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.deb" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.rpm" -exec cp {} release-assets/ \;
+        
+        # Create simple installation guide
+        cat > release-assets/INSTALL_GUIDE.md << 'EOF'
+        # Fantasy Football Tool - Installation Guide
+        
+        ## Quick Install
+        
+        ### Ubuntu/Debian (Recommended):
+        ```bash
+        # Download and install the .deb package
+        wget https://github.com/your-repo/releases/latest/download/fantasy-football-tool_1.0.0_amd64.deb
+        sudo dpkg -i fantasy-football-tool_1.0.0_amd64.deb
+        sudo apt-get install -f  # Fix any missing dependencies
+        
+        # Run from anywhere
+        fantasy-football-tool
+        ```
+        
+        ### CentOS/RHEL/Fedora:
+        ```bash
+        # Download and install the .rpm package
+        wget https://github.com/your-repo/releases/latest/download/fantasy-football-tool-1.0.0-1.x86_64.rpm
+        sudo rpm -i fantasy-football-tool-1.0.0-1.x86_64.rpm
+        # or on newer systems:
+        sudo dnf install ./fantasy-football-tool-1.0.0-1.x86_64.rpm
+        
+        # Run from anywhere
+        fantasy-football-tool
+        ```
+        
+        ### Windows:
+        1. Download `fantasy-football-tool-windows-amd64.zip`
+        2. Extract and run `fantasy-football-tool.exe`
+        
+        ### macOS:
+        1. Download the appropriate ZIP for your Mac:
+           - Intel Macs: `fantasy-football-tool-darwin-amd64.zip`
+           - Apple Silicon: `fantasy-football-tool-darwin-arm64.zip`
+        2. Extract and run the app
+        
+        ## Package Benefits
+        
+        ✅ **Automatic dependency resolution** - Package manager installs required libraries  
+        ✅ **System integration** - Desktop shortcut and proper uninstall  
+        ✅ **Easy updates** - Use package manager to upgrade  
+        ✅ **No file extraction needed** - Just install and run  
+        
+        ## Dependencies (automatically handled by packages)
+        
+        The Linux packages declare these dependencies:
+        - libc6 (>= 2.31) - Standard C library
+        - libgl1-mesa-glx - OpenGL graphics
+        - libx11-6, libxrandr2, libxinerama1, libxcursor1, libxi6 - X11 windowing
+        
+        ## Uninstall
+        
+        ### Ubuntu/Debian:
+        ```bash
+        sudo apt remove fantasy-football-tool
+        ```
+        
+        ### CentOS/RHEL/Fedora:
+        ```bash
+        sudo rpm -e fantasy-football-tool
+        # or: sudo dnf remove fantasy-football-tool
+        ```
+        EOF
         
         echo "Release assets prepared:"
         ls -la release-assets/

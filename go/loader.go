@@ -99,7 +99,7 @@ func (d *DataLoader) FindPlayerNoteFile(playerName string) (string, error) {
 
 // LoadCurrentTeam reads the team's players from status/current_team.txt.
 func (d *DataLoader) LoadCurrentTeam() (string, error) {
-	content, err := os.ReadFile(getDataPath("status/current_team.txt"))
+	content, err := os.ReadFile(getWritablePath("status/current_team.txt"))
 	if err != nil {
 		return "Unknown Team", nil // Default instead of error
 	}
@@ -113,7 +113,7 @@ func (d *DataLoader) LoadCurrentTeam() (string, error) {
 // LoadCurrentTeamPlayers reads the current team players from status/current_team.txt.
 // Expects one player name per line. If the file contains just a team name, returns empty slice.
 func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
-	content, err := os.ReadFile(getDataPath("status/current_team.txt"))
+	content, err := os.ReadFile(getWritablePath("status/current_team.txt"))
 	if err != nil {
 		return []Player{}, nil // Return empty slice instead of error
 	}
@@ -176,7 +176,7 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 
 // LoadCurrentPickNum reads the pick number from status/pick.txt.
 func (d *DataLoader) LoadCurrentPickNum() (int, error) {
-	content, err := os.ReadFile(getDataPath("status/pick.txt"))
+	content, err := os.ReadFile(getWritablePath("status/pick.txt"))
 	if err != nil {
 		return 0, fmt.Errorf("could not read pick file: %w", err)
 	}

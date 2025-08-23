@@ -16,7 +16,7 @@ func main() {
 	}
 
 	// --- Logging Setup ---
-	logFile, err := os.OpenFile("program-messages.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile(getWritablePath("program-messages.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func main() {
 	}
 
 	// 6. Initialize status directory and files if they don't exist
-	statusDir := getDataPath("status")
+	statusDir := getWritablePath("status")
 	if err := os.MkdirAll(statusDir, 0755); err != nil {
 		log.Fatalf("Failed to create status directory: %v", err)
 	}

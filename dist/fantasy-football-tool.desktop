@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Fantasy Football Tool
+Comment=AI-powered fantasy football draft assistant
+Exec=fantasy-football-tool
+Icon=fantasy-football-tool
+Categories=Game;Sports;
+StartupNotify=true
+Terminal=false
