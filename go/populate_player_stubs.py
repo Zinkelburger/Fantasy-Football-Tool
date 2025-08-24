@@ -29,7 +29,7 @@ def create_player_stubs():
         skipped = 0
 
         for row in reader:
-            name = row['Name'].strip()
+            name = row['Player'].strip()
             # Sanitize the name to create a valid filename
             clean_name = name.replace('/', '_').replace('\\', '_')
             stub_file = analysis_dir / f"{clean_name}.md"
@@ -37,7 +37,7 @@ def create_player_stubs():
             # --- CHANGE: Check if the stub file already exists ---
             if not stub_file.exists():
                 # Simple stub content
-                content = f"# {name}\n\n**Team:** {row['Team']}  \n**Position:** {row['Pos']}  \n\n## Analysis\n\n"
+                content = f"# {name}\n\n**Team:** {row['Team']}  \n**Position:** {row['POS']}  \n\n## Analysis\n\n"
                 
                 stub_file.write_text(content, encoding='utf-8')
                 created += 1
