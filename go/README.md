@@ -35,9 +35,18 @@ go build -o fantasy-tool
 
 ## Requirements
 - Go 1.23.0 or later
-- OpenAI API key set as `OPENAI_API_KEY` environment variable
+- OpenAI API key (configured via settings UI or environment variable)
 - Player data file (`combined_with_depth.csv`)
 - Player analysis notes in `analysis/` directory
+
+## Configuration
+The application automatically handles configuration in the following priority order:
+
+1. **Settings UI**: Configure OpenAI API key and Ollama settings through the gear icon in the application
+2. **Environment Variables**: Set `OPENAI_API_KEY`, `USE_LOCAL_LLM`, `OLLAMA_MODEL`, `OLLAMA_ENDPOINT`
+3. **Default Values**: Built-in defaults for Ollama configuration
+
+When you save settings through the UI, they are automatically saved to a `.env` file for persistence.
 
 ## Go Installation
 If you need to install Go:

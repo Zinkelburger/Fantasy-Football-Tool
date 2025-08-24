@@ -10,9 +10,18 @@ import (
 
 func main() {
 	// --- Load Environment Variables ---
-	err := godotenv.Load()
-	if err != nil {
-		log.Printf("Warning: Error loading .env file: %v", err)
+	// Only log warning if .env exists but can't be read
+	// Note: We check the current directory first, then fall back to godotenv.Load() for compatibility
+	if _, err := os.Stat(".env"); err == nil {
+		// .env file exists, try to load it
+		if err := godotenv.Load(); err != nil {
+			log.Printf("Warning: Error loading existing .env file: %v", err)
+		} else {
+			log.Printf("Info: Loaded configuration from .env file")
+		}
+	} else {
+		// .env file doesn't exist, that's fine - we'll use defaults and environment variables
+		log.Printf("Info: No .env file found, using default settings and environment variables")
 	}
 
 	// --- Logging Setup ---
