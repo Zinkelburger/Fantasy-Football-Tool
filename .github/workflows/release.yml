@@ -88,12 +88,6 @@ jobs:
         
         echo "=== Package Build Results ==="
         ls -la releases/
-        echo ""
-        echo "DEB package info:"
-        dpkg-deb --info releases/fantasy-football-tool_1.0.0_amd64.deb
-        echo ""
-        echo "Binary dependencies:"
-        ldd fantasy-football-tool | head -10
 
     - name: Upload Linux packages
       uses: actions/upload-artifact@v4
@@ -104,7 +98,7 @@ jobs:
           go/releases/*.rpm
 
   build-windows:
-    runs-on: windows-latest  # Use a native Windows runner
+    runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -120,37 +114,32 @@ jobs:
       run: go install fyne.io/tools/cmd/fyne@latest
 
     - name: Build and Package Windows App
-      working-directory: go
-      shell: pwsh # Use PowerShell, the standard for Windows runners
+      shell: pwsh
       run: |
-        # Ensure both Go and Fyne tools are available in the current shell's PATH
-        $goRoot = go env GOROOT
+        # Add Go and Fyne tools to PATH for this step
         $goPath = go env GOPATH
-        $env:Path = "$goRoot\bin;$goPath\bin;$env:Path"
+        $env:Path = "$goPath\bin;$env:Path"
         
-        # Verify Go is accessible
+        # Verify tools are accessible
         Write-Host "Go version: $(go version)"
-        Write-Host "Go root: $goRoot"
-        Write-Host "Go path: $goPath"
-        
-        # Verify fyne is accessible
         Write-Host "Fyne location: $(Get-Command fyne -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)"
 
-        # Generate Fyne resources from assets
+        # Generate Fyne resources, specifying output and input paths relative to the root
         Write-Host "Generating Fyne resources..."
-        fyne bundle -o resource.go logo.png
+        fyne bundle -o go/resource.go go/logo.png
         if (-not $?) { throw "Failed to bundle logo.png" }
         
-        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        fyne bundle -o go/font_resource.go go/font/JetBrainsMonoNL-Regular.ttf
         if (-not $?) { throw "Failed to bundle font resource" }
 
-        # Use 'fyne package' to create a distributable .exe with its icon and manifest
-        # This is the standard way to build a Fyne app for distribution
+        # **FIX:** Build from the repo root and use --src to point to your code.
+        # This avoids the 'go' directory vs 'go.exe' command name collision on Windows.
+        # The --icon path becomes relative to the --src directory.
         Write-Host "Building Windows executable..."
-        fyne package -os windows --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
+        fyne package -os windows --src go --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
         if (-not $?) { throw "Failed to build Windows executable" }
 
-        # Verify the executable was created
+        # Verify the executable was created in the root directory
         if (-not (Test-Path "fantasy-football-tool.exe")) {
           throw "Expected fantasy-football-tool.exe was not created"
         }
@@ -158,29 +147,28 @@ jobs:
         # --- Create a clean package structure for the ZIP file ---
         Write-Host "=== Packaging Windows build ==="
         
-        # Create releases directory and staging directory
-        New-Item -ItemType Directory -Force -Path ".\releases"
-        $stagingDir = ".\releases\windows-package"
+        # Create releases directory inside 'go' to match artifact upload path
+        $stagingDir = ".\go\releases\windows-package"
         New-Item -ItemType Directory -Force -Path $stagingDir
 
-        # Copy the .exe and all necessary assets to the staging directory
+        # Copy the .exe from the root and assets from the 'go' directory
         Write-Host "Copying files to staging directory..."
         Copy-Item -Path ".\fantasy-football-tool.exe" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\players.csv" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\font" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\README.md" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\go\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\go\players.csv" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\go\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\go\font" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\go\README.md" -Destination $stagingDir -ErrorAction Stop
         
-        # Create the final ZIP file from the contents of the staging directory
+        # Create the final ZIP file
         Write-Host "Creating ZIP archive..."
-        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\releases\fantasy-football-tool-windows-amd64.zip" -Force
+        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\go\releases\fantasy-football-tool-windows-amd64.zip" -Force
 
         Write-Host "Package structure:"
         Get-ChildItem -Path $stagingDir
         
         Write-Host "=== Windows Build Results ==="
-        Get-ChildItem -Path ".\releases\"
+        Get-ChildItem -Path ".\go\releases\"
 
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
@@ -264,6 +252,8 @@ jobs:
 
   release:
     needs: [build-linux, build-windows, build-macos]
+    # **FIX:** Add 'if: always()' to ensure this job runs even if a build job fails.
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -271,7 +261,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Download all artifacts
+    - name: Download all available artifacts
       uses: actions/download-artifact@v4
       with:
         path: artifacts
@@ -282,13 +272,13 @@ jobs:
         find artifacts/ -type f -name "*.deb" -o -name "*.rpm" -o -name "*.zip" | sort
         echo ""
         echo "Detailed structure:"
-        ls -la artifacts/*/
+        ls -laR artifacts/
 
     - name: Prepare release assets
       run: |
         mkdir -p release-assets
         
-        # Copy all build artifacts to release assets directory
+        # Copy any build artifacts that were successfully created
         find artifacts/ -name "*.zip" -exec cp {} release-assets/ \;
         find artifacts/ -name "*.deb" -exec cp {} release-assets/ \;
         find artifacts/ -name "*.rpm" -exec cp {} release-assets/ \;
@@ -302,7 +292,7 @@ jobs:
         ### Ubuntu/Debian (Recommended):
         ```bash
         # Download and install the .deb package
-        wget https://github.com/your-repo/releases/latest/download/fantasy-football-tool_1.0.0_amd64.deb
+        wget [https://github.com/your-repo/releases/latest/download/fantasy-football-tool_1.0.0_amd64.deb](https://github.com/your-repo/releases/latest/download/fantasy-football-tool_1.0.0_amd64.deb)
         sudo dpkg -i fantasy-football-tool_1.0.0_amd64.deb
         sudo apt-get install -f  # Fix any missing dependencies
         
@@ -313,7 +303,7 @@ jobs:
         ### CentOS/RHEL/Fedora:
         ```bash
         # Download and install the .rpm package
-        wget https://github.com/your-repo/releases/latest/download/fantasy-football-tool-1.0.0-1.x86_64.rpm
+        wget [https://github.com/your-repo/releases/latest/download/fantasy-football-tool-1.0.0-1.x86_64.rpm](https://github.com/your-repo/releases/latest/download/fantasy-football-tool-1.0.0-1.x86_64.rpm)
         sudo rpm -i fantasy-football-tool-1.0.0-1.x86_64.rpm
         # or on newer systems:
         sudo dnf install ./fantasy-football-tool-1.0.0-1.x86_64.rpm
@@ -331,33 +321,6 @@ jobs:
            - Intel Macs: `fantasy-football-tool-darwin-amd64.zip`
            - Apple Silicon: `fantasy-football-tool-darwin-arm64.zip`
         2. Extract and run the app
-        
-        ## Package Benefits
-        
-        ✅ **Automatic dependency resolution** - Package manager installs required libraries  
-        ✅ **System integration** - Desktop shortcut and proper uninstall  
-        ✅ **Easy updates** - Use package manager to upgrade  
-        ✅ **No file extraction needed** - Just install and run  
-        
-        ## Dependencies (automatically handled by packages)
-        
-        The Linux packages declare these dependencies:
-        - libc6 (>= 2.31) - Standard C library
-        - libgl1-mesa-glx - OpenGL graphics
-        - libx11-6, libxrandr2, libxinerama1, libxcursor1, libxi6 - X11 windowing
-        
-        ## Uninstall
-        
-        ### Ubuntu/Debian:
-        ```bash
-        sudo apt remove fantasy-football-tool
-        ```
-        
-        ### CentOS/RHEL/Fedora:
-        ```bash
-        sudo rpm -e fantasy-football-tool
-        # or: sudo dnf remove fantasy-football-tool
-        ```
         EOF
         
         echo "Release assets prepared:"
