@@ -155,6 +155,11 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 			continue // Skip empty lines and default team name
 		}
 		
+		// Skip position headers (lines that start and end with "===")
+		if strings.HasPrefix(playerName, "===") && strings.HasSuffix(playerName, "===") {
+			continue
+		}
+		
 		// Look up the player in our data
 		if player, found := playerMap[playerName]; found {
 			teamPlayers = append(teamPlayers, player)
@@ -168,6 +173,52 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 				Rank:  "Unknown",
 				Note:  "Player not in database",
 			})
+		}
+	}
+	
+	return teamPlayers, nil
+}
+
+// LoadCurrentTeamPlayersFromNames loads player data for the given player names
+func (d *DataLoader) LoadCurrentTeamPlayersFromNames(playerNames []string) ([]Player, error) {
+	// Load all available players first to match against
+	playerDataFiles := []string{
+		getDataPath("players.csv"),
+		getDataPath("combined_with_depth.csv"),
+		"go/combined_with_depth.csv", // fallback if running from root
+	}
+	
+	var allPlayers []Player
+	var err error
+	for _, filename := range playerDataFiles {
+		if _, statErr := os.Stat(filename); statErr == nil {
+			allPlayers, err = LoadPlayers(filename)
+			if err == nil {
+				break
+			}
+		}
+	}
+	
+	if err != nil || len(allPlayers) == 0 {
+		return []Player{}, fmt.Errorf("could not load player data: %w", err)
+	}
+	
+	// Create a map for quick player lookup
+	playerMap := make(map[string]Player)
+	for _, player := range allPlayers {
+		playerMap[strings.TrimSpace(player.Name)] = player
+	}
+	
+	// Find matching players
+	var teamPlayers []Player
+	for _, playerName := range playerNames {
+		cleanName := strings.TrimSpace(playerName)
+		if cleanName == "" {
+			continue
+		}
+		
+		if player, exists := playerMap[cleanName]; exists {
+			teamPlayers = append(teamPlayers, player)
 		}
 	}
 	

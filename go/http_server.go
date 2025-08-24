@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"sync"
 )
 
@@ -96,24 +97,90 @@ func (s *HTTPServer) sendPlayerUpdate(allPlayerNames []string) error {
 	return nil
 }
 
-// saveRosterPlayers saves roster players to current_team.txt
+// saveRosterPlayers saves roster players to current_team.txt grouped by position
 func (s *HTTPServer) saveRosterPlayers(rosterPlayers []string) error {
 	teamFile := fmt.Sprintf("%s/current_team.txt", s.statusDir)
 	
-	// Join player names with newlines
-	content := ""
-	for _, playerName := range rosterPlayers {
-		if playerName != "" {
-			content += playerName + "\n"
+	// Load player data to get position information for sorting
+	loader := NewDataLoader("analysis", "status")
+	teamPlayers, err := loader.LoadCurrentTeamPlayersFromNames(rosterPlayers)
+	if err != nil {
+		// Fallback: save without grouping if we can't load player data
+		content := ""
+		for _, playerName := range rosterPlayers {
+			if playerName != "" {
+				content += playerName + "\n"
+			}
 		}
+		if err := os.WriteFile(teamFile, []byte(content), 0644); err != nil {
+			return fmt.Errorf("failed to update current_team.txt: %w", err)
+		}
+		log.Printf("Updated current_team.txt with %d players (ungrouped fallback)", len(rosterPlayers))
+		return nil
+	}
+	
+	// Sort players by position
+	sortedPlayers := s.sortPlayersByPosition(teamPlayers)
+	
+	// Group by position and format output
+	content := ""
+	var currentPosition string
+	
+	for _, player := range sortedPlayers {
+		// Add position header when position changes
+		if player.Pos != currentPosition {
+			currentPosition = player.Pos
+			// Add spacing before position header (except for first)
+			if content != "" {
+				content += "\n"
+			}
+			content += fmt.Sprintf("=== %s ===\n", currentPosition)
+		}
+		content += player.Name + "\n"
 	}
 	
 	if err := os.WriteFile(teamFile, []byte(content), 0644); err != nil {
 		return fmt.Errorf("failed to update current_team.txt: %w", err)
 	}
 	
-	log.Printf("Updated current_team.txt with %d players", len(rosterPlayers))
+	log.Printf("Updated current_team.txt with %d players (grouped by position)", len(rosterPlayers))
 	return nil
+}
+
+// sortPlayersByPosition sorts players by position groups and within each position
+func (s *HTTPServer) sortPlayersByPosition(players []Player) []Player {
+	if len(players) == 0 {
+		return []Player{}
+	}
+	
+	// Position priority order
+	positionOrder := map[string]int{
+		"QB":  1,
+		"RB":  2, 
+		"WR":  3,
+		"TE":  4,
+		"K":   5,
+		"DST": 6,
+		"DEF": 6, // Alternative defense notation
+	}
+	
+	sorted := make([]Player, len(players))
+	copy(sorted, players)
+	
+	sort.Slice(sorted, func(i, j int) bool {
+		posI := positionOrder[sorted[i].Pos]
+		posJ := positionOrder[sorted[j].Pos]
+		
+		// If positions are different, sort by position priority
+		if posI != posJ {
+			return posI < posJ
+		}
+		
+		// Within same position, sort by rank (lower rank number = better)
+		return sorted[i].rankNum < sorted[j].rankNum
+	})
+	
+	return sorted
 }
 
 // handlePlayerNames handles POST requests with player names from the browser extension

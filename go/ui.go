@@ -224,8 +224,8 @@ func (ui *FantasyUI) setupUI() {
 				} else {
 					statusPart = "   "
 				}
-				playerLabel.SetText(fmt.Sprintf("%-5s %-25s %-3s%-6s %-4s %s", 
-					p.Rank, p.Name, statusPart, p.Depth, p.Team, p.Note))
+				playerLabel.SetText(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s", 
+					p.Rank, p.ESPNRank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
 	)
@@ -323,8 +323,8 @@ func (ui *FantasyUI) setupUI() {
 	)
 	
 	// Create header for player list
-	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-25s %-3s%-6s %-4s %s", 
-		"Rank", "Name", "St", "Depth", "Team", "Note"))
+	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s", 
+		"Rank", "ESPN", "Name", "St", "Depth", "Team", "Note"))
 	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
 	
 	// Create left panel (player list)
