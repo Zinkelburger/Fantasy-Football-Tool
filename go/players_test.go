@@ -158,13 +158,15 @@ func TestLoadPlayers_EmptyFile(t *testing.T) {
 	csvPath, cleanup := createTestCSV(t, "")
 	defer cleanup()
 
-	players, err := LoadPlayers(csvPath)
-	if err != nil {
-		t.Fatalf("LoadPlayers failed: %v", err)
+	_, err := LoadPlayers(csvPath)
+	if err == nil {
+		t.Error("Expected error when loading empty CSV file")
 	}
-
-	if len(players) != 0 {
-		t.Errorf("Expected 0 players from empty file, got %d", len(players))
+	
+	// Verify it's the specific empty file error
+	expectedError := "CSV file is empty"
+	if !strings.Contains(err.Error(), expectedError) {
+		t.Errorf("Expected error message to contain '%s', got: %v", expectedError, err)
 	}
 }
 

@@ -123,9 +123,11 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 	
 	// Load all available players first to match against
 	playerDataFiles := []string{
-		getDataPath("players.csv"),
-		getDataPath("combined_with_depth.csv"),
-		"go/combined_with_depth.csv", // fallback if running from root
+		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
+		getDataPath("combined_with_depth.csv"), // Fallback
+		"players.csv", // Direct path fallback
+		"go/players.csv", // Explicit go directory fallback
+		"go/combined_with_depth.csv", // Final fallback
 	}
 	
 	var allPlayers []Player
@@ -183,9 +185,11 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 func (d *DataLoader) LoadCurrentTeamPlayersFromNames(playerNames []string) ([]Player, error) {
 	// Load all available players first to match against
 	playerDataFiles := []string{
-		getDataPath("players.csv"),
-		getDataPath("combined_with_depth.csv"),
-		"go/combined_with_depth.csv", // fallback if running from root
+		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
+		getDataPath("combined_with_depth.csv"), // Fallback
+		"players.csv", // Direct path fallback
+		"go/players.csv", // Explicit go directory fallback
+		"go/combined_with_depth.csv", // Final fallback
 	}
 	
 	var allPlayers []Player

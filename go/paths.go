@@ -12,6 +12,10 @@ func getAppDir() string {
 	// List of potential data directories to check, in order of preference
 	candidateDirs := []string{}
 	
+	// FIRST PRIORITY: Always check go/ directory first (for development and most deployments)
+	candidateDirs = append(candidateDirs, "go")
+	candidateDirs = append(candidateDirs, "./go")
+	
 	// On Linux, check if we're running from a system installation (.deb/.rpm package)
 	if runtime.GOOS == "linux" {
 		candidateDirs = append(candidateDirs, "/usr/share/fantasy-football-tool")

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"fyne.io/fyne/v2/app"
 	"github.com/joho/godotenv"
@@ -40,15 +42,18 @@ func main() {
 	dataLoader := NewDataLoader(getDataPath("analysis"), ".")
 
 	// 2. Load player data from static players.csv file (not dynamic log files)
-	// Try multiple possible player data file names
+	// Prioritize go/players.csv over other files to avoid loading incorrect data
 	playerDataFiles := []string{
-		getDataPath("players.csv"),
-		getDataPath("combined_with_depth.csv"),
-		"go/combined_with_depth.csv", // fallback if running from root
+		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
+		getDataPath("combined_with_depth.csv"), // Fallback
+		"players.csv", // Direct path fallback
+		"go/players.csv", // Explicit go directory fallback
+		"go/combined_with_depth.csv", // Final fallback
 	}
 
 	var playerCSVPath string
 	var players []Player
+	var loadErrors []string
 
 	for _, filename := range playerDataFiles {
 		if _, err := os.Stat(filename); err == nil {
@@ -58,12 +63,15 @@ func main() {
 				log.Printf("Successfully loaded player data from: %s", playerCSVPath)
 				break
 			}
-			log.Printf("Failed to load players from %s: %v", filename, err)
+			loadErrors = append(loadErrors, fmt.Sprintf("Failed to load %s: %v", filename, err))
+		} else {
+			loadErrors = append(loadErrors, fmt.Sprintf("File not found: %s", filename))
 		}
 	}
 
 	if len(players) == 0 {
-		log.Fatalf("Fatal error: Could not find or load player data from any of: %v", playerDataFiles)
+		log.Fatalf("Fatal error: Could not find or load player data from any of: %v\nErrors encountered:\n%s", 
+			playerDataFiles, strings.Join(loadErrors, "\n"))
 	}
 
 	log.Printf("Successfully loaded %d players from %s.", len(players), playerCSVPath)

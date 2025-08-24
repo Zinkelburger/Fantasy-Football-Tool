@@ -33,6 +33,29 @@ func LoadPlayers(path string) ([]Player, error) {
 	if err != nil {
 		return nil, err
 	}
+	
+	if len(rows) == 0 {
+		return nil, fmt.Errorf("CSV file is empty: %s", path)
+	}
+
+	// Validate header to ensure we have the correct CSV format
+	header := rows[0]
+	if len(header) < 6 {
+		return nil, fmt.Errorf("CSV file %s has %d columns, expected at least 6 (missing ESPN_ADP column?)", path, len(header))
+	}
+	
+	// Check if this looks like the correct format by examining the header
+	expectedHeaders := []string{"Player", "Team", "POS", "Average_ADP", "Depth", "ESPN_ADP"}
+	for i, expected := range expectedHeaders {
+		if i < len(header) && header[i] != expected {
+			// If we detect this is the nicknames CSV file, give a helpful error
+			if header[i] == "Depth_Rank" || (len(header) > 6 && header[6] == "Nickname") {
+				return nil, fmt.Errorf("CSV file %s appears to be a nicknames file, not the main players data file. Expected ESPN_ADP in column 6, found %s", path, header[i])
+			}
+			// For other mismatches, just warn but continue (in case of minor header variations)
+			fmt.Printf("Warning: CSV header mismatch in column %d. Expected '%s', got '%s' in file %s\n", i+1, expected, header[i], path)
+		}
+	}
 
 	var ps []Player
 	for i, r := range rows {
@@ -60,7 +83,7 @@ func LoadPlayers(path string) ([]Player, error) {
 			Note:        note,
 			DraftStatus: "", // Will be loaded by UI
 			rankNum:     int(rankNum),
-			ESPNRank:    r[5], // ESPN_Rank column
+			ESPNRank:    r[5], // ESPN_ADP column (6th column)
 		})
 	}
 
