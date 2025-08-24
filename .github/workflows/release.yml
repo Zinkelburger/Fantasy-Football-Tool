@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -123,8 +123,18 @@ jobs:
       working-directory: go
       shell: pwsh # Use PowerShell, the standard for Windows runners
       run: |
-        # Ensure the Fyne tool is available in the current shell's PATH
-        $env:Path += ";$(go env GOPATH)\bin"
+        # Ensure both Go and Fyne tools are available in the current shell's PATH
+        $goRoot = go env GOROOT
+        $goPath = go env GOPATH
+        $env:Path = "$goRoot\bin;$goPath\bin;$env:Path"
+        
+        # Verify Go is accessible
+        Write-Host "Go version: $(go version)"
+        Write-Host "Go root: $goRoot"
+        Write-Host "Go path: $goPath"
+        
+        # Verify fyne is accessible
+        Write-Host "Fyne location: $(Get-Command fyne -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)"
 
         # Generate Fyne resources from assets
         Write-Host "Generating Fyne resources..."

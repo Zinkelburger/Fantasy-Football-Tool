@@ -1,29 +1,55 @@
-function extractPlayerNames() {
-    const playerElements = document.querySelectorAll('.jsx-2093861861.pick__message-information .playerinfo__playername');
-    const playerNames = Array.from(playerElements).map(el => el.textContent.trim());
+// --- Unified Data Sending Function ---
+// Sends an object to your server, like: { type: '...', players: [...] }
+function sendDataToServer(data) {
+  fetch('http://localhost:8000', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => response.json())
+  .then(serverData => console.log('Server response:', serverData))
+  .catch((error) => console.error('Error sending data:', error));
+}
 
-    // Send the player names to the Python server
+
+// --- Extraction Functions ---
+
+// 1. Extracts the "Picked Players"
+function extractPickedPlayers() {
+  const playerElements = document.querySelectorAll('.pick__message-information .playerinfo__playername');
+  const playerNames = Array.from(playerElements).map(el => el.textContent.trim());
+
+  // If any names are found, send them
+  if (playerNames.length > 0) {
+    sendDataToServer({ type: 'picked_players', players: playerNames });
+  }
+}
+
+// 2. Extracts the "Roster Players"
+function extractRosterPlayers() {
+    const playerElements = document.querySelectorAll('div.player-column[title]');
+    const playerNames = Array.from(playerElements).map(el => el.title);
+
+    // If any names are found, send them
     if (playerNames.length > 0) {
-      sendPlayerNamesToServer(playerNames);
+        sendDataToServer({ type: 'roster_players', players: playerNames });
     }
-  }
+}
 
-  function sendPlayerNamesToServer(playerNames) {
-    fetch('http://localhost:8000', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ playerNames }),
-    })
-    .then(response => response.json())
-    .then(data => console.log('Success:', data))
-    .catch((error) => console.error('Error:', error));
-  }
 
-// Monitor the page for updates to the player names
-const observer = new MutationObserver(extractPlayerNames);
+// --- Main Execution Logic ---
+
+// This function runs both extraction routines.
+function runAllExtractions() {
+    extractPickedPlayers();
+    extractRosterPlayers();
+}
+
+// Set up the observer to run our main function whenever the page content changes.
+const observer = new MutationObserver(runAllExtractions);
 observer.observe(document.body, { childList: true, subtree: true });
 
-// Initial extraction
-extractPlayerNames();
+// Also run it once right away when the extension loads.
+runAllExtractions();

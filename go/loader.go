@@ -190,7 +190,8 @@ func (d *DataLoader) LoadCurrentPickNum() (int, error) {
 	return pick, nil
 }
 
-// BuildAllNotes combines all player notes into one string for GPT analysis.
+// BuildAllNotes combines player notes into one string for GPT analysis.
+// Typically called with the top 15 players to keep the prompt manageable.
 func (d *DataLoader) BuildAllNotes(players []Player) (string, error) {
 	var notes strings.Builder
 	notesFound := 0
@@ -209,7 +210,7 @@ func (d *DataLoader) BuildAllNotes(players []Player) (string, error) {
 		return "", fmt.Errorf("no player notes found")
 	}
 
-	log.Printf("Built notes for %d players", notesFound)
+	log.Printf("Built notes for %d players (limited to top players for optimal LLM performance)", notesFound)
 	return notes.String(), nil
 }
 

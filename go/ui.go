@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -119,6 +120,7 @@ type FantasyUI struct {
 	stopChan    chan bool
 	uiUpdateChan chan func()  // Channel for safe UI updates
 	playerUpdateChan <-chan PlayerUpdate  // Channel for receiving player updates from HTTP server
+	lastPlayerUpdate time.Time  // Throttling for player updates
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
@@ -136,7 +138,7 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		lastQuery:   time.Now().Add(-5 * time.Second),
 		lastRefresh: time.Now(),
 		stopChan:    make(chan bool, 1),  // Buffered to prevent blocking
-		uiUpdateChan: make(chan func(), 10),  // Buffered channel for UI updates
+		uiUpdateChan: make(chan func(), 100),  // Buffered channel for UI updates (increased from 10)
 		playerUpdateChan: playerUpdateChan,
 		pickedPlayers: make([]string, 0),
 		currentPick:   0,
@@ -503,7 +505,7 @@ func (ui *FantasyUI) performLLMQuery() {
 	// First refresh player data
 	ui.performRefreshInternal()
 	
-	// Build the notes string using the updated players
+	// Build the notes string using the updated players (limit to top 15)
 	ui.mutex.RLock()
 	currentPlayers := make([]Player, len(ui.players))  // Create safe copy
 	copy(currentPlayers, ui.players)
@@ -512,7 +514,13 @@ func (ui *FantasyUI) performLLMQuery() {
 	copy(pickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
 	
-	allNotes, err := ui.dataLoader.BuildAllNotes(currentPlayers)
+	// Limit to top 15 players for LLM analysis to keep prompt manageable
+	topPlayers := currentPlayers
+	if len(currentPlayers) > 15 {
+		topPlayers = currentPlayers[:15]
+	}
+	
+	allNotes, err := ui.dataLoader.BuildAllNotes(topPlayers)
 	if err != nil {
 		ui.handleError(fmt.Errorf("failed to build notes: %w", err))
 		return
@@ -578,14 +586,58 @@ func (ui *FantasyUI) performRefresh(manual bool) {
 	ui.updateStatus()
 }
 
+// fuzzyMatchPlayer attempts to find a player in the CSV that matches the input name
+// Returns the matched CSV player name and whether a match was found
+func (ui *FantasyUI) fuzzyMatchPlayer(inputName string, allPlayers []Player) (string, bool) {
+	inputLower := strings.ToLower(strings.TrimSpace(inputName))
+	
+	// First try exact match
+	for _, player := range allPlayers {
+		if strings.ToLower(player.Name) == inputLower {
+			return player.Name, true
+		}
+	}
+	
+	// Try partial match (input contains CSV name or vice versa)
+	for _, player := range allPlayers {
+		playerLower := strings.ToLower(player.Name)
+		if strings.Contains(inputLower, playerLower) || strings.Contains(playerLower, inputLower) {
+			log.Printf("FUZZY MATCH: '%s' matched to '%s'", inputName, player.Name)
+			return player.Name, true
+		}
+	}
+	
+	// Try matching individual words
+	inputWords := strings.Fields(inputLower)
+	for _, player := range allPlayers {
+		playerWords := strings.Fields(strings.ToLower(player.Name))
+		matchCount := 0
+		
+		for _, inputWord := range inputWords {
+			for _, playerWord := range playerWords {
+				if inputWord == playerWord {
+					matchCount++
+					break
+				}
+			}
+		}
+		
+		// If at least 2 words match, consider it a match
+		if matchCount >= 2 && matchCount >= len(inputWords)/2 {
+			log.Printf("FUZZY MATCH: '%s' matched to '%s' (%d words)", inputName, player.Name, matchCount)
+			return player.Name, true
+		}
+	}
+	
+	return "", false
+}
+
 // performRefreshInternal does the actual refresh work
 func (ui *FantasyUI) performRefreshInternal() {
 	// Generate filtered player list based on picked players
 	ui.mutex.RLock()
-	pickedPlayers := make(map[string]bool)
-	for _, player := range ui.pickedPlayers {
-		pickedPlayers[player] = true
-	}
+	rawPickedPlayers := make([]string, len(ui.pickedPlayers))
+	copy(rawPickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
 	
 	// Load all players from static CSV file
@@ -612,6 +664,29 @@ func (ui *FantasyUI) performRefreshInternal() {
 		return
 	}
 	
+	// Create map of picked players with fuzzy matching
+	pickedPlayers := make(map[string]bool)
+	for _, rawPlayerName := range rawPickedPlayers {
+		// Try exact match first
+		found := false
+		for _, player := range allPlayers {
+			if player.Name == rawPlayerName {
+				pickedPlayers[player.Name] = true
+				found = true
+				break
+			}
+		}
+		
+		// If no exact match, try fuzzy matching
+		if !found {
+			if matchedName, matched := ui.fuzzyMatchPlayer(rawPlayerName, allPlayers); matched {
+				pickedPlayers[matchedName] = true
+			} else {
+				log.Printf("WARNING: No match found for picked player: '%s'", rawPlayerName)
+			}
+		}
+	}
+	
 	// Filter out picked players
 	var filteredPlayers []Player
 	for _, player := range allPlayers {
@@ -630,6 +705,7 @@ func (ui *FantasyUI) performRefreshInternal() {
 	}
 	
 	if shouldUpdate {
+		log.Printf("Live update: Removing %d picked players from GUI (%d → %d players)", len(ui.pickedPlayers), len(ui.players), len(filteredPlayers))
 		ui.players = filteredPlayers
 		// Load draft status for all players
 		ui.loadDraftStatusForAllPlayers()
@@ -727,23 +803,35 @@ func (ui *FantasyUI) startPlayerUpdateListener() {
 		for {
 			select {
 			case update := <-ui.playerUpdateChan:
-				log.Printf("Received player update: %d players, pick %d", len(update.PickedPlayers), update.PickNumber)
-				
-				ui.mutex.Lock()
-				ui.pickedPlayers = update.PickedPlayers
-				ui.currentPick = update.PickNumber
-				ui.mutex.Unlock()
-				
-				// Trigger a refresh to update the available players list
-				ui.mutex.Lock()
-				canRefresh := !ui.refreshing && !ui.querying
-				if canRefresh {
-					ui.refreshing = true
-				}
-				ui.mutex.Unlock()
-				
-				if canRefresh {
-					go ui.performRefresh(false)
+				if update.TeamChanged {
+					log.Printf("Received team update notification")
+					// Reload team data when roster changes
+					ui.loadTeamData()
+				} else {
+					log.Printf("Received player update: %d players, pick %d", len(update.PickedPlayers), update.PickNumber)
+					
+					// Throttle updates to max 1 per 200ms to prevent channel overflow
+					ui.mutex.Lock()
+					if time.Since(ui.lastPlayerUpdate) < 200*time.Millisecond {
+						log.Printf("Throttling player update (too frequent)")
+						ui.mutex.Unlock()
+						continue
+					}
+					ui.lastPlayerUpdate = time.Now()
+					
+					ui.pickedPlayers = update.PickedPlayers
+					ui.currentPick = update.PickNumber
+					
+					// Trigger a refresh to update the available players list
+					canRefresh := !ui.refreshing && !ui.querying
+					if canRefresh {
+						ui.refreshing = true
+					}
+					ui.mutex.Unlock()
+					
+					if canRefresh {
+						go ui.performRefresh(false)
+					}
 				}
 				
 			case <-ui.stopChan:

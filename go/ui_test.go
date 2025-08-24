@@ -173,6 +173,7 @@ func TestPlayerUpdateListener(t *testing.T) {
 	update := PlayerUpdate{
 		PickedPlayers: []string{"Patrick Mahomes", "Travis Kelce"},
 		PickNumber:    2,
+		TeamChanged:   false,
 	}
 
 	playerUpdateChan <- update
@@ -407,6 +408,7 @@ func TestConcurrentAccess(t *testing.T) {
 			update := PlayerUpdate{
 				PickedPlayers: []string{fmt.Sprintf("Player%d", index)},
 				PickNumber:    index,
+				TeamChanged:   false,
 			}
 			select {
 			case playerUpdateChan <- update:

@@ -401,6 +401,7 @@ func TestPlayerUpdate_Structure(t *testing.T) {
 	update := PlayerUpdate{
 		PickedPlayers: []string{"Player1", "Player2"},
 		PickNumber:    2,
+		TeamChanged:   false,
 	}
 	
 	if len(update.PickedPlayers) != 2 {
