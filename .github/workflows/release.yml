@@ -114,6 +114,8 @@ jobs:
       run: go install fyne.io/tools/cmd/fyne@latest
 
     - name: Build and Package Windows App
+      # FIX: Run all commands from within the 'go' directory
+      working-directory: go
       shell: pwsh
       run: |
         # Add Go and Fyne tools to PATH for this step
@@ -124,22 +126,20 @@ jobs:
         Write-Host "Go version: $(go version)"
         Write-Host "Fyne location: $(Get-Command fyne -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)"
 
-        # Generate Fyne resources, specifying output and input paths relative to the root
+        # Generate Fyne resources. Paths are now relative to the 'go' directory.
         Write-Host "Generating Fyne resources..."
-        fyne bundle -o go/resource.go go/logo.png
+        fyne bundle -o resource.go logo.png
         if (-not $?) { throw "Failed to bundle logo.png" }
         
-        fyne bundle -o go/font_resource.go go/font/JetBrainsMonoNL-Regular.ttf
+        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
         if (-not $?) { throw "Failed to bundle font resource" }
 
-        # **FIX:** Build from the repo root and use --src to point to your code.
-        # This avoids the 'go' directory vs 'go.exe' command name collision on Windows.
-        # The --icon path becomes relative to the --src directory.
+        # Build the executable. The '--src' flag is no longer needed.
         Write-Host "Building Windows executable..."
-        fyne package -os windows --src go --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
+        fyne package -os windows --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
         if (-not $?) { throw "Failed to build Windows executable" }
 
-        # Verify the executable was created in the root directory
+        # Verify the executable was created
         if (-not (Test-Path "fantasy-football-tool.exe")) {
           throw "Expected fantasy-football-tool.exe was not created"
         }
@@ -147,34 +147,28 @@ jobs:
         # --- Create a clean package structure for the ZIP file ---
         Write-Host "=== Packaging Windows build ==="
         
-        # Create releases directory inside 'go' to match artifact upload path
-        $stagingDir = ".\go\releases\windows-package"
+        # Create a staging directory for the package contents
+        $stagingDir = ".\releases\windows-package"
         New-Item -ItemType Directory -Force -Path $stagingDir
 
-        # Copy the .exe from the root and assets from the 'go' directory
+        # Copy the .exe and all assets to the staging directory
         Write-Host "Copying files to staging directory..."
         Copy-Item -Path ".\fantasy-football-tool.exe" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\go\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\go\players.csv" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\go\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\go\font" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\go\README.md" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\players.csv" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\font" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\README.md" -Destination $stagingDir -ErrorAction Stop
         
         # Create the final ZIP file
         Write-Host "Creating ZIP archive..."
-        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\go\releases\fantasy-football-tool-windows-amd64.zip" -Force
+        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\releases\fantasy-football-tool-windows-amd64.zip" -Force
 
         Write-Host "Package structure:"
         Get-ChildItem -Path $stagingDir
         
         Write-Host "=== Windows Build Results ==="
-        Get-ChildItem -Path ".\go\releases\"
-
-    - name: Upload Windows artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-builds
-        path: go/releases/*.zip
+        Get-ChildItem -Path ".\releases\"
 
   build-macos:
     runs-on: macos-latest
