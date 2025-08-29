@@ -1,1 +1,1 @@
-Output the top several players you think could help me the most along with an explanation, considering their value, upside, and drawbacks. Look for high upside players with good matchups. Give me a short list at the end like 1. 2. 3. 4.
+Output the top several players you think could help me the most along with an explanation, considering their value, upside, and drawbacks. Look for high upside players with good matchups. Give me a short list at the end like 1. 2. 3. 4. I NEED THE LIST AT THE END!!!!

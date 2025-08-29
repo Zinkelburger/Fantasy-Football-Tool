@@ -17,6 +17,10 @@ func (t *customTheme) Font(style fyne.TextStyle) fyne.Resource {
 
 // Color returns theme colors (using default dark theme colors)
 func (t *customTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
+	// Override the checkbox tick color to be darker/more muted
+	if name == theme.ColorNamePrimary {
+		return color.RGBA{80, 80, 80, 255} // Dark gray instead of bright blue
+	}
 	return theme.DefaultTheme().Color(name, variant)
 }
 

@@ -9,6 +9,7 @@ reddit-scraper/__pycache__
 reddit-scraper/.env
 reddit-scraper/venv
 reddit-scraper/markdown_data
+reddit-scraper/ff-hound
 go/build/
 go/releases
 go/status

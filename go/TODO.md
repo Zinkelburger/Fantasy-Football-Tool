@@ -25,3 +25,7 @@ Extraneous/impractical/beyond my abilities:
 - An "upside/ceiling" and "risk" score.
 - highlight interesting players in green, uninteresting ones in red, neutral for others
 (green can be ChatGPT's 3 positive suggestions, red can be positions you've already filled)
+Add OpenAI streaming responses
+
+Late round filtering (e.g. filter out QBs, filter out TEs)
+Increase the # of players fed to ChatGPT, or feed from the filter

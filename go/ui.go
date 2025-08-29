@@ -115,6 +115,9 @@ type FantasyUI struct {
 	currentPick   int       // Current pick number
 	teamPlayers   []Player  // Current team players
 	
+	// Position filtering (simple, no locking needed)
+	positionFilters map[string]bool  // Which positions are currently enabled
+	
 	// Concurrency
 	mutex       sync.RWMutex
 	stopChan    chan bool
@@ -128,10 +131,23 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 	window := app.NewWindow("Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
 	
+	// Filter out K and DST players (positions start with K or DST)
+	var filteredPlayers []Player
+	var removedCount int
+	for _, player := range players {
+		posType := strings.TrimRight(player.Pos, "0123456789") // Remove numbers to get position type
+		if posType != "K" && posType != "DST" {
+			filteredPlayers = append(filteredPlayers, player)
+		} else {
+			removedCount++
+		}
+	}
+	log.Printf("Filtered players: %d total, %d remaining after removing %d K/DST", len(players), len(filteredPlayers), removedCount)
+	
 	ui := &FantasyUI{
 		app:         app,
 		window:      window,
-		players:     players,
+		players:     filteredPlayers,
 		dataLoader:  loader,
 		llmManager:  llmManager,
 		settings:    settings,
@@ -145,6 +161,9 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		teamPlayers:   make([]Player, 0),
 		selectedPlayerIndex: -1,
 		lastSelectedPlayerIndex: -1,
+		positionFilters: map[string]bool{
+			"QB": false, "RB": false, "WR": false, "TE": false,
+		},
 	}
 	
 	// Initialize settings UI
@@ -193,24 +212,82 @@ func (ui *FantasyUI) safeUIUpdate(updateFunc func()) {
 	}
 }
 
+// getVisiblePlayers returns players filtered by position
+func (ui *FantasyUI) getVisiblePlayers() []Player {
+	var visible []Player
+	
+	// Check if any filters are enabled
+	anyEnabled := false
+	for _, enabled := range ui.positionFilters {
+		if enabled {
+			anyEnabled = true
+			break
+		}
+	}
+	
+	// If no filters are enabled, show all players
+	if !anyEnabled {
+		return ui.players
+	}
+	
+	// Otherwise, only show players whose position is enabled
+	for _, player := range ui.players {
+		posType := strings.TrimRight(player.Pos, "0123456789") // Extract position type (QB, RB, WR, TE)
+		if ui.positionFilters[posType] {
+			visible = append(visible, player)
+		}
+	}
+	return visible
+}
+
+// createPositionFilters creates the position filter checkboxes
+func (ui *FantasyUI) createPositionFilters() *fyne.Container {
+	qbCheck := widget.NewCheck("QB", func(checked bool) {
+		ui.positionFilters["QB"] = checked
+		ui.playerList.Refresh()
+	})
+	qbCheck.SetChecked(false) // Start unchecked
+	
+	rbCheck := widget.NewCheck("RB", func(checked bool) {
+		ui.positionFilters["RB"] = checked
+		ui.playerList.Refresh()
+	})
+	rbCheck.SetChecked(false) // Start unchecked
+	
+	wrCheck := widget.NewCheck("WR", func(checked bool) {
+		ui.positionFilters["WR"] = checked
+		ui.playerList.Refresh()
+	})
+	wrCheck.SetChecked(false) // Start unchecked
+	
+	teCheck := widget.NewCheck("TE", func(checked bool) {
+		ui.positionFilters["TE"] = checked
+		ui.playerList.Refresh()
+	})
+	teCheck.SetChecked(false) // Start unchecked
+	
+	return container.NewHBox(
+		widget.NewLabel("Positions:"),
+		qbCheck, rbCheck, wrCheck, teCheck,
+	)
+}
+
 // setupUI creates and arranges all the UI components
 func (ui *FantasyUI) setupUI() {
 	// Create player list
 	ui.playerList = widget.NewList(
 		func() int { 
-			ui.mutex.RLock()
-			defer ui.mutex.RUnlock()
-			return len(ui.players) 
+			visible := ui.getVisiblePlayers()
+			return len(visible)
 		},
 		func() fyne.CanvasObject {
 			return NewPlayerRowLabel(ui)
 		},
 					func(id widget.ListItemID, item fyne.CanvasObject) {
-			ui.mutex.RLock()
-			defer ui.mutex.RUnlock()
+			visible := ui.getVisiblePlayers()
 			
-			if id < len(ui.players) {
-				p := ui.players[id]
+			if id < len(visible) {
+				p := visible[id]
 				playerLabel := item.(*PlayerRowLabel)
 				// Update the player index for right-click handling
 				playerLabel.playerIndex = int(id)
@@ -232,11 +309,12 @@ func (ui *FantasyUI) setupUI() {
 	
 	// Add selection handler for clicking players to toggle note view
 	ui.playerList.OnSelected = func(id widget.ListItemID) {
+		visible := ui.getVisiblePlayers()
 		ui.mutex.Lock()
 		ui.selectedPlayerIndex = int(id)
 		ui.lastSelectedPlayerIndex = int(id)  // Track for 'd' key
-		if id < len(ui.players) {
-			playerName := ui.players[id].Name
+		if id < len(visible) {
+			playerName := visible[id].Name
 			// Always toggle - if we're viewing this player's notes, close them, otherwise open them
 			isCurrentlyViewing := ui.noteViewerVisible && ui.currentViewedPlayer == playerName
 			ui.mutex.Unlock()
@@ -322,14 +400,15 @@ func (ui *FantasyUI) setupUI() {
 		ui.settingsButton,
 	)
 	
-	// Create header for player list
+	// Create position filters and header
+	positionFilters := ui.createPositionFilters()
 	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s", 
 		"Rank", "ESPN", "Name", "St", "Depth", "Team", "Note"))
 	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
 	
 	// Create left panel (player list)
 	leftPanel := container.NewBorder(
-		headerLabel, // top
+		container.NewVBox(positionFilters, headerLabel), // top
 		nil,         // bottom
 		nil,         // left
 		nil,         // right
@@ -1109,15 +1188,30 @@ func (ui *FantasyUI) hidePlayerNote() {
 
 // handleDraftStatusToggle toggles the draft status of the currently selected player
 func (ui *FantasyUI) handleDraftStatusToggle() {
+	visible := ui.getVisiblePlayers()
 	ui.mutex.Lock()
 	selectedIndex := ui.lastSelectedPlayerIndex  // Use last selected, not current (which might be -1 after unselect)
-	if selectedIndex == -1 || selectedIndex >= len(ui.players) {
+	if selectedIndex == -1 || selectedIndex >= len(visible) {
 		ui.mutex.Unlock()
 		return
 	}
 	
-	player := &ui.players[selectedIndex]
-	playerName := player.Name
+	selectedPlayer := visible[selectedIndex]
+	playerName := selectedPlayer.Name
+	
+	// Find the actual player in the full list
+	var player *Player
+	for i := range ui.players {
+		if ui.players[i].Name == playerName {
+			player = &ui.players[i]
+			break
+		}
+	}
+	
+	if player == nil {
+		ui.mutex.Unlock()
+		return
+	}
 	
 	// Cycle through: "" -> "✅" -> "❌" -> ""
 	switch player.DraftStatus {
