@@ -64,73 +64,74 @@ func (p *PlayerRowLabel) Tapped(event *fyne.PointEvent) {
 
 // FantasyUI holds the Fyne UI components and application state
 type FantasyUI struct {
-	app        fyne.App
-	window     fyne.Window
-	
+	app    fyne.App
+	window fyne.Window
+
 	// Data
-	players     []Player
-	dataLoader  *DataLoader
-	llmManager  *LLMManager
-	settings    *Settings
-	
+	players    []Player
+	dataLoader *DataLoader
+	llmManager *LLMManager
+	settings   *Settings
+
 	// UI Components
-	playerList     *widget.List
-	outputText     *widget.RichText
-	teamList       *widget.List
-	statusLabel    *widget.Label
-	queryButton        *widget.Button
-	refreshButton      *widget.Button
-	settingsButton     *widget.Button
-	draftStatusButton  *widget.Button
-	settingsUI     *SettingsUI
-	
+	playerList        *widget.List
+	outputText        *widget.RichText
+	teamList          *widget.List
+	statusLabel       *widget.Label
+	queryButton       *widget.Button
+	refreshButton     *widget.Button
+	settingsButton    *widget.Button
+	draftStatusButton *widget.Button
+	settingsUI        *SettingsUI
+
 	// Note Viewer Components
-	noteViewer      *widget.RichText
-	noteViewerContainer *fyne.Container
-	closeNoteButton *widget.Button
-	noteViewerVisible bool
-	currentViewedPlayer string
-	selectedPlayerIndex int
-	lastSelectedPlayerIndex int  // Keep track for 'd' key even when unselected
-	
+	noteViewer              *widget.RichText
+	noteViewerContainer     *fyne.Container
+	closeNoteButton         *widget.Button
+	noteViewerVisible       bool
+	currentViewedPlayer     string
+	selectedPlayerIndex     int
+	lastSelectedPlayerIndex int // Keep track for 'd' key even when unselected
+
 	// Collapsible controls
 	llmCollapseBtn  *widget.Button
 	teamCollapseBtn *widget.Button
 	llmCollapsed    bool
 	teamCollapsed   bool
-	
+
 	// Container references for collapsing
-	rightVSplit     *container.Split
-	llmPanel        *fyne.Container
-	teamPanel       *fyne.Container
-	mainContainer   *container.Split
-	
+	rightVSplit   *container.Split
+	llmPanel      *fyne.Container
+	teamPanel     *fyne.Container
+	mainContainer *container.Split
+
 	// State
-	querying    bool
-	refreshing  bool
-	lastQuery   time.Time
-	lastRefresh time.Time
-	notice      string
-	pickedPlayers []string  // Current list of picked players
-	currentPick   int       // Current pick number
-	teamPlayers   []Player  // Current team players
-	
+	querying      bool
+	refreshing    bool
+	lastQuery     time.Time
+	lastRefresh   time.Time
+	notice        string
+	pickedPlayers []string // Current list of picked players
+	currentPick   int      // Current pick number
+	teamPlayers   []Player // Current team players
+
 	// Position filtering (simple, no locking needed)
-	positionFilters map[string]bool  // Which positions are currently enabled
-	
+	positionFilters map[string]bool // Which positions are currently enabled
+	searchText      string          // Current search text
+
 	// Concurrency
-	mutex       sync.RWMutex
-	stopChan    chan bool
-	uiUpdateChan chan func()  // Channel for safe UI updates
-	playerUpdateChan <-chan PlayerUpdate  // Channel for receiving player updates from HTTP server
-	lastPlayerUpdate time.Time  // Throttling for player updates
+	mutex            sync.RWMutex
+	stopChan         chan bool
+	uiUpdateChan     chan func()         // Channel for safe UI updates
+	playerUpdateChan <-chan PlayerUpdate // Channel for receiving player updates from HTTP server
+	lastPlayerUpdate time.Time           // Throttling for player updates
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
 func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager *LLMManager, settings *Settings, playerUpdateChan <-chan PlayerUpdate) *FantasyUI {
 	window := app.NewWindow("Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
-	
+
 	// Filter out K and DST players (positions start with K or DST)
 	var filteredPlayers []Player
 	var removedCount int
@@ -143,47 +144,48 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		}
 	}
 	log.Printf("Filtered players: %d total, %d remaining after removing %d K/DST", len(players), len(filteredPlayers), removedCount)
-	
+
 	ui := &FantasyUI{
-		app:         app,
-		window:      window,
-		players:     filteredPlayers,
-		dataLoader:  loader,
-		llmManager:  llmManager,
-		settings:    settings,
-		lastQuery:   time.Now().Add(-5 * time.Second),
-		lastRefresh: time.Now(),
-		stopChan:    make(chan bool, 1),  // Buffered to prevent blocking
-		uiUpdateChan: make(chan func(), 100),  // Buffered channel for UI updates (increased from 10)
-		playerUpdateChan: playerUpdateChan,
-		pickedPlayers: make([]string, 0),
-		currentPick:   0,
-		teamPlayers:   make([]Player, 0),
-		selectedPlayerIndex: -1,
+		app:                     app,
+		window:                  window,
+		players:                 filteredPlayers,
+		dataLoader:              loader,
+		llmManager:              llmManager,
+		settings:                settings,
+		lastQuery:               time.Now().Add(-5 * time.Second),
+		lastRefresh:             time.Now(),
+		stopChan:                make(chan bool, 1),     // Buffered to prevent blocking
+		uiUpdateChan:            make(chan func(), 100), // Buffered channel for UI updates (increased from 10)
+		playerUpdateChan:        playerUpdateChan,
+		pickedPlayers:           make([]string, 0),
+		currentPick:             0,
+		teamPlayers:             make([]Player, 0),
+		selectedPlayerIndex:     -1,
 		lastSelectedPlayerIndex: -1,
 		positionFilters: map[string]bool{
 			"QB": false, "RB": false, "WR": false, "TE": false,
 		},
+		searchText: "",
 	}
-	
+
 	// Initialize settings UI
 	ui.settingsUI = NewSettingsUI(window, settings, llmManager, ui.handleSettingsUpdate)
-	
+
 	ui.setupUI()
 	ui.startUIUpdateHandler()
 	ui.startPlayerUpdateListener()
-	
+
 	// Load draft status for all players on startup
 	ui.loadDraftStatusForAllPlayers()
-	
+
 	// Load initial team data
 	ui.loadTeamData()
-	
+
 	// Show LLM warning message by default if not configured
 	if !ui.llmManager.IsConfigured() {
 		ui.showLLMNotConfiguredMessage()
 	}
-	
+
 	return ui
 }
 
@@ -193,7 +195,7 @@ func (ui *FantasyUI) startUIUpdateHandler() {
 		for {
 			select {
 			case updateFunc := <-ui.uiUpdateChan:
-				updateFunc()  // Execute UI update on main thread
+				updateFunc() // Execute UI update on main thread
 			case <-ui.stopChan:
 				return
 			}
@@ -212,63 +214,112 @@ func (ui *FantasyUI) safeUIUpdate(updateFunc func()) {
 	}
 }
 
-// getVisiblePlayers returns players filtered by position
+// getVisiblePlayers returns players filtered by position and search text
 func (ui *FantasyUI) getVisiblePlayers() []Player {
 	var visible []Player
-	
-	// Check if any filters are enabled
-	anyEnabled := false
+
+	// Check if any position filters are enabled
+	anyPositionEnabled := false
 	for _, enabled := range ui.positionFilters {
 		if enabled {
-			anyEnabled = true
+			anyPositionEnabled = true
 			break
 		}
 	}
-	
-	// If no filters are enabled, show all players
-	if !anyEnabled {
-		return ui.players
-	}
-	
-	// Otherwise, only show players whose position is enabled
+
+	// Filter players based on search and position
 	for _, player := range ui.players {
-		posType := strings.TrimRight(player.Pos, "0123456789") // Extract position type (QB, RB, WR, TE)
-		if ui.positionFilters[posType] {
-			visible = append(visible, player)
+		// Search text filter (if search text exists, player name must contain it)
+		if ui.searchText != "" {
+			if !strings.Contains(strings.ToLower(player.Name), strings.ToLower(ui.searchText)) {
+				continue // Skip this player if name doesn't match search
+			}
 		}
+
+		// Position filter (if any position is enabled, player must match enabled position)
+		if anyPositionEnabled {
+			posType := strings.TrimRight(player.Pos, "0123456789") // Extract position type (QB, RB, WR, TE)
+			if !ui.positionFilters[posType] {
+				continue // Skip this player if position not enabled
+			}
+		}
+
+		// Player passes all filters
+		visible = append(visible, player)
 	}
+
 	return visible
 }
 
-// createPositionFilters creates the position filter checkboxes
+// createPositionFilters creates the position filter checkboxes and search bar
 func (ui *FantasyUI) createPositionFilters() *fyne.Container {
+	// Create search entry with proper sizing
+	searchEntry := widget.NewEntry()
+	searchEntry.SetPlaceHolder("Search players...")
+	
+	// Create clear button (X) - initially hidden
+	clearBtn := widget.NewButton("×", func() {
+		searchEntry.SetText("")
+		ui.searchText = ""
+		ui.playerList.Refresh()
+	})
+	clearBtn.Hide() // Start hidden
+	
+	// Create container for search entry and clear button
+	searchContainer := container.NewBorder(
+		nil, nil, nil, clearBtn, // clear button on right
+		searchEntry,
+	)
+	
+	searchEntry.OnChanged = func(text string) {
+		ui.searchText = text
+		// Show/hide clear button based on whether there's text
+		if text == "" {
+			clearBtn.Hide()
+		} else {
+			clearBtn.Show()
+		}
+		ui.playerList.Refresh()
+	}
+
+	// Create position checkboxes
 	qbCheck := widget.NewCheck("QB", func(checked bool) {
 		ui.positionFilters["QB"] = checked
 		ui.playerList.Refresh()
 	})
 	qbCheck.SetChecked(false) // Start unchecked
-	
+
 	rbCheck := widget.NewCheck("RB", func(checked bool) {
 		ui.positionFilters["RB"] = checked
 		ui.playerList.Refresh()
 	})
 	rbCheck.SetChecked(false) // Start unchecked
-	
+
 	wrCheck := widget.NewCheck("WR", func(checked bool) {
 		ui.positionFilters["WR"] = checked
 		ui.playerList.Refresh()
 	})
 	wrCheck.SetChecked(false) // Start unchecked
-	
+
 	teCheck := widget.NewCheck("TE", func(checked bool) {
 		ui.positionFilters["TE"] = checked
 		ui.playerList.Refresh()
 	})
 	teCheck.SetChecked(false) // Start unchecked
-	
-	return container.NewHBox(
+
+	leftSideWidgets := container.NewHBox(
 		widget.NewLabel("Positions:"),
 		qbCheck, rbCheck, wrCheck, teCheck,
+		// No separator needed here if the search bar fills the rest of the space
+	)
+
+	// Place the checkboxes on the left and the search bar in the center to make it expand.
+	return container.NewBorder(
+		nil,             // Top
+		nil,             // Bottom
+		leftSideWidgets, // Left (takes minimum size)
+		nil,             // Right
+		searchContainer, // Center (expands to fill remaining width)
 	)
 }
 
@@ -276,22 +327,22 @@ func (ui *FantasyUI) createPositionFilters() *fyne.Container {
 func (ui *FantasyUI) setupUI() {
 	// Create player list
 	ui.playerList = widget.NewList(
-		func() int { 
+		func() int {
 			visible := ui.getVisiblePlayers()
 			return len(visible)
 		},
 		func() fyne.CanvasObject {
 			return NewPlayerRowLabel(ui)
 		},
-					func(id widget.ListItemID, item fyne.CanvasObject) {
+		func(id widget.ListItemID, item fyne.CanvasObject) {
 			visible := ui.getVisiblePlayers()
-			
+
 			if id < len(visible) {
 				p := visible[id]
 				playerLabel := item.(*PlayerRowLabel)
 				// Update the player index for right-click handling
 				playerLabel.playerIndex = int(id)
-				
+
 				// Handle emoji status
 				var statusPart string
 				if p.DraftStatus == "✅" {
@@ -301,24 +352,24 @@ func (ui *FantasyUI) setupUI() {
 				} else {
 					statusPart = "   "
 				}
-				playerLabel.SetText(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s", 
+				playerLabel.SetText(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s",
 					p.Rank, p.ESPNRank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
 	)
-	
+
 	// Add selection handler for clicking players to toggle note view
 	ui.playerList.OnSelected = func(id widget.ListItemID) {
 		visible := ui.getVisiblePlayers()
 		ui.mutex.Lock()
 		ui.selectedPlayerIndex = int(id)
-		ui.lastSelectedPlayerIndex = int(id)  // Track for 'd' key
+		ui.lastSelectedPlayerIndex = int(id) // Track for 'd' key
 		if id < len(visible) {
 			playerName := visible[id].Name
 			// Always toggle - if we're viewing this player's notes, close them, otherwise open them
 			isCurrentlyViewing := ui.noteViewerVisible && ui.currentViewedPlayer == playerName
 			ui.mutex.Unlock()
-			
+
 			if isCurrentlyViewing {
 				// Close the notes
 				ui.hidePlayerNote()
@@ -326,7 +377,7 @@ func (ui *FantasyUI) setupUI() {
 				// Open the notes
 				ui.showPlayerNote(playerName)
 			}
-			
+
 			// Always unselect after handling the click to allow repeated clicks
 			ui.safeUIUpdate(func() {
 				ui.playerList.UnselectAll()
@@ -335,12 +386,12 @@ func (ui *FantasyUI) setupUI() {
 			ui.mutex.Unlock()
 		}
 	}
-	
+
 	// Create output text area
 	ui.outputText = widget.NewRichText()
 	ui.outputText.Scroll = container.ScrollBoth
 	ui.outputText.Wrapping = fyne.TextWrapWord
-	
+
 	// Create note viewer components
 	ui.noteViewer = widget.NewRichText()
 	ui.noteViewer.Scroll = container.ScrollBoth
@@ -354,7 +405,7 @@ func (ui *FantasyUI) setupUI() {
 		container.NewScroll(ui.noteViewer),
 	)
 	ui.noteViewerVisible = false
-	
+
 	// Create team list
 	ui.teamList = widget.NewList(
 		func() int {
@@ -369,7 +420,7 @@ func (ui *FantasyUI) setupUI() {
 		func(id widget.ListItemID, item fyne.CanvasObject) {
 			ui.mutex.RLock()
 			defer ui.mutex.RUnlock()
-			
+
 			displayData := ui.getTeamPlayerDisplayData()
 			if id < len(displayData) {
 				label := item.(*widget.Label)
@@ -378,20 +429,20 @@ func (ui *FantasyUI) setupUI() {
 			}
 		},
 	)
-	
+
 	// Create status label
 	ui.statusLabel = widget.NewLabel("Ready - Listening for draft updates")
-	
+
 	// Create buttons
 	ui.queryButton = widget.NewButton("Query LLM (q)", ui.handleLLMQuery)
 	ui.refreshButton = widget.NewButton("Manual Refresh (r)", ui.handleManualRefresh)
 	ui.draftStatusButton = widget.NewButton("Toggle Draft Status (d)", ui.handleDraftStatusToggle)
 	ui.settingsButton = ui.settingsUI.CreateSettingsButton()
-	
+
 	// Create collapse buttons
 	ui.llmCollapseBtn = widget.NewButton("  −  ", ui.toggleLLMCollapse)
 	ui.teamCollapseBtn = widget.NewButton("  −  ", ui.toggleTeamCollapse)
-	
+
 	// Create button container
 	buttonContainer := container.NewHBox(
 		ui.queryButton,
@@ -399,37 +450,37 @@ func (ui *FantasyUI) setupUI() {
 		widget.NewSeparator(),
 		ui.settingsButton,
 	)
-	
+
 	// Create position filters and header
 	positionFilters := ui.createPositionFilters()
-	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s", 
+	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s",
 		"Rank", "ESPN", "Name", "St", "Depth", "Team", "Note"))
 	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
-	
+
 	// Create left panel (player list)
 	leftPanel := container.NewBorder(
 		container.NewVBox(positionFilters, headerLabel), // top
-		nil,         // bottom
-		nil,         // left
-		nil,         // right
+		nil,           // bottom
+		nil,           // left
+		nil,           // right
 		ui.playerList, // center
 	)
-	
+
 	// Create LLM output panel with collapse button
 	llmHeader := container.NewBorder(
-		nil, nil, 
-		widget.NewLabel("LLM Output:"), 
+		nil, nil,
+		widget.NewLabel("LLM Output:"),
 		ui.llmCollapseBtn,
 		nil,
 	)
 	ui.llmPanel = container.NewBorder(
-		llmHeader, // top
-		nil,       // bottom
-		nil,       // left
-		nil,       // right
+		llmHeader,                          // top
+		nil,                                // bottom
+		nil,                                // left
+		nil,                                // right
 		container.NewScroll(ui.outputText), // center
 	)
-	
+
 	// Create team header with position columns
 	teamHeaderLabel := widget.NewLabel(fmt.Sprintf("%-4s  %-22s  %-4s", "Pos", "Name", "Team"))
 	teamHeaderLabel.TextStyle = fyne.TextStyle{Bold: true}
@@ -439,53 +490,53 @@ func (ui *FantasyUI) setupUI() {
 		ui.teamCollapseBtn,
 		nil,
 	)
-	
+
 	// Create team panel with header and list
 	ui.teamPanel = container.NewBorder(
 		container.NewVBox(teamHeader, teamHeaderLabel), // top
-		nil,                                           // bottom
-		nil,                                           // left
-		nil,                                           // right
-		container.NewScroll(ui.teamList),              // center
+		nil,                              // bottom
+		nil,                              // left
+		nil,                              // right
+		container.NewScroll(ui.teamList), // center
 	)
-	
+
 	// Create right panel as vertical split between LLM output and team
 	ui.rightVSplit = container.NewVSplit(ui.llmPanel, ui.teamPanel)
 	ui.rightVSplit.SetOffset(0.6) // 60% LLM output, 40% team
-	
+
 	// Create overall panel with buttons and status
 	rightPanelWithControls := container.NewBorder(
 		buttonContainer, // top
 		ui.statusLabel,  // bottom
-		nil,            // left
-		nil,            // right
-		ui.rightVSplit, // center
+		nil,             // left
+		nil,             // right
+		ui.rightVSplit,  // center
 	)
-	
+
 	// Create main split container
 	ui.mainContainer = container.NewHSplit(leftPanel, rightPanelWithControls)
 	ui.mainContainer.SetOffset(0.5) // 50/50 split
-	
+
 	ui.window.SetContent(ui.mainContainer)
-	
+
 	// Set up keyboard shortcuts - use window-level handling to avoid focus issues
 	ui.window.Canvas().SetOnTypedKey(ui.handleKeyPress)
 	ui.window.Canvas().SetOnTypedRune(ui.handleTypedRune)
-	
+
 	// Add global shortcut handling that works regardless of focus
 	ui.window.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName: fyne.KeyD,
 	}, func(shortcut fyne.Shortcut) {
 		ui.handleDraftStatusToggle()
 	})
-	
+
 	// Also add space key as global shortcut
 	ui.window.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName: fyne.KeySpace,
 	}, func(shortcut fyne.Shortcut) {
 		ui.handleDraftStatusToggle()
 	})
-	
+
 	// Handle window close
 	ui.window.SetCloseIntercept(func() {
 		ui.stop()
@@ -524,33 +575,33 @@ func (ui *FantasyUI) handleTypedRune(r rune) {
 func (ui *FantasyUI) handleLLMQuery() {
 	ui.mutex.Lock()
 	defer ui.mutex.Unlock()
-	
+
 	// Check if LLM is configured
 	if !ui.llmManager.IsConfigured() {
 		ui.showLLMNotConfiguredMessage()
 		return
 	}
-	
+
 	if ui.querying || ui.refreshing {
 		return
 	}
-	
+
 	if time.Since(ui.lastQuery) < 5*time.Second {
 		providerType := ui.llmManager.GetProviderType()
 		ui.notice = fmt.Sprintf("Wait 5 seconds between %s queries", providerType)
 		ui.updateStatusInternal()
 		return
 	}
-	
+
 	ui.querying = true
 	ui.lastQuery = time.Now()
 	ui.updateStatusInternal()
-	
+
 	// Clear output safely
 	ui.safeUIUpdate(func() {
 		ui.outputText.ParseMarkdown("")
 	})
-	
+
 	go ui.performLLMQuery()
 }
 
@@ -558,21 +609,21 @@ func (ui *FantasyUI) handleLLMQuery() {
 func (ui *FantasyUI) handleManualRefresh() {
 	ui.mutex.Lock()
 	defer ui.mutex.Unlock()
-	
+
 	if ui.querying || ui.refreshing {
 		return
 	}
-	
+
 	ui.refreshing = true
 	ui.notice = ""
 	ui.lastRefresh = time.Now()
 	ui.updateStatusInternal()
-	
+
 	// Clear output safely
 	ui.safeUIUpdate(func() {
 		ui.outputText.ParseMarkdown("")
 	})
-	
+
 	go func() {
 		ui.performRefresh(true)
 		ui.loadTeamData() // Also refresh team data
@@ -583,41 +634,41 @@ func (ui *FantasyUI) handleManualRefresh() {
 func (ui *FantasyUI) performLLMQuery() {
 	// First refresh player data
 	ui.performRefreshInternal()
-	
+
 	// Build the notes string using the updated players (limit to top 15)
 	ui.mutex.RLock()
-	currentPlayers := make([]Player, len(ui.players))  // Create safe copy
+	currentPlayers := make([]Player, len(ui.players)) // Create safe copy
 	copy(currentPlayers, ui.players)
 	currentPick := ui.currentPick
 	pickedPlayers := make([]string, len(ui.pickedPlayers))
 	copy(pickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
-	
+
 	// Limit to top 15 players for LLM analysis to keep prompt manageable
 	topPlayers := currentPlayers
 	if len(currentPlayers) > 15 {
 		topPlayers = currentPlayers[:15]
 	}
-	
+
 	allNotes, err := ui.dataLoader.BuildAllNotes(topPlayers)
 	if err != nil {
 		ui.handleError(fmt.Errorf("failed to build notes: %w", err))
 		return
 	}
-	
+
 	// Get current team from status file (fallback)
 	currentTeam, err := ui.dataLoader.LoadCurrentTeam()
 	if err != nil {
 		log.Printf("Warning: could not load current team: %v", err)
 		currentTeam = "[Team not available]"
 	}
-	
+
 	// Build picked players string
 	pickedPlayersStr := fmt.Sprintf("%s", pickedPlayers)
 	if len(pickedPlayers) == 0 {
 		pickedPlayersStr = "[No players picked yet]"
 	}
-	
+
 	// Build the full user prompt with draft context
 	prompt, err := ui.llmManager.BuildUserPrompt(currentPick, pickedPlayersStr, currentTeam, allNotes)
 	if err != nil {
@@ -625,7 +676,7 @@ func (ui *FantasyUI) performLLMQuery() {
 		ui.handleError(fmt.Errorf("failed to build user prompt: %w", err))
 		return
 	}
-	
+
 	// Ask LLM and return the answer
 	answer, err := ui.llmManager.Ask(prompt)
 	if err != nil {
@@ -634,12 +685,12 @@ func (ui *FantasyUI) performLLMQuery() {
 		ui.handleError(fmt.Errorf("%s error: %w", providerType, err))
 		return
 	}
-	
+
 	// Update UI safely
 	ui.mutex.Lock()
 	ui.querying = false
 	ui.mutex.Unlock()
-	
+
 	ui.safeUIUpdate(func() {
 		ui.outputText.ParseMarkdown(answer)
 	})
@@ -649,19 +700,19 @@ func (ui *FantasyUI) performLLMQuery() {
 // performRefresh runs the refresh in a goroutine
 func (ui *FantasyUI) performRefresh(manual bool) {
 	ui.performRefreshInternal()
-	
+
 	ui.mutex.Lock()
 	ui.refreshing = false
 	playerCount := len(ui.players)
 	ui.mutex.Unlock()
-	
+
 	if manual {
 		ui.safeUIUpdate(func() {
-			ui.outputText.ParseMarkdown(fmt.Sprintf("Refreshed: %d players (updated %s)", 
+			ui.outputText.ParseMarkdown(fmt.Sprintf("Refreshed: %d players (updated %s)",
 				playerCount, time.Now().Format("15:04:05")))
 		})
 	}
-	
+
 	ui.updateStatus()
 }
 
@@ -669,14 +720,14 @@ func (ui *FantasyUI) performRefresh(manual bool) {
 // Returns the matched CSV player name and whether a match was found
 func (ui *FantasyUI) fuzzyMatchPlayer(inputName string, allPlayers []Player) (string, bool) {
 	inputLower := strings.ToLower(strings.TrimSpace(inputName))
-	
+
 	// First try exact match
 	for _, player := range allPlayers {
 		if strings.ToLower(player.Name) == inputLower {
 			return player.Name, true
 		}
 	}
-	
+
 	// Try partial match (input contains CSV name or vice versa)
 	for _, player := range allPlayers {
 		playerLower := strings.ToLower(player.Name)
@@ -685,13 +736,13 @@ func (ui *FantasyUI) fuzzyMatchPlayer(inputName string, allPlayers []Player) (st
 			return player.Name, true
 		}
 	}
-	
+
 	// Try matching individual words
 	inputWords := strings.Fields(inputLower)
 	for _, player := range allPlayers {
 		playerWords := strings.Fields(strings.ToLower(player.Name))
 		matchCount := 0
-		
+
 		for _, inputWord := range inputWords {
 			for _, playerWord := range playerWords {
 				if inputWord == playerWord {
@@ -700,14 +751,14 @@ func (ui *FantasyUI) fuzzyMatchPlayer(inputName string, allPlayers []Player) (st
 				}
 			}
 		}
-		
+
 		// If at least 2 words match, consider it a match
 		if matchCount >= 2 && matchCount >= len(inputWords)/2 {
 			log.Printf("FUZZY MATCH: '%s' matched to '%s' (%d words)", inputName, player.Name, matchCount)
 			return player.Name, true
 		}
 	}
-	
+
 	return "", false
 }
 
@@ -718,17 +769,17 @@ func (ui *FantasyUI) performRefreshInternal() {
 	rawPickedPlayers := make([]string, len(ui.pickedPlayers))
 	copy(rawPickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
-	
+
 	// Load all players from static CSV file
 	playerDataFiles := []string{
 		getDataPath("players.csv"),
 		getDataPath("combined_with_depth.csv"),
 		"go/combined_with_depth.csv", // fallback if running from root
 	}
-	
+
 	var allPlayers []Player
 	var err error
-	
+
 	for _, filename := range playerDataFiles {
 		if _, statErr := os.Stat(filename); statErr == nil {
 			allPlayers, err = LoadPlayers(filename)
@@ -737,12 +788,12 @@ func (ui *FantasyUI) performRefreshInternal() {
 			}
 		}
 	}
-	
+
 	if err != nil || len(allPlayers) == 0 {
 		log.Printf("Failed to load player data for refresh: %v", err)
 		return
 	}
-	
+
 	// Create map of picked players with fuzzy matching
 	pickedPlayers := make(map[string]bool)
 	for _, rawPlayerName := range rawPickedPlayers {
@@ -755,7 +806,7 @@ func (ui *FantasyUI) performRefreshInternal() {
 				break
 			}
 		}
-		
+
 		// If no exact match, try fuzzy matching
 		if !found {
 			if matchedName, matched := ui.fuzzyMatchPlayer(rawPlayerName, allPlayers); matched {
@@ -765,7 +816,7 @@ func (ui *FantasyUI) performRefreshInternal() {
 			}
 		}
 	}
-	
+
 	// Filter out picked players
 	var filteredPlayers []Player
 	for _, player := range allPlayers {
@@ -773,23 +824,23 @@ func (ui *FantasyUI) performRefreshInternal() {
 			filteredPlayers = append(filteredPlayers, player)
 		}
 	}
-	
+
 	log.Printf("Filtered players: %d total, %d picked, %d remaining", len(allPlayers), len(ui.pickedPlayers), len(filteredPlayers))
-	
+
 	ui.mutex.Lock()
 	// Only update if the data actually changed
 	shouldUpdate := len(filteredPlayers) != len(ui.players)
 	if !shouldUpdate && len(filteredPlayers) > 0 && len(ui.players) > 0 {
 		shouldUpdate = filteredPlayers[0].Name != ui.players[0].Name
 	}
-	
+
 	if shouldUpdate {
 		log.Printf("Live update: Removing %d picked players from GUI (%d → %d players)", len(ui.pickedPlayers), len(ui.players), len(filteredPlayers))
 		ui.players = filteredPlayers
 		// Load draft status for all players
 		ui.loadDraftStatusForAllPlayers()
 		ui.mutex.Unlock()
-		
+
 		// Refresh UI safely
 		ui.safeUIUpdate(func() {
 			ui.playerList.Refresh()
@@ -805,7 +856,7 @@ func (ui *FantasyUI) handleError(err error) {
 	ui.querying = false
 	ui.refreshing = false
 	ui.mutex.Unlock()
-	
+
 	ui.safeUIUpdate(func() {
 		ui.outputText.ParseMarkdown(fmt.Sprintf("**Error:** %s", err.Error()))
 	})
@@ -852,7 +903,7 @@ func (ui *FantasyUI) updateStatus() {
 // updateStatusInternal updates the status label (must be called with mutex held)
 func (ui *FantasyUI) updateStatusInternal() {
 	var status string
-	
+
 	switch {
 	case ui.notice != "":
 		status = ui.notice
@@ -870,7 +921,7 @@ func (ui *FantasyUI) updateStatusInternal() {
 			status = "Ready - Listening for draft updates (q: Configure LLM, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)"
 		}
 	}
-	
+
 	ui.safeUIUpdate(func() {
 		ui.statusLabel.SetText(status)
 	})
@@ -888,7 +939,7 @@ func (ui *FantasyUI) startPlayerUpdateListener() {
 					ui.loadTeamData()
 				} else {
 					log.Printf("Received player update: %d players, pick %d", len(update.PickedPlayers), update.PickNumber)
-					
+
 					// Throttle updates to max 1 per 200ms to prevent channel overflow
 					ui.mutex.Lock()
 					if time.Since(ui.lastPlayerUpdate) < 200*time.Millisecond {
@@ -897,22 +948,22 @@ func (ui *FantasyUI) startPlayerUpdateListener() {
 						continue
 					}
 					ui.lastPlayerUpdate = time.Now()
-					
+
 					ui.pickedPlayers = update.PickedPlayers
 					ui.currentPick = update.PickNumber
-					
+
 					// Trigger a refresh to update the available players list
 					canRefresh := !ui.refreshing && !ui.querying
 					if canRefresh {
 						ui.refreshing = true
 					}
 					ui.mutex.Unlock()
-					
+
 					if canRefresh {
 						go ui.performRefresh(false)
 					}
 				}
-				
+
 			case <-ui.stopChan:
 				return
 			}
@@ -936,13 +987,13 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 	if err := ui.llmManager.UpdateSettings(settings); err != nil {
 		return fmt.Errorf("failed to update LLM manager: %w", err)
 	}
-	
+
 	// Update local settings reference
 	ui.settings = settings
-	
+
 	// Update status to reflect new provider
 	ui.updateStatus()
-	
+
 	// If LLM is now configured, clear the warning message
 	if ui.llmManager.IsConfigured() {
 		ui.safeUIUpdate(func() {
@@ -952,7 +1003,7 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 		// Show the warning message if still not configured
 		ui.showLLMNotConfiguredMessage()
 	}
-	
+
 	log.Printf("Settings updated successfully. Now using %s", ui.llmManager.GetProviderType())
 	return nil
 }
@@ -967,34 +1018,34 @@ func (ui *FantasyUI) sortTeamPlayersByPosition() []Player {
 	if len(ui.teamPlayers) == 0 {
 		return []Player{}
 	}
-	
+
 	// Position priority order
 	positionOrder := map[string]int{
 		"QB":  1,
-		"RB":  2, 
+		"RB":  2,
 		"WR":  3,
 		"TE":  4,
 		"K":   5,
 		"DST": 6,
 		"DEF": 6, // Alternative defense notation
 	}
-	
+
 	sorted := make([]Player, len(ui.teamPlayers))
 	copy(sorted, ui.teamPlayers)
-	
+
 	sort.Slice(sorted, func(i, j int) bool {
 		posI := positionOrder[sorted[i].Pos]
 		posJ := positionOrder[sorted[j].Pos]
-		
+
 		// If positions are different, sort by position priority
 		if posI != posJ {
 			return posI < posJ
 		}
-		
+
 		// Within same position, sort by rank (lower rank number = better)
 		return sorted[i].rankNum < sorted[j].rankNum
 	})
-	
+
 	return sorted
 }
 
@@ -1009,13 +1060,13 @@ func (ui *FantasyUI) getTeamPlayerDisplayData() []string {
 	if len(sortedPlayers) == 0 {
 		return []string{"No players on your team yet"}
 	}
-	
+
 	var displayData []string
-	
+
 	for _, player := range sortedPlayers {
 		displayData = append(displayData, ui.formatTeamPlayerForDisplay(player))
 	}
-	
+
 	return displayData
 }
 
@@ -1027,16 +1078,16 @@ func (ui *FantasyUI) toggleLLMCollapse() {
 		ui.mutex.Unlock()
 		return
 	}
-	
+
 	ui.llmCollapsed = !ui.llmCollapsed
 	collapsed := ui.llmCollapsed
-	
+
 	// If we're collapsing LLM and team was collapsed, expand team
 	if collapsed && ui.teamCollapsed {
 		ui.teamCollapsed = false
 	}
 	ui.mutex.Unlock()
-	
+
 	ui.safeUIUpdate(func() {
 		if collapsed {
 			// Collapse LLM panel by setting offset to nearly 0 (give team panel most space)
@@ -1052,7 +1103,7 @@ func (ui *FantasyUI) toggleLLMCollapse() {
 	})
 }
 
-// toggleTeamCollapse toggles the team panel collapsed state  
+// toggleTeamCollapse toggles the team panel collapsed state
 func (ui *FantasyUI) toggleTeamCollapse() {
 	ui.mutex.Lock()
 	// Don't allow collapsing if LLM panel is already collapsed
@@ -1060,16 +1111,16 @@ func (ui *FantasyUI) toggleTeamCollapse() {
 		ui.mutex.Unlock()
 		return
 	}
-	
+
 	ui.teamCollapsed = !ui.teamCollapsed
 	collapsed := ui.teamCollapsed
-	
+
 	// If we're collapsing team and LLM was collapsed, expand LLM
 	if collapsed && ui.llmCollapsed {
 		ui.llmCollapsed = false
 	}
 	ui.mutex.Unlock()
-	
+
 	ui.safeUIUpdate(func() {
 		if collapsed {
 			// Collapse team panel by setting offset to nearly 1 (give LLM panel most space)
@@ -1092,16 +1143,16 @@ func (ui *FantasyUI) loadTeamData() {
 		log.Printf("Warning: could not load team players: %v", err)
 		teamPlayers = []Player{} // Use empty slice on error
 	}
-	
+
 	ui.mutex.Lock()
 	ui.teamPlayers = teamPlayers
 	ui.mutex.Unlock()
-	
+
 	// Refresh team list
 	ui.safeUIUpdate(func() {
 		ui.teamList.Refresh()
 	})
-	
+
 	log.Printf("Loaded %d team players", len(teamPlayers))
 }
 
@@ -1113,19 +1164,19 @@ func (ui *FantasyUI) showPlayerNote(playerName string) {
 		log.Printf("Could not find note file for %s: %v", playerName, err)
 		return
 	}
-	
+
 	content, err := os.ReadFile(noteFile)
 	if err != nil {
 		log.Printf("Could not read note file for %s: %v", playerName, err)
 		return
 	}
-	
+
 	// Update the note viewer
 	ui.mutex.Lock()
 	ui.currentViewedPlayer = playerName
 	ui.noteViewerVisible = true
 	ui.mutex.Unlock()
-	
+
 	// Update UI safely
 	ui.safeUIUpdate(func() {
 		// Create header with player name, draft status button, and close button
@@ -1135,7 +1186,7 @@ func (ui *FantasyUI) showPlayerNote(playerName string) {
 			container.NewHBox(ui.draftStatusButton, ui.closeNoteButton),
 			nil,
 		)
-		
+
 		// Update the note viewer container with the new header
 		ui.noteViewerContainer = container.NewBorder(
 			headerContainer,
@@ -1144,15 +1195,15 @@ func (ui *FantasyUI) showPlayerNote(playerName string) {
 			nil,
 			container.NewScroll(ui.noteViewer),
 		)
-		
+
 		// Set the note content
 		ui.noteViewer.ParseMarkdown(string(content))
-		
+
 		// Replace the right panel content with note viewer
 		ui.mainContainer.Trailing = ui.noteViewerContainer
 		ui.mainContainer.Refresh()
 	})
-	
+
 	// Selection is handled in OnSelected handler
 }
 
@@ -1162,7 +1213,7 @@ func (ui *FantasyUI) hidePlayerNote() {
 	ui.noteViewerVisible = false
 	ui.currentViewedPlayer = ""
 	ui.mutex.Unlock()
-	
+
 	// Restore the original right panel
 	ui.safeUIUpdate(func() {
 		// Create right panel with buttons and status again
@@ -1172,15 +1223,15 @@ func (ui *FantasyUI) hidePlayerNote() {
 			widget.NewSeparator(),
 			ui.settingsButton,
 		)
-		
+
 		rightPanelWithControls := container.NewBorder(
 			buttonContainer, // top
 			ui.statusLabel,  // bottom
-			nil,            // left
-			nil,            // right
-			ui.rightVSplit, // center
+			nil,             // left
+			nil,             // right
+			ui.rightVSplit,  // center
 		)
-		
+
 		ui.mainContainer.Trailing = rightPanelWithControls
 		ui.mainContainer.Refresh()
 	})
@@ -1190,15 +1241,15 @@ func (ui *FantasyUI) hidePlayerNote() {
 func (ui *FantasyUI) handleDraftStatusToggle() {
 	visible := ui.getVisiblePlayers()
 	ui.mutex.Lock()
-	selectedIndex := ui.lastSelectedPlayerIndex  // Use last selected, not current (which might be -1 after unselect)
+	selectedIndex := ui.lastSelectedPlayerIndex // Use last selected, not current (which might be -1 after unselect)
 	if selectedIndex == -1 || selectedIndex >= len(visible) {
 		ui.mutex.Unlock()
 		return
 	}
-	
+
 	selectedPlayer := visible[selectedIndex]
 	playerName := selectedPlayer.Name
-	
+
 	// Find the actual player in the full list
 	var player *Player
 	for i := range ui.players {
@@ -1207,12 +1258,12 @@ func (ui *FantasyUI) handleDraftStatusToggle() {
 			break
 		}
 	}
-	
+
 	if player == nil {
 		ui.mutex.Unlock()
 		return
 	}
-	
+
 	// Cycle through: "" -> "✅" -> "❌" -> ""
 	switch player.DraftStatus {
 	case "":
@@ -1224,15 +1275,15 @@ func (ui *FantasyUI) handleDraftStatusToggle() {
 	default:
 		player.DraftStatus = "✅"
 	}
-	
+
 	newStatus := player.DraftStatus
 	ui.mutex.Unlock()
-	
+
 	// Update the note file
 	if err := ui.dataLoader.WriteDraftStatusToNote(playerName, newStatus); err != nil {
 		log.Printf("Error updating draft status for %s: %v", playerName, err)
 	}
-	
+
 	// Refresh the UI
 	ui.safeUIUpdate(func() {
 		ui.playerList.Refresh()
