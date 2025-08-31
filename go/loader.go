@@ -332,3 +332,26 @@ func (d *DataLoader) LoadDraftStatusFromNote(playerName string) string {
 	}
 	return ""
 }
+
+// LoadAllPlayers loads all players from the player data files
+func (d *DataLoader) LoadAllPlayers() ([]Player, error) {
+	// Try different player data file locations
+	playerDataFiles := []string{
+		getDataPath("players.csv"),
+		getDataPath("combined_with_depth.csv"),
+		"players.csv",
+		"go/players.csv",
+		"go/combined_with_depth.csv",
+	}
+	
+	for _, filename := range playerDataFiles {
+		if _, err := os.Stat(filename); err == nil {
+			players, err := LoadPlayers(filename)
+			if err == nil {
+				return players, nil
+			}
+		}
+	}
+	
+	return nil, fmt.Errorf("could not load player data from any available file")
+}

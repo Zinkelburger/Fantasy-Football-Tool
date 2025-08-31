@@ -31,8 +31,11 @@ func createTestUI(t *testing.T) (*FantasyUI, chan PlayerUpdate, func()) {
 	// Create player update channel
 	playerUpdateChan := make(chan PlayerUpdate, 100)
 
+	// Create mock HTTP server
+	mockHTTPServer := NewHTTPServer("test", playerUpdateChan)
+
 	// Create UI
-	ui := NewFantasyUI(testApp, players, dataLoader, llmManager, settings, playerUpdateChan)
+	ui := NewFantasyUI(testApp, players, dataLoader, llmManager, settings, playerUpdateChan, mockHTTPServer)
 
 	cleanup := func() {
 		ui.stop()

@@ -145,7 +145,6 @@ func main() {
 	httpPort := 8000
 	httpServer := StartHTTPServerAsync(statusDir, httpPort, playerUpdateChannel)
 	log.Printf("HTTP server started on port %d for browser extension communication", httpPort)
-	_ = httpServer // Avoid unused variable warning
 
 	// --- Start UI ---
 
@@ -155,7 +154,7 @@ func main() {
 	
 	// Set custom font for the app
 	fyneApp.Settings().SetTheme(&customTheme{})
-	ui := NewFantasyUI(fyneApp, players, dataLoader, llmManager, settings, playerUpdateChannel)
+	ui := NewFantasyUI(fyneApp, players, dataLoader, llmManager, settings, playerUpdateChannel, httpServer)
 	ui.Show()
 	fyneApp.Run()
 

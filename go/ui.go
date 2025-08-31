@@ -77,7 +77,7 @@ type FantasyUI struct {
 	playerList        *widget.List
 	outputText        *widget.RichText
 	teamList          *widget.List
-	statusLabel       *widget.Label
+	statusLabel       *widget.RichText
 	queryButton       *widget.Button
 	refreshButton     *widget.Button
 	settingsButton    *widget.Button
@@ -114,6 +114,7 @@ type FantasyUI struct {
 	pickedPlayers []string // Current list of picked players
 	currentPick   int      // Current pick number
 	teamPlayers   []Player // Current team players
+	httpServer    *HTTPServer // Reference to HTTP server for connection status
 
 	// Position filtering (simple, no locking needed)
 	positionFilters map[string]bool // Which positions are currently enabled
@@ -128,7 +129,7 @@ type FantasyUI struct {
 }
 
 // NewFantasyUI creates and initializes the Fyne UI
-func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager *LLMManager, settings *Settings, playerUpdateChan <-chan PlayerUpdate) *FantasyUI {
+func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager *LLMManager, settings *Settings, playerUpdateChan <-chan PlayerUpdate, httpServer *HTTPServer) *FantasyUI {
 	window := app.NewWindow("Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
 
@@ -157,6 +158,7 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 		stopChan:                make(chan bool, 1),     // Buffered to prevent blocking
 		uiUpdateChan:            make(chan func(), 100), // Buffered channel for UI updates (increased from 10)
 		playerUpdateChan:        playerUpdateChan,
+		httpServer:              httpServer,
 		pickedPlayers:           make([]string, 0),
 		currentPick:             0,
 		teamPlayers:             make([]Player, 0),
@@ -174,6 +176,7 @@ func NewFantasyUI(app fyne.App, players []Player, loader *DataLoader, llmManager
 	ui.setupUI()
 	ui.startUIUpdateHandler()
 	ui.startPlayerUpdateListener()
+	ui.startStatusUpdateTimer()
 
 	// Load draft status for all players on startup
 	ui.loadDraftStatusForAllPlayers()
@@ -430,8 +433,9 @@ func (ui *FantasyUI) setupUI() {
 		},
 	)
 
-	// Create status label
-	ui.statusLabel = widget.NewLabel("Ready - Listening for draft updates")
+	// Create status label as RichText for clickable links
+	ui.statusLabel = widget.NewRichText()
+	ui.statusLabel.ParseMarkdown("Not connected, please set up the browser extension")
 
 	// Create buttons
 	ui.queryButton = widget.NewButton("Query LLM (q)", ui.handleLLMQuery)
@@ -922,16 +926,22 @@ func (ui *FantasyUI) updateStatusInternal() {
 		providerType := ui.llmManager.GetProviderType()
 		status = fmt.Sprintf("Querying %s...", providerType)
 	default:
-		providerType := ui.llmManager.GetProviderType()
-		if ui.llmManager.IsConfigured() {
-			status = fmt.Sprintf("Ready - Listening for draft updates (q: %s, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)", providerType)
+		// Check connection status
+		isConnected := ui.httpServer.IsConnected()
+		if isConnected {
+			providerType := ui.llmManager.GetProviderType()
+			if ui.llmManager.IsConfigured() {
+				status = fmt.Sprintf("Connected (q: %s, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)", providerType)
+			} else {
+				status = "Connected (q: Configure LLM, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)"
+			}
 		} else {
-			status = "Ready - Listening for draft updates (q: Configure LLM, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)"
+			status = "Not connected, please set up the [Browser Extension](https://chromewebstore.google.com/detail/draft-assistant-player-ex/neakbjfmpdmpnibgjeljflnmionbjidi)"
 		}
 	}
 
 	ui.safeUIUpdate(func() {
-		ui.statusLabel.SetText(status)
+		ui.statusLabel.ParseMarkdown(status)
 	})
 }
 
@@ -972,6 +982,23 @@ func (ui *FantasyUI) startPlayerUpdateListener() {
 					}
 				}
 
+			case <-ui.stopChan:
+				return
+			}
+		}
+	}()
+}
+
+// startStatusUpdateTimer updates status every second to show real-time connection status
+func (ui *FantasyUI) startStatusUpdateTimer() {
+	go func() {
+		ticker := time.NewTicker(1 * time.Second)
+		defer ticker.Stop()
+		
+		for {
+			select {
+			case <-ticker.C:
+				ui.updateStatus()
 			case <-ui.stopChan:
 				return
 			}

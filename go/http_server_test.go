@@ -443,3 +443,67 @@ func TestPlayerNamesRequest_Structure(t *testing.T) {
 		}
 	}
 }
+
+func TestUnifiedFormatHandling(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "http_server_test_unified_*")
+	if err != nil {
+		t.Fatalf("Failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	updateChannel := make(chan PlayerUpdate, 10)
+	server := NewHTTPServer(tempDir, updateChannel)
+	if err := server.setupStatusDirectory(); err != nil {
+		t.Fatalf("Failed to setup status directory: %v", err)
+	}
+
+	// Test ESPN picked players format
+	espnRequest := UnifiedDataRequest{
+		Site:    "espn",
+		Type:    "picked_players", 
+		Players: []string{"Patrick Mahomes", "Travis Kelce"},
+	}
+
+	// Test roster players format (works for both sites)
+	rosterRequest := UnifiedDataRequest{
+		Site:    "espn",
+		Type:    "roster_players",
+		Players: []string{"Josh Allen", "Stefon Diggs"},
+	}
+
+	tests := []struct {
+		name    string
+		request UnifiedDataRequest
+	}{
+		{"ESPN picked players", espnRequest},
+		{"Roster players", rosterRequest},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			jsonData, err := json.Marshal(tt.request)
+			if err != nil {
+				t.Fatalf("Failed to marshal request: %v", err)
+			}
+
+			req := httptest.NewRequest("POST", "/", bytes.NewReader(jsonData))
+			req.Header.Set("Content-Type", "application/json")
+			w := httptest.NewRecorder()
+
+			server.handlePlayerNames(w, req)
+
+			if w.Code != http.StatusOK {
+				t.Errorf("Expected status 200, got %d", w.Code)
+			}
+
+			var response map[string]string
+			if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+				t.Errorf("Failed to parse response: %v", err)
+			}
+
+			if response["status"] != "success" {
+				t.Errorf("Expected success status, got %s", response["status"])
+			}
+		})
+	}
+}

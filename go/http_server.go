@@ -9,6 +9,7 @@ import (
 	"os"
 	"sort"
 	"sync"
+	"time"
 )
 
 // PlayerNamesRequest represents the JSON payload from the browser extension (legacy format)
@@ -18,7 +19,8 @@ type PlayerNamesRequest struct {
 
 // UnifiedDataRequest represents the new unified data format from the browser extension
 type UnifiedDataRequest struct {
-	Type    string   `json:"type"`    // "picked_players" or "roster_players"
+	Site    string   `json:"site"`    // "espn" or "sleeper"
+	Type    string   `json:"type"`    // "picked_players", "available_players", or "roster_players"
 	Players []string `json:"players"`
 }
 
@@ -31,20 +33,28 @@ type PlayerUpdate struct {
 
 // HTTPServer handles incoming requests from the browser extension
 type HTTPServer struct {
-	statusDir     string
-	playerNames   map[string]bool // picked players
-	rosterPlayers map[string]bool // roster/team players
-	updateChannel chan<- PlayerUpdate
-	mutex         sync.RWMutex
+	statusDir       string
+	playerNames     map[string]bool // picked players
+	rosterPlayers   map[string]bool // roster/team players
+	availablePlayers map[string]bool // available players (Sleeper only)
+	allPlayersSet   map[string]bool // complete set of all players for calculating picked from available
+	updateChannel   chan<- PlayerUpdate
+	mutex           sync.RWMutex
+	lastHeartbeat   time.Time
+	isConnected     bool
 }
 
 // NewHTTPServer creates a new HTTP server instance
 func NewHTTPServer(statusDir string, updateChannel chan<- PlayerUpdate) *HTTPServer {
 	return &HTTPServer{
-		statusDir:     statusDir,
-		playerNames:   make(map[string]bool),
-		rosterPlayers: make(map[string]bool),
-		updateChannel: updateChannel,
+		statusDir:       statusDir,
+		playerNames:     make(map[string]bool),
+		rosterPlayers:   make(map[string]bool),
+		availablePlayers: make(map[string]bool),
+		allPlayersSet:   make(map[string]bool),
+		updateChannel:   updateChannel,
+		lastHeartbeat:   time.Now(),
+		isConnected:     false,
 	}
 }
 
@@ -203,11 +213,15 @@ func (s *HTTPServer) handlePlayerNames(w http.ResponseWriter, r *http.Request) {
 	var unifiedRequest UnifiedDataRequest
 	if err := json.Unmarshal(body, &unifiedRequest); err == nil && unifiedRequest.Type != "" {
 		// Handle unified format
-		log.Printf("HTTP: Received %s with %d players: %v", unifiedRequest.Type, len(unifiedRequest.Players), unifiedRequest.Players)
+		log.Printf("HTTP: Received %s from %s with %d players: %v", unifiedRequest.Type, unifiedRequest.Site, len(unifiedRequest.Players), unifiedRequest.Players)
 		
 		switch unifiedRequest.Type {
 		case "picked_players":
+			// ESPN sends picked players directly
 			s.handlePickedPlayers(unifiedRequest.Players, w)
+		case "available_players":
+			// Sleeper sends available players - we need to convert this to picked players
+			s.handleAvailablePlayers(unifiedRequest.Players, w)
 		case "roster_players":
 			s.handleRosterPlayers(unifiedRequest.Players, w)
 		default:
@@ -330,6 +344,91 @@ func (s *HTTPServer) handleRosterPlayers(playerNames []string, w http.ResponseWr
 	s.sendSuccessResponse(w)
 }
 
+// handleAvailablePlayers processes available players data from Sleeper
+// and converts it to picked players by calculating the difference
+func (s *HTTPServer) handleAvailablePlayers(availablePlayerNames []string, w http.ResponseWriter) {
+	s.mutex.Lock()
+	
+	// Update available players map
+	s.availablePlayers = make(map[string]bool)
+	for _, playerName := range availablePlayerNames {
+		s.availablePlayers[playerName] = true
+	}
+	
+	// Load all players from data files to establish the complete player set
+	if len(s.allPlayersSet) == 0 {
+		s.loadAllPlayersSet()
+	}
+	
+	// Calculate picked players: allPlayers - availablePlayers
+	pickedPlayers := make([]string, 0)
+	for playerName := range s.allPlayersSet {
+		if !s.availablePlayers[playerName] {
+			pickedPlayers = append(pickedPlayers, playerName)
+		}
+	}
+	
+	// Check if the picked player list has changed
+	hasChanges := false
+	if len(pickedPlayers) != len(s.playerNames) {
+		hasChanges = true
+	} else {
+		for _, playerName := range pickedPlayers {
+			if !s.playerNames[playerName] {
+				hasChanges = true
+				break
+			}
+		}
+	}
+	
+	// Update picked players map
+	s.playerNames = make(map[string]bool)
+	for _, playerName := range pickedPlayers {
+		s.playerNames[playerName] = true
+	}
+	
+	pickedPlayersCopy := make([]string, len(pickedPlayers))
+	copy(pickedPlayersCopy, pickedPlayers)
+	s.mutex.Unlock()
+	
+	// Send update if there were changes
+	if hasChanges {
+		log.Printf("Calculated %d picked players from %d available players (Sleeper)", len(pickedPlayersCopy), len(availablePlayerNames))
+		if err := s.sendPlayerUpdate(pickedPlayersCopy); err != nil {
+			log.Printf("Error sending player update: %v", err)
+			http.Error(w, "Failed to process players", http.StatusInternalServerError)
+			return
+		}
+	}
+	
+	s.sendSuccessResponse(w)
+}
+
+// loadAllPlayersSet loads all available players from data files
+func (s *HTTPServer) loadAllPlayersSet() {
+	loader := NewDataLoader("analysis", "status")
+	allPlayers, err := loader.LoadAllPlayers()
+	if err != nil {
+		log.Printf("Warning: Could not load all players for Sleeper calculation: %v", err)
+		// Fallback: use a combination of available + roster players as a rough estimate
+		for playerName := range s.availablePlayers {
+			s.allPlayersSet[playerName] = true
+		}
+		for playerName := range s.rosterPlayers {
+			s.allPlayersSet[playerName] = true
+		}
+		return
+	}
+	
+	// Load all player names into the set
+	s.allPlayersSet = make(map[string]bool)
+	for _, player := range allPlayers {
+		s.allPlayersSet[player.Name] = true
+	}
+	
+	log.Printf("Loaded %d total players for Sleeper picked player calculation", len(s.allPlayersSet))
+}
+
 // sendSuccessResponse sends a standardized success response
 func (s *HTTPServer) sendSuccessResponse(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
@@ -351,6 +450,60 @@ func (s *HTTPServer) handleOptions(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// handleHeartbeat handles heartbeat requests from the browser extension
+func (s *HTTPServer) handleHeartbeat(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	s.mutex.Lock()
+	s.lastHeartbeat = time.Now()
+	wasConnected := s.isConnected
+	s.isConnected = true
+	s.mutex.Unlock()
+
+	if !wasConnected {
+		log.Println("Browser extension connected")
+	}
+
+	s.sendSuccessResponse(w)
+}
+
+// IsConnected returns true if the browser extension sent a heartbeat within the last 5 seconds
+func (s *HTTPServer) IsConnected() bool {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+	
+	return time.Since(s.lastHeartbeat) <= 5*time.Second
+}
+
+// checkConnection updates connection status based on heartbeat timeout
+func (s *HTTPServer) checkConnection() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	
+	wasConnected := s.isConnected
+	s.isConnected = time.Since(s.lastHeartbeat) <= 5*time.Second
+	
+	if wasConnected && !s.isConnected {
+		log.Println("Browser extension disconnected")
+	}
+}
+
+// startConnectionMonitoring monitors connection status every second
+func (s *HTTPServer) startConnectionMonitoring() {
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+	
+	for {
+		select {
+		case <-ticker.C:
+			s.checkConnection()
+		}
+	}
+}
+
 // StartHTTPServer starts the HTTP server in a goroutine
 func (s *HTTPServer) StartHTTPServer(port int) {
 	// Setup status directory
@@ -358,12 +511,23 @@ func (s *HTTPServer) StartHTTPServer(port int) {
 		log.Fatalf("Failed to setup status directory: %v", err)
 	}
 
+	// Start connection monitoring goroutine
+	go s.startConnectionMonitoring()
+
 	// Setup routes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			s.handleOptions(w, r)
 		} else {
 			s.handlePlayerNames(w, r)
+		}
+	})
+	
+	http.HandleFunc("/heartbeat", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			s.handleOptions(w, r)
+		} else {
+			s.handleHeartbeat(w, r)
 		}
 	})
 
