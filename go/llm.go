@@ -7,6 +7,7 @@ import (
 // LLMProvider interface for different LLM implementations
 type LLMProvider interface {
 	Ask(prompt string) (string, error)
+	AskStream(prompt string, callback func(string)) error
 }
 
 // LLMManager manages the current LLM provider
@@ -114,6 +115,14 @@ func (m *LLMManager) Ask(prompt string) (string, error) {
 		return "", fmt.Errorf("no LLM provider configured - please configure OpenAI or Ollama in settings")
 	}
 	return m.provider.Ask(prompt)
+}
+
+// AskStream delegates to the current provider's streaming method
+func (m *LLMManager) AskStream(prompt string, callback func(string)) error {
+	if m.provider == nil {
+		return fmt.Errorf("no LLM provider configured - please configure OpenAI or Ollama in settings")
+	}
+	return m.provider.AskStream(prompt, callback)
 }
 
 // GetProviderType returns the current provider type

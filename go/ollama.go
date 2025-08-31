@@ -53,6 +53,15 @@ type OllamaResponse struct {
 
 // Ask sends a prompt to Ollama and returns the response
 func (c *OllamaClient) Ask(prompt string) (string, error) {
+	var result string
+	err := c.AskStream(prompt, func(chunk string) {
+		result += chunk
+	})
+	return result, err
+}
+
+// AskStream sends a prompt to Ollama and streams the response
+func (c *OllamaClient) AskStream(prompt string, callback func(string)) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	
@@ -65,7 +74,7 @@ func (c *OllamaClient) Ask(prompt string) (string, error) {
 	request := OllamaRequest{
 		Model:  c.model,
 		Prompt: fullPrompt,
-		Stream: false,
+		Stream: true,
 		Options: map[string]interface{}{
 			"temperature": 0.7,
 			"top_p":       0.9,
@@ -74,12 +83,12 @@ func (c *OllamaClient) Ask(prompt string) (string, error) {
 	
 	jsonData, err := json.Marshal(request)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal request: %w", err)
+		return fmt.Errorf("failed to marshal request: %w", err)
 	}
 	
 	req, err := http.NewRequestWithContext(ctx, "POST", c.endpoint+"/api/generate", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 	
 	req.Header.Set("Content-Type", "application/json")
@@ -90,21 +99,35 @@ func (c *OllamaClient) Ask(prompt string) (string, error) {
 	
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %w", err)
+		return fmt.Errorf("failed to send request: %w", err)
 	}
 	defer resp.Body.Close()
 	
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("ollama request failed with status %d: %s", resp.StatusCode, string(body))
+		return fmt.Errorf("ollama request failed with status %d: %s", resp.StatusCode, string(body))
 	}
 	
-	var response OllamaResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return "", fmt.Errorf("failed to decode response: %w", err)
+	decoder := json.NewDecoder(resp.Body)
+	for {
+		var response OllamaResponse
+		if err := decoder.Decode(&response); err != nil {
+			if err == io.EOF {
+				break
+			}
+			return fmt.Errorf("failed to decode response: %w", err)
+		}
+		
+		if response.Response != "" {
+			callback(response.Response)
+		}
+		
+		if response.Done {
+			break
+		}
 	}
 	
-	return response.Response, nil
+	return nil
 }
 
 // IsOllamaRunning checks if Ollama service is running

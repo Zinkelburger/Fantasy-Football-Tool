@@ -677,8 +677,20 @@ func (ui *FantasyUI) performLLMQuery() {
 		return
 	}
 
-	// Ask LLM and return the answer
-	answer, err := ui.llmManager.Ask(prompt)
+	// Clear output and start streaming
+	ui.safeUIUpdate(func() {
+		ui.outputText.ParseMarkdown("")
+	})
+
+	// Ask LLM with streaming
+	var answer string
+	err = ui.llmManager.AskStream(prompt, func(chunk string) {
+		answer += chunk
+		ui.safeUIUpdate(func() {
+			ui.outputText.ParseMarkdown(answer)
+		})
+	})
+	
 	if err != nil {
 		providerType := ui.llmManager.GetProviderType()
 		log.Printf("Error from %s: %v", providerType, err)
@@ -690,10 +702,6 @@ func (ui *FantasyUI) performLLMQuery() {
 	ui.mutex.Lock()
 	ui.querying = false
 	ui.mutex.Unlock()
-
-	ui.safeUIUpdate(func() {
-		ui.outputText.ParseMarkdown(answer)
-	})
 	ui.updateStatus()
 }
 
