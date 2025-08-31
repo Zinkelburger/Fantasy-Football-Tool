@@ -79,7 +79,6 @@ type FantasyUI struct {
 	teamList          *widget.List
 	statusLabel       *widget.RichText
 	queryButton       *widget.Button
-	refreshButton     *widget.Button
 	settingsButton    *widget.Button
 	draftStatusButton *widget.Button
 	settingsUI        *SettingsUI
@@ -439,7 +438,6 @@ func (ui *FantasyUI) setupUI() {
 
 	// Create buttons
 	ui.queryButton = widget.NewButton("Query LLM (q)", ui.handleLLMQuery)
-	ui.refreshButton = widget.NewButton("Manual Refresh (r)", ui.handleManualRefresh)
 	ui.draftStatusButton = widget.NewButton("Toggle Draft Status (d)", ui.handleDraftStatusToggle)
 	ui.settingsButton = ui.settingsUI.CreateSettingsButton()
 
@@ -450,7 +448,6 @@ func (ui *FantasyUI) setupUI() {
 	// Create button container
 	buttonContainer := container.NewHBox(
 		ui.queryButton,
-		ui.refreshButton,
 		widget.NewSeparator(),
 		ui.settingsButton,
 	)
@@ -553,8 +550,6 @@ func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
 	switch key.Name {
 	case fyne.KeyQ:
 		ui.handleLLMQuery()
-	case fyne.KeyR:
-		ui.handleManualRefresh()
 	case fyne.KeySpace:
 		ui.handleDraftStatusToggle()
 	case fyne.KeyEscape:
@@ -570,8 +565,6 @@ func (ui *FantasyUI) handleTypedRune(r rune) {
 		ui.handleDraftStatusToggle()
 	case 'q', 'Q':
 		ui.handleLLMQuery()
-	case 'r', 'R':
-		ui.handleManualRefresh()
 	}
 }
 
@@ -609,30 +602,6 @@ func (ui *FantasyUI) handleLLMQuery() {
 	go ui.performLLMQuery()
 }
 
-// handleManualRefresh handles manual refresh requests
-func (ui *FantasyUI) handleManualRefresh() {
-	ui.mutex.Lock()
-	defer ui.mutex.Unlock()
-
-	if ui.querying || ui.refreshing {
-		return
-	}
-
-	ui.refreshing = true
-	ui.notice = ""
-	ui.lastRefresh = time.Now()
-	ui.updateStatusInternal()
-
-	// Clear output safely
-	ui.safeUIUpdate(func() {
-		ui.outputText.ParseMarkdown("")
-	})
-
-	go func() {
-		ui.performRefresh(true)
-		ui.loadTeamData() // Also refresh team data
-	}()
-}
 
 // performLLMQuery runs the LLM query in a goroutine
 func (ui *FantasyUI) performLLMQuery() {
@@ -929,14 +898,9 @@ func (ui *FantasyUI) updateStatusInternal() {
 		// Check connection status
 		isConnected := ui.httpServer.IsConnected()
 		if isConnected {
-			providerType := ui.llmManager.GetProviderType()
-			if ui.llmManager.IsConfigured() {
-				status = fmt.Sprintf("Connected (q: %s, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)", providerType)
-			} else {
-				status = "Connected (q: Configure LLM, r: Refresh, d/Space: Toggle Draft Status, Esc: Quit)"
-			}
+			status = "Connected"
 		} else {
-			status = "Not connected, please set up the [Browser Extension](https://chromewebstore.google.com/detail/draft-assistant-player-ex/neakbjfmpdmpnibgjeljflnmionbjidi)"
+			status = "Not connected - install [Browser Extension](https://chromewebstore.google.com/detail/draft-assistant-player-ex/neakbjfmpdmpnibgjeljflnmionbjidi)"
 		}
 	}
 
@@ -1254,7 +1218,6 @@ func (ui *FantasyUI) hidePlayerNote() {
 		// Create right panel with buttons and status again
 		buttonContainer := container.NewHBox(
 			ui.queryButton,
-			ui.refreshButton,
 			widget.NewSeparator(),
 			ui.settingsButton,
 		)
