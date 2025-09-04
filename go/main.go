@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	"fyne.io/fyne/v2/app"
 	"github.com/joho/godotenv"
@@ -41,40 +39,22 @@ func main() {
 	// Note: Updated paths - "analysis" for note files, "." for logs directory (where filtered files will be created)
 	dataLoader := NewDataLoader(getDataPath("analysis"), ".")
 
-	// 2. Load player data from static players.csv file (not dynamic log files)
-	// Prioritize go/players.csv over other files to avoid loading incorrect data
-	playerDataFiles := []string{
-		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
-		getDataPath("combined_with_depth.csv"), // Fallback
-		"players.csv", // Direct path fallback
-		"go/players.csv", // Explicit go directory fallback
-		"go/combined_with_depth.csv", // Final fallback
+	// 2. Load settings first so data loader can use correct files
+	settings, err := LoadSettings()
+	if err != nil {
+		log.Fatalf("Fatal error loading settings: %v", err)
 	}
 
-	var playerCSVPath string
-	var players []Player
-	var loadErrors []string
+	// 2.1. Set settings on data loader so it can use the correct CSV files
+	dataLoader.SetSettings(settings)
 
-	for _, filename := range playerDataFiles {
-		if _, err := os.Stat(filename); err == nil {
-			playerCSVPath = filename
-			players, err = LoadPlayers(playerCSVPath)
-			if err == nil {
-				log.Printf("Successfully loaded player data from: %s", playerCSVPath)
-				break
-			}
-			loadErrors = append(loadErrors, fmt.Sprintf("Failed to load %s: %v", filename, err))
-		} else {
-			loadErrors = append(loadErrors, fmt.Sprintf("File not found: %s", filename))
-		}
+	// 2.2. Load player data using the data loader (will use settings-based CSV)
+	players, err := dataLoader.LoadAllPlayers()
+	if err != nil {
+		log.Fatalf("Fatal error: Could not load player data: %v", err)
 	}
 
-	if len(players) == 0 {
-		log.Fatalf("Fatal error: Could not find or load player data from any of: %v\nErrors encountered:\n%s", 
-			playerDataFiles, strings.Join(loadErrors, "\n"))
-	}
-
-	log.Printf("Successfully loaded %d players from %s.", len(players), playerCSVPath)
+	log.Printf("Successfully loaded %d players using %s scoring format on %s platform", len(players), settings.ScoringFormat, settings.Platform)
 
 	// 3. Test that all players have corresponding note files.
 	missingPlayers, err := dataLoader.TestAvailableNotes(players)
@@ -97,13 +77,7 @@ func main() {
 
 	log.Printf("All %d players have corresponding note files.", len(players))
 
-	// 5. Load settings and initialize LLM.
-	settings, err := LoadSettings()
-	if err != nil {
-		log.Fatalf("Fatal error loading settings: %v", err)
-	}
-
-	// Initialize LLM manager - allow it to fail gracefully if not configured
+	// 5. Initialize LLM manager - allow it to fail gracefully if not configured
 	llmManager, err := NewLLMManager(settings)
 	if err != nil {
 		log.Printf("Warning: LLM manager initialization failed: %v", err)

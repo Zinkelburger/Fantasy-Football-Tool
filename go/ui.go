@@ -82,6 +82,7 @@ type FantasyUI struct {
 	settingsButton    *widget.Button
 	draftStatusButton *widget.Button
 	settingsUI        *SettingsUI
+	headerLabel       *widget.Label
 
 	// Note Viewer Components
 	noteViewer              *widget.RichText
@@ -354,8 +355,15 @@ func (ui *FantasyUI) setupUI() {
 				} else {
 					statusPart = "   "
 				}
+
+				// Choose rank based on platform setting
+				platformRank := p.ESPNRank
+				if ui.settings != nil && ui.settings.Platform == "Sleeper" {
+					platformRank = p.SleeperRank
+				}
+
 				playerLabel.SetText(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s",
-					p.Rank, p.ESPNRank, p.Name, statusPart, p.Depth, p.Team, p.Note))
+					p.Rank, platformRank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
 	)
@@ -454,13 +462,12 @@ func (ui *FantasyUI) setupUI() {
 
 	// Create position filters and header
 	positionFilters := ui.createPositionFilters()
-	headerLabel := widget.NewLabel(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s",
-		"Rank", "ESPN", "Name", "St", "Depth", "Team", "Note"))
-	headerLabel.TextStyle = fyne.TextStyle{Bold: true}
+	ui.headerLabel = ui.createHeaderLabel()
+	ui.headerLabel.TextStyle = fyne.TextStyle{Bold: true}
 
 	// Create left panel (player list)
 	leftPanel := container.NewBorder(
-		container.NewVBox(positionFilters, headerLabel), // top
+		container.NewVBox(positionFilters, ui.headerLabel), // top
 		nil,           // bottom
 		nil,           // left
 		nil,           // right
@@ -745,31 +752,18 @@ func (ui *FantasyUI) fuzzyMatchPlayer(inputName string, allPlayers []Player) (st
 
 // performRefreshInternal does the actual refresh work
 func (ui *FantasyUI) performRefreshInternal() {
+	ui.performRefreshInternalWithForce(false)
+}
+
+func (ui *FantasyUI) performRefreshInternalWithForce(forceUpdate bool) {
 	// Generate filtered player list based on picked players
 	ui.mutex.RLock()
 	rawPickedPlayers := make([]string, len(ui.pickedPlayers))
 	copy(rawPickedPlayers, ui.pickedPlayers)
 	ui.mutex.RUnlock()
 
-	// Load all players from static CSV file
-	playerDataFiles := []string{
-		getDataPath("players.csv"),
-		getDataPath("combined_with_depth.csv"),
-		"go/combined_with_depth.csv", // fallback if running from root
-	}
-
-	var allPlayers []Player
-	var err error
-
-	for _, filename := range playerDataFiles {
-		if _, statErr := os.Stat(filename); statErr == nil {
-			allPlayers, err = LoadPlayers(filename)
-			if err == nil {
-				break
-			}
-		}
-	}
-
+	// Load all players using data loader (will use settings-based CSV)
+	allPlayers, err := ui.dataLoader.LoadAllPlayers()
 	if err != nil || len(allPlayers) == 0 {
 		log.Printf("Failed to load player data for refresh: %v", err)
 		return
@@ -809,10 +803,16 @@ func (ui *FantasyUI) performRefreshInternal() {
 	log.Printf("Filtered players: %d total, %d picked, %d remaining", len(allPlayers), len(ui.pickedPlayers), len(filteredPlayers))
 
 	ui.mutex.Lock()
-	// Only update if the data actually changed
-	shouldUpdate := len(filteredPlayers) != len(ui.players)
+	// Only update if the data actually changed or if forced
+	shouldUpdate := forceUpdate || len(filteredPlayers) != len(ui.players)
 	if !shouldUpdate && len(filteredPlayers) > 0 && len(ui.players) > 0 {
+		// Check if first player name changed
 		shouldUpdate = filteredPlayers[0].Name != ui.players[0].Name
+		// Also check if rankings/data changed (for settings changes like PPR vs STD)
+		if !shouldUpdate {
+			shouldUpdate = filteredPlayers[0].Rank != ui.players[0].Rank || 
+						  filteredPlayers[0].ESPNRank != ui.players[0].ESPNRank
+		}
 	}
 
 	if shouldUpdate {
@@ -990,6 +990,27 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 	// Update local settings reference
 	ui.settings = settings
 
+	// Update header to reflect platform change
+	ui.safeUIUpdate(func() {
+		ui.updateHeaderLabel()
+	})
+
+	// Update data loader with new settings
+	ui.dataLoader.SetSettings(settings)
+
+	// Reload player data with new scoring format and platform
+	go func() {
+		ui.safeUIUpdate(func() {
+			ui.outputText.ParseMarkdown("🔄 **Refreshing player data** for " + settings.ScoringFormat + " format on " + settings.Platform + "...")
+		})
+		
+		ui.performRefreshInternalWithForce(true)
+		
+		ui.safeUIUpdate(func() {
+			ui.outputText.ParseMarkdown("✅ **Player data refreshed** for " + settings.ScoringFormat + " format on " + settings.Platform + "!")
+		})
+	}()
+
 	// Update status to reflect new provider
 	ui.updateStatus()
 
@@ -1003,7 +1024,7 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 		ui.showLLMNotConfiguredMessage()
 	}
 
-	log.Printf("Settings updated successfully. Now using %s", ui.llmManager.GetProviderType())
+	log.Printf("Settings updated successfully. Now using %s with %s scoring", ui.llmManager.GetProviderType(), settings.ScoringFormat)
 	return nil
 }
 
@@ -1294,4 +1315,30 @@ func (ui *FantasyUI) loadDraftStatusForAllPlayers() {
 	for i := range ui.players {
 		ui.players[i].DraftStatus = ui.dataLoader.LoadDraftStatusFromNote(ui.players[i].Name)
 	}
+}
+
+// createHeaderLabel creates the column header label with platform-specific text
+func (ui *FantasyUI) createHeaderLabel() *widget.Label {
+	platformName := "ESPN" // Default to ESPN
+	if ui.settings != nil && ui.settings.Platform == "Sleeper" {
+		platformName = "Sleeper"
+	}
+	
+	return widget.NewLabel(fmt.Sprintf("%-5s %-7s %-25s %-3s%-6s %-4s %s",
+		"Rank", platformName, "Name", "St", "Depth", "Team", "Note"))
+}
+
+// updateHeaderLabel updates the column header to reflect current platform setting
+func (ui *FantasyUI) updateHeaderLabel() {
+	if ui.headerLabel == nil {
+		return
+	}
+	
+	platformName := "ESPN" // Default to ESPN
+	if ui.settings != nil && ui.settings.Platform == "Sleeper" {
+		platformName = "Sleeper"
+	}
+	
+	ui.headerLabel.SetText(fmt.Sprintf("%-5s %-7s %-25s %-3s%-6s %-4s %s",
+		"Rank", platformName, "Name", "St", "Depth", "Team", "Note"))
 }

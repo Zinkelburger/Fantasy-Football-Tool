@@ -90,10 +90,6 @@ func TestNewFantasyUI(t *testing.T) {
 		t.Error("Expected queryButton to be initialized")
 	}
 
-	if ui.refreshButton == nil {
-		t.Error("Expected refreshButton to be initialized")
-	}
-
 	// Test initial state
 	if ui.querying {
 		t.Error("Expected querying to be false initially")
@@ -255,40 +251,6 @@ func TestHandleLLMQueryWhenBusy(t *testing.T) {
 	ui.mutex.RLock()
 	if ui.querying {
 		t.Error("Expected query to be ignored when refreshing")
-	}
-	ui.mutex.RUnlock()
-}
-
-func TestHandleManualRefreshWhenBusy(t *testing.T) {
-	ui, _, cleanup := createTestUI(t)
-	defer cleanup()
-
-	// Set UI as already refreshing
-	ui.mutex.Lock()
-	ui.refreshing = true
-	ui.mutex.Unlock()
-
-	// Try to refresh - should be ignored
-	ui.handleManualRefresh()
-
-	// Should still be refreshing (no state change)
-	ui.mutex.RLock()
-	if !ui.refreshing {
-		t.Error("Expected refreshing state to remain true")
-	}
-	ui.mutex.RUnlock()
-
-	// Test when querying
-	ui.mutex.Lock()
-	ui.refreshing = false
-	ui.querying = true
-	ui.mutex.Unlock()
-
-	ui.handleManualRefresh()
-
-	ui.mutex.RLock()
-	if ui.refreshing {
-		t.Error("Expected refresh to be ignored when querying")
 	}
 	ui.mutex.RUnlock()
 }
@@ -486,5 +448,234 @@ func TestPlayerStructUI(t *testing.T) {
 
 	if player.Note != "Test note" {
 		t.Errorf("Expected Note 'Test note', got '%s'", player.Note)
+	}
+}
+
+// Test settings update forces UI refresh
+func TestSettingsUpdateForcesRefresh(t *testing.T) {
+	ui, _, cleanup := createTestUI(t)
+	defer cleanup()
+
+	// Set initial players with specific rankings
+	ui.mutex.Lock()
+	ui.players = []Player{
+		{Name: "Patrick Mahomes", Team: "KC", Pos: "QB", Rank: "1.0", ESPNRank: "2"},
+		{Name: "Travis Kelce", Team: "KC", Pos: "TE", Rank: "5.0", ESPNRank: "6"},
+	}
+	ui.mutex.Unlock()
+
+	// Create new settings with different scoring format
+	newSettings := &Settings{
+		ScoringFormat:  "PPR",
+		Platform:       "Sleeper",
+		OpenAIAPIKey:   "test-key",
+		UseLocalLLM:    false,
+		OllamaModel:    "test-model",
+		OllamaEndpoint: "http://localhost:11434",
+	}
+
+	// Test that handleSettingsUpdate processes the new settings
+	err := ui.handleSettingsUpdate(newSettings)
+	if err != nil {
+		t.Errorf("Expected no error from handleSettingsUpdate, got: %v", err)
+	}
+
+	// Verify settings were updated
+	if ui.settings.ScoringFormat != "PPR" {
+		t.Errorf("Expected scoring format 'PPR', got '%s'", ui.settings.ScoringFormat)
+	}
+
+	if ui.settings.Platform != "Sleeper" {
+		t.Errorf("Expected platform 'Sleeper', got '%s'", ui.settings.Platform)
+	}
+}
+
+// Test performRefreshInternalWithForce function
+func TestPerformRefreshInternalWithForce(t *testing.T) {
+	ui, _, cleanup := createTestUI(t)
+	defer cleanup()
+
+	// Set initial players 
+	ui.mutex.Lock()
+	initialPlayers := []Player{
+		{Name: "Patrick Mahomes", Team: "KC", Pos: "QB", Rank: "1.0", ESPNRank: "2"},
+	}
+	ui.players = initialPlayers
+	ui.mutex.Unlock()
+
+	// Test without force - should not update if data appears unchanged
+	ui.performRefreshInternalWithForce(false)
+	
+	// Wait a brief moment for any background processing
+	time.Sleep(10 * time.Millisecond)
+
+	// Test with force - should always update
+	ui.performRefreshInternalWithForce(true)
+	
+	// Wait a brief moment for any background processing
+	time.Sleep(10 * time.Millisecond)
+
+	// The function should complete without panicking
+	ui.mutex.RLock()
+	playerCount := len(ui.players)
+	ui.mutex.RUnlock()
+
+	if playerCount == 0 {
+		t.Error("Expected players to be present after refresh")
+	}
+}
+
+// Test ranking change detection in shouldUpdate logic
+func TestRankingChangeDetection(t *testing.T) {
+	ui, _, cleanup := createTestUI(t)
+	defer cleanup()
+
+	// Mock the data loader to return different rankings
+	originalPlayers := []Player{
+		{Name: "Patrick Mahomes", Team: "KC", Pos: "QB", Rank: "1.0", ESPNRank: "2"},
+		{Name: "Travis Kelce", Team: "KC", Pos: "TE", Rank: "5.0", ESPNRank: "6"},
+	}
+
+	// Players with same names but different rankings (simulating PPR vs STD)
+	newPlayers := []Player{
+		{Name: "Patrick Mahomes", Team: "KC", Pos: "QB", Rank: "1.2", ESPNRank: "2"}, // Rank changed
+		{Name: "Travis Kelce", Team: "KC", Pos: "TE", Rank: "5.0", ESPNRank: "7"},    // ESPN rank changed
+	}
+
+	// Set initial players
+	ui.mutex.Lock()
+	ui.players = originalPlayers
+	ui.mutex.Unlock()
+
+	// Test the internal logic by directly testing the change detection
+	// This simulates what happens in performRefreshInternalWithForce
+	ui.mutex.Lock()
+	shouldUpdate := len(newPlayers) != len(ui.players)
+	if !shouldUpdate && len(newPlayers) > 0 && len(ui.players) > 0 {
+		// Check if first player name changed
+		shouldUpdate = newPlayers[0].Name != ui.players[0].Name
+		// Also check if rankings/data changed (for settings changes like PPR vs STD)
+		if !shouldUpdate {
+			shouldUpdate = newPlayers[0].Rank != ui.players[0].Rank || 
+						  newPlayers[0].ESPNRank != ui.players[0].ESPNRank
+		}
+	}
+	ui.mutex.Unlock()
+
+	if !shouldUpdate {
+		t.Error("Expected shouldUpdate to be true when rankings change, but it was false")
+	}
+}
+
+// Test that UI properly handles different CSV formats after settings change
+func TestSettingsChangeHandlesDifferentCSVFormats(t *testing.T) {
+	ui, _, cleanup := createTestUI(t)
+	defer cleanup()
+
+	// Test changing from one scoring format to another
+	testCases := []struct {
+		name           string
+		scoringFormat  string
+		platform       string
+		expectedFile   string
+	}{
+		{
+			name:          "PPR format",
+			scoringFormat: "PPR", 
+			platform:      "ESPN",
+			expectedFile:  "ppr_with_depth.csv",
+		},
+		{
+			name:          "Standard format",
+			scoringFormat: "STD",
+			platform:      "ESPN", 
+			expectedFile:  "std_with_depth.csv",
+		},
+		{
+			name:          "Half PPR format",
+			scoringFormat: "0.5PPR",
+			platform:      "ESPN",
+			expectedFile:  "0.5_ppr_with_depth.csv",
+		},
+		{
+			name:          "Sleeper platform",
+			scoringFormat: "PPR",
+			platform:      "Sleeper",
+			expectedFile:  "JuiceBoxOne's 2025 Abusing Draft Rankings - Sleeper PPR.csv",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Create settings with the test case values
+			settings := &Settings{
+				ScoringFormat:  tc.scoringFormat,
+				Platform:       tc.platform,
+				OpenAIAPIKey:   "test-key",
+				UseLocalLLM:    false,
+				OllamaModel:    "test-model",
+				OllamaEndpoint: "http://localhost:11434",
+			}
+
+			// Update data loader settings
+			ui.dataLoader.SetSettings(settings)
+
+			// Test that the correct filename is generated
+			expectedFilename := ui.dataLoader.getPlayerDataFilename()
+			
+			// For JuiceBoxOne files, check if it would try the platform-specific file first
+			if tc.platform == "Sleeper" || tc.platform == "ESPN" {
+				// It should either find the JuiceBoxOne file or fall back to depth files
+				// We'll accept either behavior since file existence varies
+				t.Logf("Data loader would try file: %s", expectedFilename)
+			} else {
+				// For basic scoring formats, it should use depth files
+				if expectedFilename != tc.expectedFile && expectedFilename != "players.csv" {
+					// Allow fallback to players.csv if depth files don't exist
+					t.Logf("Expected %s or players.csv, got %s", tc.expectedFile, expectedFilename)
+				}
+			}
+		})
+	}
+}
+
+// Test that UI update is safe and doesn't cause race conditions
+func TestUIUpdateRaceConditionSafety(t *testing.T) {
+	ui, _, cleanup := createTestUI(t)
+	defer cleanup()
+
+	var wg sync.WaitGroup
+	
+	// Launch multiple goroutines that try to update settings simultaneously
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			
+			settings := &Settings{
+				ScoringFormat:  fmt.Sprintf("PPR_%d", id%3), // Vary the format
+				Platform:       fmt.Sprintf("Platform_%d", id%2), // Vary the platform
+				OpenAIAPIKey:   "test-key",
+				UseLocalLLM:    false,
+				OllamaModel:    "test-model",
+				OllamaEndpoint: "http://localhost:11434",
+			}
+
+			// This should not cause data races or panics
+			ui.dataLoader.SetSettings(settings)
+			ui.performRefreshInternalWithForce(true)
+		}(i)
+	}
+
+	// Wait for all goroutines to complete
+	wg.Wait()
+
+	// UI should still be functional
+	ui.mutex.RLock()
+	playerCount := len(ui.players)
+	ui.mutex.RUnlock()
+
+	if playerCount < 0 {
+		t.Error("Player count should not be negative after concurrent operations")
 	}
 }

@@ -16,6 +16,7 @@ type DataLoader struct {
 	notesDir    string
 	logsDir     string
 	nameCleaner *regexp.Regexp
+	settings    *Settings
 }
 
 // NewDataLoader creates a new DataLoader.
@@ -27,7 +28,75 @@ func NewDataLoader(notesDir, logsDir string) *DataLoader {
 		notesDir:    notesDir,
 		logsDir:     logsDir,
 		nameCleaner: re,
+		settings:    nil, // Will be set later
 	}
+}
+
+// SetSettings sets the settings for the data loader
+func (d *DataLoader) SetSettings(settings *Settings) {
+	d.settings = settings
+}
+
+// getPlayerDataFilename returns the appropriate CSV filename based on current settings
+func (d *DataLoader) getPlayerDataFilename() string {
+	if d.settings == nil {
+		// Default fallback
+		return "players.csv"
+	}
+	
+	// Convert scoring format to filename format
+	var formatStr string
+	switch d.settings.ScoringFormat {
+	case "STD":
+		formatStr = "std"
+	case "0.5PPR":
+		formatStr = "0.5_ppr"
+	case "PPR":
+		formatStr = "ppr"
+	default:
+		formatStr = "std" // Default to standard
+	}
+	
+	// Check if we have platform-specific files (JuiceBoxOne's rankings)
+	var platformPrefix string
+	switch d.settings.Platform {
+	case "ESPN":
+		platformPrefix = "ESPN "
+	case "Sleeper":
+		platformPrefix = "Sleeper "
+	default:
+		platformPrefix = "ESPN " // Default to ESPN
+	}
+	
+	// Convert format for JuiceBoxOne's file naming convention
+	var juiceBoxFormat string
+	switch d.settings.ScoringFormat {
+	case "STD":
+		juiceBoxFormat = "Standard"
+	case "0.5PPR":
+		juiceBoxFormat = "Half PPR"
+	case "PPR":
+		juiceBoxFormat = "PPR"
+	default:
+		juiceBoxFormat = "Standard"
+	}
+	
+	// Try platform-specific file first (JuiceBoxOne's rankings)
+	platformFile := "JuiceBoxOne's 2025 Abusing Draft Rankings - " + platformPrefix + juiceBoxFormat + ".csv"
+	
+	// If platform-specific file exists, use it; otherwise fallback to depth files
+	if _, err := os.Stat(getDataPath(platformFile)); err == nil {
+		log.Printf("Using platform-specific file: %s", platformFile)
+		return platformFile
+	} else if _, err := os.Stat(platformFile); err == nil {
+		log.Printf("Using platform-specific file: %s", platformFile)
+		return platformFile
+	}
+	
+	// Fallback to the original depth files
+	fallbackFile := formatStr + "_with_depth.csv"
+	log.Printf("Using fallback file: %s", fallbackFile)
+	return fallbackFile
 }
 
 // TestAvailableNotes validates that all players have corresponding note files.
@@ -122,12 +191,13 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 	var teamPlayers []Player
 	
 	// Load all available players first to match against
+	primaryFile := d.getPlayerDataFilename()
 	playerDataFiles := []string{
-		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
-		getDataPath("combined_with_depth.csv"), // Fallback
-		"players.csv", // Direct path fallback
-		"go/players.csv", // Explicit go directory fallback
-		"go/combined_with_depth.csv", // Final fallback
+		getDataPath(primaryFile), // Settings-based file first
+		primaryFile,              // Direct path
+		getDataPath("players.csv"), // Legacy fallback
+		"players.csv",              // Direct legacy fallback
+		"go/players.csv",           // Explicit go directory fallback
 	}
 	
 	var allPlayers []Player
@@ -184,12 +254,13 @@ func (d *DataLoader) LoadCurrentTeamPlayers() ([]Player, error) {
 // LoadCurrentTeamPlayersFromNames loads player data for the given player names
 func (d *DataLoader) LoadCurrentTeamPlayersFromNames(playerNames []string) ([]Player, error) {
 	// Load all available players first to match against
+	primaryFile := d.getPlayerDataFilename()
 	playerDataFiles := []string{
-		getDataPath("players.csv"), // Should resolve to go/players.csv with updated getAppDir()
-		getDataPath("combined_with_depth.csv"), // Fallback
-		"players.csv", // Direct path fallback
-		"go/players.csv", // Explicit go directory fallback
-		"go/combined_with_depth.csv", // Final fallback
+		getDataPath(primaryFile), // Settings-based file first
+		primaryFile,              // Direct path
+		getDataPath("players.csv"), // Legacy fallback
+		"players.csv",              // Direct legacy fallback
+		"go/players.csv",           // Explicit go directory fallback
 	}
 	
 	var allPlayers []Player
@@ -336,12 +407,13 @@ func (d *DataLoader) LoadDraftStatusFromNote(playerName string) string {
 // LoadAllPlayers loads all players from the player data files
 func (d *DataLoader) LoadAllPlayers() ([]Player, error) {
 	// Try different player data file locations
+	primaryFile := d.getPlayerDataFilename()
 	playerDataFiles := []string{
-		getDataPath("players.csv"),
-		getDataPath("combined_with_depth.csv"),
-		"players.csv",
-		"go/players.csv",
-		"go/combined_with_depth.csv",
+		getDataPath(primaryFile), // Settings-based file first
+		primaryFile,              // Direct path
+		getDataPath("players.csv"), // Legacy fallback
+		"players.csv",              // Direct legacy fallback
+		"go/players.csv",           // Explicit go directory fallback
 	}
 	
 	for _, filename := range playerDataFiles {

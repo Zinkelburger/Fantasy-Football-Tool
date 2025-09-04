@@ -14,6 +14,8 @@ type Settings struct {
 	UseLocalLLM    bool   `json:"use_local_llm"`
 	OllamaModel    string `json:"ollama_model"`
 	OllamaEndpoint string `json:"ollama_endpoint"`
+	ScoringFormat  string `json:"scoring_format"`  // STD, 0.5PPR, PPR
+	Platform       string `json:"platform"`        // ESPN, Sleeper
 }
 
 // DefaultSettings returns default settings configuration
@@ -23,6 +25,8 @@ func DefaultSettings() *Settings {
 		UseLocalLLM:    false,
 		OllamaModel:    "microsoft/Phi-3-mini-128k-instruct",
 		OllamaEndpoint: "http://localhost:11434",
+		ScoringFormat:  "STD",
+		Platform:       "ESPN",
 	}
 }
 
@@ -43,6 +47,12 @@ func LoadSettings() (*Settings, error) {
 	}
 	if endpoint := os.Getenv("OLLAMA_ENDPOINT"); endpoint != "" {
 		settings.OllamaEndpoint = endpoint
+	}
+	if format := os.Getenv("SCORING_FORMAT"); format != "" {
+		settings.ScoringFormat = format
+	}
+	if platform := os.Getenv("PLATFORM"); platform != "" {
+		settings.Platform = platform
 	}
 	
 	// Try to read .env file (overrides environment variables)
@@ -90,6 +100,10 @@ func LoadSettings() (*Settings, error) {
 			settings.OllamaModel = value
 		case "OLLAMA_ENDPOINT":
 			settings.OllamaEndpoint = value
+		case "SCORING_FORMAT":
+			settings.ScoringFormat = value
+		case "PLATFORM":
+			settings.Platform = value
 		}
 	}
 	
@@ -109,6 +123,8 @@ func (s *Settings) SaveSettings() error {
 		"USE_LOCAL_LLM":  true,
 		"OLLAMA_MODEL":   true,
 		"OLLAMA_ENDPOINT": true,
+		"SCORING_FORMAT": true,
+		"PLATFORM":       true,
 	}
 	
 	if file, err := os.Open(envPath); err == nil {
@@ -162,6 +178,12 @@ func (s *Settings) SaveSettings() error {
 	}
 	if s.OllamaEndpoint != "" {
 		newContent.WriteString(fmt.Sprintf("OLLAMA_ENDPOINT=%s\n", s.OllamaEndpoint))
+	}
+	if s.ScoringFormat != "" {
+		newContent.WriteString(fmt.Sprintf("SCORING_FORMAT=%s\n", s.ScoringFormat))
+	}
+	if s.Platform != "" {
+		newContent.WriteString(fmt.Sprintf("PLATFORM=%s\n", s.Platform))
 	}
 	
 	// Ensure directory exists before writing

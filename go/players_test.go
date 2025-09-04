@@ -81,10 +81,10 @@ Expected to perform well this season.
 }
 
 func TestLoadPlayers_ValidCSV(t *testing.T) {
-	csvContent := `Name,Team,Pos,Average_ADP,Depth,Notes,Extra
-Patrick Mahomes,KC,QB,1.5,1,"Starting QB","Extra info"
-Travis Kelce,KC,TE,5.2,1,"Elite TE","More info"
-Tyreek Hill,MIA,WR,8.1,1,"Fast receiver","Speed demon"`
+	csvContent := `Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank
+1.5,Patrick Mahomes,KC,10,QB,2,1
+5.2,Travis Kelce,KC,10,TE,6,5
+8.1,Tyreek Hill,MIA,12,WR,9,8`
 
 	csvPath, cleanup := createTestCSV(t, csvContent)
 	defer cleanup()
@@ -116,8 +116,8 @@ Tyreek Hill,MIA,WR,8.1,1,"Fast receiver","Speed demon"`
 		t.Errorf("Expected first player rank '1.5', got '%s'", players[0].Rank)
 	}
 
-	if players[0].Depth != "1" {
-		t.Errorf("Expected first player depth '1', got '%s'", players[0].Depth)
+	if players[0].Depth != "QB" {
+		t.Errorf("Expected first player depth 'QB', got '%s'", players[0].Depth)
 	}
 
 	// Test sorting - players should be sorted by rank (Patrick Mahomes first with 1.5)
@@ -171,7 +171,7 @@ func TestLoadPlayers_EmptyFile(t *testing.T) {
 }
 
 func TestLoadPlayers_HeaderOnly(t *testing.T) {
-	csvContent := `Name,Team,Pos,Average_ADP,Depth,Notes,Extra`
+	csvContent := `Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank`
 
 	csvPath, cleanup := createTestCSV(t, csvContent)
 	defer cleanup()
@@ -348,11 +348,11 @@ func TestPlayerStruct(t *testing.T) {
 }
 
 func TestLoadPlayers_Sorting(t *testing.T) {
-	csvContent := `Name,Team,Pos,Average_ADP,Depth,Notes,Extra
-Tyreek Hill,MIA,WR,8.1,1,"Fast receiver","Speed demon"
-Patrick Mahomes,KC,QB,1.5,1,"Starting QB","Extra info"
-Travis Kelce,KC,TE,5.2,1,"Elite TE","More info"
-Josh Allen,BUF,QB,3.8,1,"Mobile QB","Great arm"`
+	csvContent := `Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank
+8.1,Tyreek Hill,MIA,12,WR,9,8
+1.5,Patrick Mahomes,KC,10,QB,2,1
+5.2,Travis Kelce,KC,10,TE,6,5
+3.8,Josh Allen,BUF,7,QB,4,3`
 
 	csvPath, cleanup := createTestCSV(t, csvContent)
 	defer cleanup()
@@ -378,9 +378,9 @@ Josh Allen,BUF,QB,3.8,1,"Mobile QB","Great arm"`
 }
 
 func TestLoadPlayers_NonNumericRank(t *testing.T) {
-	csvContent := `Name,Team,Pos,Average_ADP,Depth,Notes,Extra
-Patrick Mahomes,KC,QB,invalid_rank,1,"Starting QB","Extra info"
-Travis Kelce,KC,TE,5.2,1,"Elite TE","More info"`
+	csvContent := `Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank
+invalid_rank,Patrick Mahomes,KC,10,QB,2,1
+5.2,Travis Kelce,KC,10,TE,6,5`
 
 	csvPath, cleanup := createTestCSV(t, csvContent)
 	defer cleanup()

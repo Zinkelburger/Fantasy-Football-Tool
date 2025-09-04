@@ -20,6 +20,7 @@ type Player struct {
 	DraftStatus string // "✅", "❌", or "" (empty)
 	rankNum     int    // internal field for sorting
 	ESPNRank    string // ESPN ranking from JuiceBoxOne data
+	SleeperRank string // Sleeper ranking from JuiceBoxOne data
 }
 
 func LoadPlayers(path string) ([]Player, error) {
@@ -38,24 +39,34 @@ func LoadPlayers(path string) ([]Player, error) {
 		return nil, fmt.Errorf("CSV file is empty: %s", path)
 	}
 
-	// Validate header to ensure we have the correct CSV format
+	// Parse header to determine CSV format
 	header := rows[0]
-	if len(header) < 6 {
-		return nil, fmt.Errorf("CSV file %s has %d columns, expected at least 6 (missing ESPN_ADP column?)", path, len(header))
+	columnMap := make(map[string]int)
+	
+	// Map column names to their indices
+	for i, colName := range header {
+		columnMap[colName] = i
 	}
 	
-	// Check if this looks like the correct format by examining the header
-	expectedHeaders := []string{"Player", "Team", "POS", "Average_ADP", "Depth", "ESPN_ADP"}
-	for i, expected := range expectedHeaders {
-		if i < len(header) && header[i] != expected {
-			// If we detect this is the nicknames CSV file, give a helpful error
-			if header[i] == "Depth_Rank" || (len(header) > 6 && header[6] == "Nickname") {
-				return nil, fmt.Errorf("CSV file %s appears to be a nicknames file, not the main players data file. Expected ESPN_ADP in column 6, found %s", path, header[i])
-			}
-			// For other mismatches, just warn but continue (in case of minor header variations)
-			fmt.Printf("Warning: CSV header mismatch in column %d. Expected '%s', got '%s' in file %s\n", i+1, expected, header[i], path)
+	// Verify we have the expected unified format: Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank
+	expectedColumns := []string{"Rank", "Player", "Team", "Bye", "POS", "ESPN_Rank", "Sleeper_Rank"}
+	
+	// Check if all required columns exist
+	for _, col := range expectedColumns {
+		if _, exists := columnMap[col]; !exists {
+			return nil, fmt.Errorf("missing required column '%s' in CSV file %s. Expected format: Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank", col, path)
 		}
 	}
+	
+	// Get column indices for the unified format
+	rankCol := columnMap["Rank"]
+	playerCol := columnMap["Player"] 
+	teamCol := columnMap["Team"]
+	posCol := columnMap["POS"]
+	espnCol := columnMap["ESPN_Rank"]
+	sleeperCol := columnMap["Sleeper_Rank"]
+	
+	fmt.Printf("Loading unified CSV format from %s\n", filepath.Base(path))
 
 	var ps []Player
 	for i, r := range rows {
@@ -63,27 +74,44 @@ func LoadPlayers(path string) ([]Player, error) {
 			continue
 		}
 
-		// Validate we have enough columns
-		if len(r) < 6 {
-			return nil, fmt.Errorf("CSV row %d has %d columns, expected at least 6", i, len(r))
+		// Validate we have enough columns (need at least 7 for our unified format)
+		if len(r) < 7 {
+			return nil, fmt.Errorf("CSV row %d has %d columns, expected at least 7 for unified format", i+1, len(r))
 		}
 
-		// Parse Average_ADP for sorting (4th column)
-		rankNum, _ := strconv.ParseFloat(r[3], 64)
+		// Skip rows with empty player names
+		playerName := strings.TrimSpace(r[playerCol])
+		if playerName == "" {
+			continue
+		}
+
+		// Parse ranking for sorting
+		rankValue := r[rankCol]
+		rankNum, _ := strconv.ParseFloat(rankValue, 64)
 
 		// Load truncated note from analysis file
-		note := loadTruncatedNote(r[0])
+		note := loadTruncatedNote(playerName)
+
+		// Get ESPN rank
+		espnRank := r[espnCol]
+
+		// Get Sleeper rank
+		sleeperRank := r[sleeperCol]
+
+		// Use position as depth (the JuiceBoxOne data doesn't have separate depth info)
+		depth := r[posCol]
 
 		ps = append(ps, Player{
-			Name:        r[0], // Name (1st column)
-			Team:        r[1], // Team (2nd column)
-			Pos:         r[2], // Pos (3rd column)
-			Depth:       r[4], // Depth (5th column)
-			Rank:        r[3], // Average_ADP (4th column)
+			Name:        playerName,
+			Team:        r[teamCol],
+			Pos:         r[posCol],
+			Depth:       depth,
+			Rank:        rankValue,
 			Note:        note,
 			DraftStatus: "", // Will be loaded by UI
 			rankNum:     int(rankNum),
-			ESPNRank:    r[5], // ESPN_ADP column (6th column)
+			ESPNRank:    espnRank,
+			SleeperRank: sleeperRank,
 		})
 	}
 

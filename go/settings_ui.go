@@ -57,6 +57,14 @@ func (s *SettingsUI) ShowSettingsDialog() {
 	ollamaEndpointEntry.SetText(s.settings.OllamaEndpoint)
 	ollamaEndpointEntry.SetPlaceHolder("e.g., http://localhost:11434")
 
+	// Scoring format dropdown
+	scoringFormatSelect := widget.NewSelect([]string{"STD", "0.5PPR", "PPR"}, nil)
+	scoringFormatSelect.SetSelected(s.settings.ScoringFormat)
+
+	// Platform dropdown
+	platformSelect := widget.NewSelect([]string{"ESPN", "Sleeper"}, nil)
+	platformSelect.SetSelected(s.settings.Platform)
+
 	// Load current user prompt (no system prompt editing)
 	userPrompt, _ := s.llmManager.GetUserPrompt()
 
@@ -117,6 +125,9 @@ func (s *SettingsUI) ShowSettingsDialog() {
 			{Text: "Ollama Model:", Widget: ollamaModelEntry},
 			{Text: "Ollama Endpoint:", Widget: ollamaEndpointEntry},
 			{Text: "", Widget: widget.NewSeparator()},
+			{Text: "Scoring Format:", Widget: scoringFormatSelect},
+			{Text: "Platform:", Widget: platformSelect},
+			{Text: "", Widget: widget.NewSeparator()},
 			{Text: "Analysis Instructions:", Widget: container.NewVBox(
 				userPromptEntry,
 				userPromptHelp,
@@ -157,6 +168,7 @@ func (s *SettingsUI) ShowSettingsDialog() {
 			if save {
 				if err := s.handleSave(apiKeyEntry.Text, useLocalLLMCheck.Checked,
 					ollamaModelEntry.Text, ollamaEndpointEntry.Text,
+					scoringFormatSelect.Selected, platformSelect.Selected,
 					userPromptEntry.Text); err != nil {
 					dialog.ShowError(err, s.parent)
 					// Don't close dialog on error
@@ -191,13 +203,15 @@ func (s *SettingsUI) updateStatusLabel(label *widget.Label) {
 }
 
 // handleSave saves the settings and updates the LLM manager
-func (s *SettingsUI) handleSave(apiKey string, useLocal bool, model, endpoint, userPrompt string) error {
+func (s *SettingsUI) handleSave(apiKey string, useLocal bool, model, endpoint, scoringFormat, platform, userPrompt string) error {
 	// Update settings
 	newSettings := &Settings{
 		OpenAIAPIKey:   strings.TrimSpace(apiKey),
 		UseLocalLLM:    useLocal,
 		OllamaModel:    strings.TrimSpace(model),
 		OllamaEndpoint: strings.TrimSpace(endpoint),
+		ScoringFormat:  strings.TrimSpace(scoringFormat),
+		Platform:       strings.TrimSpace(platform),
 	}
 
 	// Validate settings
@@ -224,6 +238,8 @@ func (s *SettingsUI) handleSave(apiKey string, useLocal bool, model, endpoint, u
 	s.settings.UseLocalLLM = newSettings.UseLocalLLM
 	s.settings.OllamaModel = newSettings.OllamaModel
 	s.settings.OllamaEndpoint = newSettings.OllamaEndpoint
+	s.settings.ScoringFormat = newSettings.ScoringFormat
+	s.settings.Platform = newSettings.Platform
 
 	// Notify parent of update
 	if s.onUpdate != nil {
