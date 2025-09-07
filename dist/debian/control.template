@@ -8,7 +8,3 @@ Maintainer: Zinkelburger <https://github.com/Zinkelburger/Fantasy-Football-Tool>
 Description: AI-powered fantasy football draft assistant
  GUI application that helps with fantasy football
  draft decisions using AI analysis and player data.
- .
- This tool provides intelligent recommendations for fantasy football
- drafts, using AI to analyze player performance and suggest optimal
- picks based on your league settings and draft position.

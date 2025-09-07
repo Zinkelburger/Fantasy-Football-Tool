@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to build (leave empty for HEAD)'
+        required: false
+        default: ''
 
 jobs:
   build-linux:
@@ -14,6 +19,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        ref: ${{ github.event.inputs.ref || github.ref }}
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -104,40 +110,47 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        ref: ${{ github.event.inputs.ref || github.ref }}
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.23'
 
-    - name: Install Fyne tools
-      run: go install fyne.io/tools/cmd/fyne@latest
+    - name: Install Fyne and Winres tools
+      run: |
+        go install fyne.io/tools/cmd/fyne@latest
+        go install github.com/tc-hib/go-winres@latest
 
     - name: Build and Package Windows App
       shell: pwsh
       run: |
-        # Add Go bin to PATH. It's good practice, though setup-go usually handles this.
-        $goPath = go env GOPATH
-        $env:Path = "$goPath\bin;$env:Path"
-        
-        # Verify tools are accessible
-        Write-Host "Go version: $(go version)"
-        Write-Host "Fyne location: $(Get-Command fyne -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)"
+        # Add Go bin to PATH
+        $env:Path = "$(go env GOPATH)\bin;$env:Path"
 
-        # Generate Fyne resources, referencing paths inside the 'go' directory.
+        # Change into the 'go' directory
+        Set-Location go
+
+        # Generate Fyne resources (this is still needed for fonts, etc.)
         Write-Host "Generating Fyne resources..."
-        fyne bundle -o go/resource.go go/logo.png
+        fyne bundle -o resource.go logo.png
         if (-not $?) { throw "Failed to bundle logo.png" }
         
-        fyne bundle -o go/font_resource.go go/font/JetBrainsMonoNL-Regular.ttf
+        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
         if (-not $?) { throw "Failed to bundle font resource" }
 
-        # Build the executable using the '--src' flag to specify the source directory.
+        # Generate Windows resources
+        Write-Host "Generating Windows resources..."
+        go-winres make
+        if (-not $?) { throw "Failed to generate Windows resources" }
+
+        # Build the executable with go build
         Write-Host "Building Windows executable..."
-        fyne package -os windows --src go --app-id football.draftassistant --name "fantasy-football-tool" --icon go/logo.png
+        $env:CGO_ENABLED = "1" 
+        go build -ldflags="-H windowsgui" -o fantasy-football-tool.exe .
         if (-not $?) { throw "Failed to build Windows executable" }
 
-        # Verify the executable was created in the root directory
+        # Verify the executable was created in the current (go) directory
         if (-not (Test-Path "fantasy-football-tool.exe")) {
           throw "Expected fantasy-football-tool.exe was not created"
         }
@@ -145,28 +158,28 @@ jobs:
         # --- Create a clean package structure for the ZIP file ---
         Write-Host "=== Packaging Windows build ==="
         
-        # Create a staging directory for the package contents
-        $stagingDir = ".\releases\windows-package"
+        # Create a staging directory for the package contents (up one level from go directory)
+        $stagingDir = "..\releases\windows-package"
         New-Item -ItemType Directory -Force -Path $stagingDir
 
-        # Copy the .exe from the root and assets from the 'go' subdirectory
+        # Copy files from current directory (we're now in 'go' directory)
         Write-Host "Copying files to staging directory..."
         Copy-Item -Path ".\fantasy-football-tool.exe" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path "go\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path "go\*.csv" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path "go\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path "go\font" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path "go\README.md" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\*.csv" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path ".\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\font" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path ".\README.md" -Destination $stagingDir -ErrorAction Stop
         
-        # Create the final ZIP file
+        # Create the final ZIP file (up one level from go directory)
         Write-Host "Creating ZIP archive..."
-        Compress-Archive -Path "$stagingDir\*" -DestinationPath ".\releases\fantasy-football-tool-windows-amd64.zip" -Force
+        Compress-Archive -Path "$stagingDir\*" -DestinationPath "..\releases\fantasy-football-tool-windows-amd64.zip" -Force
 
         Write-Host "Package structure:"
         Get-ChildItem -Path $stagingDir
         
         Write-Host "=== Windows Build Results ==="
-        Get-ChildItem -Path ".\releases\"
+        Get-ChildItem -Path "..\releases\"
         
     - name: Upload Windows package
       uses: actions/upload-artifact@v4
@@ -179,6 +192,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.ref || github.ref }}
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -210,7 +225,7 @@ jobs:
           echo "Building and packaging for macOS/$ARCH..."
 
           # Build the application
-          GOARCH=$ARCH fyne package --os darwin --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
+          GOARCH=$ARCH fyne package --os darwin
 
           # Create a proper Mac package structure
           mkdir -p "darwin-$ARCH"
@@ -258,6 +273,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.ref || github.ref }}
 
     - name: Download all available artifacts
       uses: actions/download-artifact@v4
