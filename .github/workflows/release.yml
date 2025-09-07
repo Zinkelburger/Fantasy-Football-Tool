@@ -57,7 +57,7 @@ jobs:
         
         # Copy read-only data files to /usr/share/
         cp -r analysis build/deb/usr/share/fantasy-football-tool/
-        cp players.csv build/deb/usr/share/fantasy-football-tool/
+        cp *.csv build/deb/usr/share/fantasy-football-tool/
         cp -r prompts build/deb/usr/share/fantasy-football-tool/
         cp -r font build/deb/usr/share/fantasy-football-tool/
         cp README.md build/deb/usr/share/fantasy-football-tool/
@@ -114,11 +114,9 @@ jobs:
       run: go install fyne.io/tools/cmd/fyne@latest
 
     - name: Build and Package Windows App
-      # FIX: Run all commands from within the 'go' directory
-      working-directory: go
       shell: pwsh
       run: |
-        # Add Go and Fyne tools to PATH for this step
+        # Add Go bin to PATH. It's good practice, though setup-go usually handles this.
         $goPath = go env GOPATH
         $env:Path = "$goPath\bin;$env:Path"
         
@@ -126,20 +124,20 @@ jobs:
         Write-Host "Go version: $(go version)"
         Write-Host "Fyne location: $(Get-Command fyne -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)"
 
-        # Generate Fyne resources. Paths are now relative to the 'go' directory.
+        # Generate Fyne resources, referencing paths inside the 'go' directory.
         Write-Host "Generating Fyne resources..."
-        fyne bundle -o resource.go logo.png
+        fyne bundle -o go/resource.go go/logo.png
         if (-not $?) { throw "Failed to bundle logo.png" }
         
-        fyne bundle -o font_resource.go font/JetBrainsMonoNL-Regular.ttf
+        fyne bundle -o go/font_resource.go go/font/JetBrainsMonoNL-Regular.ttf
         if (-not $?) { throw "Failed to bundle font resource" }
 
-        # Build the executable. The '--src' flag is no longer needed.
+        # Build the executable using the '--src' flag to specify the source directory.
         Write-Host "Building Windows executable..."
-        fyne package -os windows --app-id football.draftassistant --name "fantasy-football-tool" --icon logo.png
+        fyne package -os windows --src go --app-id football.draftassistant --name "fantasy-football-tool" --icon go/logo.png
         if (-not $?) { throw "Failed to build Windows executable" }
 
-        # Verify the executable was created
+        # Verify the executable was created in the root directory
         if (-not (Test-Path "fantasy-football-tool.exe")) {
           throw "Expected fantasy-football-tool.exe was not created"
         }
@@ -151,14 +149,14 @@ jobs:
         $stagingDir = ".\releases\windows-package"
         New-Item -ItemType Directory -Force -Path $stagingDir
 
-        # Copy the .exe and all assets to the staging directory
+        # Copy the .exe from the root and assets from the 'go' subdirectory
         Write-Host "Copying files to staging directory..."
         Copy-Item -Path ".\fantasy-football-tool.exe" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\players.csv" -Destination $stagingDir -ErrorAction Stop
-        Copy-Item -Path ".\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\font" -Destination $stagingDir -Recurse -ErrorAction Stop
-        Copy-Item -Path ".\README.md" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path "go\analysis" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path "go\*.csv" -Destination $stagingDir -ErrorAction Stop
+        Copy-Item -Path "go\prompts" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path "go\font" -Destination $stagingDir -Recurse -ErrorAction Stop
+        Copy-Item -Path "go\README.md" -Destination $stagingDir -ErrorAction Stop
         
         # Create the final ZIP file
         Write-Host "Creating ZIP archive..."
@@ -169,6 +167,12 @@ jobs:
         
         Write-Host "=== Windows Build Results ==="
         Get-ChildItem -Path ".\releases\"
+        
+    - name: Upload Windows package
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-package
+        path: releases/*.zip
 
   build-macos:
     runs-on: macos-latest
@@ -215,7 +219,7 @@ jobs:
           echo "Embedding data files inside the app bundle..."
           mkdir -p "fantasy-football-tool.app/Contents/Resources"
           cp -r analysis "fantasy-football-tool.app/Contents/Resources/"
-          cp players.csv "fantasy-football-tool.app/Contents/Resources/"
+          cp *.csv "fantasy-football-tool.app/Contents/Resources/"
           cp -r prompts "fantasy-football-tool.app/Contents/Resources/"
           cp -r font "fantasy-football-tool.app/Contents/Resources/"
           
