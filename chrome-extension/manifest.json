@@ -21,10 +21,8 @@
     {
       "matches": [
         "https://fantasy.espn.com/*",
-        "https://sleeper.com/draft/*",
-        "https://sleeper.com/drafts/*",
-        "https://sleeper.app/draft/*",
-        "https://sleeper.app/drafts/*"
+        "https://sleeper.com/draft/nfl/*",
+        "https://sleeper.app/draft/nfl/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"

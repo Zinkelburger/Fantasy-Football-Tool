@@ -111,14 +111,15 @@ type FantasyUI struct {
 	lastQuery     time.Time
 	lastRefresh   time.Time
 	notice        string
-	pickedPlayers []string // Current list of picked players
-	currentPick   int      // Current pick number
-	teamPlayers   []Player // Current team players
+	pickedPlayers []string    // Current list of picked players
+	currentPick   int         // Current pick number
+	teamPlayers   []Player    // Current team players
 	httpServer    *HTTPServer // Reference to HTTP server for connection status
 
 	// Position filtering (simple, no locking needed)
 	positionFilters map[string]bool // Which positions are currently enabled
 	searchText      string          // Current search text
+	searchEntry     *widget.Entry   // Reference to search entry for focus checking
 
 	// Concurrency
 	mutex            sync.RWMutex
@@ -257,24 +258,24 @@ func (ui *FantasyUI) getVisiblePlayers() []Player {
 // createPositionFilters creates the position filter checkboxes and search bar
 func (ui *FantasyUI) createPositionFilters() *fyne.Container {
 	// Create search entry with proper sizing
-	searchEntry := widget.NewEntry()
-	searchEntry.SetPlaceHolder("Search players...")
-	
+	ui.searchEntry = widget.NewEntry()
+	ui.searchEntry.SetPlaceHolder("Search players...")
+
 	// Create clear button (X) - initially hidden
 	clearBtn := widget.NewButton("×", func() {
-		searchEntry.SetText("")
+		ui.searchEntry.SetText("")
 		ui.searchText = ""
 		ui.playerList.Refresh()
 	})
 	clearBtn.Hide() // Start hidden
-	
+
 	// Create container for search entry and clear button
 	searchContainer := container.NewBorder(
 		nil, nil, nil, clearBtn, // clear button on right
-		searchEntry,
+		ui.searchEntry,
 	)
-	
-	searchEntry.OnChanged = func(text string) {
+
+	ui.searchEntry.OnChanged = func(text string) {
 		ui.searchText = text
 		// Show/hide clear button based on whether there's text
 		if text == "" {
@@ -362,7 +363,7 @@ func (ui *FantasyUI) setupUI() {
 					platformRank = p.SleeperRank
 				}
 
-				playerLabel.SetText(fmt.Sprintf("%-5s %-4s %-25s %-3s%-6s %-4s %s",
+				playerLabel.SetText(fmt.Sprintf("%-5s %-7s %-25s %-3s%-6s %-4s %s",
 					p.Rank, platformRank, p.Name, statusPart, p.Depth, p.Team, p.Note))
 			}
 		},
@@ -406,7 +407,7 @@ func (ui *FantasyUI) setupUI() {
 	ui.noteViewer = widget.NewRichText()
 	ui.noteViewer.Scroll = container.ScrollBoth
 	ui.noteViewer.Wrapping = fyne.TextWrapWord
-	ui.closeNoteButton = widget.NewButton("Close Note View", ui.hidePlayerNote)
+	ui.closeNoteButton = widget.NewButton("Close Note View (c)", ui.hidePlayerNote)
 	ui.noteViewerContainer = container.NewBorder(
 		nil, // top - will be set dynamically
 		nil,
@@ -554,24 +555,47 @@ func (ui *FantasyUI) setupUI() {
 
 // handleKeyPress handles keyboard shortcuts
 func (ui *FantasyUI) handleKeyPress(key *fyne.KeyEvent) {
+	// Don't process shortcuts if search entry has focus
+	if ui.searchEntry != nil && ui.window.Canvas().Focused() == ui.searchEntry {
+		return
+	}
+
 	switch key.Name {
 	case fyne.KeyQ:
 		ui.handleLLMQuery()
 	case fyne.KeySpace:
 		ui.handleDraftStatusToggle()
+	case fyne.KeyC:
+		ui.hidePlayerNote()
 	case fyne.KeyEscape:
-		ui.stop()
-		ui.window.Close()
+		// First try to close note view if it's open
+		ui.mutex.RLock()
+		noteViewerVisible := ui.noteViewerVisible
+		ui.mutex.RUnlock()
+
+		if noteViewerVisible {
+			ui.hidePlayerNote()
+		} else {
+			ui.stop()
+			ui.window.Close()
+		}
 	}
 }
 
 // handleTypedRune handles typed character input
 func (ui *FantasyUI) handleTypedRune(r rune) {
+	// Don't process shortcuts if search entry has focus
+	if ui.searchEntry != nil && ui.window.Canvas().Focused() == ui.searchEntry {
+		return
+	}
+
 	switch r {
 	case 'd', 'D':
 		ui.handleDraftStatusToggle()
 	case 'q', 'Q':
 		ui.handleLLMQuery()
+	case 'c', 'C':
+		ui.hidePlayerNote()
 	}
 }
 
@@ -608,7 +632,6 @@ func (ui *FantasyUI) handleLLMQuery() {
 
 	go ui.performLLMQuery()
 }
-
 
 // performLLMQuery runs the LLM query in a goroutine
 func (ui *FantasyUI) performLLMQuery() {
@@ -670,7 +693,7 @@ func (ui *FantasyUI) performLLMQuery() {
 			ui.outputText.ParseMarkdown(answer)
 		})
 	})
-	
+
 	if err != nil {
 		providerType := ui.llmManager.GetProviderType()
 		log.Printf("Error from %s: %v", providerType, err)
@@ -810,8 +833,8 @@ func (ui *FantasyUI) performRefreshInternalWithForce(forceUpdate bool) {
 		shouldUpdate = filteredPlayers[0].Name != ui.players[0].Name
 		// Also check if rankings/data changed (for settings changes like PPR vs STD)
 		if !shouldUpdate {
-			shouldUpdate = filteredPlayers[0].Rank != ui.players[0].Rank || 
-						  filteredPlayers[0].ESPNRank != ui.players[0].ESPNRank
+			shouldUpdate = filteredPlayers[0].Rank != ui.players[0].Rank ||
+				filteredPlayers[0].ESPNRank != ui.players[0].ESPNRank
 		}
 	}
 
@@ -958,7 +981,7 @@ func (ui *FantasyUI) startStatusUpdateTimer() {
 	go func() {
 		ticker := time.NewTicker(1 * time.Second)
 		defer ticker.Stop()
-		
+
 		for {
 			select {
 			case <-ticker.C:
@@ -1003,9 +1026,9 @@ func (ui *FantasyUI) handleSettingsUpdate(settings *Settings) error {
 		ui.safeUIUpdate(func() {
 			ui.outputText.ParseMarkdown("🔄 **Refreshing player data** for " + settings.ScoringFormat + " format on " + settings.Platform + "...")
 		})
-		
+
 		ui.performRefreshInternalWithForce(true)
-		
+
 		ui.safeUIUpdate(func() {
 			ui.outputText.ParseMarkdown("✅ **Player data refreshed** for " + settings.ScoringFormat + " format on " + settings.Platform + "!")
 		})
@@ -1323,7 +1346,7 @@ func (ui *FantasyUI) createHeaderLabel() *widget.Label {
 	if ui.settings != nil && ui.settings.Platform == "Sleeper" {
 		platformName = "Sleeper"
 	}
-	
+
 	return widget.NewLabel(fmt.Sprintf("%-5s %-7s %-25s %-3s%-6s %-4s %s",
 		"Rank", platformName, "Name", "St", "Depth", "Team", "Note"))
 }
@@ -1333,12 +1356,12 @@ func (ui *FantasyUI) updateHeaderLabel() {
 	if ui.headerLabel == nil {
 		return
 	}
-	
+
 	platformName := "ESPN" // Default to ESPN
 	if ui.settings != nil && ui.settings.Platform == "Sleeper" {
 		platformName = "Sleeper"
 	}
-	
+
 	ui.headerLabel.SetText(fmt.Sprintf("%-5s %-7s %-25s %-3s%-6s %-4s %s",
 		"Rank", platformName, "Name", "St", "Depth", "Team", "Note"))
 }
