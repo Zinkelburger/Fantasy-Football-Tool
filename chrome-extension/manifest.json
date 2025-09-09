@@ -16,19 +16,37 @@
     }
   },
 
-  "permissions": [],
+  "permissions": ["cookies", "tabs"],
   "content_scripts": [
     {
       "matches": [
-        "https://fantasy.espn.com/*",
+        "https://fantasy.espn.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://fantasy.espn.com/football/draft*"
+      ],
+      "js": ["espn-draft.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
         "https://sleeper.com/draft/nfl/*",
         "https://sleeper.app/draft/nfl/*"
       ],
-      "js": ["content.js"],
+      "js": ["sleeper-draft.js"],
       "run_at": "document_idle"
     }
   ],
   "host_permissions": [
-    "http://localhost/*"
-  ]
+    "http://localhost/*",
+    "https://*.espn.com/*",
+    "https://espn.com/"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }

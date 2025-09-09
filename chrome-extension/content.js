@@ -1,4 +1,5 @@
-// This function sends data with a 'site' field. (No changes here)
+// Core functionality shared across all draft sites
+
 function sendDataToServer(data) {
   fetch('http://localhost:8000', {
     method: 'POST',
@@ -12,7 +13,6 @@ function sendDataToServer(data) {
   .catch((error) => console.error('Error sending data:', error));
 }
 
-// Send heartbeat to server every 2 seconds
 function sendHeartbeat() {
   fetch('http://localhost:8000/heartbeat', {
     method: 'POST',
@@ -26,91 +26,96 @@ function sendHeartbeat() {
     // Heartbeat successful - no need to log every time
   })
   .catch((error) => {
-    console.error('Error sending heartbeat:', error);
+    // Silently ignore heartbeat errors when Go server isn't running
   });
 }
 
-// ========== ESPN EXTRACTION LOGIC (No changes here) ==========
-function extractEspnPickedPlayers() {
-  const playerElements = document.querySelectorAll('.pick__message-information .playerinfo__playername');
-  const playerNames = Array.from(playerElements).map(el => el.textContent.trim());
-  if (playerNames.length > 0) {
-    sendDataToServer({ site: 'espn', type: 'picked_players', players: playerNames });
+// Handle ESPN authentication requests from Python program  
+function handleEspnAuthRequest() {
+  // Only allow this on ESPN pages for security
+  if (!window.location.hostname.includes('fantasy.espn.com')) {
+    return;
   }
-}
-
-function extractEspnRosterPlayers() {
-    const playerElements = document.querySelectorAll('div.player-column[title]');
-    const playerNames = Array.from(playerElements).map(el => el.title);
-    if (playerNames.length > 0) {
-        sendDataToServer({ site: 'espn', type: 'roster_players', players: playerNames });
+  
+  // Check if Python program is requesting auth (only from localhost:8001)
+  fetch('http://localhost:8001/espn-auth-request', {
+    method: 'GET',
+  })
+  .then(response => {
+    if (response.status === 200) {
+      return response.json();
     }
-}
-
-function runEspnExtractions() {
-    extractEspnPickedPlayers();
-    extractEspnRosterPlayers();
-}
-
-// ========== SLEEPER EXTRACTION LOGIC (No changes here) ==========
-function extractSleeperAvailablePlayers() {
-  const playerElements = document.querySelectorAll('.player-rank-item2 .name-wrapper');
-  const playerNames = Array.from(playerElements).map(el => {
-    return el.childNodes[0].textContent.trim();
+    throw new Error('No auth request pending');
+  })
+  .then(data => {
+    if (data.requestAuth) {
+      console.log('🔑 Local Python program requesting ESPN authentication...');
+      // Python program is requesting ESPN auth cookies + league info
+      chrome.runtime.sendMessage({type: "getEspnData"}, function(response) {
+        if (chrome.runtime.lastError) {
+          console.error('Chrome runtime error:', chrome.runtime.lastError);
+          return;
+        }
+        
+        if (response.error) {
+          console.error('Auth request denied:', response.error);
+          return;
+        }
+        
+        console.log('📤 Received ESPN data from background script:', response);
+        
+        // Send the cookies and league info back to the Python program
+        fetch('http://localhost:8001/espn-auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(response),
+        })
+        .then(() => console.log('✅ ESPN auth data sent to local Python program'))
+        .catch((error) => console.error('❌ Error sending ESPN auth:', error));
+      });
+    }
+  })
+  .catch((error) => {
+    // Silently ignore auth request errors when Python server isn't running
   });
-  if (playerNames.length > 0) {
-    sendDataToServer({ site: 'sleeper', type: 'available_players', players: playerNames });
+}
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "getCookieString") {
+    console.log("Content Script: Received request, sending cookie string.");
+    sendResponse({ cookieString: document.cookie });
   }
-}
+  return true;
+});
 
-function extractSleeperRosterPlayers() {
-    const playerElements = document.querySelectorAll('.player-data .name');
-    const playerNames = Array.from(playerElements).map(el => el.textContent.trim());
-    if (playerNames.length > 0) {
-        sendDataToServer({ site: 'sleeper', type: 'roster_players', players: playerNames });
-    }
-}
+// Extension is now active on all ESPN Fantasy pages
+console.log('ESPN Fantasy extension loaded on:', window.location.href);
 
-// ========== ** NEW AND IMPROVED OBSERVER LOGIC ** ==========
-
-function startObserverFor(selector, callback) {
-  const targetNode = document.querySelector(selector);
-
-  // Only start the observer if the target element actually exists on the page.
-  if (targetNode) {
-    // Run the callback once immediately to get the initial data.
-    callback();
-
-    // Create an observer that will run the callback whenever the target's children change.
-    const observer = new MutationObserver(callback);
-    observer.observe(targetNode, { childList: true, subtree: true });
-    console.log(`Observer started for: ${selector}`);
+// Debug: Log all ESPN cookies immediately  
+console.log('🔍 Requesting cookies from background script...');
+chrome.runtime.sendMessage({type: "debugCookies"}, function(response) {
+  if (chrome.runtime.lastError) {
+    console.error('❌ Background script error:', chrome.runtime.lastError);
   } else {
-    // If the element isn't found, wait a bit and try again. Modern apps need time to load.
-    setTimeout(() => startObserverFor(selector, callback), 1000);
+    console.log('🍪 Debug: All ESPN cookies:', response);
   }
+});
+
+console.log('🍪 Document cookies:', document.cookie);
+
+// Only start heartbeat and auth monitoring when servers are likely running
+// (This reduces console spam when extension loads)
+
+// Check for ESPN auth requests every 2 seconds (only on ESPN site)
+if (window.location.hostname.includes('fantasy.espn.com')) {
+  console.log('ESPN Fantasy page detected - auth monitoring will start when Python program runs');
+  setInterval(handleEspnAuthRequest, 2000);
+  
+  // Start heartbeat for Go server (silently fails if not running)
+  setInterval(sendHeartbeat, 2000);
+} else {
+  console.log('Not on ESPN Fantasy page:', window.location.hostname);
 }
-
-// This is the main function that runs. It checks the site and calls the correct functions/observers.
-function initializeExtension() {
-  const hostname = window.location.hostname;
-
-  if (hostname.includes('fantasy.espn.com')) {
-    // For ESPN, the old method is fine since the page structure is simpler.
-    runEspnExtractions(); // Run once on load
-    const observer = new MutationObserver(runEspnExtractions);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-  } else if (hostname.includes('sleeper.com')) {
-    // For Sleeper, we use the new, targeted observers.
-    startObserverFor('.player-rank-list', extractSleeperAvailablePlayers);
-    startObserverFor('.draft-roster2-teams', extractSleeperRosterPlayers);
-  }
-}
-
-// Start the whole process.
-initializeExtension();
-
-// Start sending heartbeat every 2 seconds
-setInterval(sendHeartbeat, 2000);
-sendHeartbeat(); // Send initial heartbeat
