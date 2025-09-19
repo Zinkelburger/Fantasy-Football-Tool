@@ -27,6 +27,7 @@ Important blogs, rss feeds for those?
 5. Vegas odds
 https://winwithodds.com/weekly_full_stats
 Some other API?
+https://www.api-football.com/documentation-v3#section/Introduction
 
 6. How backup/leader is performing
 
