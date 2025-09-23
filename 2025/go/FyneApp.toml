@@ -1,0 +1,35 @@
+[Details]
+  Icon = "logo.png"
+  Name = "fantasy-football-tool"
+  ID = "football.draftassistant"
+  Version = "1.0.0"
+  Build = 1
+
+[Development]
+  HelperText = "Fantasy Football Draft Assistant - Development Build"
+
+[Release]
+  HelperText = "Fantasy Football Draft Assistant"
+
+[LinuxAndBSD]
+  GenericName = "Fantasy Football Draft Tool"
+  Categories = ["Sports", "Utility"]
+  Comment = "A fantasy football draft tool with player analysis and recommendations."
+
+[macOS]
+  BundleDisplayName = "Fantasy Football Tool"
+  BundleIdentifier = "football.draftassistant"
+  BundleName = "FantasyFootballTool"
+  NSHumanReadableCopyright = "© 2025 Fantasy Football Tool"
+  NSHighResolutionCapable = true
+  LSMinimumSystemVersion = "10.15"
+
+[Windows]
+  CompanyName = "Fantasy Football Tool"
+  FileDescription = "Fantasy Football Draft Assistant"
+  FileVersion = "1.0.0.1"
+  ProductName = "Fantasy Football Tool"
+  ProductVersion = "1.0.0"
+  InternalName = "fantasy-football-tool"
+  OriginalFilename = "fantasy-football-tool.exe"
+  LegalCopyright = "© 2025 Fantasy Football Tool"
