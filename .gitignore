@@ -13,3 +13,4 @@ reddit-scraper/ff-hound
 go/build/
 go/releases
 go/status
+__pycache__
