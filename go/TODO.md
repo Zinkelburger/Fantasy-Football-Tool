@@ -29,3 +29,5 @@ Add OpenAI streaming responses
 
 Late round filtering (e.g. filter out QBs, filter out TEs)
 Increase the # of players fed to ChatGPT, or feed from the filter
+
+Use player ID instead of name, which just seems really vague and prone to failure

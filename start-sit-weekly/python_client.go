@@ -1,495 +1,175 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
+	"time"
 )
 
-// PythonESPNClient handles ESPN API calls via Python subprocess
-type PythonESPNClient struct {
-	venvPath         string
-	pythonPath       string
-	scriptPath       string
-	redditScriptPath string
-	ffhoundScriptPath string
-	cacheScriptPath  string
+// ESPNClient handles ESPN data with automatic caching
+type ESPNClient struct {
+	venvPath     string
+	pythonPath   string
+	cacheScript  string
+	cache        *Cache
+	initialized  bool
 }
 
-// LeagueInfo represents league connection information
-type LeagueInfo struct {
-	LeagueName string `json:"league_name"`
-	Teams      []struct {
-		ID    int    `json:"id"`
-		Name  string `json:"name"`
-		Owner string `json:"owner"`
-	} `json:"teams"`
-	Error string `json:"error,omitempty"`
-}
-
-// RosterInfo represents team roster information
-type RosterInfo struct {
-	TeamName string `json:"team_name"`
-	Players  []struct {
-		Name     string `json:"name"`
-		Position string `json:"position"`
-		Team     string `json:"team"`
-		Status   string `json:"status"`
-	} `json:"players"`
-	Error string `json:"error,omitempty"`
-}
-
-// RedditScrapeResult represents the result of Reddit scraping for a team
-type RedditScrapeResult struct {
-	TeamID     int    `json:"team_id"`
-	ScrapedAt  string `json:"scraped_at"`
-	SinceDate  string `json:"since_date"`
-	Players    []PlayerRedditData `json:"players"`
-	Error      string `json:"error,omitempty"`
-}
-
-// PlayerRedditData represents Reddit data for a single player
-type PlayerRedditData struct {
-	Player     PlayerInfo `json:"player"`
-	PostsFound int        `json:"posts_found"`
-	Content    []RedditPost `json:"content"`
-}
-
-// PlayerInfo represents basic player information
-type PlayerInfo struct {
-	Name     string `json:"name"`
-	Position string `json:"position"`
-	Team     string `json:"team"`
-}
-
-// RedditPost represents a single Reddit post with relevant content
-type RedditPost struct {
-	Title    string   `json:"title"`
-	URL      string   `json:"url"`
-	Created  string   `json:"created"`
-	Content  string   `json:"content"`
-	Comments []string `json:"comments"`
-}
-
-// FFHoundScrapeResult represents the result of FF Hound scraping for a team
-type FFHoundScrapeResult struct {
-	TeamID     int    `json:"team_id"`
-	ScrapedAt  string `json:"scraped_at"`
-	SinceDate  string `json:"since_date"`
-	Players    []PlayerFFHoundData `json:"players"`
-	Error      string `json:"error,omitempty"`
-}
-
-// PlayerFFHoundData represents FF Hound data for a single player
-type PlayerFFHoundData struct {
-	Player     PlayerInfo `json:"player"`
-	PostsFound int        `json:"posts_found"`
-	Content    []FFHoundPost `json:"content"`
-}
-
-// FFHoundPost represents a single FF Hound post with relevant content
-type FFHoundPost struct {
-	URL          string   `json:"url"`
-	SavedFile    string   `json:"saved_file"`
-	DateScraped  string   `json:"date_scraped"`
-	Mentions     []string `json:"mentions"`
-	MentionCount int      `json:"mention_count"`
-}
-
-// FreeAgentsResult represents the result of getting free agents
-type FreeAgentsResult struct {
-	Players        []FreeAgentPlayer `json:"players"`
-	Count          int               `json:"count"`
-	PositionFilter string            `json:"position_filter"`
-	Error          string            `json:"error,omitempty"`
-}
-
-// FreeAgentPlayer represents a free agent player
-type FreeAgentPlayer struct {
-	PlayerID       int     `json:"player_id"`
-	Name           string  `json:"name"`
-	Position       string  `json:"position"`
-	Team           string  `json:"team"`
-	Status         string  `json:"status"`
-	PercentOwned   float64 `json:"percent_owned"`
-	PercentStarted float64 `json:"percent_started"`
-}
-
-// NewPythonESPNClient creates a new Python ESPN client
-func NewPythonESPNClient() *PythonESPNClient {
+// NewESPNClient creates a new ESPN client
+func NewESPNClient() *ESPNClient {
 	workDir, _ := os.Getwd()
 	venvPath := filepath.Join(workDir, "venv")
-	pythonPath := filepath.Join(venvPath, "bin", "python")
-	scriptPath := filepath.Join(workDir, "python", "espn_cli.py")
-	redditScriptPath := filepath.Join(workDir, "python", "reddit_scraper.py")
-	ffhoundScriptPath := filepath.Join(workDir, "python", "ffhound_scraper.py")
-	cacheScriptPath := filepath.Join(workDir, "python", "espn_cache.py")
 
-	return &PythonESPNClient{
-		venvPath:          venvPath,
-		pythonPath:        pythonPath,
-		scriptPath:        scriptPath,
-		redditScriptPath:  redditScriptPath,
-		ffhoundScriptPath: ffhoundScriptPath,
-		cacheScriptPath:   cacheScriptPath,
+	client := &ESPNClient{
+		venvPath:    venvPath,
+		pythonPath:  filepath.Join(venvPath, "bin", "python3"),
+		cacheScript: filepath.Join(workDir, "python", "espn_cache.py"),
+		cache:       NewCache("espn_cache", 24*time.Hour), // 24 hour cache
 	}
+
+	return client
 }
 
-// ensureVenv creates virtual environment and installs dependencies if needed
-func (c *PythonESPNClient) ensureVenv() error {
-	// Check if venv exists
-	if _, err := os.Stat(c.venvPath); os.IsNotExist(err) {
-		log.Println("Creating Python virtual environment...")
-		cmd := exec.Command("python3", "-m", "venv", "venv")
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("failed to create venv: %w", err)
+// Initialize sets up the client and ensures fresh data
+func (c *ESPNClient) Initialize() error {
+	if c.initialized {
+		return nil
+	}
+
+	// Ensure venv exists
+	if err := c.ensureVenv(); err != nil {
+		return fmt.Errorf("venv setup failed: %w", err)
+	}
+
+	// Check if cache needs refresh
+	if c.cache.IsStale() {
+		if err := c.refreshCache(); err != nil {
+			return fmt.Errorf("cache refresh failed: %w", err)
 		}
 	}
 
-	// Check if dependencies are installed by trying to import required modules
-	cmd := exec.Command(c.pythonPath, "-c", "import espn_api, praw, dotenv, requests, bs4")
-	if err := cmd.Run(); err != nil {
-		log.Println("Installing Python dependencies...")
-		reqPath := filepath.Join("python", "requirements.txt")
-		cmd := exec.Command(c.pythonPath, "-m", "pip", "install", "-r", reqPath)
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("failed to install dependencies: %w", err)
-		}
-	}
-
+	c.initialized = true
 	return nil
 }
 
-// ConnectToLeague connects to ESPN league via Python
-func (c *PythonESPNClient) ConnectToLeague() (*LeagueInfo, error) {
-	if err := c.ensureVenv(); err != nil {
+// GetLeagueInfo gets league information (always from cache after initialization)
+func (c *ESPNClient) GetLeagueInfo() (*LeagueInfo, error) {
+	if err := c.Initialize(); err != nil {
 		return nil, err
 	}
-
-	cmd := exec.Command(c.pythonPath, c.scriptPath, "connect")
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("python command failed: %w", err)
-	}
-
-	var info LeagueInfo
-	if err := json.Unmarshal(output, &info); err != nil {
-		return nil, fmt.Errorf("failed to parse JSON: %w", err)
-	}
-
-	if info.Error != "" {
-		return nil, fmt.Errorf("ESPN API error: %s", info.Error)
-	}
-
-	return &info, nil
+	return c.cache.GetLeagueInfo()
 }
 
-// GetTeamRoster gets roster for a specific team via Python
-func (c *PythonESPNClient) GetTeamRoster(teamID int) (*RosterInfo, error) {
-	if err := c.ensureVenv(); err != nil {
+// GetTeamRoster gets team roster (always from cache after initialization)
+func (c *ESPNClient) GetTeamRoster(teamID int) (*RosterInfo, error) {
+	if err := c.Initialize(); err != nil {
 		return nil, err
 	}
-
-	cmd := exec.Command(c.pythonPath, c.scriptPath, "roster", fmt.Sprintf("%d", teamID))
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("python command failed: %w", err)
-	}
-
-	var info RosterInfo
-	if err := json.Unmarshal(output, &info); err != nil {
-		return nil, fmt.Errorf("failed to parse JSON: %w", err)
-	}
-
-	if info.Error != "" {
-		return nil, fmt.Errorf("ESPN API error: %s", info.Error)
-	}
-
-	return &info, nil
+	return c.cache.GetTeamRoster(teamID)
 }
 
-// ScrapeRedditForTeam scrapes Reddit for posts about all players on a team
-func (c *PythonESPNClient) ScrapeRedditForTeam(teamID int) (*RedditScrapeResult, error) {
-	if err := c.ensureVenv(); err != nil {
+// GetFreeAgents gets free agents (always from cache after initialization)
+func (c *ESPNClient) GetFreeAgents(position string, size int) (*FreeAgentsResult, error) {
+	if err := c.Initialize(); err != nil {
 		return nil, err
 	}
-
-	// Check if Reddit credentials are available
-	if !c.HasRedditCredentials() {
-		return nil, fmt.Errorf("Reddit API credentials not found")
-	}
-
-	cmd := exec.Command(c.pythonPath, c.redditScriptPath, "scrape", fmt.Sprintf("%d", teamID))
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("reddit scraping command failed: %w", err)
-	}
-
-	var result RedditScrapeResult
-	if err := json.Unmarshal(output, &result); err != nil {
-		return nil, fmt.Errorf("failed to parse Reddit scrape JSON: %w", err)
-	}
-
-	if result.Error != "" {
-		return nil, fmt.Errorf("Reddit scraping error: %s", result.Error)
-	}
-
-	return &result, nil
+	return c.cache.GetFreeAgents(position, size)
 }
 
-// ScrapeFFHoundForTeam scrapes FF Hound Substack for posts about all players on a team
-func (c *PythonESPNClient) ScrapeFFHoundForTeam(teamID int) (*FFHoundScrapeResult, error) {
-	if err := c.ensureVenv(); err != nil {
-		return nil, err
-	}
-
-	cmd := exec.Command(c.pythonPath, c.ffhoundScriptPath, "scrape", fmt.Sprintf("%d", teamID))
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("FF Hound scraping command failed: %w", err)
-	}
-
-	var result FFHoundScrapeResult
-	if err := json.Unmarshal(output, &result); err != nil {
-		return nil, fmt.Errorf("failed to parse FF Hound scrape JSON: %w", err)
-	}
-
-	if result.Error != "" {
-		return nil, fmt.Errorf("FF Hound scraping error: %s", result.Error)
-	}
-
-	return &result, nil
+// RefreshCache forces a cache refresh
+func (c *ESPNClient) RefreshCache() error {
+	return c.refreshCache()
 }
 
-// CacheESPNData caches ESPN league and roster data to CSV files
-func (c *PythonESPNClient) CacheESPNData() error {
+// refreshCache calls Python to refresh all ESPN data
+func (c *ESPNClient) refreshCache() error {
 	if err := c.ensureVenv(); err != nil {
 		return err
 	}
 
-	cmd := exec.Command(c.pythonPath, c.cacheScriptPath, "cache")
-	output, err := cmd.Output()
-	if err != nil {
-		return fmt.Errorf("ESPN cache command failed: %w", err)
-	}
-
-	var result map[string]interface{}
-	if err := json.Unmarshal(output, &result); err != nil {
-		return fmt.Errorf("failed to parse cache result JSON: %w", err)
-	}
-
-	if errorMsg, ok := result["error"]; ok {
-		return fmt.Errorf("ESPN cache error: %s", errorMsg)
-	}
-
-	return nil
-}
-
-// ConnectToLeagueFromCache connects to ESPN league using cached data (faster)
-func (c *PythonESPNClient) ConnectToLeagueFromCache() (*LeagueInfo, error) {
-	if err := c.ensureVenv(); err != nil {
-		return nil, err
-	}
-
-	cmd := exec.Command(c.pythonPath, c.cacheScriptPath, "load_teams")
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("cached data load failed: %w", err)
-	}
-
-	var info LeagueInfo
-	if err := json.Unmarshal(output, &info); err != nil {
-		return nil, fmt.Errorf("failed to parse cached JSON: %w", err)
-	}
-
-	if info.Error != "" {
-		return nil, fmt.Errorf("cached data error: %s", info.Error)
-	}
-
-	return &info, nil
-}
-
-// GetTeamRosterFromCache gets roster for a specific team from cached data (faster)
-func (c *PythonESPNClient) GetTeamRosterFromCache(teamID int) (*RosterInfo, error) {
-	if err := c.ensureVenv(); err != nil {
-		return nil, err
-	}
-
-	cmd := exec.Command(c.pythonPath, c.cacheScriptPath, "load_roster", fmt.Sprintf("%d", teamID))
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("cached roster load failed: %w", err)
-	}
-
-	var info RosterInfo
-	if err := json.Unmarshal(output, &info); err != nil {
-		return nil, fmt.Errorf("failed to parse cached roster JSON: %w", err)
-	}
-
-	if info.Error != "" {
-		return nil, fmt.Errorf("cached roster error: %s", info.Error)
-	}
-
-	return &info, nil
-}
-
-// IsCacheFresh checks if the cached data is fresh enough to use
-func (c *PythonESPNClient) IsCacheFresh() bool {
-	if err := c.ensureVenv(); err != nil {
-		return false
-	}
-
-	cmd := exec.Command(c.pythonPath, c.cacheScriptPath, "check_cache")
-	output, err := cmd.Output()
-	if err != nil {
-		return false
-	}
-
-	var result map[string]interface{}
-	if err := json.Unmarshal(output, &result); err != nil {
-		return false
-	}
-
-	fresh, ok := result["cache_fresh"].(bool)
-	return ok && fresh
-}
-
-// GetFreeAgents gets free agents from ESPN API
-func (c *PythonESPNClient) GetFreeAgents(position string, size int) (*FreeAgentsResult, error) {
-	if err := c.ensureVenv(); err != nil {
-		return nil, fmt.Errorf("venv setup failed: %w", err)
-	}
-
-	args := []string{c.scriptPath, "free_agents"}
-
-	if position != "" {
-		args = append(args, fmt.Sprintf("--position=%s", position))
-	}
-	if size > 0 {
-		args = append(args, fmt.Sprintf("--size=%d", size))
-	}
-
-	cmd := exec.Command(c.pythonPath, args...)
-	cmd.Dir = filepath.Dir(c.scriptPath)
-	cmd.Env = append(os.Environ(), "PYTHONPATH="+filepath.Dir(c.scriptPath))
+	// Call Python cache script to refresh all data
+	cmd := exec.Command(c.pythonPath, c.cacheScript, "cache")
+	cmd.Dir = filepath.Dir(c.cacheScript)
+	cmd.Env = append(os.Environ(), "PYTHONPATH="+filepath.Dir(c.cacheScript))
 
 	output, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get free agents: %w", err)
+		return fmt.Errorf("cache refresh failed: %w, output: %s", err, output)
 	}
 
-	var result FreeAgentsResult
-	if err := json.Unmarshal(output, &result); err != nil {
-		return nil, fmt.Errorf("failed to parse free agents response: %w", err)
-	}
-
-	if result.Error != "" {
-		return nil, fmt.Errorf("free agents error: %s", result.Error)
-	}
-
-	return &result, nil
+	// Update timestamp to mark cache as fresh
+	return c.cache.UpdateTimestamp()
 }
 
-// GetFreeAgentsFromCache gets free agents from cached data
-func (c *PythonESPNClient) GetFreeAgentsFromCache(position string, size int) (*FreeAgentsResult, error) {
-	if err := c.ensureVenv(); err != nil {
-		return nil, fmt.Errorf("venv setup failed: %w", err)
+// ensureVenv sets up Python virtual environment if needed
+func (c *ESPNClient) ensureVenv() error {
+	// Check if venv already exists
+	if _, err := os.Stat(c.pythonPath); err == nil {
+		return nil
 	}
 
-	args := []string{c.cacheScriptPath, "load_free_agents"}
-
-	if position != "" {
-		args = append(args, fmt.Sprintf("--position=%s", position))
-	}
-	if size > 0 {
-		args = append(args, fmt.Sprintf("--size=%d", size))
-	}
-
-	cmd := exec.Command(c.pythonPath, args...)
-	cmd.Dir = filepath.Dir(c.cacheScriptPath)
-	cmd.Env = append(os.Environ(), "PYTHONPATH="+filepath.Dir(c.cacheScriptPath))
-
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load cached free agents: %w", err)
-	}
-
-	var result FreeAgentsResult
-	if err := json.Unmarshal(output, &result); err != nil {
-		return nil, fmt.Errorf("failed to parse cached free agents response: %w", err)
-	}
-
-	return &result, nil
-}
-
-// CheckPythonDependencies checks if Python and required tools are available
-func (c *PythonESPNClient) CheckPythonDependencies() error {
-	// Check if python3 is available
-	if _, err := exec.LookPath("python3"); err != nil {
-		return fmt.Errorf("python3 not found: %w", err)
-	}
-
-	// Check if venv module is available
-	cmd := exec.Command("python3", "-m", "venv", "--help")
+	// Create venv
+	cmd := exec.Command("python3", "-m", "venv", c.venvPath)
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("python3 venv module not available: %w", err)
+		return fmt.Errorf("failed to create venv: %w", err)
+	}
+
+	// Install dependencies
+	pipPath := filepath.Join(c.venvPath, "bin", "pip")
+	deps := []string{"espn-api", "python-dotenv", "requests", "beautifulsoup4", "selenium"}
+
+	for _, dep := range deps {
+		cmd := exec.Command(pipPath, "install", dep)
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to install %s: %w", dep, err)
+		}
 	}
 
 	return nil
 }
 
-// HasCredentials checks if ESPN credentials are available in environment
-func (c *PythonESPNClient) HasCredentials() bool {
-	leagueID := os.Getenv("ESPN_LEAGUE_ID")
-	swid := os.Getenv("ESPN_SWID")
-	espnS2 := os.Getenv("ESPN_S2")
-
-	return leagueID != "" && swid != "" && espnS2 != ""
+// HasCredentials checks if ESPN credentials are available
+func (c *ESPNClient) HasCredentials() bool {
+	required := []string{"ESPN_LEAGUE_ID", "ESPN_SWID", "ESPN_S2"}
+	for _, env := range required {
+		if os.Getenv(env) == "" {
+			return false
+		}
+	}
+	return true
 }
 
-// HasRedditCredentials checks if Reddit API credentials are available in environment
-func (c *PythonESPNClient) HasRedditCredentials() bool {
-	clientID := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	userAgent := os.Getenv("USER_AGENT")
-
-	return clientID != "" && clientSecret != "" && userAgent != ""
+// HasRedditCredentials checks if Reddit credentials are available
+func (c *ESPNClient) HasRedditCredentials() bool {
+	required := []string{"CLIENT_ID", "CLIENT_SECRET", "USER_AGENT"}
+	for _, env := range required {
+		if os.Getenv(env) == "" {
+			return false
+		}
+	}
+	return true
 }
 
-// GetStatus returns status information about the Python client
-func (c *PythonESPNClient) GetStatus() string {
-	var status []string
-
-	// Check Python
-	if err := c.CheckPythonDependencies(); err != nil {
-		return fmt.Sprintf("Python not available: %v", err)
+// GetStatus returns client status
+func (c *ESPNClient) GetStatus() string {
+	if !c.HasCredentials() {
+		return "ESPN credentials not configured"
 	}
-	status = append(status, "Python: ✓")
-
-	// Check venv
-	if _, err := os.Stat(c.venvPath); err == nil {
-		status = append(status, "Venv: ✓")
-	} else {
-		status = append(status, "Venv: ✗")
+	if c.cache.IsStale() {
+		return "Cache is stale, will refresh on next operation"
 	}
+	return "Ready - cache is fresh"
+}
 
-	// Check ESPN credentials
-	if c.HasCredentials() {
-		status = append(status, "ESPN: ✓")
-	} else {
-		status = append(status, "ESPN: ✗")
-	}
+// Legacy methods for Reddit/FFHound (keep for compatibility)
+func (c *ESPNClient) ScrapeRedditForTeam(teamID int) (*RedditScrapeResult, error) {
+	// Implementation would go here - keeping interface for now
+	return nil, fmt.Errorf("not implemented in simplified client")
+}
 
-	// Check Reddit credentials
-	if c.HasRedditCredentials() {
-		status = append(status, "Reddit: ✓")
-	} else {
-		status = append(status, "Reddit: ✗")
-	}
-
-	return strings.Join(status, " | ")
+func (c *ESPNClient) ScrapeFFHoundForTeam(teamID int) (*FFHoundScrapeResult, error) {
+	// Implementation would go here - keeping interface for now
+	return nil, fmt.Errorf("not implemented in simplified client")
 }

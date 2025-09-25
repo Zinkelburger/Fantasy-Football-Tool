@@ -57,3 +57,10 @@ But ADP is very bad and doesn't provide a "points scored" to even make any sense
 
 How well do vegas odds predict the next game's performance?
 How well do vegas odds predict a season long performance?
+
+# Quarterback expected points:
+- Depth of target thrown
+- number of runs (inside the 10, outside the 10)
+- Penalties: Defensive Pass Interference (DPI), Defensive Holding, Illegal Contact
+
+"nflverse"

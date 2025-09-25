@@ -91,46 +91,67 @@ def get_players_from_team(team_id: int) -> List[Dict]:
 
 # --- REDDIT SCRAPING CORE ---
 
-def find_player_mentions(player: Dict, nicknames: List[str], reddit: RedditQuery, since_ts: float) -> List[str]:
+def find_player_mentions(player: Dict, nicknames: List[str], reddit: RedditQuery, since_ts: float) -> List[Dict]:
     """
-    Uses the RedditQuery helper to find all mentions for a player.
-    This function is now just a simple wrapper for the powerful class method.
+    Uses the RedditQuery helper to find all mentions for a player with metadata.
+    Returns structured data with post/comment details for UI display.
     """
     player_full_name = player["name"]
     names_to_check = [player_full_name] + nicknames
-    
+
     print(f"   - Searching for '{player_full_name}' (and {len(nicknames)} nicknames)...")
 
-    # All the complex logic is now inside the find_all_mentions method!
-    mentions = reddit.find_all_mentions(
+    # Get structured mentions with metadata
+    mentions = reddit.find_mentions_with_metadata(
         subreddit=SUBREDDIT_TO_SEARCH,
         search_query=f'"{player_full_name}"', # Use full name to find relevant threads
         keywords=names_to_check,
         since_timestamp=since_ts,
         confidence_threshold=CONFIDENCE_THRESHOLD
     )
-    
+
     return mentions
 
 # --- FILE SAVING & MAIN LOGIC ---
 
-def save_results_to_file(player: Dict, mentions: List[str]):
-    """Saves the found mentions to a clean text file."""
+def save_results_to_file(player: Dict, mentions: List[Dict]):
+    """Saves the found mentions as structured JSON data."""
     player_name = player["name"]
     safe_name = "".join(c for c in player_name if c.isalnum() or c in " ").replace(" ", "_").lower()
-    filename = OUTPUT_DIR / f"{safe_name}_reddit.txt"
 
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write(f"Reddit Mentions for: {player_name} ({player['position']} - {player['team']})\n")
-        f.write("="*40 + "\n\n")
-        
+    # Save as JSON for structured access
+    json_filename = OUTPUT_DIR / f"{safe_name}_reddit.json"
+
+    data = {
+        "player": {
+            "name": player_name,
+            "position": player['position'],
+            "team": player['team']
+        },
+        "scraped_at": datetime.now().isoformat(),
+        "posts": mentions
+    }
+
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    # Also save simple text summary for AI processing
+    text_filename = OUTPUT_DIR / f"{safe_name}_reddit_summary.txt"
+    with open(text_filename, 'w', encoding='utf-8') as f:
         if mentions:
-            for i, mention in enumerate(mentions, 1):
-                f.write(f"{i}. {mention}\n\n")
+            for mention in mentions:
+                # Add post context if it exists
+                if mention.get('post_body'):
+                    f.write(f"Post: {mention['post_title']}\n{mention['post_body']}\n\n")
+
+                # Add relevant comments
+                for comment in mention.get('relevant_comments', []):
+                    f.write(f"Comment: {comment['body']}\n\n")
         else:
             f.write("No relevant Reddit discussion found.\n")
-    
-    print(f"   - Saved {len(mentions)} mentions to {filename}")
+
+    print(f"   - Saved {len(mentions)} posts to {json_filename}")
+    print(f"   - Created text summary at {text_filename}")
 
 def main():
     """Main script execution."""

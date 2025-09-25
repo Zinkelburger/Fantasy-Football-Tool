@@ -25,16 +25,11 @@ func main() {
 	fyneApp.SetIcon(resourceLogoPng)
 	fyneApp.Settings().SetTheme(&customTheme{})
 
-	// Initialize Python ESPN client
-	pythonClient := NewPythonESPNClient()
-
-	// Check Python dependencies
-	if err := pythonClient.CheckPythonDependencies(); err != nil {
-		log.Printf("Warning: Python dependencies not available: %v", err)
-	}
+	// Initialize ESPN client
+	espnClient := NewESPNClient()
 
 	// Create UI
-	ui := NewESPNUI(fyneApp, pythonClient)
+	ui := NewESPNUI(fyneApp, espnClient)
 	ui.Show()
 	fyneApp.Run()
 

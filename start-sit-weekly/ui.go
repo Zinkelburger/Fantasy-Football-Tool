@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -20,9 +21,9 @@ import (
 
 // Team represents a fantasy team
 type Team struct {
-	ID        int
-	Name      string
-	OwnerName string
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Owner string `json:"owner"`
 }
 
 // Player represents a fantasy player
@@ -35,13 +36,91 @@ type Player struct {
 	AvgOppScore     string // Average opportunity score
 }
 
+// Reddit data structures for JSON parsing
+type RedditComment struct {
+	Body           string  `json:"body"`
+	Author         string  `json:"author"`
+	Score          int     `json:"score"`
+	CreatedUTC     float64 `json:"created_utc"`
+	Permalink      string  `json:"permalink"`
+	MatchConfidence int    `json:"match_confidence"`
+}
+
+type RedditPost struct {
+	PostTitle       string          `json:"post_title"`
+	PostURL         string          `json:"post_url"`
+	PostScore       int             `json:"post_score"`
+	PostCreatedUTC  float64         `json:"post_created_utc"`
+	Subreddit       string          `json:"subreddit"`
+	Author          string          `json:"author"`
+	PostBody        *string         `json:"post_body"`
+	RelevantComments []RedditComment `json:"relevant_comments"`
+	TotalComments   int             `json:"total_comments"`
+}
+
+type RedditData struct {
+	Player struct {
+		Name     string `json:"name"`
+		Position string `json:"position"`
+		Team     string `json:"team"`
+	} `json:"player"`
+	ScrapedAt string       `json:"scraped_at"`
+	Posts     []RedditPost `json:"posts"`
+}
+
+// ESPN API response types
+type LeagueInfo struct {
+	LeagueID   int    `json:"league_id"`
+	LeagueName string `json:"league_name"`
+	Teams      []Team `json:"teams"`
+}
+
+type RosterInfo struct {
+	TeamID   int      `json:"team_id"`
+	TeamName string   `json:"team_name"`
+	Players  []Player `json:"players"`
+}
+
+type FreeAgent struct {
+	Name     string `json:"name"`
+	Position string `json:"position"`
+	Team     string `json:"team"`
+}
+
+type FreeAgentPlayer struct {
+	PlayerID       int     `json:"player_id"`
+	Name           string  `json:"name"`
+	Position       string  `json:"position"`
+	Team           string  `json:"team"`
+	Status         string  `json:"status"`
+	PercentOwned   float64 `json:"percent_owned"`
+	PercentStarted float64 `json:"percent_started"`
+}
+
+type FreeAgentsResult struct {
+	Players        []FreeAgentPlayer `json:"players"`
+	Count          int               `json:"count"`
+	PositionFilter string            `json:"position_filter"`
+}
+
+// Scraping result types
+type RedditScrapeResult struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+type FFHoundScrapeResult struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 // ESPNUI holds the Fyne UI components
 type ESPNUI struct {
 	app    fyne.App
 	window fyne.Window
 
 	// Clients
-	pythonClient   *PythonESPNClient
+	espnClient     *ESPNClient
 	ramalamaClient *RamalamaClient
 
 	// UI Components
@@ -91,14 +170,14 @@ type ESPNUI struct {
 }
 
 // NewESPNUI creates a new ESPN UI
-func NewESPNUI(app fyne.App, pythonClient *PythonESPNClient) *ESPNUI {
+func NewESPNUI(app fyne.App, espnClient *ESPNClient) *ESPNUI {
 	window := app.NewWindow("ESPN Fantasy Football Tool")
 	window.Resize(fyne.NewSize(1200, 800))
 
 	ui := &ESPNUI{
 		app:            app,
 		window:         window,
-		pythonClient:   pythonClient,
+		espnClient:     espnClient,
 		ramalamaClient: NewRamalamaClient(),
 	}
 
@@ -510,7 +589,7 @@ func (ui *ESPNUI) handleConnect() {
 	ui.connecting = true
 	ui.mutex.Unlock()
 
-	if !ui.pythonClient.HasCredentials() {
+	if !ui.espnClient.HasCredentials() {
 		ui.showSettings()
 		ui.mutex.Lock()
 		ui.connecting = false
@@ -535,34 +614,13 @@ func (ui *ESPNUI) connectToESPN() {
 		ui.connectButton.SetText("Reconnect")
 	}()
 
-	var leagueInfo *LeagueInfo
-	var err error
-
-	// Try cached data first if it's fresh
-	if ui.pythonClient.IsCacheFresh() {
-		ui.updateStatus("Loading from cache...")
-		leagueInfo, err = ui.pythonClient.ConnectToLeagueFromCache()
-		if err == nil {
-			ui.updateStatus("Loaded from cache successfully")
-		}
-	}
-
-	// Fall back to API call if cache is stale or failed
-	if leagueInfo == nil || err != nil {
-		ui.updateStatus("Fetching fresh data from ESPN API...")
-		leagueInfo, err = ui.pythonClient.ConnectToLeague()
-		if err != nil {
-			ui.updateStatus(fmt.Sprintf("Connection failed: %v", err))
-			dialog.ShowError(fmt.Errorf("failed to connect to ESPN: %w", err), ui.window)
-			return
-		}
-
-		// Cache the fresh data in the background
-		go func() {
-			if cacheErr := ui.pythonClient.CacheESPNData(); cacheErr != nil {
-				log.Printf("Failed to cache ESPN data: %v", cacheErr)
-			}
-		}()
+	// Get league info (automatically handles caching)
+	ui.updateStatus("Loading league information...")
+	leagueInfo, err := ui.espnClient.GetLeagueInfo()
+	if err != nil {
+		ui.updateStatus(fmt.Sprintf("Connection failed: %v", err))
+		dialog.ShowError(fmt.Errorf("failed to connect to ESPN: %w", err), ui.window)
+		return
 	}
 
 	// Store league info
@@ -572,7 +630,7 @@ func (ui *ESPNUI) connectToESPN() {
 		ui.teams = append(ui.teams, Team{
 			ID:        team.ID,
 			Name:      team.Name,
-			OwnerName: team.Owner,
+			Owner: team.Owner,
 		})
 	}
 	ui.mutex.Unlock()
@@ -595,7 +653,7 @@ func (ui *ESPNUI) populateTeamSelector() {
 
 	var teamNames []string
 	for _, team := range teams {
-		teamNames = append(teamNames, fmt.Sprintf("%s (%s)", team.Name, team.OwnerName))
+		teamNames = append(teamNames, fmt.Sprintf("%s (%s)", team.Name, team.Owner))
 	}
 
 	ui.teamSelector.Options = teamNames
@@ -604,7 +662,7 @@ func (ui *ESPNUI) populateTeamSelector() {
 	ui.dataAnalysisButton.Enable()
 
 	// Enable menu items
-	ui.dataAnalysisMenu.Items[0].Disabled = !ui.pythonClient.HasRedditCredentials() // Reddit
+	ui.dataAnalysisMenu.Items[0].Disabled = !ui.espnClient.HasRedditCredentials() // Reddit
 	ui.dataAnalysisMenu.Items[1].Disabled = false                                    // FF Hound
 	ui.dataAnalysisMenu.Items[2].Disabled = false                                    // Opportunity Score
 	ui.dataAnalysisMenu.Items[3].Disabled = false                                    // Free Agents
@@ -681,23 +739,12 @@ func (ui *ESPNUI) loadTeamRoster() {
 			ui.mutex.Unlock()
 		}()
 
-		var rosterInfo *RosterInfo
-		var err error
-
-		// Try cached data first if it's fresh
-		if ui.pythonClient.IsCacheFresh() {
-			ui.updateStatus(fmt.Sprintf("Loading %s roster from cache...", team.Name))
-			rosterInfo, err = ui.pythonClient.GetTeamRosterFromCache(team.ID)
-		}
-
-		// Fall back to API call if cache is stale or failed
-		if rosterInfo == nil || err != nil {
-			ui.updateStatus(fmt.Sprintf("Fetching %s roster from ESPN API...", team.Name))
-			rosterInfo, err = ui.pythonClient.GetTeamRoster(team.ID)
-			if err != nil {
-				ui.updateStatus(fmt.Sprintf("Failed to load roster: %v", err))
-				return
-			}
+		// Get team roster (automatically handles caching)
+		ui.updateStatus(fmt.Sprintf("Loading %s roster...", team.Name))
+		rosterInfo, err := ui.espnClient.GetTeamRoster(team.ID)
+		if err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to load roster: %v", err))
+			return
 		}
 
 		// Load opportunity score data
@@ -710,7 +757,7 @@ func (ui *ESPNUI) loadTeamRoster() {
 			player := Player{
 				Name:            strings.TrimSpace(p.Name),
 				Position:        strings.TrimSpace(p.Position),
-				TeamName:        strings.TrimSpace(p.Team),
+				TeamName:        strings.TrimSpace(p.TeamName),
 				Status:          strings.TrimSpace(p.Status),
 				WeeklyOppScore:  "N/A",
 				AvgOppScore:     "N/A",
@@ -788,8 +835,8 @@ func (ui *ESPNUI) handleRefreshData() {
 
 		ui.updateStatus("Refreshing ESPN data...")
 
-		// Force cache refresh by calling ESPN API and caching results
-		err := ui.pythonClient.CacheESPNData()
+		// Force cache refresh
+		err := ui.espnClient.RefreshCache()
 		if err != nil {
 			ui.updateStatus(fmt.Sprintf("Failed to refresh data: %v", err))
 			dialog.ShowError(fmt.Errorf("failed to refresh ESPN data: %w", err), ui.window)
@@ -821,7 +868,7 @@ func (ui *ESPNUI) handleRedditScrape() {
 	}
 
 	// Check if Reddit credentials are available
-	if !ui.pythonClient.HasRedditCredentials() {
+	if !ui.espnClient.HasRedditCredentials() {
 		dialog.ShowError(fmt.Errorf("Reddit API credentials not found. Please configure them in Settings."), ui.window)
 		return
 	}
@@ -840,37 +887,14 @@ func (ui *ESPNUI) handleRedditScrape() {
 			ui.loading = false
 			ui.mutex.Unlock()
 			ui.redditButton.SetText("🔍 Scrape Reddit")
-			if ui.pythonClient.HasRedditCredentials() {
+			if ui.espnClient.HasRedditCredentials() {
 				ui.redditButton.Enable()
 			}
 		}()
 
-		result, err := ui.pythonClient.ScrapeRedditForTeam(currentTeam.ID)
-		if err != nil {
-			ui.updateStatus(fmt.Sprintf("Reddit scraping failed: %v", err))
-			dialog.ShowError(fmt.Errorf("Reddit scraping failed: %v", err), ui.window)
-			return
-		}
-
-		// Show success dialog with summary
-		totalPosts := 0
-		playersWithContent := 0
-		for _, player := range result.Players {
-			totalPosts += player.PostsFound
-			if player.PostsFound > 0 {
-				playersWithContent++
-			}
-		}
-
-		message := fmt.Sprintf("Reddit scraping completed!\n\n"+
-			"Players: %d\n"+
-			"Players with content: %d\n"+
-			"Total posts found: %d\n\n"+
-			"Results saved to reddit_analysis/ directory",
-			len(result.Players), playersWithContent, totalPosts)
-
-		ui.updateStatus("Reddit scraping completed successfully")
-		dialog.ShowInformation("Reddit Scraping Complete", message, ui.window)
+		// TODO: Implement Reddit scraping in new client
+		ui.updateStatus("Reddit scraping not yet implemented in simplified client")
+		dialog.ShowInformation("Reddit Scraping", "Reddit scraping feature is being updated for the new simplified architecture.", ui.window)
 	}()
 }
 
@@ -880,10 +904,10 @@ func (ui *ESPNUI) autoConnect() {
 		// Small delay to let UI render
 		time.Sleep(100 * time.Millisecond)
 
-		if ui.pythonClient.HasCredentials() {
+		if ui.espnClient.HasCredentials() {
 			ui.connectToESPN()
 		} else {
-			ui.updateStatus(ui.pythonClient.GetStatus())
+			ui.updateStatus(ui.espnClient.GetStatus())
 		}
 	}()
 }
@@ -929,59 +953,39 @@ func (ui *ESPNUI) updateStatus(message string) {
 	ui.statusLabel.SetText(message)
 }
 
-// showPlayerNotes shows notes for a specific player
+// showPlayerNotes shows notes for a specific player with tabbed interface
 func (ui *ESPNUI) showPlayerNotes(playerName string) {
 	// Check if we have data for this player
 	safePlayerName := strings.ReplaceAll(strings.ToLower(playerName), " ", "_")
 	safePlayerName = strings.ReplaceAll(safePlayerName, ".", "")
 
-	redditAnalysisPath := fmt.Sprintf("reddit_analysis/%s_reddit_summary.txt", safePlayerName)
-	ffhoundAnalysisPath := fmt.Sprintf("ffhound_analysis/%s_ffhound_summary.txt", safePlayerName)
-	ramalamaAnalysisPath := fmt.Sprintf("ramalama_analysis/%s_ramalama_analysis.txt", safePlayerName)
-	summaryPath := fmt.Sprintf("player_summaries/%s_summary.md", safePlayerName)
+	// Create tabs for different data sources
+	tabs := container.NewAppTabs(
+		container.NewTabItem("AI Summary", ui.createAISummaryTab(safePlayerName)),
+		container.NewTabItem("Reddit Posts", ui.createRedditTab(safePlayerName)),
+		container.NewTabItem("FF Hound", ui.createFFHoundTab(safePlayerName)),
+	)
 
-	var content strings.Builder
-	content.WriteString(fmt.Sprintf("# %s\n\n", playerName))
+	// Create header with player name and close button
+	headerContainer := container.NewHBox(
+		widget.NewLabel(fmt.Sprintf("📊 %s", playerName)),
+		widget.NewSeparator(),
+		ui.closePlayerNoteButton,
+	)
 
-	// Try to load Reddit analysis
-	if redditData, err := os.ReadFile(redditAnalysisPath); err == nil {
-		content.WriteString("## Reddit Analysis\n\n")
-		content.WriteString(string(redditData))
-		content.WriteString("\n\n")
-	}
-
-	// Try to load FF Hound analysis
-	if ffhoundData, err := os.ReadFile(ffhoundAnalysisPath); err == nil {
-		content.WriteString("## FF Hound Analysis\n\n")
-		content.WriteString(string(ffhoundData))
-		content.WriteString("\n\n")
-	}
-
-	// Try to load Ramalama analysis
-	if ramalamaData, err := os.ReadFile(ramalamaAnalysisPath); err == nil {
-		content.WriteString("## Ramalama Analysis\n\n")
-		content.WriteString(string(ramalamaData))
-		content.WriteString("\n\n")
-	}
-
-	// Try to load AI summary
-	if summaryData, err := os.ReadFile(summaryPath); err == nil {
-		content.WriteString("## AI Summary\n\n")
-		content.WriteString(string(summaryData))
-		content.WriteString("\n\n")
-	}
-
-	if content.Len() == len(fmt.Sprintf("# %s\n\n", playerName)) {
-		content.WriteString("No notes available for this player.\n\n")
-		content.WriteString("Try scraping Reddit and FF Hound first, then use the Summarize button to generate AI insights.")
-	}
+	// Update player note container with tabbed content
+	ui.playerNoteContainer = container.NewBorder(
+		headerContainer, // top
+		nil,             // bottom
+		nil,             // left
+		nil,             // right
+		tabs,            // center
+	)
 
 	ui.mutex.Lock()
 	ui.currentViewedPlayer = playerName
 	ui.playerNoteVisible = true
 	ui.mutex.Unlock()
-
-	ui.playerNoteViewer.ParseMarkdown(content.String())
 
 	// Create a proper split view like the 2025 go code - player list on left, notes on right
 	// Get the main control panel first
@@ -1018,6 +1022,155 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 	mainSplit.SetOffset(0.5) // 50/50 split
 
 	ui.window.SetContent(mainSplit)
+}
+
+// createAISummaryTab creates the AI summary tab content
+func (ui *ESPNUI) createAISummaryTab(safePlayerName string) fyne.CanvasObject {
+	summaryPath := fmt.Sprintf("player_summaries/%s_summary.md", safePlayerName)
+	ramalamaAnalysisPath := fmt.Sprintf("ramalama_analysis/%s_ramalama_analysis.txt", safePlayerName)
+
+	var content strings.Builder
+
+	// Try to load AI summary
+	if summaryData, err := os.ReadFile(summaryPath); err == nil {
+		content.WriteString(string(summaryData))
+		content.WriteString("\n\n")
+	}
+
+	// Try to load Ramalama analysis
+	if ramalamaData, err := os.ReadFile(ramalamaAnalysisPath); err == nil {
+		content.WriteString("## Ramalama Analysis\n\n")
+		content.WriteString(string(ramalamaData))
+	}
+
+	if content.Len() == 0 {
+		content.WriteString("No AI summary available for this player.\n\nTry using the Summarize button after scraping data.")
+	}
+
+	summaryText := widget.NewRichText()
+	summaryText.ParseMarkdown(content.String())
+
+	return container.NewScroll(summaryText)
+}
+
+// createRedditTab creates the Reddit posts tab with expandable dropdowns
+func (ui *ESPNUI) createRedditTab(safePlayerName string) fyne.CanvasObject {
+	redditJSONPath := fmt.Sprintf("reddit_analysis/%s_reddit.json", safePlayerName)
+
+	// Try to load structured Reddit data
+	if jsonData, err := os.ReadFile(redditJSONPath); err == nil {
+		var redditData RedditData
+		if err := json.Unmarshal(jsonData, &redditData); err == nil {
+			return ui.createRedditPostsContainer(redditData.Posts)
+		}
+	}
+
+	// Fallback to text summary if JSON not available
+	redditSummaryPath := fmt.Sprintf("reddit_analysis/%s_reddit_summary.txt", safePlayerName)
+	if summaryData, err := os.ReadFile(redditSummaryPath); err == nil {
+		summaryText := widget.NewRichText()
+		summaryText.ParseMarkdown("## Reddit Summary\n\n" + string(summaryData))
+		return container.NewScroll(summaryText)
+	}
+
+	// No Reddit data available
+	noDataText := widget.NewRichText()
+	noDataText.ParseMarkdown("No Reddit data available for this player.\n\nTry using the Reddit scraper from the Data Analysis menu.")
+	return container.NewScroll(noDataText)
+}
+
+// createFFHoundTab creates the FF Hound analysis tab
+func (ui *ESPNUI) createFFHoundTab(safePlayerName string) fyne.CanvasObject {
+	ffhoundAnalysisPath := fmt.Sprintf("ffhound_analysis/%s_ffhound_summary.txt", safePlayerName)
+
+	if ffhoundData, err := os.ReadFile(ffhoundAnalysisPath); err == nil {
+		ffhoundText := widget.NewRichText()
+		ffhoundText.ParseMarkdown("## FF Hound Analysis\n\n" + string(ffhoundData))
+		return container.NewScroll(ffhoundText)
+	}
+
+	// No FF Hound data available
+	noDataText := widget.NewRichText()
+	noDataText.ParseMarkdown("No FF Hound data available for this player.\n\nTry using the FF Hound scraper from the Data Analysis menu.")
+	return container.NewScroll(noDataText)
+}
+
+// createRedditPostsContainer creates expandable containers for Reddit posts
+func (ui *ESPNUI) createRedditPostsContainer(posts []RedditPost) fyne.CanvasObject {
+	if len(posts) == 0 {
+		noPostsText := widget.NewRichText()
+		noPostsText.ParseMarkdown("No Reddit posts found for this player.")
+		return container.NewScroll(noPostsText)
+	}
+
+	var containers []fyne.CanvasObject
+
+	for i, post := range posts {
+		postContainer := ui.createExpandablePost(i+1, post)
+		containers = append(containers, postContainer)
+	}
+
+	vbox := container.NewVBox(containers...)
+	return container.NewScroll(vbox)
+}
+
+// createExpandablePost creates an expandable post with dropdown for body and comments
+func (ui *ESPNUI) createExpandablePost(postNum int, post RedditPost) *fyne.Container {
+	// Post header with title and link
+	titleLabel := widget.NewRichText()
+	titleLabel.ParseMarkdown(fmt.Sprintf("**Post #%d:** [%s](%s)", postNum, post.PostTitle, post.PostURL))
+
+	// Post metadata
+	metaLabel := widget.NewLabel(fmt.Sprintf("Score: %d | Author: %s | Subreddit: r/%s",
+		post.PostScore, post.Author, post.Subreddit))
+	metaLabel.TextStyle.Italic = true
+
+	// Create expandable sections
+	var sections []fyne.CanvasObject
+
+	// Post body section (if exists)
+	if post.PostBody != nil && *post.PostBody != "" {
+		postBodyRichText := widget.NewRichText()
+		postBodyRichText.ParseMarkdown(*post.PostBody)
+		postBodyAccordion := widget.NewAccordion(
+			widget.NewAccordionItem("Post Body", postBodyRichText),
+		)
+		sections = append(sections, postBodyAccordion)
+	} else {
+		noBodyLabel := widget.NewLabel("No post body content")
+		noBodyLabel.TextStyle.Italic = true
+		sections = append(sections, noBodyLabel)
+	}
+
+	// Comments section
+	if len(post.RelevantComments) > 0 {
+		var commentObjects []fyne.CanvasObject
+		for i, comment := range post.RelevantComments {
+			commentLabel := widget.NewRichText()
+			commentLabel.ParseMarkdown(fmt.Sprintf("**Comment %d** (Score: %d, Author: %s):\\n%s",
+				i+1, comment.Score, comment.Author, comment.Body))
+			commentObjects = append(commentObjects, commentLabel)
+		}
+		commentsVBox := container.NewVBox(commentObjects...)
+		commentsAccordion := widget.NewAccordion(
+			widget.NewAccordionItem(fmt.Sprintf("Relevant Comments (%d)", len(post.RelevantComments)), commentsVBox),
+		)
+		sections = append(sections, commentsAccordion)
+	} else {
+		noCommentsLabel := widget.NewLabel("No relevant comments found")
+		noCommentsLabel.TextStyle.Italic = true
+		sections = append(sections, noCommentsLabel)
+	}
+
+	// Combine all sections
+	postContent := container.NewVBox(
+		titleLabel,
+		metaLabel,
+		widget.NewSeparator(),
+	)
+	postContent.Add(container.NewVBox(sections...))
+
+	return container.NewBorder(nil, widget.NewSeparator(), nil, nil, postContent)
 }
 
 // hidePlayerNotes hides the player notes viewer
@@ -1089,32 +1242,9 @@ func (ui *ESPNUI) handleFFHoundScrape() {
 			ui.ffhoundButton.Enable()
 		}()
 
-		result, err := ui.pythonClient.ScrapeFFHoundForTeam(currentTeam.ID)
-		if err != nil {
-			ui.updateStatus(fmt.Sprintf("FF Hound scraping failed: %v", err))
-			dialog.ShowError(fmt.Errorf("FF Hound scraping failed: %v", err), ui.window)
-			return
-		}
-
-		// Show success dialog with summary
-		totalPosts := 0
-		playersWithContent := 0
-		for _, player := range result.Players {
-			totalPosts += player.PostsFound
-			if player.PostsFound > 0 {
-				playersWithContent++
-			}
-		}
-
-		message := fmt.Sprintf("FF Hound scraping completed!\n\n"+
-			"Players: %d\n"+
-			"Players with content: %d\n"+
-			"Total posts found: %d\n\n"+
-			"Results saved to ffhound_analysis/ directory",
-			len(result.Players), playersWithContent, totalPosts)
-
-		ui.updateStatus("FF Hound scraping completed successfully")
-		dialog.ShowInformation("FF Hound Scraping Complete", message, ui.window)
+		// TODO: Implement FF Hound scraping in new client
+		ui.updateStatus("FF Hound scraping not yet implemented in simplified client")
+		dialog.ShowInformation("FF Hound Scraping", "FF Hound scraping feature is being updated for the new simplified architecture.", ui.window)
 	}()
 }
 
@@ -1581,24 +1711,13 @@ func (ui *ESPNUI) handleFreeAgents() {
 			ui.mutex.Unlock()
 		}()
 
-		var freeAgents *FreeAgentsResult
-		var err error
-
-		// Try cached data first if it's fresh
-		if ui.pythonClient.IsCacheFresh() {
-			ui.updateStatus("Loading free agents from cache...")
-			freeAgents, err = ui.pythonClient.GetFreeAgentsFromCache("", 50)
-		}
-
-		// Fall back to API call if cache is stale or failed
-		if freeAgents == nil || err != nil {
-			ui.updateStatus("Fetching free agents from ESPN API...")
-			freeAgents, err = ui.pythonClient.GetFreeAgents("", 50)
-			if err != nil {
-				ui.updateStatus(fmt.Sprintf("Failed to load free agents: %v", err))
-				dialog.ShowError(fmt.Errorf("failed to load free agents: %w", err), ui.window)
-				return
-			}
+		// Get free agents (automatically handles caching)
+		ui.updateStatus("Loading free agents...")
+		freeAgents, err := ui.espnClient.GetFreeAgents("", 50)
+		if err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to load free agents: %v", err))
+			dialog.ShowError(fmt.Errorf("failed to load free agents: %w", err), ui.window)
+			return
 		}
 
 		// Show success with count
