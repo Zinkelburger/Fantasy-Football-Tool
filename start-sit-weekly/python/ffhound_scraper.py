@@ -62,33 +62,42 @@ def get_team_players(team_id: int) -> List[Dict]:
         raise RuntimeError(f"Error reading cached roster: {e}")
 
 
-def fuzzy_match_player_in_text(player_name: str, text: str, threshold: float = 0.6) -> bool:
-    """Simple fuzzy matching to find player mentions in text"""
+def fuzzy_match_player_in_text(player_name: str, text: str) -> bool:
+    """Strict matching to find player mentions in text - no false positives"""
     if not player_name or not text:
         return False
 
     player_lower = player_name.lower()
     text_lower = text.lower()
 
-    # Direct substring match first
+    # Direct substring match first (most reliable)
     if player_lower in text_lower:
         return True
 
-    # Try first and last name separately
+    # Try first and last name separately - BOTH must be present
     name_parts = player_lower.split()
     if len(name_parts) >= 2:
         first_name = name_parts[0]
         last_name = name_parts[-1]
 
-        # Check if both first and last name appear in text
+        # Check if both first and last name appear in text (exact match only)
         if first_name in text_lower and last_name in text_lower:
             return True
 
-        # Check last name with decent similarity
+        # For very distinctive last names, allow slight variation (typos, punctuation)
+        # But be VERY conservative to avoid false matches
         words = text_lower.split()
-        for word in words:
-            if len(word) > 2 and SequenceMatcher(None, last_name, word).ratio() > threshold:
-                return True
+
+        # Only allow fuzzy matching if:
+        # 1. The last name is longer than 5 characters (more distinctive)
+        # 2. The similarity is extremely high (>90%)
+        # 3. The first name also appears somewhere in the text
+        if len(last_name) > 5 and first_name in text_lower:
+            for word in words:
+                # Remove punctuation from the word
+                clean_word = ''.join(c for c in word if c.isalnum())
+                if len(clean_word) > 4 and SequenceMatcher(None, last_name, clean_word).ratio() > 0.9:
+                    return True
 
     return False
 
@@ -220,8 +229,59 @@ def load_saved_webpage(url: str, output_dir: Path) -> Optional[str]:
         return None
 
 
+def split_text_into_sentences(text: str) -> List[str]:
+    """Split text into sentences, handling common abbreviations"""
+    if not text:
+        return []
+
+    # Simple sentence splitting - handles most cases
+    # Split on . ! ? but be careful with abbreviations like "Jr." or "Mr."
+    import re
+
+    # First normalize whitespace
+    text = ' '.join(text.split())
+
+    # Split on sentence boundaries, keeping the delimiter
+    sentences = re.split(r'([.!?]+)\s+', text)
+
+    # Rejoin sentences with their punctuation
+    result = []
+    i = 0
+    while i < len(sentences):
+        if i + 1 < len(sentences) and sentences[i + 1].strip() and sentences[i + 1] in '.!?':
+            # This is a sentence followed by punctuation
+            sentence = sentences[i] + sentences[i + 1]
+            result.append(sentence.strip())
+            i += 2
+        else:
+            # This is either a sentence without punctuation or the last piece
+            if sentences[i].strip():
+                result.append(sentences[i].strip())
+            i += 1
+
+    # Filter out very short sentences (likely fragments)
+    return [s for s in result if len(s) > 10]
+
+
+def extract_relevant_sentences(text: str, player_name: str) -> List[str]:
+    """Extract ONLY sentences that actually mention the player"""
+    sentences = split_text_into_sentences(text)
+    if not sentences:
+        return []
+
+    relevant_sentences = []
+
+    for sentence in sentences:
+        if fuzzy_match_player_in_text(player_name, sentence):
+            # Only include sentences that actually mention the player
+            if sentence.strip() not in relevant_sentences:
+                relevant_sentences.append(sentence.strip())
+
+    return relevant_sentences
+
+
 def extract_player_mentions_from_html(html_content: str, player_name: str) -> List[str]:
-    """Extract paragraphs mentioning the player from HTML content"""
+    """Extract focused sentences mentioning the player from HTML content"""
     if not html_content or not player_name:
         return []
 
@@ -238,7 +298,7 @@ def extract_player_mentions_from_html(html_content: str, player_name: str) -> Li
     for script in content_div(["script", "style"]):
         script.decompose()
 
-    matching_paragraphs = []
+    matching_sentences = []
 
     # Look for text within specific HTML elements (paragraphs, list items)
     content_elements = content_div.find_all(['p', 'li'])
@@ -246,17 +306,19 @@ def extract_player_mentions_from_html(html_content: str, player_name: str) -> Li
     for element in content_elements:
         text = element.get_text().strip()
         # Skip very short text
-        if len(text) < 15:
+        if len(text) < 20:
             continue
 
         # Check if this element contains the player name
         if fuzzy_match_player_in_text(player_name, text):
-            # Clean up the text and add it
-            clean_text = ' '.join(text.split())  # Normalize whitespace
-            if clean_text not in matching_paragraphs:  # Avoid duplicates
-                matching_paragraphs.append(clean_text)
+            # Extract just the sentences that mention the player
+            relevant_sentences = extract_relevant_sentences(text, player_name)
 
-    return matching_paragraphs
+            for sentence_group in relevant_sentences:
+                if sentence_group not in matching_sentences:  # Avoid duplicates
+                    matching_sentences.append(sentence_group)
+
+    return matching_sentences
 
 
 def download_all_ffhound_pages(since_date: datetime, output_dir: Path) -> List[str]:
@@ -326,38 +388,23 @@ def analyze_player_from_saved_files(player: Dict, available_urls: List[str], out
 
 
 def save_ffhound_results(player_results: Dict, output_dir: Path):
-    """Save the FF Hound scraping results for a player to files"""
+    """Save the FF Hound scraping results for a player to text file only"""
     player_name = player_results["player"]["name"]
     # Create a safe filename
     safe_name = re.sub(r'[^a-zA-Z0-9\s]', '', player_name).replace(' ', '_').lower()
 
-    # Save JSON data
-    json_filename = output_dir / f"{safe_name}_ffhound_analysis.json"
-    with open(json_filename, 'w', encoding='utf-8') as f:
-        json.dump(player_results, f, indent=2, ensure_ascii=False)
-
-    # Create readable text summary
+    # Create readable text summary only (no JSON)
     txt_filename = output_dir / f"{safe_name}_ffhound_summary.txt"
 
     with open(txt_filename, 'w', encoding='utf-8') as f:
-        f.write(f"FF HOUND ANALYSIS FOR {player_name.upper()}\n")
-        f.write("=" * 60 + "\n\n")
-        f.write(f"Position: {player_results['player']['position']}\n")
-        f.write(f"Team: {player_results['player']['team']}\n")
-        f.write(f"Posts found: {player_results['posts_found']}\n\n")
-
         if player_results["content"]:
-            for i, post in enumerate(player_results["content"], 1):
-                f.write(f"POST {i}: {post['url']}\n")
-                f.write(f"Saved File: {post.get('saved_file', 'N/A')}\n")
-                f.write(f"Scraped: {post['date_scraped']}\n")
-                f.write(f"Mentions: {post['mention_count']}\n")
-                f.write("-" * 40 + "\n")
+            # Write only the mentions, separated by newlines
+            all_mentions = []
+            for post in player_results["content"]:
+                all_mentions.extend(post["mentions"])
 
-                for j, mention in enumerate(post["mentions"], 1):
-                    f.write(f"Mention {j}:\n{mention}\n\n")
-
-                f.write("=" * 60 + "\n\n")
+            for mention in all_mentions:
+                f.write(f"{mention}\n")
         else:
             f.write("No relevant FF Hound content found.\n")
 
@@ -404,10 +451,7 @@ def scrape_ffhound_for_team(team_id: int):
             # Save individual player results
             save_ffhound_results(player_results, output_dir)
 
-        # Save summary results
-        summary_file = output_dir / f"team_{team_id}_ffhound_summary.json"
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        # No longer saving JSON summary - text files only
 
         print(f"\nFF Hound analysis complete! Results saved to {output_dir}")
 
@@ -439,13 +483,13 @@ def main():
         try:
             team_id = int(sys.argv[2])
             result = scrape_ffhound_for_team(team_id)
-            print(json.dumps(result, indent=2))
+            # No JSON output - results are saved to text files
         except ValueError:
-            print(json.dumps({"error": "Invalid team ID - must be a number"}))
+            print("Error: Invalid team ID - must be a number")
         except Exception as e:
-            print(json.dumps({"error": str(e)}))
+            print(f"Error: {e}")
     else:
-        print(json.dumps({"error": f"Unknown command: {command}"}))
+        print(f"Error: Unknown command: {command}")
 
 
 if __name__ == "__main__":

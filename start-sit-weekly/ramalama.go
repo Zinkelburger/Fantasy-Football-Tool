@@ -3,16 +3,18 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // RamalamaClient handles ramalama operations
 type RamalamaClient struct {
-	installed   bool
+	installed    bool
 	defaultModel string
 }
 
@@ -26,8 +28,9 @@ type RamalamaSummary struct {
 
 // NewRamalamaClient creates a new ramalama client
 func NewRamalamaClient() *RamalamaClient {
+	// FIX: Use a correct default model name that exists in the registry.
 	return &RamalamaClient{
-		defaultModel: "llama3.2:3b", // Default model
+		defaultModel: "llama3.2",
 	}
 }
 
@@ -41,77 +44,7 @@ func (r *RamalamaClient) CheckInstallation() bool {
 	return false
 }
 
-// InstallRamalama installs ramalama using curl
-func (r *RamalamaClient) InstallRamalama(progressCallback func(string)) error {
-	if r.CheckInstallation() {
-		return nil // Already installed
-	}
-
-	progressCallback("Installing ramalama...")
-
-	// Check if curl is available
-	if _, err := exec.LookPath("curl"); err != nil {
-		return fmt.Errorf("curl is required to install ramalama: %w", err)
-	}
-
-	// Install ramalama using the official script
-	installScript := `curl -fsSL https://raw.githubusercontent.com/containers/ramalama/main/install.sh | bash`
-
-	cmd := exec.Command("bash", "-c", installScript)
-	cmd.Env = append(os.Environ(), "INSTALL_PREFIX="+os.Getenv("HOME")+"/.local")
-
-	// Capture output for progress
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return fmt.Errorf("failed to create stdout pipe: %w", err)
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return fmt.Errorf("failed to create stderr pipe: %w", err)
-	}
-
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start ramalama installation: %w", err)
-	}
-
-	// Read output and send progress updates
-	go func() {
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			progressCallback("Installing: " + scanner.Text())
-		}
-	}()
-
-	go func() {
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			progressCallback("Install: " + scanner.Text())
-		}
-	}()
-
-	if err := cmd.Wait(); err != nil {
-		return fmt.Errorf("ramalama installation failed: %w", err)
-	}
-
-	progressCallback("Ramalama installation completed!")
-
-	// Update PATH to include ~/.local/bin
-	localBin := filepath.Join(os.Getenv("HOME"), ".local", "bin")
-	currentPath := os.Getenv("PATH")
-	if !strings.Contains(currentPath, localBin) {
-		os.Setenv("PATH", localBin+":"+currentPath)
-	}
-
-	r.installed = r.CheckInstallation()
-	if !r.installed {
-		return fmt.Errorf("installation completed but ramalama not found in PATH")
-	}
-
-	return nil
-}
-
-// PullModel pulls a model with progress updates
+// PullModel pulls a model with real-time progress updates.
 func (r *RamalamaClient) PullModel(model string, progressCallback func(string)) error {
 	if !r.installed {
 		return fmt.Errorf("ramalama is not installed")
@@ -121,53 +54,34 @@ func (r *RamalamaClient) PullModel(model string, progressCallback func(string)) 
 
 	cmd := exec.Command("ramalama", "pull", model)
 
-	// Capture output for progress
+	// FIX: Use pipes to stream output for real-time progress instead of waiting for the command to finish.
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return fmt.Errorf("failed to create stdout pipe: %w", err)
+		return fmt.Errorf("failed to get stdout pipe: %w", err)
 	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return fmt.Errorf("failed to create stderr pipe: %w", err)
-	}
+	cmd.Stderr = cmd.Stdout // Combine stdout and stderr for simplicity
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("failed to start model pull: %w", err)
 	}
 
-	// Read output and send progress updates
-	go func() {
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := scanner.Text()
-			if strings.Contains(line, "downloading") || strings.Contains(line, "pulling") {
-				progressCallback("Downloading: " + line)
-			} else if strings.TrimSpace(line) != "" {
-				progressCallback("Pull: " + line)
-			}
-		}
-	}()
+	// Read the output line by line
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		line := scanner.Text()
+		progressCallback(line)
+	}
 
-	go func() {
-		scanner := bufio.NewScanner(stderr)
-		for scanner.Scan() {
-			line := scanner.Text()
-			if strings.TrimSpace(line) != "" {
-				progressCallback("Pull: " + line)
-			}
-		}
-	}()
-
+	// Wait for the command to finish and check for errors.
 	if err := cmd.Wait(); err != nil {
-		return fmt.Errorf("model pull failed: %w", err)
+		return fmt.Errorf("model pull command failed: %w", err)
 	}
 
 	progressCallback(fmt.Sprintf("Model %s pulled successfully!", model))
 	return nil
 }
 
-// IsModelAvailable checks if a model is available locally
+// IsModelAvailable checks if a model is available locally in a robust way.
 func (r *RamalamaClient) IsModelAvailable(model string) bool {
 	if !r.installed {
 		return false
@@ -179,10 +93,19 @@ func (r *RamalamaClient) IsModelAvailable(model string) bool {
 		return false
 	}
 
-	return strings.Contains(string(output), model)
+	// FIX: Parse the output properly instead of a simple string contains check.
+	// This prevents false positives (e.g., checking for "llama" when only "llama3" exists).
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		fields := strings.Fields(line) // Split line by whitespace
+		if len(fields) > 0 && fields[0] == model {
+			return true
+		}
+	}
+	return false
 }
 
-// SummarizeText summarizes text using ramalama
+// SummarizeText summarizes text using the correct non-interactive command.
 func (r *RamalamaClient) SummarizeText(text, model string) (string, error) {
 	if !r.installed {
 		return "", fmt.Errorf("ramalama is not installed")
@@ -192,7 +115,6 @@ func (r *RamalamaClient) SummarizeText(text, model string) (string, error) {
 		model = r.defaultModel
 	}
 
-	// Create a prompt for summarization
 	prompt := fmt.Sprintf(`You are a fantasy football expert. Please provide a concise summary of the following Reddit discussion about this player. Focus on:
 
 1. Key fantasy football insights (injuries, usage, matchups, trends)
@@ -207,12 +129,25 @@ Reddit Discussion:
 
 Summary:`, text)
 
-	// Use ramalama to generate the summary
-	cmd := exec.Command("ramalama", "run", model, "--prompt", prompt)
+	// FIX: Use 'generate' for single-shot tasks and pass the prompt via standard input.
+	// The 'run' command is for interactive chat sessions.
+	cmd := exec.Command("ramalama", "generate", model)
 
-	output, err := cmd.Output()
+	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return "", fmt.Errorf("failed to generate summary: %w", err)
+		return "", fmt.Errorf("failed to get stdin pipe: %w", err)
+	}
+
+	// Write the prompt to stdin in a background goroutine.
+	go func() {
+		defer stdin.Close()
+		io.WriteString(stdin, prompt)
+	}()
+
+	// Run the command and capture the combined output to see any errors.
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("failed to generate summary: %s", string(output))
 	}
 
 	summary := strings.TrimSpace(string(output))
@@ -243,17 +178,16 @@ func (r *RamalamaClient) GetStatus() string {
 
 // SaveSummaryToFile saves a summary to a file
 func (r *RamalamaClient) SaveSummaryToFile(playerName, summary, outputDir string) error {
-	// Create output directory if it doesn't exist
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	// Create a safe filename
 	safePlayerName := strings.ReplaceAll(strings.ToLower(playerName), " ", "_")
 	safePlayerName = strings.ReplaceAll(safePlayerName, ".", "")
 
 	filename := filepath.Join(outputDir, fmt.Sprintf("%s_summary.md", safePlayerName))
 
+	// FIX: Use the standard 'time' package for reliable timestamps.
 	content := fmt.Sprintf(`# Fantasy Football Summary: %s
 
 Generated on: %s
@@ -266,14 +200,41 @@ Model: %s
 ---
 *Generated by ramalama AI summarization*
 `, playerName,
-	   fmt.Sprintf("%s", strings.Split(fmt.Sprintf("%v", os.Getenv("TZ")), " ")[0]),
-	   r.defaultModel,
-	   summary)
+		time.Now().Format("2006-01-02 15:04:05"),
+		r.defaultModel,
+		summary)
 
 	if err := os.WriteFile(filename, []byte(content), 0644); err != nil {
 		return fmt.Errorf("failed to write summary file: %w", err)
 	}
 
 	log.Printf("Summary saved to: %s", filename)
+	return nil
+}
+
+// SaveRamalamaAnalysisToFile saves raw ramalama analysis output to ramalama_analysis/ directory
+func (r *RamalamaClient) SaveRamalamaAnalysisToFile(playerName, analysis string) error {
+	outputDir := "ramalama_analysis"
+	if err := os.MkdirAll(outputDir, 0755); err != nil {
+		return fmt.Errorf("failed to create ramalama analysis directory: %w", err)
+	}
+
+	safePlayerName := strings.ReplaceAll(strings.ToLower(playerName), " ", "_")
+	safePlayerName = strings.ReplaceAll(safePlayerName, ".", "")
+
+	filename := filepath.Join(outputDir, fmt.Sprintf("%s_ramalama_analysis.txt", safePlayerName))
+
+	content := fmt.Sprintf(`Fantasy Football Analysis for %s
+Generated on: %s
+Model: %s
+
+%s
+`, playerName, time.Now().Format("2006-01-02 15:04:05"), r.defaultModel, analysis)
+
+	if err := os.WriteFile(filename, []byte(content), 0644); err != nil {
+		return fmt.Errorf("failed to write ramalama analysis file: %w", err)
+	}
+
+	log.Printf("Ramalama analysis saved to: %s", filename)
 	return nil
 }

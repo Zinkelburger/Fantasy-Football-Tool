@@ -833,6 +833,7 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 
 	redditAnalysisPath := fmt.Sprintf("reddit_analysis/%s_reddit_summary.txt", safePlayerName)
 	ffhoundAnalysisPath := fmt.Sprintf("ffhound_analysis/%s_ffhound_summary.txt", safePlayerName)
+	ramalamaAnalysisPath := fmt.Sprintf("ramalama_analysis/%s_ramalama_analysis.txt", safePlayerName)
 	summaryPath := fmt.Sprintf("player_summaries/%s_summary.md", safePlayerName)
 
 	var content strings.Builder
@@ -849,6 +850,13 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 	if ffhoundData, err := os.ReadFile(ffhoundAnalysisPath); err == nil {
 		content.WriteString("## FF Hound Analysis\n\n")
 		content.WriteString(string(ffhoundData))
+		content.WriteString("\n\n")
+	}
+
+	// Try to load Ramalama analysis
+	if ramalamaData, err := os.ReadFile(ramalamaAnalysisPath); err == nil {
+		content.WriteString("## Ramalama Analysis\n\n")
+		content.WriteString(string(ramalamaData))
 		content.WriteString("\n\n")
 	}
 
@@ -870,13 +878,35 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 	ui.mutex.Unlock()
 
 	ui.playerNoteViewer.ParseMarkdown(content.String())
-	ui.window.SetContent(container.NewBorder(
-		nil,
-		nil,
-		ui.rosterTable,
-		ui.playerNoteContainer,
-		nil,
-	))
+
+	// Create a proper split view like the 2025 go code - player list on left, notes on right
+	// Get the main control panel first
+	controlPanel := container.NewHBox(
+		ui.connectButton,
+		ui.refreshDataButton,
+		ui.teamSelector,
+		ui.refreshButton,
+		ui.redditButton,
+		ui.ffhoundButton,
+		ui.summarizeButton,
+		widget.NewSeparator(),
+		widget.NewButton("⚙ Settings", ui.toggleSettings),
+	)
+
+	// Create left panel with roster
+	leftPanel := container.NewBorder(
+		controlPanel, // top
+		ui.statusLabel, // bottom
+		nil, // left
+		nil, // right
+		container.NewScroll(ui.rosterTable), // center
+	)
+
+	// Create main horizontal split - left panel (roster) and right panel (notes)
+	mainSplit := container.NewHSplit(leftPanel, ui.playerNoteContainer)
+	mainSplit.SetOffset(0.5) // 50/50 split
+
+	ui.window.SetContent(mainSplit)
 }
 
 // hidePlayerNotes hides the player notes viewer
@@ -981,49 +1011,46 @@ func (ui *ESPNUI) handleSummarizeNotes() {
 
 	// Check if ramalama is installed
 	if !ui.ramalamaClient.CheckInstallation() {
-		// Show installation dialog
-		confirmDialog := dialog.NewConfirm(
-			"Install Ramalama",
-			"Ramalama AI tool is not installed. Would you like to install it now?\n\nThis will download and install ramalama automatically.",
-			func(install bool) {
-				if install {
-					ui.installRamalamaWithProgress()
-				}
-			},
-			ui.window,
-		)
-		confirmDialog.Show()
+		// Show error dialog with installation instructions
+		errorMsg := `Ramalama AI tool is not installed.
+
+Please install it manually using one of these methods:
+
+Fedora/RHEL/CentOS:
+  dnf install ramalama
+
+Ubuntu/Debian:
+  sudo apt install ramalama
+
+From source:
+  curl -fsSL https://raw.githubusercontent.com/containers/ramalama/main/install.sh | bash
+
+After installation, restart the application.`
+
+		dialog.ShowInformation("Ramalama Not Installed", errorMsg, ui.window)
 		return
 	}
 
-	// Check if model is available
+	// Check if model is available and pull if needed, then proceed to summarization
 	model := ui.ramalamaClient.GetDefaultModel()
 	if !ui.ramalamaClient.IsModelAvailable(model) {
-		confirmDialog := dialog.NewConfirm(
-			"Download AI Model",
-			fmt.Sprintf("The AI model '%s' is not available locally. Would you like to download it?\n\nThis may take several minutes depending on your internet connection.", model),
-			func(download bool) {
-				if download {
-					ui.pullModelWithProgress(model)
-				}
-			},
-			ui.window,
-		)
-		confirmDialog.Show()
+		// Pull model automatically without prompting, then proceed to summarization
+		ui.pullModelAndSummarize(model)
 		return
 	}
 
-	// Start summarization process
+	// Start summarization process directly if model is available
 	ui.startSummarizationProcess()
 }
 
-// installRamalamaWithProgress installs ramalama with progress updates
-func (ui *ESPNUI) installRamalamaWithProgress() {
+
+// pullModelAndSummarize pulls a model and then starts summarization
+func (ui *ESPNUI) pullModelAndSummarize(model string) {
 	ui.mutex.Lock()
 	ui.loading = true
 	ui.mutex.Unlock()
 
-	ui.summarizeButton.SetText("Installing...")
+	ui.summarizeButton.SetText("Downloading...")
 	ui.summarizeButton.Disable()
 
 	go func() {
@@ -1035,16 +1062,20 @@ func (ui *ESPNUI) installRamalamaWithProgress() {
 			ui.summarizeButton.Enable()
 		}()
 
-		err := ui.ramalamaClient.InstallRamalama(func(progress string) {
-			ui.updateStatus("Installing: " + progress)
+		err := ui.ramalamaClient.PullModel(model, func(progress string) {
+			ui.updateStatus("Model download: " + progress)
 		})
 
 		if err != nil {
-			ui.updateStatus("Installation failed: " + err.Error())
-			dialog.ShowError(fmt.Errorf("Failed to install ramalama: %v", err), ui.window)
-		} else {
-			ui.updateStatus("Ramalama installed successfully!")
+			ui.updateStatus("Model download failed: " + err.Error())
+			dialog.ShowError(fmt.Errorf("Failed to download model: %v", err), ui.window)
+			return
 		}
+
+		ui.updateStatus("Model downloaded successfully! Starting summarization...")
+
+		// Continue with summarization in the same goroutine
+		ui.performSummarization()
 	}()
 }
 
@@ -1097,114 +1128,126 @@ func (ui *ESPNUI) startSummarizationProcess() {
 			ui.summarizeButton.Enable()
 		}()
 
-		// Process all players with Reddit or FF Hound data
-		redditDir := "reddit_analysis"
-		ffhoundDir := "ffhound_analysis"
-
-		redditExists := false
-		ffhoundExists := false
-
-		if _, err := os.Stat(redditDir); err == nil {
-			redditExists = true
-		}
-		if _, err := os.Stat(ffhoundDir); err == nil {
-			ffhoundExists = true
-		}
-
-		if !redditExists && !ffhoundExists {
-			ui.updateStatus("No analysis data found. Please scrape Reddit or FF Hound first.")
-			dialog.ShowError(fmt.Errorf("No analysis data found. Please run Reddit or FF Hound scraping first."), ui.window)
-			return
-		}
-
-		// Collect all unique players from both Reddit and FF Hound data
-		playerDataMap := make(map[string][]string) // player -> []data_sources
-
-		// Process Reddit data
-		if redditExists {
-			files, err := os.ReadDir(redditDir)
-			if err == nil {
-				for _, file := range files {
-					if strings.HasSuffix(file.Name(), "_reddit_summary.txt") {
-						playerName := strings.TrimSuffix(file.Name(), "_reddit_summary.txt")
-						playerDataMap[playerName] = append(playerDataMap[playerName], "reddit")
-					}
-				}
-			}
-		}
-
-		// Process FF Hound data
-		if ffhoundExists {
-			files, err := os.ReadDir(ffhoundDir)
-			if err == nil {
-				for _, file := range files {
-					if strings.HasSuffix(file.Name(), "_ffhound_summary.txt") {
-						playerName := strings.TrimSuffix(file.Name(), "_ffhound_summary.txt")
-						playerDataMap[playerName] = append(playerDataMap[playerName], "ffhound")
-					}
-				}
-			}
-		}
-
-		summariesCreated := 0
-		for playerKey, dataSources := range playerDataMap {
-			playerName := strings.ReplaceAll(playerKey, "_", " ")
-			playerName = strings.Title(playerName)
-
-			ui.updateStatus(fmt.Sprintf("Summarizing %s...", playerName))
-
-			// Combine all available data for this player
-			var combinedData strings.Builder
-			combinedData.WriteString(fmt.Sprintf("Fantasy Football Analysis for %s:\n\n", playerName))
-
-			// Read Reddit data if available
-			for _, source := range dataSources {
-				if source == "reddit" {
-					redditFile := fmt.Sprintf("%s/%s_reddit_summary.txt", redditDir, playerKey)
-					if redditData, err := os.ReadFile(redditFile); err == nil {
-						combinedData.WriteString("=== REDDIT ANALYSIS ===\n")
-						combinedData.WriteString(string(redditData))
-						combinedData.WriteString("\n\n")
-					}
-				}
-
-				if source == "ffhound" {
-					ffhoundFile := fmt.Sprintf("%s/%s_ffhound_summary.txt", ffhoundDir, playerKey)
-					if ffhoundData, err := os.ReadFile(ffhoundFile); err == nil {
-						combinedData.WriteString("=== FF HOUND EXPERT ANALYSIS ===\n")
-						combinedData.WriteString(string(ffhoundData))
-						combinedData.WriteString("\n\n")
-					}
-				}
-			}
-
-			if combinedData.Len() == 0 {
-				continue
-			}
-
-			// Generate combined summary
-			model := ui.ramalamaClient.GetDefaultModel()
-			summary, err := ui.ramalamaClient.SummarizeText(combinedData.String(), model)
-			if err != nil {
-				ui.updateStatus(fmt.Sprintf("Failed to summarize %s: %v", playerName, err))
-				continue
-			}
-
-			// Save summary
-			err = ui.ramalamaClient.SaveSummaryToFile(playerName, summary, "player_summaries")
-			if err != nil {
-				ui.updateStatus(fmt.Sprintf("Failed to save summary for %s: %v", playerName, err))
-				continue
-			}
-
-			summariesCreated++
-		}
-
-		ui.updateStatus(fmt.Sprintf("Summarization complete! Created %d summaries.", summariesCreated))
-		dialog.ShowInformation("Summarization Complete",
-			fmt.Sprintf("Successfully created AI summaries for %d players.\n\nClick on any player to view their notes and AI summary.", summariesCreated),
-			ui.window)
+		ui.performSummarization()
 	}()
+}
+
+// performSummarization performs the actual summarization work without UI state management
+func (ui *ESPNUI) performSummarization() {
+	// Process all players with Reddit or FF Hound data
+	redditDir := "reddit_analysis"
+	ffhoundDir := "ffhound_analysis"
+
+	redditExists := false
+	ffhoundExists := false
+
+	if _, err := os.Stat(redditDir); err == nil {
+		redditExists = true
+	}
+	if _, err := os.Stat(ffhoundDir); err == nil {
+		ffhoundExists = true
+	}
+
+	if !redditExists && !ffhoundExists {
+		ui.updateStatus("No analysis data found. Please scrape Reddit or FF Hound first.")
+		dialog.ShowError(fmt.Errorf("No analysis data found. Please run Reddit or FF Hound scraping first."), ui.window)
+		return
+	}
+
+	// Collect all unique players from both Reddit and FF Hound data
+	playerDataMap := make(map[string][]string) // player -> []data_sources
+
+	// Process Reddit data
+	if redditExists {
+		files, err := os.ReadDir(redditDir)
+		if err == nil {
+			for _, file := range files {
+				if strings.HasSuffix(file.Name(), "_reddit_summary.txt") {
+					playerName := strings.TrimSuffix(file.Name(), "_reddit_summary.txt")
+					playerDataMap[playerName] = append(playerDataMap[playerName], "reddit")
+				}
+			}
+		}
+	}
+
+	// Process FF Hound data
+	if ffhoundExists {
+		files, err := os.ReadDir(ffhoundDir)
+		if err == nil {
+			for _, file := range files {
+				if strings.HasSuffix(file.Name(), "_ffhound_summary.txt") {
+					playerName := strings.TrimSuffix(file.Name(), "_ffhound_summary.txt")
+					playerDataMap[playerName] = append(playerDataMap[playerName], "ffhound")
+				}
+			}
+		}
+	}
+
+	summariesCreated := 0
+	for playerKey, dataSources := range playerDataMap {
+		playerName := strings.ReplaceAll(playerKey, "_", " ")
+		playerName = strings.Title(playerName)
+
+		ui.updateStatus(fmt.Sprintf("Summarizing %s...", playerName))
+
+		// Combine all available data for this player
+		var combinedData strings.Builder
+		combinedData.WriteString(fmt.Sprintf("Fantasy Football Analysis for %s:\n\n", playerName))
+
+		// Read Reddit data if available
+		for _, source := range dataSources {
+			if source == "reddit" {
+				redditFile := fmt.Sprintf("%s/%s_reddit_summary.txt", redditDir, playerKey)
+				if redditData, err := os.ReadFile(redditFile); err == nil {
+					combinedData.WriteString("=== REDDIT ANALYSIS ===\n")
+					combinedData.WriteString(string(redditData))
+					combinedData.WriteString("\n\n")
+				}
+			}
+
+			if source == "ffhound" {
+				ffhoundFile := fmt.Sprintf("%s/%s_ffhound_summary.txt", ffhoundDir, playerKey)
+				if ffhoundData, err := os.ReadFile(ffhoundFile); err == nil {
+					combinedData.WriteString("=== FF HOUND EXPERT ANALYSIS ===\n")
+					combinedData.WriteString(string(ffhoundData))
+					combinedData.WriteString("\n\n")
+				}
+			}
+		}
+
+		if combinedData.Len() == 0 {
+			continue
+		}
+
+		// Generate combined summary
+		model := ui.ramalamaClient.GetDefaultModel()
+		summary, err := ui.ramalamaClient.SummarizeText(combinedData.String(), model)
+		if err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to summarize %s: %v", playerName, err))
+			continue
+		}
+
+		// Save raw analysis to ramalama_analysis/ directory
+		err = ui.ramalamaClient.SaveRamalamaAnalysisToFile(playerName, summary)
+		if err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to save ramalama analysis for %s: %v", playerName, err))
+			// Continue anyway, still try to save the summary
+		}
+
+		// Save summary
+		err = ui.ramalamaClient.SaveSummaryToFile(playerName, summary, "player_summaries")
+		if err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to save summary for %s: %v", playerName, err))
+			continue
+		}
+
+		summariesCreated++
+	}
+
+	ui.updateStatus(fmt.Sprintf("Summarization complete! Created %d summaries.", summariesCreated))
+	dialog.ShowInformation("Summarization Complete",
+		fmt.Sprintf("Successfully created AI summaries for %d players.\n\nClick on any player to view their notes and AI summary.", summariesCreated),
+		ui.window)
 }
 
 // Show displays the UI window
