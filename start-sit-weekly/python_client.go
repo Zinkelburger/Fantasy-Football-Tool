@@ -100,6 +100,25 @@ type FFHoundPost struct {
 	MentionCount int      `json:"mention_count"`
 }
 
+// FreeAgentsResult represents the result of getting free agents
+type FreeAgentsResult struct {
+	Players        []FreeAgentPlayer `json:"players"`
+	Count          int               `json:"count"`
+	PositionFilter string            `json:"position_filter"`
+	Error          string            `json:"error,omitempty"`
+}
+
+// FreeAgentPlayer represents a free agent player
+type FreeAgentPlayer struct {
+	PlayerID       int     `json:"player_id"`
+	Name           string  `json:"name"`
+	Position       string  `json:"position"`
+	Team           string  `json:"team"`
+	Status         string  `json:"status"`
+	PercentOwned   float64 `json:"percent_owned"`
+	PercentStarted float64 `json:"percent_started"`
+}
+
 // NewPythonESPNClient creates a new Python ESPN client
 func NewPythonESPNClient() *PythonESPNClient {
 	workDir, _ := os.Getwd()
@@ -337,6 +356,74 @@ func (c *PythonESPNClient) IsCacheFresh() bool {
 
 	fresh, ok := result["cache_fresh"].(bool)
 	return ok && fresh
+}
+
+// GetFreeAgents gets free agents from ESPN API
+func (c *PythonESPNClient) GetFreeAgents(position string, size int) (*FreeAgentsResult, error) {
+	if err := c.ensureVenv(); err != nil {
+		return nil, fmt.Errorf("venv setup failed: %w", err)
+	}
+
+	args := []string{c.scriptPath, "free_agents"}
+
+	if position != "" {
+		args = append(args, fmt.Sprintf("--position=%s", position))
+	}
+	if size > 0 {
+		args = append(args, fmt.Sprintf("--size=%d", size))
+	}
+
+	cmd := exec.Command(c.pythonPath, args...)
+	cmd.Dir = filepath.Dir(c.scriptPath)
+	cmd.Env = append(os.Environ(), "PYTHONPATH="+filepath.Dir(c.scriptPath))
+
+	output, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get free agents: %w", err)
+	}
+
+	var result FreeAgentsResult
+	if err := json.Unmarshal(output, &result); err != nil {
+		return nil, fmt.Errorf("failed to parse free agents response: %w", err)
+	}
+
+	if result.Error != "" {
+		return nil, fmt.Errorf("free agents error: %s", result.Error)
+	}
+
+	return &result, nil
+}
+
+// GetFreeAgentsFromCache gets free agents from cached data
+func (c *PythonESPNClient) GetFreeAgentsFromCache(position string, size int) (*FreeAgentsResult, error) {
+	if err := c.ensureVenv(); err != nil {
+		return nil, fmt.Errorf("venv setup failed: %w", err)
+	}
+
+	args := []string{c.cacheScriptPath, "load_free_agents"}
+
+	if position != "" {
+		args = append(args, fmt.Sprintf("--position=%s", position))
+	}
+	if size > 0 {
+		args = append(args, fmt.Sprintf("--size=%d", size))
+	}
+
+	cmd := exec.Command(c.pythonPath, args...)
+	cmd.Dir = filepath.Dir(c.cacheScriptPath)
+	cmd.Env = append(os.Environ(), "PYTHONPATH="+filepath.Dir(c.cacheScriptPath))
+
+	output, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load cached free agents: %w", err)
+	}
+
+	var result FreeAgentsResult
+	if err := json.Unmarshal(output, &result); err != nil {
+		return nil, fmt.Errorf("failed to parse cached free agents response: %w", err)
+	}
+
+	return &result, nil
 }
 
 // CheckPythonDependencies checks if Python and required tools are available

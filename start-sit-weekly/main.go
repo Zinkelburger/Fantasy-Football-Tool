@@ -23,6 +23,7 @@ func main() {
 	// Create Fyne app
 	fyneApp := app.New()
 	fyneApp.SetIcon(resourceLogoPng)
+	fyneApp.Settings().SetTheme(&customTheme{})
 
 	// Initialize Python ESPN client
 	pythonClient := NewPythonESPNClient()

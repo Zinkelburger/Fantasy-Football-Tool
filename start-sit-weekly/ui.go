@@ -1,9 +1,13 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -23,10 +27,12 @@ type Team struct {
 
 // Player represents a fantasy player
 type Player struct {
-	Name     string
-	Position string
-	TeamName string
-	Status   string
+	Name            string
+	Position        string
+	TeamName        string
+	Status          string
+	WeeklyOppScore  string // Most recent week opportunity score
+	AvgOppScore     string // Average opportunity score
 }
 
 // ESPNUI holds the Fyne UI components
@@ -39,17 +45,20 @@ type ESPNUI struct {
 	ramalamaClient *RamalamaClient
 
 	// UI Components
-	statusLabel     *widget.Label
-	connectButton   *widget.Button
-	teamSelector    *widget.Select
-	rosterTable     *widget.List
-	refreshButton   *widget.Button
-	redditButton    *widget.Button
-	ffhoundButton   *widget.Button
-	summarizeButton *widget.Button
-	refreshDataButton *widget.Button
-	settingsPanel   *fyne.Container
-	settingsVisible bool
+	statusLabel        *widget.Label
+	connectButton      *widget.Button
+	teamSelector       *widget.Select
+	rosterTable        *widget.List
+	rosterHeaderLabel  *widget.Label
+	refreshButton      *widget.Button
+	redditButton       *widget.Button
+	ffhoundButton      *widget.Button
+	summarizeButton    *widget.Button
+	refreshDataButton  *widget.Button
+	dataAnalysisMenu   *fyne.Menu
+	dataAnalysisButton *widget.Button
+	settingsPanel      *fyne.Container
+	settingsVisible    bool
 
 	// Player notes components
 	playerNoteViewer      *widget.RichText
@@ -132,6 +141,9 @@ func (ui *ESPNUI) setupUI() {
 	ui.refreshDataButton = widget.NewButton("🔄 Refresh Data", ui.handleRefreshData)
 	ui.refreshDataButton.Disable()
 
+	// Data Analysis menu and button
+	ui.setupDataAnalysisMenu()
+
 	// Settings button
 	settingsButton := widget.NewButton("⚙ Settings", ui.toggleSettings)
 
@@ -141,9 +153,7 @@ func (ui *ESPNUI) setupUI() {
 		ui.refreshDataButton,
 		ui.teamSelector,
 		ui.refreshButton,
-		ui.redditButton,
-		ui.ffhoundButton,
-		ui.summarizeButton,
+		ui.dataAnalysisButton,
 		widget.NewSeparator(),
 		settingsButton,
 	)
@@ -157,16 +167,63 @@ func (ui *ESPNUI) setupUI() {
 	// Roster table
 	ui.setupRosterTable()
 
+	// Create roster panel with header
+	rosterPanel := container.NewBorder(
+		ui.rosterHeaderLabel, // top header
+		nil,                  // bottom
+		nil,                  // left
+		nil,                  // right
+		container.NewScroll(ui.rosterTable), // center
+	)
+
 	// Main layout
 	content := container.NewBorder(
 		container.NewVBox(controlPanel, ui.settingsPanel), // top
 		ui.statusLabel, // bottom
 		nil,            // left
 		nil,            // right
-		container.NewScroll(ui.rosterTable), // center
+		rosterPanel, // center
 	)
 
 	ui.window.SetContent(content)
+}
+
+// setupDataAnalysisMenu creates the data analysis menu and button
+func (ui *ESPNUI) setupDataAnalysisMenu() {
+	// Create menu items for data analysis actions
+	redditMenuItem := fyne.NewMenuItem("🔍 Scrape Reddit", ui.handleRedditScrape)
+	ffhoundMenuItem := fyne.NewMenuItem("📰 Scrape FF Hound", ui.handleFFHoundScrape)
+	opportunityMenuItem := fyne.NewMenuItem("📈 Get Opportunity Score", ui.handleOpportunityScore)
+	freeAgentsMenuItem := fyne.NewMenuItem("⭐ View Free Agents", ui.handleFreeAgents)
+	summarizeMenuItem := fyne.NewMenuItem("🤖 Summarize Notes", ui.handleSummarizeNotes)
+
+	// Initially disable menu items
+	redditMenuItem.Disabled = true
+	ffhoundMenuItem.Disabled = true
+	opportunityMenuItem.Disabled = true
+	freeAgentsMenuItem.Disabled = true
+	summarizeMenuItem.Disabled = true
+
+	// Create the popup menu
+	ui.dataAnalysisMenu = fyne.NewMenu("Data Analysis",
+		redditMenuItem,
+		ffhoundMenuItem,
+		opportunityMenuItem,
+		freeAgentsMenuItem,
+		fyne.NewMenuItemSeparator(),
+		summarizeMenuItem,
+	)
+
+	// Create the button that shows the menu
+	ui.dataAnalysisButton = widget.NewButton("📊 Data Analysis", func() {
+		// Position the menu below the button
+		pos := fyne.NewPos(
+			ui.dataAnalysisButton.Position().X,
+			ui.dataAnalysisButton.Position().Y+ui.dataAnalysisButton.Size().Height,
+		)
+		widget.ShowPopUpMenuAtPosition(ui.dataAnalysisMenu, ui.window.Canvas(), pos)
+	})
+	ui.dataAnalysisButton.Disable()
 }
 
 // setupSettingsPanel creates the settings panel
@@ -254,8 +311,14 @@ func (ui *ESPNUI) setupPlayerNotes() {
 	ui.playerNoteVisible = false
 }
 
-// setupRosterTable creates the roster table
+// setupRosterTable creates the roster table with header
 func (ui *ESPNUI) setupRosterTable() {
+	// Create header label
+	ui.rosterHeaderLabel = widget.NewLabel(
+		fmt.Sprintf("%-4s %-30s %-4s %-3s %-9s %-8s",
+			"Pos", "Name", "Team", "St", "Week OPP", "Avg OPP"))
+	ui.rosterHeaderLabel.TextStyle = fyne.TextStyle{Bold: true}
+
 	ui.rosterTable = widget.NewList(
 		func() int {
 			ui.mutex.RLock()
@@ -272,8 +335,13 @@ func (ui *ESPNUI) setupRosterTable() {
 			if id < len(ui.currentRoster) {
 				player := ui.currentRoster[id]
 				label := obj.(*widget.Label)
-				label.SetText(fmt.Sprintf("%-3s  %-20s  %-4s  %-10s",
-					player.Position, player.Name, player.TeamName, player.Status))
+
+				// Convert status to emoji
+				statusEmoji := ui.getStatusEmoji(player.Status)
+
+				label.SetText(fmt.Sprintf("%-4s %-30s %-4s %-3s %-9s %-8s",
+					player.Position, player.Name, player.TeamName, statusEmoji,
+					player.WeeklyOppScore, player.AvgOppScore))
 			}
 		},
 	)
@@ -533,11 +601,14 @@ func (ui *ESPNUI) populateTeamSelector() {
 	ui.teamSelector.Options = teamNames
 	ui.teamSelector.Enable()
 	ui.refreshButton.Enable()
-	if ui.pythonClient.HasRedditCredentials() {
-		ui.redditButton.Enable()
-	}
-	ui.ffhoundButton.Enable()
-	ui.summarizeButton.Enable()
+	ui.dataAnalysisButton.Enable()
+
+	// Enable menu items
+	ui.dataAnalysisMenu.Items[0].Disabled = !ui.pythonClient.HasRedditCredentials() // Reddit
+	ui.dataAnalysisMenu.Items[1].Disabled = false                                    // FF Hound
+	ui.dataAnalysisMenu.Items[2].Disabled = false                                    // Opportunity Score
+	ui.dataAnalysisMenu.Items[3].Disabled = false                                    // Free Agents
+	ui.dataAnalysisMenu.Items[5].Disabled = false                                    // Summarize (after separator)
 }
 
 // autoSelectTeam automatically selects a team by name
@@ -629,15 +700,33 @@ func (ui *ESPNUI) loadTeamRoster() {
 			}
 		}
 
-		// Convert Python client format to local format
+		// Load opportunity score data
+		ui.updateStatus(fmt.Sprintf("Loading opportunity scores for %s...", team.Name))
+		opportunityData := ui.loadOpportunityScoreData()
+
+		// Convert Python client format to local format and apply opportunity scores
 		roster := make([]Player, 0, len(rosterInfo.Players))
 		for _, p := range rosterInfo.Players {
-			roster = append(roster, Player{
-				Name:     p.Name,
-				Position: p.Position,
-				TeamName: p.Team,
-				Status:   p.Status,
-			})
+			player := Player{
+				Name:            strings.TrimSpace(p.Name),
+				Position:        strings.TrimSpace(p.Position),
+				TeamName:        strings.TrimSpace(p.Team),
+				Status:          strings.TrimSpace(p.Status),
+				WeeklyOppScore:  "N/A",
+				AvgOppScore:     "N/A",
+			}
+
+			// Look up opportunity scores for this player
+			if oppScores, found := opportunityData[p.Name]; found {
+				if weekly, hasWeekly := oppScores["weekly"]; hasWeekly && weekly != "" {
+					player.WeeklyOppScore = weekly
+				}
+				if avg, hasAvg := oppScores["avg"]; hasAvg && avg != "" {
+					player.AvgOppScore = avg
+				}
+			}
+
+			roster = append(roster, player)
 		}
 
 		ui.mutex.Lock()
@@ -645,8 +734,23 @@ func (ui *ESPNUI) loadTeamRoster() {
 		ui.mutex.Unlock()
 
 		ui.rosterTable.Refresh()
-		ui.updateStatus(fmt.Sprintf("Loaded %d players for %s", len(roster), team.Name))
+		ui.updateStatus(fmt.Sprintf("Loaded %d players for %s with opportunity scores", len(roster), team.Name))
 	}()
+}
+
+// getStatusEmoji converts player status to emoji
+func (ui *ESPNUI) getStatusEmoji(status string) string {
+	statusUpper := strings.ToUpper(strings.TrimSpace(status))
+	switch statusUpper {
+	case "ACTIVE", "HEALTHY":
+		return "✓"
+	case "QUESTIONABLE", "Q":
+		return "❓"
+	case "DOUBTFUL", "OUT", "INJURED", "IR", "SUSPENDED", "D", "O":
+		return "❌"
+	default:
+		return "  " // Two spaces for alignment
+	}
 }
 
 // handleRefresh refreshes the current team's roster
@@ -886,11 +990,18 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 		ui.refreshDataButton,
 		ui.teamSelector,
 		ui.refreshButton,
-		ui.redditButton,
-		ui.ffhoundButton,
-		ui.summarizeButton,
+		ui.dataAnalysisButton,
 		widget.NewSeparator(),
 		widget.NewButton("⚙ Settings", ui.toggleSettings),
+	)
+
+	// Create roster panel with header for split view
+	splitRosterPanel := container.NewBorder(
+		ui.rosterHeaderLabel, // top header
+		nil,                  // bottom
+		nil,                  // left
+		nil,                  // right
+		container.NewScroll(ui.rosterTable), // center
 	)
 
 	// Create left panel with roster
@@ -899,7 +1010,7 @@ func (ui *ESPNUI) showPlayerNotes(playerName string) {
 		ui.statusLabel, // bottom
 		nil, // left
 		nil, // right
-		container.NewScroll(ui.rosterTable), // center
+		splitRosterPanel, // center
 	)
 
 	// Create main horizontal split - left panel (roster) and right panel (notes)
@@ -916,13 +1027,22 @@ func (ui *ESPNUI) hidePlayerNotes() {
 	ui.currentViewedPlayer = ""
 	ui.mutex.Unlock()
 
+	// Create roster panel with header for restore
+	restoreRosterPanel := container.NewBorder(
+		ui.rosterHeaderLabel, // top header
+		nil,                  // bottom
+		nil,                  // left
+		nil,                  // right
+		container.NewScroll(ui.rosterTable), // center
+	)
+
 	// Restore original layout
 	content := container.NewBorder(
 		container.NewVBox(ui.getControlPanel(), ui.settingsPanel),
 		ui.statusLabel,
 		nil,
 		nil,
-		container.NewScroll(ui.rosterTable),
+		restoreRosterPanel,
 	)
 	ui.window.SetContent(content)
 }
@@ -932,11 +1052,10 @@ func (ui *ESPNUI) getControlPanel() *fyne.Container {
 	settingsButton := widget.NewButton("⚙ Settings", ui.toggleSettings)
 	return container.NewHBox(
 		ui.connectButton,
+		ui.refreshDataButton,
 		ui.teamSelector,
 		ui.refreshButton,
-		ui.redditButton,
-		ui.ffhoundButton,
-		ui.summarizeButton,
+		ui.dataAnalysisButton,
 		widget.NewSeparator(),
 		settingsButton,
 	)
@@ -1248,6 +1367,270 @@ func (ui *ESPNUI) performSummarization() {
 	dialog.ShowInformation("Summarization Complete",
 		fmt.Sprintf("Successfully created AI summaries for %d players.\n\nClick on any player to view their notes and AI summary.", summariesCreated),
 		ui.window)
+}
+
+// handleOpportunityScore downloads opportunity score CSV files from Google Sheets
+func (ui *ESPNUI) handleOpportunityScore() {
+	ui.mutex.RLock()
+	loading := ui.loading
+	ui.mutex.RUnlock()
+
+	if loading {
+		return
+	}
+
+	ui.mutex.Lock()
+	ui.loading = true
+	ui.mutex.Unlock()
+
+	ui.updateStatus("Downloading opportunity score data...")
+
+	go func() {
+		defer func() {
+			ui.mutex.Lock()
+			ui.loading = false
+			ui.mutex.Unlock()
+		}()
+
+		// Create opportunity_score directory if it doesn't exist
+		dir := "opportunity_score"
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			ui.updateStatus(fmt.Sprintf("Failed to create directory: %v", err))
+			dialog.ShowError(fmt.Errorf("Failed to create directory: %v", err), ui.window)
+			return
+		}
+
+		// Define the CSV files to download with their GIDs and filenames
+		csvFiles := []struct {
+			gid      string
+			filename string
+			name     string
+		}{
+			{"414196352", "sheet1.csv", "Sheet 1"},
+			{"1838248273", "sheet2.csv", "Sheet 2"},
+			{"0", "sheet3.csv", "Sheet 3"},
+		}
+
+		baseURL := "https://docs.google.com/spreadsheets/d/1iYCnfRp4sStn2FaX-X9zNQW7rCD1VBwxceySD0kDhDY/export?format=csv"
+		successCount := 0
+
+		for _, csvFile := range csvFiles {
+			ui.updateStatus(fmt.Sprintf("Downloading %s...", csvFile.name))
+
+			// Construct URL with GID
+			url := fmt.Sprintf("%s&gid=%s", baseURL, csvFile.gid)
+
+			// Create HTTP client with redirect following
+			client := &http.Client{}
+
+			// Download the CSV file
+			resp, err := client.Get(url)
+			if err != nil {
+				ui.updateStatus(fmt.Sprintf("Failed to download %s: %v", csvFile.name, err))
+				continue
+			}
+			defer resp.Body.Close()
+
+			if resp.StatusCode != http.StatusOK {
+				ui.updateStatus(fmt.Sprintf("Failed to download %s: HTTP %d", csvFile.name, resp.StatusCode))
+				continue
+			}
+
+			// Create the output file
+			filePath := filepath.Join(dir, csvFile.filename)
+			outFile, err := os.Create(filePath)
+			if err != nil {
+				ui.updateStatus(fmt.Sprintf("Failed to create file %s: %v", csvFile.filename, err))
+				continue
+			}
+			defer outFile.Close()
+
+			// Copy the content
+			_, err = io.Copy(outFile, resp.Body)
+			if err != nil {
+				ui.updateStatus(fmt.Sprintf("Failed to write file %s: %v", csvFile.filename, err))
+				continue
+			}
+
+			successCount++
+			ui.updateStatus(fmt.Sprintf("Downloaded %s successfully", csvFile.name))
+		}
+
+		if successCount == len(csvFiles) {
+			ui.updateStatus("All opportunity score files downloaded successfully!")
+			dialog.ShowInformation("Download Complete",
+				fmt.Sprintf("Successfully downloaded %d CSV files to opportunity_score/ directory", successCount),
+				ui.window)
+		} else {
+			ui.updateStatus(fmt.Sprintf("Download completed with %d/%d files successful", successCount, len(csvFiles)))
+			dialog.ShowInformation("Download Completed",
+				fmt.Sprintf("Downloaded %d out of %d CSV files to opportunity_score/ directory", successCount, len(csvFiles)),
+				ui.window)
+		}
+	}()
+}
+
+// loadOpportunityScoreData loads opportunity score data from CSV files and returns a map of player names to their scores
+func (ui *ESPNUI) loadOpportunityScoreData() map[string]map[string]string {
+	opportunityData := make(map[string]map[string]string)
+
+	// Define CSV files to read
+	csvFiles := []string{
+		"opportunity_score/sheet1.csv",
+		"opportunity_score/sheet2.csv",
+		"opportunity_score/sheet3.csv",
+	}
+
+	for _, filename := range csvFiles {
+		file, err := os.Open(filename)
+		if err != nil {
+			log.Printf("Could not open %s: %v", filename, err)
+			continue
+		}
+		defer file.Close()
+
+		reader := csv.NewReader(file)
+		records, err := reader.ReadAll()
+		if err != nil {
+			log.Printf("Could not read CSV %s: %v", filename, err)
+			continue
+		}
+
+		if len(records) < 2 { // Need header + at least one data row
+			continue
+		}
+
+		header := records[0]
+		// Find column indices
+		var playerCol, weeklyOppCol, avgOppCol int = -1, -1, -1
+		var foundWeekCol string
+
+		for i, col := range header {
+			colLower := strings.ToLower(col)
+			if colLower == "player" {
+				playerCol = i
+			} else if colLower == "avg opp" {
+				avgOppCol = i
+			} else if strings.HasPrefix(colLower, "week") && len(colLower) > 4 {
+				// Find the highest numbered week column (Week1, Week2, Week3, etc.)
+				// Compare week numbers to get the most recent
+				if weeklyOppCol == -1 || strings.Compare(col, foundWeekCol) > 0 {
+					weeklyOppCol = i
+					foundWeekCol = col
+				}
+			}
+		}
+
+		if playerCol == -1 || weeklyOppCol == -1 || avgOppCol == -1 {
+			log.Printf("Could not find required columns in %s", filename)
+			continue
+		}
+
+		// Process data rows
+		for _, record := range records[1:] {
+			minRequiredCols := max(playerCol, max(weeklyOppCol, avgOppCol))
+			if len(record) > minRequiredCols {
+				playerName := strings.TrimSpace(record[playerCol])
+				// Clean player name - remove team info in parentheses
+				if idx := strings.Index(playerName, " ("); idx != -1 {
+					playerName = playerName[:idx]
+				}
+
+				if playerName != "" {
+					if opportunityData[playerName] == nil {
+						opportunityData[playerName] = make(map[string]string)
+					}
+					opportunityData[playerName]["weekly"] = strings.TrimSpace(record[weeklyOppCol])
+					opportunityData[playerName]["avg"] = strings.TrimSpace(record[avgOppCol])
+				}
+			}
+		}
+	}
+
+	return opportunityData
+}
+
+// max returns the maximum of two integers
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// handleFreeAgents handles the free agents menu item click
+func (ui *ESPNUI) handleFreeAgents() {
+	ui.mutex.RLock()
+	loading := ui.loading
+	ui.mutex.RUnlock()
+
+	if loading {
+		return
+	}
+
+	ui.mutex.Lock()
+	ui.loading = true
+	ui.mutex.Unlock()
+
+	ui.updateStatus("Loading free agents...")
+
+	go func() {
+		defer func() {
+			ui.mutex.Lock()
+			ui.loading = false
+			ui.mutex.Unlock()
+		}()
+
+		var freeAgents *FreeAgentsResult
+		var err error
+
+		// Try cached data first if it's fresh
+		if ui.pythonClient.IsCacheFresh() {
+			ui.updateStatus("Loading free agents from cache...")
+			freeAgents, err = ui.pythonClient.GetFreeAgentsFromCache("", 50)
+		}
+
+		// Fall back to API call if cache is stale or failed
+		if freeAgents == nil || err != nil {
+			ui.updateStatus("Fetching free agents from ESPN API...")
+			freeAgents, err = ui.pythonClient.GetFreeAgents("", 50)
+			if err != nil {
+				ui.updateStatus(fmt.Sprintf("Failed to load free agents: %v", err))
+				dialog.ShowError(fmt.Errorf("failed to load free agents: %w", err), ui.window)
+				return
+			}
+		}
+
+		// Show success with count
+		ui.updateStatus(fmt.Sprintf("Loaded %d free agents successfully!", freeAgents.Count))
+
+		// Create a simple info dialog showing top free agents
+		var content strings.Builder
+		content.WriteString(fmt.Sprintf("Top %d Free Agents:\n\n", min(len(freeAgents.Players), 20)))
+
+		for i, player := range freeAgents.Players {
+			if i >= 20 { // Show top 20 only in dialog
+				break
+			}
+
+			content.WriteString(fmt.Sprintf("%s (%s, %s) - %.1f%% owned\n",
+				player.Name,
+				player.Position,
+				player.Team,
+				player.PercentOwned,
+			))
+		}
+
+		dialog.ShowInformation("Free Agents", content.String(), ui.window)
+	}()
+}
+
+// min returns the minimum of two integers
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 // Show displays the UI window

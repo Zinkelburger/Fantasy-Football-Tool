@@ -120,6 +120,75 @@ def get_team_roster(team_id):
     except Exception as e:
         return {"error": str(e)}
 
+def get_free_agents(position=None, week=None, size=50):
+    """Get free agents/waiver wire players"""
+    league_id = os.getenv('ESPN_LEAGUE_ID')
+    year = os.getenv('ESPN_YEAR', '2025')
+    swid = os.getenv('ESPN_SWID')
+    espn_s2 = os.getenv('ESPN_S2')
+
+    if not all([league_id, swid, espn_s2]):
+        return {"error": "Missing ESPN credentials"}
+
+    try:
+        league = League(
+            league_id=int(league_id),
+            year=int(year),
+            espn_s2=espn_s2,
+            swid=swid
+        )
+
+        # Convert position name to position_id if needed
+        position_id = None
+        if position:
+            position_mapping = {
+                'QB': 0, 'RB': 2, 'WR': 4, 'TE': 6,
+                'K': 17, 'DST': 16, 'D/ST': 16
+            }
+            position_id = position_mapping.get(position.upper())
+
+        # Get free agents
+        free_agents = league.free_agents(
+            week=week,
+            size=size,
+            position_id=position_id
+        )
+
+        players = []
+        for player in free_agents:
+            injury_status = "ACTIVE"
+            if hasattr(player, 'injuryStatus') and player.injuryStatus:
+                injury_status = player.injuryStatus
+            elif hasattr(player, 'injury_status') and player.injury_status:
+                injury_status = player.injury_status
+
+            # Get pro team abbreviation
+            pro_team = "FA"
+            if hasattr(player, 'proTeam') and player.proTeam:
+                pro_team = player.proTeam
+            elif hasattr(player, 'pro_team') and player.pro_team:
+                pro_team = player.pro_team
+
+            players.append({
+                "name": player.name,
+                "position": player.position,
+                "team": pro_team,
+                "status": injury_status,
+                "player_id": player.playerId if hasattr(player, 'playerId') else None,
+                "percent_owned": getattr(player, 'percent_owned', 0),
+                "percent_started": getattr(player, 'percent_started', 0)
+            })
+
+        return {
+            "players": players,
+            "count": len(players),
+            "position_filter": position,
+            "week": week
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
+
 def main():
     """Main CLI entry point"""
     if len(sys.argv) < 2:
@@ -136,8 +205,23 @@ def main():
     elif command == "roster" and len(sys.argv) >= 3:
         team_id = sys.argv[2]
         result = get_team_roster(team_id)
+    elif command == "free_agents":
+        # Parse optional arguments
+        position = None
+        week = None
+        size = 50
+
+        for i, arg in enumerate(sys.argv[2:], 2):
+            if arg.startswith("--position="):
+                position = arg.split("=", 1)[1]
+            elif arg.startswith("--week="):
+                week = int(arg.split("=", 1)[1])
+            elif arg.startswith("--size="):
+                size = int(arg.split("=", 1)[1])
+
+        result = get_free_agents(position=position, week=week, size=size)
     else:
-        result = {"error": f"Unknown command: {command}"}
+        result = {"error": f"Unknown command: {command}. Available: connect, roster <team_id>, free_agents [--position=QB] [--week=3] [--size=50]"}
 
     print(json.dumps(result, indent=2))
 

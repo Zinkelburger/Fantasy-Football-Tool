@@ -101,6 +101,44 @@ def cache_league_data():
                         injury_status
                     ])
 
+        # Cache free agents (top 200 players)
+        free_agents_file = cache_dir / "free_agents.csv"
+        with open(free_agents_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['player_id', 'player_name', 'position', 'pro_team', 'status', 'percent_owned', 'percent_started'])
+
+            try:
+                free_agents = league.free_agents(size=200)
+                for player in free_agents:
+                    injury_status = "ACTIVE"
+                    if hasattr(player, 'injuryStatus') and player.injuryStatus:
+                        injury_status = player.injuryStatus
+                    elif hasattr(player, 'injury_status') and player.injury_status:
+                        injury_status = player.injury_status
+
+                    # Get pro team abbreviation
+                    pro_team = "FA"
+                    if hasattr(player, 'proTeam') and player.proTeam:
+                        pro_team = player.proTeam
+                    elif hasattr(player, 'pro_team') and player.pro_team:
+                        pro_team = player.pro_team
+
+                    player_id = player.playerId if hasattr(player, 'playerId') else None
+                    percent_owned = getattr(player, 'percent_owned', 0)
+                    percent_started = getattr(player, 'percent_started', 0)
+
+                    writer.writerow([
+                        player_id,
+                        player.name,
+                        player.position,
+                        pro_team,
+                        injury_status,
+                        percent_owned,
+                        percent_started
+                    ])
+            except Exception as e:
+                print(f"Warning: Could not cache free agents: {e}")
+
         print(f"ESPN data cached successfully to {cache_dir}")
 
         return {
@@ -187,6 +225,43 @@ def load_cached_roster(team_id: int) -> List[Dict]:
         return []
 
 
+def load_cached_free_agents(position: Optional[str] = None, size: Optional[int] = None) -> List[Dict]:
+    """Load cached free agents information"""
+    cache_dir = Path("espn_cache")
+    free_agents_file = cache_dir / "free_agents.csv"
+
+    if not free_agents_file.exists():
+        return []
+
+    try:
+        players = []
+        with open(free_agents_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # Apply position filter if specified
+                if position and row['position'].upper() != position.upper():
+                    continue
+
+                players.append({
+                    "player_id": int(row['player_id']) if row['player_id'] and row['player_id'] != 'None' else None,
+                    "name": row['player_name'],
+                    "position": row['position'],
+                    "team": row['pro_team'],
+                    "status": row['status'],
+                    "percent_owned": float(row['percent_owned']) if row['percent_owned'] else 0,
+                    "percent_started": float(row['percent_started']) if row['percent_started'] else 0
+                })
+
+                # Apply size limit if specified
+                if size and len(players) >= size:
+                    break
+
+        return players
+    except Exception as e:
+        print(f"Error loading cached free agents: {e}")
+        return []
+
+
 def is_cache_fresh(max_age_hours: int = 24) -> bool:
     """Check if the cached data is fresh enough"""
     cache_dir = Path("espn_cache")
@@ -211,7 +286,7 @@ def is_cache_fresh(max_age_hours: int = 24) -> bool:
 def main():
     """CLI entry point"""
     if len(sys.argv) < 2:
-        print(json.dumps({"error": "Usage: espn_cache.py <cache|load_teams|load_roster> [team_id]"}))
+        print(json.dumps({"error": "Usage: espn_cache.py <cache|load_teams|load_roster|load_free_agents|check_cache> [args]"}))
         sys.exit(1)
 
     load_env()
@@ -252,6 +327,25 @@ def main():
         except ValueError:
             print(json.dumps({"error": "Invalid team ID"}))
 
+    elif command == "load_free_agents":
+        # Parse optional arguments
+        position = None
+        size = None
+
+        for arg in sys.argv[2:]:
+            if arg.startswith("--position="):
+                position = arg.split("=", 1)[1]
+            elif arg.startswith("--size="):
+                size = int(arg.split("=", 1)[1])
+
+        players = load_cached_free_agents(position=position, size=size)
+        result = {
+            "players": players,
+            "count": len(players),
+            "position_filter": position
+        }
+        print(json.dumps(result, indent=2))
+
     elif command == "check_cache":
         fresh = is_cache_fresh()
         info = load_cached_league_info()
@@ -263,7 +357,7 @@ def main():
         print(json.dumps(result, indent=2))
 
     else:
-        print(json.dumps({"error": f"Unknown command: {command}"}))
+        print(json.dumps({"error": f"Unknown command: {command}. Available: cache, load_teams, load_roster, load_free_agents, check_cache"}))
 
 
 if __name__ == "__main__":

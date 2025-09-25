@@ -14,3 +14,7 @@ go/build/
 go/releases
 go/status
 __pycache__
+.claude
+espn_cache
+ffhound_analysis/
+opportunity_score
