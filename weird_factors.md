@@ -63,3 +63,9 @@ Likely matchups in the game (CB vs TE for example, idk)
 - I had a lot of stuff for this on the hard drive right, idk
 
 - Can I do ELO rankings for all NFL players? Find their raw skills?
+
+- Yards after contact, but only behind LOS, only when RB hit from behind the line of scrimmage
+
+- Historical injured players -> air yard shares. When a player goes down, who takes their place
+
+https://www.reddit.com/r/fantasyfootball/comments/1noe3cv/who_were_you_dead_wrong_about_that_the_experts/
