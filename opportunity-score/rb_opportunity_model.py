@@ -14,19 +14,16 @@ warnings.filterwarnings('ignore')
 
 def load_nfl_data(years=[2022, 2023, 2024]):
     """Load NFL play-by-play data"""
-    print(f"Loading NFL data for years: {years}")
-    # nflreadpy returns Polars DataFrames by default, convert to pandas
     pbp = nfl.load_pbp(seasons=years).to_pandas()
-    print(f"Loaded {pbp.shape[0]:,} plays with {pbp.shape[1]} columns")
     return pbp
 
 def prepare_rb_player_games(pbp):
     """Aggregate RB opportunities and performance by player-game (RBs only)"""
 
-    # Fill NaN values with 0 for key columns
+    # Fill NaN values with 0 for key columns (but not yardline 100)
     fill_cols = ['rush_attempt', 'pass_attempt', 'complete_pass', 'rush_touchdown',
                  'pass_touchdown', 'fumble_lost', 'rushing_yards', 'receiving_yards',
-                 'air_yards', 'yardline_100']
+                 'air_yards']
     for col in fill_cols:
         if col in pbp.columns:
             pbp[col] = pbp[col].fillna(0)
@@ -40,7 +37,6 @@ def prepare_rb_player_games(pbp):
 
     # Get unique RB names from rushing plays
     rb_names = set(rush_plays['rusher_player_name'].unique())
-    print(f"Identified {len(rb_names)} unique RBs from rushing plays")
 
     # Create dataset for ALL TARGETS to RBs (not just completions!)
     target_plays = pbp[
@@ -49,8 +45,6 @@ def prepare_rb_player_games(pbp):
         (pbp['play_type'] == 'pass') &
         (pbp['receiver_player_name'].isin(rb_names))  # KEY: Only include RBs
     ].copy()
-
-    print(f"Processing {len(rush_plays):,} rush plays and {len(target_plays):,} RB target plays")
 
     # Clean aggregation with named agg for rushing - bins only
     rush_agg = rush_plays.groupby(['rusher_player_name', 'game_id', 'week']).agg(
@@ -138,13 +132,7 @@ def prepare_rb_player_games(pbp):
     player_games['target_share'] = player_games['target_share'].fillna(0)
 
     # Filter to actual RB games (exclude QBs with just a few rushes)
-    before_filter = len(player_games)
     player_games = player_games[player_games['total_carries'] >= 3].copy()  # At least 3 carries to be considered RB usage
-    after_filter = len(player_games)
-
-    print(f"Filtered from {before_filter:,} to {after_filter:,} player-game records (RBs with 3+ carries)")
-    print(f"Average carries per game: {player_games['total_carries'].mean():.1f}")
-    print(f"Average fantasy points per game: {player_games['total_fantasy_points'].mean():.2f}")
 
     return player_games
 
@@ -187,17 +175,9 @@ def create_rb_features(df):
 def build_rb_model(player_games):
     """Build XGBoost model for RB player-game opportunity scoring"""
 
-    print("Building RB Player-Game Opportunity Score Model")
-    print("=" * 50)
-
     # Create features and target
     X, feature_names = create_rb_features(player_games)
     y = player_games['total_fantasy_points']
-
-    print(f"Features: {feature_names}")
-    print(f"Training samples: {len(X):,} player-games")
-    print(f"Average fantasy points per game: {y.mean():.2f}")
-    print(f"Fantasy points std: {y.std():.2f}")
 
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(
@@ -227,17 +207,8 @@ def build_rb_model(player_games):
     train_r2 = r2_score(y_train, y_pred_train)
     test_r2 = r2_score(y_test, y_pred_test)
 
-    print(f"\nModel Performance:")
-    print(f"Train RMSE: {train_rmse:.2f} fantasy points")
-    print(f"Test RMSE:  {test_rmse:.2f} fantasy points")
-    print(f"Train MAE:  {train_mae:.2f} fantasy points")
-    print(f"Test MAE:   {test_mae:.2f} fantasy points")
-    print(f"Train R²:   {train_r2:.3f}")
-    print(f"Test R²:    {test_r2:.3f}")
-
     # Calculate correlation for comparison with benchmark
     correlation = np.corrcoef(y_test, y_pred_test)[0, 1]
-    print(f"Test Correlation: {correlation:.3f}")
 
     # Feature coefficients (linear regression equivalent of importance)
     importance = pd.DataFrame({
@@ -248,9 +219,8 @@ def build_rb_model(player_games):
     # Normalize to percentages like XGBoost importance
     importance['importance'] = importance['importance'] / importance['importance'].sum()
 
-    print(f"\nFeature Importance (based on coefficient magnitude):")
-    for _, row in importance.iterrows():
-        print(f"  {row['feature']}: {row['importance']:.3f}")
+    print(f"RB Model Performance:")
+    print(f"Test RMSE: {test_rmse:.2f} | Test R²: {test_r2:.3f} | Test Correlation: {correlation:.3f}")
 
     return model, scaler, feature_names, {
         'train_rmse': train_rmse,
@@ -287,13 +257,11 @@ def save_model(model, scaler, feature_names, filename='rb_opportunity_model.pkl'
     }
     with open(filename, 'wb') as f:
         pickle.dump(model_data, f)
-    print(f"Model saved to {filename}")
 
 def load_model(filename='rb_opportunity_model.pkl'):
     """Load the trained model, scaler, and feature names"""
     with open(filename, 'rb') as f:
         model_data = pickle.load(f)
-    print(f"Model loaded from {filename}")
     return model_data['model'], model_data['scaler'], model_data['feature_names']
 
 def main():
@@ -308,107 +276,6 @@ def main():
     # Build model
     model, scaler, feature_names, metrics = build_rb_model(player_games)
 
-    # Example predictions
-    print("\n" + "=" * 50)
-    print("EXAMPLE PLAYER-GAME OPPORTUNITY SCORES")
-    print("=" * 50)
-
-    scenarios = [
-        {
-            'name': 'High-Volume Game with Red Zone Opportunities',
-            'total_carries': 20,
-            'targets': 4,
-            'carries_inside_10': 2,  # 2 high-value carries
-            'targets_inside_10': 1,  # 1 high-value target
-            'air_yards': 15,
-            'air_yards_inside_10': 8,  # 8 high-leverage air yards inside 10
-            'rush_attempt_share': 0.65,  # 65% of team's rushing attempts
-            'target_share': 0.12  # 12% of team's passing targets
-        },
-        {
-            'name': 'Standard Workload Game',
-            'total_carries': 15,
-            'targets': 3,
-            'carries_inside_10': 0,  # 0 high-value carries
-            'targets_inside_10': 0,  # 0 high-value targets
-            'air_yards': 8,
-            'air_yards_inside_10': 0,  # 0 high-leverage air yards
-            'rush_attempt_share': 0.50,  # 50% of team's rushing attempts
-            'target_share': 0.09  # 9% of team's passing targets
-        },
-        {
-            'name': 'Goal Line Specialist Game',
-            'total_carries': 8,
-            'targets': 0,
-            'carries_inside_10': 4,  # 4 high-value carries
-            'targets_inside_10': 0,  # 0 high-value targets
-            'air_yards': 0,
-            'air_yards_inside_10': 0,  # 0 high-leverage air yards
-            'rush_attempt_share': 0.25,  # 25% of team's rushing attempts
-            'target_share': 0.0  # 0% of team's passing targets
-        },
-        {
-            'name': 'Pass-Catching Back Game',
-            'total_carries': 8,
-            'targets': 8,
-            'carries_inside_10': 0,  # 0 high-value carries
-            'targets_inside_10': 1,  # 1 high-value target
-            'air_yards': 45,
-            'air_yards_inside_10': 12,  # 12 high-leverage air yards
-            'rush_attempt_share': 0.25,  # 25% of team's rushing attempts
-            'target_share': 0.24  # 24% of team's passing targets
-        }
-    ]
-
-    for scenario in scenarios:
-        expected_fp = predict_opportunity_score(model, scaler, feature_names, scenario)
-        print(f"\n{scenario['name']}:")
-        print(f"  Expected Fantasy Points: {expected_fp:.1f}")
-
-        # Show key opportunity details
-        key_details = {
-            'carries': scenario['total_carries'],
-            'targets': scenario['targets'],
-            'inside_10_carries': scenario.get('carries_inside_10', 0),
-            'inside_10_targets': scenario.get('targets_inside_10', 0),
-            'air_yards': scenario['air_yards']
-        }
-        print(f"  Opportunities: {key_details}")
-
-    # Show some sample actual vs predicted
-    print("\n" + "=" * 50)
-    print("SAMPLE ACTUAL vs PREDICTED COMPARISONS")
-    print("=" * 50)
-
-    sample_games = player_games.sample(5, random_state=42)
-    X_sample, _ = create_rb_features(sample_games)
-    X_sample_scaled = scaler.transform(X_sample)  # CRITICAL: Scale the sample data!
-    predictions = model.predict(X_sample_scaled)
-
-    for i, (_, game) in enumerate(sample_games.iterrows()):
-        print(f"\n{game['player_name']} (Week {game['week']}):")
-        print(f"  Actual: {game['total_fantasy_points']:.1f} points")
-        print(f"  Expected: {predictions[i]:.1f} points")
-        print(f"  Difference: {(game['total_fantasy_points'] - predictions[i]):+.1f}")
-        print(f"  Opportunities: {game['total_carries']} carries, {game['targets']} targets, inside 10: {game['carries_inside_10']} carries + {game['targets_inside_10']} targets")
-
-    print("\n" + "=" * 50)
-    print("MODEL INTERPRETATION")
-    print("=" * 50)
-    print(f"""
-This player-game model predicts expected fantasy points based on opportunities:
-
-BENCHMARK TO BEAT:
-- RB Model Correlation: 0.969/0.953/0.957 (2022/2023/2024)
-
-CURRENT MODEL:
-- Test Correlation: {metrics['correlation']:.3f}
-- Test R²: {metrics['test_r2']:.3f}
-- Test RMSE: {metrics['test_rmse']:.1f} fantasy points
-
-Key Factors (in order of importance):
-{chr(10).join([f'{i+1}. {row["feature"]}: {row["importance"]:.1%}' for i, (_, row) in enumerate(metrics['feature_importance'].head(5).iterrows())])}
-    """)
 
     # Save the trained model
     save_model(model, scaler, feature_names, 'rb_opportunity_model_2022_2024.pkl')
@@ -498,55 +365,32 @@ def get_rb_opportunity_scores(year, week, save_csv=True, show_top_n=20):
     Returns:
         pandas.DataFrame: Player games with opportunity scores
     """
-    print(f"\n{'='*60}")
-    print(f"RB OPPORTUNITY SCORES - {year} WEEK {week}")
-    print(f"{'='*60}")
-
     # Load the trained model
     model_file = 'rb_opportunity_model_2022_2024.pkl'
     if not os.path.exists(model_file):
         print(f"Error: Model file {model_file} not found!")
-        print("Please run the training script first to create the model.")
         return None
 
     model, scaler, feature_names = load_model(model_file)
 
-    # Load specified year data
-    print(f"\nLoading {year} data...")
-    try:
-        pbp_year = load_nfl_data([year])
-    except Exception as e:
-        print(f"Error loading {year} data: {e}")
-        return None
-
-    # Filter to specified week
+    # Load and process data
+    pbp_year = load_nfl_data([year])
     pbp_week = pbp_year[pbp_year['week'] == week].copy()
-    print(f"{year} Week {week} has {len(pbp_week):,} plays")
 
     if len(pbp_week) == 0:
         print(f"No Week {week} data found for {year}!")
         return None
 
-    # Prepare RB player-game data
-    try:
-        player_games = prepare_rb_player_games(pbp_week)
-    except Exception as e:
-        print(f"Error preparing player games: {e}")
-        return None
-
+    player_games = prepare_rb_player_games(pbp_week)
     if len(player_games) == 0:
         print(f"No RB games found in {year} Week {week}!")
         return None
 
-    # Create features for prediction
-    try:
-        X_features, _ = create_rb_features(player_games)
-        X_scaled = scaler.transform(X_features)
-        predictions = model.predict(X_scaled)
-        player_games['opportunity_score'] = predictions
-    except Exception as e:
-        print(f"Error making predictions: {e}")
-        return None
+    # Make predictions
+    X_features, _ = create_rb_features(player_games)
+    X_scaled = scaler.transform(X_features)
+    predictions = model.predict(X_scaled)
+    player_games['opportunity_score'] = predictions
 
     # Sort by opportunity score
     top_opportunities = player_games.sort_values('opportunity_score', ascending=False)
@@ -560,7 +404,6 @@ def get_rb_opportunity_scores(year, week, save_csv=True, show_top_n=20):
         output_df.columns = ['player_name', 'opportunity_score', 'carries', 'targets', 'carries_inside_10',
                             'targets_inside_10', 'rush_share', 'target_share', 'fantasy_points', 'game_id', 'week']
         output_df.to_csv(csv_filename, index=False)
-        print(f"\nAll {len(output_df)} RB opportunity scores saved to {csv_filename}")
 
     # Display top results
     print(f"\nTOP {show_top_n} RB OPPORTUNITY SCORES - {year} WEEK {week}")
@@ -584,8 +427,4 @@ def get_rb_opportunity_scores(year, week, save_csv=True, show_top_n=20):
 
 if __name__ == "__main__":
     # Train model on 2022-2024 data
-    print("Training model on 2022-2024 data...")
     model, scaler, features, data = main()
-
-    # Predict on 2025 week 5 data
-    predict_2025_week5()
