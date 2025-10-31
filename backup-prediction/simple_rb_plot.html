@@ -1053,24 +1053,25 @@
         const yScale = (value) => height - ((value - yMin) / (yMax - yMin)) * height;
         const sizeScale = (efficiency) => 3 + ((efficiency - efficiencyMin) / (efficiencyMax - efficiencyMin)) * 12;
         const colorScale = (efficiency) => {
-            const normalized = (efficiency - efficiencyMin) / (efficiencyMax - efficiencyMin);
-
-            // Use a wider color range with better contrast
-            if (normalized < 0.2) {
-                // Very low efficiency: Dark red
-                return `hsl(0, 90%, 40%)`;
-            } else if (normalized < 0.4) {
-                // Low efficiency: Orange-red
+            // Use absolute efficiency thresholds instead of normalized
+            if (efficiency < 80) {
+                // Below 80%: Red
+                return `hsl(0, 90%, 45%)`;
+            } else if (efficiency < 90) {
+                // 80-90%: Orange-red
                 return `hsl(15, 90%, 50%)`;
-            } else if (normalized < 0.6) {
-                // Medium efficiency: Yellow
-                return `hsl(50, 90%, 55%)`;
-            } else if (normalized < 0.8) {
-                // Good efficiency: Light green
-                return `hsl(90, 80%, 45%)`;
+            } else if (efficiency < 100) {
+                // 90-100%: Orange
+                return `hsl(35, 90%, 55%)`;
+            } else if (efficiency < 110) {
+                // 100-110%: Yellow-green
+                return `hsl(70, 85%, 50%)`;
+            } else if (efficiency < 120) {
+                // 110-120%: Light green
+                return `hsl(100, 80%, 45%)`;
             } else {
-                // Excellent efficiency: Dark green
-                return `hsl(120, 85%, 35%)`;
+                // Above 120%: Dark green
+                return `hsl(120, 85%, 40%)`;
             }
         };
 
@@ -1276,14 +1277,15 @@
             linearGradient.setAttribute('x2', '0%');
             linearGradient.setAttribute('y2', '0%');
 
-            // Add color stops to match the new color scheme
+            // Add color stops to match the absolute efficiency thresholds
             const colorStops = [
-                { offset: 0, color: 'hsl(0, 90%, 40%)' },     // Dark red
-                { offset: 20, color: 'hsl(15, 90%, 50%)' },   // Orange-red
-                { offset: 40, color: 'hsl(50, 90%, 55%)' },   // Yellow
-                { offset: 60, color: 'hsl(90, 80%, 45%)' },   // Light green
-                { offset: 80, color: 'hsl(120, 85%, 35%)' },  // Dark green
-                { offset: 100, color: 'hsl(120, 85%, 35%)' }  // Dark green
+                { offset: 0, color: 'hsl(0, 90%, 45%)' },     // <80%: Red
+                { offset: 16.7, color: 'hsl(15, 90%, 50%)' }, // 80-90%: Orange-red
+                { offset: 33.3, color: 'hsl(35, 90%, 55%)' }, // 90-100%: Orange
+                { offset: 50, color: 'hsl(70, 85%, 50%)' },   // 100-110%: Yellow-green
+                { offset: 66.7, color: 'hsl(100, 80%, 45%)' }, // 110-120%: Light green
+                { offset: 83.3, color: 'hsl(120, 85%, 40%)' }, // >120%: Dark green
+                { offset: 100, color: 'hsl(120, 85%, 40%)' }   // >120%: Dark green
             ];
 
             colorStops.forEach(stopData => {
@@ -1307,19 +1309,18 @@
             legendRect.setAttribute('stroke-width', 1);
             g.appendChild(legendRect);
 
-            // Add legend labels
-            const minEfficiency = Math.min(...efficiencyValues);
-            const maxEfficiency = Math.max(...efficiencyValues);
+            // Add legend labels with meaningful thresholds
+            const thresholds = [80, 90, 100, 110, 120];
+            const labels = ['<80%', '80%', '90%', '100%', '110%', '120%', '>120%'];
 
-            for (let i = 0; i <= 4; i++) {
-                const value = minEfficiency + (maxEfficiency - minEfficiency) * (i / 4);
-                const y = legendY + legendHeight - (legendHeight * (i / 4));
+            for (let i = 0; i < labels.length; i++) {
+                const y = legendY + legendHeight - (legendHeight * (i / (labels.length - 1)));
 
                 const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 label.setAttribute('x', legendX + legendWidth + 5);
                 label.setAttribute('y', y + 4);
                 label.setAttribute('font-size', '10');
-                label.textContent = Math.round(value) + '%';
+                label.textContent = labels[i];
                 g.appendChild(label);
             }
         }
