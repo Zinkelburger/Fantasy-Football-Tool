@@ -1,9 +1,9 @@
 import pandas as pd
-import nfl_data_py as nfl
+import nflreadpy as nfl
 
 # Load 2025 play-by-play data
 print("Loading 2025 NFL data...")
-pbp = nfl.import_pbp_data([2025])
+pbp = nfl.load_pbp(seasons=[2025]).to_pandas()
 
 # Filter for field goal attempts
 print("Filtering field goal attempts...")
