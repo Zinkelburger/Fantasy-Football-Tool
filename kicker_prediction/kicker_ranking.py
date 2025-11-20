@@ -1,5 +1,7 @@
 import pandas as pd
 import nflreadpy as nfl
+import numpy as np
+from scipy import stats
 
 # Load 2025 play-by-play data
 print("Loading 2025 NFL data...")
@@ -70,13 +72,89 @@ kicker_stats['fg_fantasy_points'] = kicker_stats['fg_fantasy_points'].fillna(0)
 # Calculate total fantasy points (distance-based FG points + XP=1pt each)
 kicker_stats['total_fantasy_points'] = kicker_stats['fg_fantasy_points'] + kicker_stats['xp_made']
 
+# Calculate game-by-game statistics
+print("Calculating game-by-game statistics...")
+
+# Get game information - need to add week/game columns for analysis
+fg_kicks['week'] = pbp[pbp['field_goal_attempt'] == 1]['week'].values
+xp_kicks['week'] = pbp[pbp['extra_point_attempt'] == 1]['week'].values
+
+# Calculate weekly fantasy points for each kicker
+weekly_stats = []
+
+for kicker in kicker_stats['kicker']:
+    # Get this kicker's FG points by week
+    kicker_fg = fg_kicks[fg_kicks['kicker_player_name'] == kicker]
+    kicker_xp = xp_kicks[xp_kicks['kicker_player_name'] == kicker]
+
+    if len(kicker_fg) > 0 or len(kicker_xp) > 0:
+        # Get all weeks this kicker played
+        fg_weeks = kicker_fg['week'].unique() if len(kicker_fg) > 0 else []
+        xp_weeks = kicker_xp['week'].unique() if len(kicker_xp) > 0 else []
+        all_weeks = sorted(set(list(fg_weeks) + list(xp_weeks)))
+
+        weekly_points = []
+        for week in all_weeks:
+            week_fg_points = kicker_fg[kicker_fg['week'] == week]['fg_points'].sum()
+            week_xp_points = len(kicker_xp[kicker_xp['week'] == week])
+            week_total = week_fg_points + week_xp_points
+            weekly_points.append(week_total)
+
+        if weekly_points:
+            games_played = len(weekly_points)
+            mean_points = np.mean(weekly_points)
+            median_points = np.median(weekly_points)
+            std_points = np.std(weekly_points, ddof=1) if len(weekly_points) > 1 else 0
+
+            # Calculate mode (most frequent score)
+            if len(weekly_points) > 0:
+                mode_result = stats.mode(weekly_points, keepdims=True)
+                mode_points = mode_result.mode[0] if len(mode_result.mode) > 0 else 0
+            else:
+                mode_points = 0
+
+            weekly_stats.append({
+                'kicker': kicker,
+                'games_played': games_played,
+                'points_per_game': round(mean_points, 2),
+                'mean_points': round(mean_points, 2),
+                'median_points': round(median_points, 2),
+                'mode_points': round(mode_points, 2),
+                'std_deviation': round(std_points, 2)
+            })
+        else:
+            weekly_stats.append({
+                'kicker': kicker,
+                'games_played': 0,
+                'points_per_game': 0,
+                'mean_points': 0,
+                'median_points': 0,
+                'mode_points': 0,
+                'std_deviation': 0
+            })
+    else:
+        weekly_stats.append({
+            'kicker': kicker,
+            'games_played': 0,
+            'points_per_game': 0,
+            'mean_points': 0,
+            'median_points': 0,
+            'mode_points': 0,
+            'std_deviation': 0
+        })
+
+# Convert to DataFrame and merge with main stats
+weekly_df = pd.DataFrame(weekly_stats)
+kicker_stats = kicker_stats.merge(weekly_df, on='kicker', how='left')
+
 # Sort by total fantasy points
 kicker_stats = kicker_stats.sort_values(['total_fantasy_points'], ascending=False).reset_index(drop=True)
 kicker_stats['rank'] = range(1, len(kicker_stats) + 1)
 
-# Reorder columns
-kicker_stats = kicker_stats[['rank', 'kicker', 'fg_attempts', 'fg_made', 'fg_pct', 'avg_distance',
-                              'xp_attempts', 'xp_made', 'xp_pct', 'fg_fantasy_points', 'total_fantasy_points']]
+# Reorder columns to include new statistics
+kicker_stats = kicker_stats[['rank', 'kicker', 'games_played', 'fg_attempts', 'fg_made', 'fg_pct', 'avg_distance',
+                              'xp_attempts', 'xp_made', 'xp_pct', 'fg_fantasy_points', 'total_fantasy_points',
+                              'points_per_game', 'mean_points', 'median_points', 'mode_points', 'std_deviation']]
 
 print("\n" + "="*120)
 print("KICKER RANKINGS - 2025 SEASON (Field Goals + Extra Points)")
