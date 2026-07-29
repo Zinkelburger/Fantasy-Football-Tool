@@ -2,6 +2,119 @@ import pandas as pd
 import nflreadpy as nfl
 import numpy as np
 from scipy import stats
+import argparse
+import os
+import csv
+from pathlib import Path
+
+# ANSI escape codes for formatting
+BOLD = '\033[1m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+CYAN = '\033[96m'
+RESET = '\033[0m'
+HIGHLIGHT = f'{BOLD}{GREEN}'
+
+
+def get_my_kicker_from_args():
+    """Parse command line arguments for kicker name"""
+    parser = argparse.ArgumentParser(description='Kicker Rankings for Fantasy Football')
+    parser.add_argument('--my-kicker', type=str, help='Your kicker name to highlight (e.g., "B.Aubrey")')
+    parser.add_argument('--team-id', type=int, help='Your ESPN team ID to auto-detect kicker')
+    args = parser.parse_args()
+    return args.my_kicker, args.team_id
+
+
+def load_dotenv_file():
+    """Load .env file from start-sit-weekly directory"""
+    env_paths = [
+        Path(__file__).parent.parent / 'start-sit-weekly' / '.env',
+        Path('start-sit-weekly/.env'),
+        Path('../start-sit-weekly/.env'),
+    ]
+
+    for env_path in env_paths:
+        if env_path.exists():
+            with open(env_path, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        os.environ.setdefault(key.strip(), value.strip())
+            return True
+    return False
+
+
+def get_my_kicker_from_espn(team_id=None):
+    """Try to get the user's kicker from ESPN cache"""
+    # Load .env file first
+    load_dotenv_file()
+
+    # Look for ESPN cache in the start-sit-weekly directory
+    cache_paths = [
+        Path(__file__).parent.parent / 'start-sit-weekly' / 'espn_cache' / 'rosters.csv',
+        Path('start-sit-weekly/espn_cache/rosters.csv'),
+        Path('../start-sit-weekly/espn_cache/rosters.csv'),
+    ]
+
+    rosters_file = None
+    for path in cache_paths:
+        if path.exists():
+            rosters_file = path
+            break
+
+    if not rosters_file:
+        return None
+
+    try:
+        kickers = []
+        with open(rosters_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row['position'] == 'K':
+                    kickers.append({
+                        'team_id': int(row['team_id']),
+                        'team_name': row['team_name'],
+                        'name': row['player_name']
+                    })
+
+        # If team_id specified, return that team's kicker
+        if team_id:
+            for k in kickers:
+                if k['team_id'] == team_id:
+                    return k['name']
+
+        # Check for SELECTED_TEAM from .env (set by the GUI)
+        selected_team = os.getenv('SELECTED_TEAM')
+        if selected_team:
+            for k in kickers:
+                if k['team_name'] == selected_team:
+                    return k['name']
+
+        # Otherwise, try to get from ESPN_TEAM_ID env
+        env_team_id = os.getenv('ESPN_TEAM_ID')
+        if env_team_id:
+            for k in kickers:
+                if k['team_id'] == int(env_team_id):
+                    return k['name']
+
+        # If only one kicker, might be single-team cache, return it
+        if len(kickers) == 1:
+            return kickers[0]['name']
+
+        return None
+    except Exception as e:
+        print(f"Warning: Could not read ESPN cache: {e}")
+        return None
+
+
+# Get user's kicker
+my_kicker_arg, team_id_arg = get_my_kicker_from_args()
+MY_KICKER = my_kicker_arg or get_my_kicker_from_espn(team_id_arg)
+
+if MY_KICKER:
+    print(f"{CYAN}Your kicker: {HIGHLIGHT}{MY_KICKER}{RESET}")
+    print()
 
 # Load 2025 play-by-play data
 print("Loading 2025 NFL data...")
@@ -15,12 +128,13 @@ fg_data = pbp[pbp['field_goal_attempt'] == 1].copy()
 print("Filtering extra point attempts...")
 xp_data = pbp[pbp['extra_point_attempt'] == 1].copy()
 
-# Select relevant columns for field goals
-fg_kicks = fg_data[['kicker_player_name', 'kick_distance', 'field_goal_result']].copy()
+# Select relevant columns for field goals. 'week' rides along so the
+# game-by-game statistics below stay aligned after the dropna filtering.
+fg_kicks = fg_data[['kicker_player_name', 'kick_distance', 'field_goal_result', 'week']].copy()
 fg_kicks = fg_kicks.dropna(subset=['kicker_player_name', 'kick_distance'])
 
 # Select relevant columns for extra points
-xp_kicks = xp_data[['kicker_player_name', 'extra_point_result']].copy()
+xp_kicks = xp_data[['kicker_player_name', 'extra_point_result', 'week']].copy()
 xp_kicks = xp_kicks.dropna(subset=['kicker_player_name'])
 
 print(f"\nTotal field goal attempts in 2025: {len(fg_kicks)}")
@@ -74,10 +188,6 @@ kicker_stats['total_fantasy_points'] = kicker_stats['fg_fantasy_points'] + kicke
 
 # Calculate game-by-game statistics
 print("Calculating game-by-game statistics...")
-
-# Get game information - need to add week/game columns for analysis
-fg_kicks['week'] = pbp[pbp['field_goal_attempt'] == 1]['week'].values
-xp_kicks['week'] = pbp[pbp['extra_point_attempt'] == 1]['week'].values
 
 # Calculate weekly fantasy points for each kicker
 weekly_stats = []
@@ -159,7 +269,35 @@ kicker_stats = kicker_stats[['rank', 'kicker', 'games_played', 'fg_attempts', 'f
 print("\n" + "="*120)
 print("KICKER RANKINGS - 2025 SEASON (Field Goals + Extra Points)")
 print("="*120)
-print(kicker_stats.to_string(index=False))
+
+# Print with highlighting for user's kicker
+def normalize_name(name):
+    """Normalize kicker name for comparison (handle 'B.Aubrey' vs 'Brandon Aubrey' etc)"""
+    if not name:
+        return ""
+    # Handle abbreviated names like "B.Aubrey"
+    parts = name.replace('.', ' ').split()
+    return parts[-1].lower() if parts else ""
+
+my_kicker_normalized = normalize_name(MY_KICKER) if MY_KICKER else None
+
+# Get column widths from pandas display
+table_str = kicker_stats.to_string(index=False)
+lines = table_str.split('\n')
+header = lines[0]
+print(header)
+
+for line in lines[1:]:
+    # Check if this line contains the user's kicker
+    if my_kicker_normalized:
+        # Get kicker name from the line (second column after rank)
+        parts = line.split()
+        if len(parts) >= 2:
+            line_kicker = parts[1]  # kicker name is second column
+            if normalize_name(line_kicker) == my_kicker_normalized:
+                print(f"{HIGHLIGHT}{line}{RESET}  ← YOUR KICKER")
+                continue
+    print(line)
 
 # Save to CSV
 output_file = 'kicker_prediction/kicker_rankings_2025.csv'
@@ -173,7 +311,13 @@ print("="*120)
 
 top_5_kickers = kicker_stats.head(5)['kicker'].tolist()
 for kicker in top_5_kickers:
-    print(f"\n{kicker}:")
+    # Check if this is the user's kicker
+    is_my_kicker = my_kicker_normalized and normalize_name(kicker) == my_kicker_normalized
+    prefix = f"{HIGHLIGHT}" if is_my_kicker else ""
+    suffix = f"{RESET}" if is_my_kicker else ""
+    marker = " ← YOUR KICKER" if is_my_kicker else ""
+
+    print(f"\n{prefix}{kicker}{marker}{suffix}:")
     print("\nField Goals:")
     kicker_fg = fg_kicks[fg_kicks['kicker_player_name'] == kicker].copy()
     kicker_fg = kicker_fg.sort_values('kick_distance', ascending=False)

@@ -8,11 +8,25 @@ in your ESPN fantasy league.
 
 import pandas as pd
 import os
-import requests
+import argparse
 import nflreadpy as nfl
 from pathlib import Path
 from dotenv import load_dotenv
 from espn_api.football import League
+
+# ANSI escape codes for formatting
+BOLD = '\033[1m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+CYAN = '\033[96m'
+RESET = '\033[0m'
+HIGHLIGHT = f'{BOLD}{GREEN}'
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='What Kicker Do I Pick? - ESPN Fantasy Kicker Rankings')
+    parser.add_argument('--all', action='store_true', help='Show all available kickers (no truncation)')
+    return parser.parse_args()
 
 
 def load_env():
@@ -31,16 +45,18 @@ def load_env():
     return False
 
 
-def get_rostered_kickers():
-    """Get all kickers currently on teams in the ESPN league"""
+def get_rostered_kickers_and_my_kicker():
+    """Get all kickers currently on teams in the ESPN league, and identify MY kicker"""
     league_id = os.getenv('ESPN_LEAGUE_ID')
     year = os.getenv('ESPN_YEAR', '2025')
     swid = os.getenv('ESPN_SWID')
     espn_s2 = os.getenv('ESPN_S2')
+    my_team_id = os.getenv('ESPN_TEAM_ID')
+    selected_team = os.getenv('SELECTED_TEAM')
 
     if not all([league_id, swid, espn_s2]):
         print("Error: Missing ESPN credentials in .env file")
-        return []
+        return [], None
 
     try:
         league = League(
@@ -51,30 +67,48 @@ def get_rostered_kickers():
         )
 
         rostered_kickers = []
+        my_kicker = None
         print(f"Found {len(league.teams)} teams in league")
 
         for team in league.teams:
             team_kickers = []
+            is_my_team = False
+            
+            # Check if this is my team
+            if my_team_id and str(team.team_id) == str(my_team_id):
+                is_my_team = True
+            elif selected_team and team.team_name == selected_team:
+                is_my_team = True
+            
             for player in team.roster:
                 if player.position == 'K':
                     full_name = player.name
                     rostered_kickers.append(full_name)
                     team_kickers.append(full_name)
+                    
+                    # If this is my team, this is my kicker
+                    if is_my_team:
+                        my_kicker = full_name
 
             if team_kickers:
-                print(f"  {team.team_name}: {', '.join(team_kickers)}")
+                team_label = f"{HIGHLIGHT}{team.team_name} (YOUR TEAM){RESET}" if is_my_team else team.team_name
+                kicker_label = f"{HIGHLIGHT}{', '.join(team_kickers)}{RESET}" if is_my_team else ', '.join(team_kickers)
+                print(f"  {team_label}: {kicker_label}")
             else:
                 print(f"  {team.team_name}: No kickers")
 
         print(f"\nTotal rostered kickers found: {len(rostered_kickers)}")
         if rostered_kickers:
             print(f"Kickers: {', '.join(sorted(rostered_kickers))}")
+        
+        if my_kicker:
+            print(f"\n{CYAN}Your kicker: {HIGHLIGHT}{my_kicker}{RESET}")
 
-        return rostered_kickers
+        return rostered_kickers, my_kicker
 
     except Exception as e:
         print(f"Error connecting to ESPN league: {e}")
-        return []
+        return [], None
 
 
 def get_short_name(full_name):
@@ -331,8 +365,35 @@ def load_kicker_rankings():
         return None
 
 
+def print_rankings_with_highlight(display_df, my_kicker):
+    """Print rankings table with your kicker highlighted"""
+    table_str = display_df.to_string(index=False)
+    lines = table_str.split('\n')
+    
+    # Print header
+    print(lines[0])
+    
+    # Normalize my kicker name for comparison
+    my_kicker_last = my_kicker.split()[-1].lower() if my_kicker else None
+    
+    for line in lines[1:]:
+        # Check if this line contains my kicker
+        if my_kicker_last:
+            # Extract kicker name from the line (second column)
+            parts = line.split()
+            if len(parts) >= 2:
+                line_kicker = parts[1]  # Kicker name
+                line_kicker_last = line_kicker.split('.')[-1].lower() if '.' in line_kicker else line_kicker.lower()
+                if line_kicker_last == my_kicker_last:
+                    print(f"{HIGHLIGHT}{line}{RESET}  ← YOUR KICKER")
+                    continue
+        print(line)
+
+
 def main():
     """Main function to display available kicker rankings"""
+    args = parse_args()
+    
     print("🏈 WHAT KICKER DO I PICK? 🏈")
     print("=" * 50)
 
@@ -349,9 +410,9 @@ def main():
     print("Fetching NFL Elo matchup data...")
     rankings_df = add_matchup_data(rankings_df)
 
-    # Get rostered kickers from ESPN league
+    # Get rostered kickers from ESPN league (and identify my kicker)
     print("Fetching rostered kickers from your ESPN league...")
-    rostered_kickers = get_rostered_kickers()
+    rostered_kickers, my_kicker = get_rostered_kickers_and_my_kicker()
 
     if not rostered_kickers:
         print("Could not fetch rostered kickers. Showing all rankings instead.")
@@ -371,31 +432,70 @@ def main():
     available_df = available_df.reset_index(drop=True)
     available_df['available_rank'] = range(1, len(available_df) + 1)
 
-    # Display results
-    print(f"\n📊 AVAILABLE KICKER RANKINGS - 2025 SEASON")
-    print("=" * 80)
-    print(f"Showing top available kickers (filtered from ESPN league)")
-    print("=" * 80)
+    # Display results - first show MY kicker's ranking
+    if my_kicker:
+        my_kicker_short = get_short_name(my_kicker)
+        my_kicker_row = rankings_df[rankings_df['kicker'].apply(lambda x: get_short_name(x) if '.' not in x else x) == my_kicker_short]
+        if my_kicker_row.empty:
+            # Try matching by last name
+            my_kicker_last = my_kicker.split()[-1].lower()
+            my_kicker_row = rankings_df[rankings_df['kicker'].str.lower().str.contains(my_kicker_last)]
+        
+        if not my_kicker_row.empty:
+            my_rank = my_kicker_row.iloc[0]['rank']
+            my_pts = my_kicker_row.iloc[0]['total_fantasy_points']
+            print(f"\n{HIGHLIGHT}📍 YOUR KICKER: {my_kicker} - Rank #{int(my_rank)}, {my_pts:.1f} total pts{RESET}")
 
-    # Show top 15 available kickers with matchup data
-    display_df = available_df.head(15)[['available_rank', 'kicker', 'games_played', 'fg_pct', 'team', 'opponent', 'implied_score',
-                                       'game_total', 'points_per_game', 'total_fantasy_points', 'std_deviation']].copy()
+    print(f"\n📊 AVAILABLE KICKER RANKINGS - 2025 SEASON")
+    print("=" * 100)
+    print(f"Showing available kickers (filtered from ESPN league)")
+    print("=" * 100)
+
+    # Show kickers with matchup data
+    # Use columns that exist in the CSV
+    display_cols = ['available_rank', 'kicker', 'fg_made', 'fg_pct', 'team', 'opponent', 'implied_score',
+                    'game_total', 'total_fantasy_points']
+    
+    if args.all:
+        display_df = available_df[display_cols].copy()
+    else:
+        display_df = available_df.head(15)[display_cols].copy()
 
     # Format display
-    display_df.columns = ['Rank', 'Kicker', '# Games', 'FG%', 'Team', 'Opp', 'Team Score', 'Game Total', 'Pts/Game', 'Total Pts', 'StdDev']
+    display_df.columns = ['Rank', 'Kicker', 'FG Made', 'FG%', 'Team', 'Opp', 'Team Score', 'Game Total', 'Total Pts']
     display_df['FG%'] = display_df['FG%'].round(0).astype(int)
 
-    print(display_df.to_string(index=False))
+    # Print with highlighting
+    print_rankings_with_highlight(display_df, my_kicker)
 
-    if len(available_df) > 15:
-        print(f"\n... and {len(available_df) - 15} more available kickers")
+    if not args.all and len(available_df) > 15:
+        print(f"\n... and {len(available_df) - 15} more available kickers (use --all to show all)")
 
     # Show summary
     if rostered_kickers:
         print(f"\n📋 ROSTERED KICKERS ({len(rostered_kickers)}):")
         print(", ".join(sorted(rostered_kickers)))
 
-    print(f"\n🎯 RECOMMENDATION: Consider picking up {display_df.iloc[0]['Kicker']} (Rank #{display_df.iloc[0]['Rank']})")
+    # Recommendation
+    best_available = display_df.iloc[0]['Kicker']
+    print(f"\n🎯 RECOMMENDATION: Consider picking up {best_available} (Rank #{display_df.iloc[0]['Rank']})")
+    
+    if my_kicker:
+        # Compare your kicker to best available
+        my_kicker_short = get_short_name(my_kicker)
+        my_kicker_last = my_kicker.split()[-1].lower()
+        my_kicker_row = rankings_df[rankings_df['kicker'].str.lower().str.contains(my_kicker_last)]
+        best_row = available_df.iloc[0]
+        
+        if not my_kicker_row.empty:
+            my_rank = int(my_kicker_row.iloc[0]['rank'])
+            best_rank = int(best_row['rank'])
+            
+            if best_rank < my_rank:
+                diff = my_rank - best_rank
+                print(f"{YELLOW}⚠️  {best_available} is ranked {diff} spots higher than your kicker ({my_kicker}){RESET}")
+            else:
+                print(f"{GREEN}✅ Your kicker ({my_kicker}) is ranked higher than the best available!{RESET}")
 
 
 if __name__ == "__main__":

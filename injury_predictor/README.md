@@ -19,5 +19,10 @@ weighted avg       0.84      0.81      0.80      1405
 ```
 
 Class 1 (Played) Recall: 0.98: Your model captures 98% of the players who actually played. It almost never misses a starter.
-
 Class 0 (Didn't Play) Recall: 0.56: This is the trade-off. It only catches 56% of the players who sat out.
+
+# The above method is stupid
+It only considers Friday practice reports, which aren't that useful. We want the week-by-week data
+
+And to get real facts from youtube videos
+`youtube-transcript-api`
