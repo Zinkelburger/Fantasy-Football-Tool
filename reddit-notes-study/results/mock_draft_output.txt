@@ -1,0 +1,22 @@
+2024: top-150 ADP board -> 146 have note files, 98 with nonzero tone
+2025: top-150 ADP board -> 150 have note files, 98 with nonzero tone
+bpa         2024: wins 7.81  PF 1131  all-play 0.557  playoffs 66%  titles 14.6%  avg finish 5.25
+bpa         2025: wins 8.49  PF 1154  all-play 0.602  playoffs 78%  titles 21.7%  avg finish 4.19
+notes_hard  2024: wins 7.81  PF 1140  all-play 0.564  playoffs 66%  titles 18.8%  avg finish 5.12
+notes_hard  2025: wins 8.51  PF 1168  all-play 0.614  playoffs 80%  titles 23.8%  avg finish 4.02
+notes_soft  2024: wins 7.91  PF 1128  all-play 0.557  playoffs 65%  titles 17.1%  avg finish 5.07
+notes_soft  2025: wins 8.28  PF 1155  all-play 0.601  playoffs 75%  titles 21.2%  avg finish 4.40
+notes_anti  2024: wins 6.35  PF 1040  all-play 0.451  playoffs 38%  titles 4.6%  avg finish 7.54
+notes_anti  2025: wins 7.60  PF 1117  all-play 0.554  playoffs 65%  titles 7.9%  avg finish 5.42
+rand_10     2024: wins 7.24  PF 1099  all-play 0.527  playoffs 57%  titles 13.3%  avg finish 5.98
+rand_10     2025: wins 6.95  PF 1061  all-play 0.502  playoffs 50%  titles 7.5%  avg finish 6.47
+
+=== Paired vs pure-ADP control (same rooms, same seeds) ===
+notes_hard  2024: dPF    +8.6 +/-  15.2   dAllPlay +0.007 +/- 0.019   better/worse rooms: 127/112
+notes_hard  2025: dPF   +14.2 +/-  12.0   dAllPlay +0.012 +/- 0.013   better/worse rooms: 136/103
+notes_soft  2024: dPF    -3.3 +/-   9.8   dAllPlay +0.000 +/- 0.012   better/worse rooms: 124/112
+notes_soft  2025: dPF    +1.6 +/-   8.3   dAllPlay -0.001 +/- 0.010   better/worse rooms: 124/108
+notes_anti  2024: dPF   -91.4 +/-  16.4   dAllPlay -0.105 +/- 0.020   better/worse rooms: 62/178
+notes_anti  2025: dPF   -37.1 +/-  16.4   dAllPlay -0.049 +/- 0.018   better/worse rooms: 86/150
+rand_10     2024: dPF   -32.2 +/-  17.6   dAllPlay -0.030 +/- 0.021   better/worse rooms: 93/144
+rand_10     2025: dPF   -92.8 +/-  16.6   dAllPlay -0.100 +/- 0.018   better/worse rooms: 60/178

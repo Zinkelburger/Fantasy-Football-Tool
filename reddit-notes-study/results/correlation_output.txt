@@ -1,0 +1,93 @@
+scored: 566 / 566 player-files
+
+=== Sentiment distribution (glazing check) ===
+2024: n=239  [-2] 24 (10%)  [-1] 46 (19%)  [+0] 75 (31%)  [+1] 71 (30%)  [+2] 23 (10%)  | has_negative: 90%
+2025: n=314  [-2] 14 (4%)  [-1] 44 (14%)  [+0] 187 (60%)  [+1] 61 (19%)  [+2] 8 (3%)  | has_negative: 63%
+
+=== Baseline: how good is the market alone? (pos mkt rank vs pos finish) ===
+2024: spearman=0.699 (p=0.0000, n=223)
+2025: spearman=0.695 (p=0.0000, n=224)
+
+=== Does sentiment predict finish at all? ===
+2024: sentiment vs finish: r=0.253 (p=0.0002, n=223)
+2025: sentiment vs finish: r=0.354 (p=0.0000, n=224)
+
+=== THE EDGE TEST: sentiment vs beating the market (value = mkt rank - finish rank) ===
+2024: r=-0.094 (p=0.1536, n=223)
+2025: r=-0.051 (p=0.4602, n=224)
+pooled: r=-0.074 (p=0.1180, n=447)
+
+=== Mean outcome by sentiment bucket (pooled, market players) ===
+      n  mean_value  med_value  beat_rate
+s                                        
+-2   35       -2.17       -1.0       0.49
+-1   84        1.77        0.0       0.45
+ 0  169        2.29        2.0       0.56
+ 1  128       -2.62        0.0       0.46
+ 2   31       -3.90       -2.0       0.35
+
+=== Same, top-120 market only (where draft picks actually happen) ===
+2024: r=0.056 (p=0.5440, n=121)
+2025: r=0.010 (p=0.9136, n=115)
+     n  mean_value  beat_rate
+s                            
+-2  13      -11.38       0.46
+-1  26       -6.35       0.19
+ 0  75       -5.72       0.39
+ 1  93       -5.90       0.37
+ 2  29       -4.86       0.31
+
+=== PPG robustness (>=6 games, injury-insensitive) ===
+2024: sentiment vs PPG-value: r=-0.160 (p=0.0202, n=211)
+2025: sentiment vs PPG-value: r=-0.109 (p=0.1200, n=205)
+
+=== Is sentiment just tracking ADP? (sentiment vs market rank) ===
+2024: r=0.422 (p=0.0000, n=223)
+2025: r=0.463 (p=0.0000, n=224)
+
+=== has_negative flag: do 'no concerns mentioned' players do better? ===
+                n  mean_value  beat_rate
+has_negative                            
+False          50        9.48       0.72
+True          397       -1.19       0.46
+
+=== Where strong bullish notes (+2) landed ===
+ year           note_name position  market_rank  total_pts  value
+ 2024         Chase Brown       RB        106.0      201.0   25.0
+ 2024       Ladd McConkey       WR         93.0      147.4   25.0
+ 2024     Zach Charbonnet       RB        123.0      135.8   16.0
+ 2024          James Cook       RB         33.0      225.9    8.0
+ 2024       Calvin Ridley       WR         76.0      127.9    7.0
+ 2024         Josh Jacobs       RB         23.0      246.5    7.0
+ 2024         Romeo Doubs       WR        127.0       86.1    4.0
+ 2025 Christian McCaffrey       RB          8.0      308.9    3.0
+...worst:
+ year        note_name position  market_rank  total_pts  value
+ 2024     Keon Coleman       WR        105.0       78.5   -9.0
+ 2024      Breece Hall       RB          6.0      168.7  -15.0
+ 2025      CeeDee Lamb       WR          6.0      125.5  -17.0
+ 2024      Tyreek Hill       WR          2.0      135.2  -20.0
+ 2024   Raheem Mostert       RB         76.0       51.9  -25.0
+ 2024  Diontae Johnson       WR         90.0       54.9  -29.0
+ 2025 Justin Jefferson       WR          5.0      107.1  -30.0
+ 2024   Travis Etienne       RB         15.0       85.2  -31.0
+
+=== Where bearish notes (<=-1) landed ===
+ year       note_name position  market_rank  total_pts  value
+ 2024     Chris Olave       WR         26.0       44.7  -56.0
+ 2025       Joe Mixon       RB         75.0        0.0  -44.0
+ 2025   Kaleb Johnson       RB         69.0        7.8  -39.0
+ 2024     Zamir White       RB         66.0       23.3  -38.0
+ 2025   Brandon Aiyuk       WR        143.0        0.0  -33.0
+ 2025  Isaac Guerendo       RB        139.0        0.0  -27.0
+ 2024 Michael Pittman       WR         34.0       89.6  -27.0
+ 2025    Adam Thielen       WR        178.0       16.3  -25.0
+ 2025   Chuba Hubbard       RB         44.0       93.7  -22.0
+ 2025   Isiah Pacheco       RB         59.0       68.3  -20.0
+...and bearish calls that were wrong (player smashed):
+ year          note_name position  market_rank  total_pts  value
+ 2025        Romeo Doubs       WR        190.0      110.4   32.0
+ 2024 Alexander Mattison       RB        223.0       98.3   33.0
+ 2025      Kyle Monangai       RB        221.0      123.8   39.0
+ 2025        Alec Pierce       WR        217.0      111.1   40.0
+ 2024     Rashod Bateman       WR        226.0      116.0   45.0
