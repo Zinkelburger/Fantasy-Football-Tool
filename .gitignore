@@ -18,3 +18,19 @@ __pycache__
 espn_cache
 ffhound_analysis/
 opportunity_score
+
+# Compiled Go binaries (32MB each -- build with `make build` / `make build-local`)
+go/draft_assist
+go/fantasy-tool
+go/fantasy-football-tool
+go/dist/
+
+# Go coverage artifacts (`make test-coverage`)
+coverage.out
+coverage.html
+
+# Run logs
+*.log
+
+# Trained models (regenerate: python injury_predictor/unified_injury_predictor.py)
+*.pkl
