@@ -13,8 +13,10 @@ make check          # fmt + vet + test, run this before committing
 make watch          # re-run tests on save (requires `entr`)
 ```
 
-Plain `go test ./...` works too. The UI tests build Fyne, so a cold run takes a
-few minutes; subsequent runs hit the build cache.
+Plain `go test ./...` works too. The tests themselves take ~1.3s; it's the
+cold build that's slow, because the UI tests link Fyne — over 7 minutes on a
+Linux dev box with an empty build cache. Warm runs are near-instant, so don't
+kill the first one thinking it hung.
 
 ## What's covered
 
