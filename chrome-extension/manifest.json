@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Draft Assistant: Player Extractor",
-  "version": "1.0.0.2",
-  "description": "Extracts player names and sends them to a local Python server. Open source at https://github.com/Zinkelburger/Fantasy-Football-Tool",
+  "version": "1.1.0",
+  "description": "Extracts draft picks and relays them to the Fantasy Football web app tab (and the local Go app if running). Open source at https://github.com/Zinkelburger/Fantasy-Football-Tool",
 
   "icons": {
     "16": "icons/icon16.png",
@@ -16,7 +16,7 @@
     }
   },
 
-  "permissions": ["cookies", "tabs"],
+  "permissions": ["cookies", "tabs", "storage"],
   "content_scripts": [
     {
       "matches": [
@@ -37,7 +37,17 @@
         "https://sleeper.com/draft/nfl/*",
         "https://sleeper.app/draft/nfl/*"
       ],
-      "js": ["sleeper-draft.js"],
+      "js": ["content.js", "sleeper-draft.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.github.io/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*",
+        "file:///*"
+      ],
+      "js": ["bridge.js"],
       "run_at": "document_idle"
     }
   ],

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Marker used by the chrome-extension bridge.js to identify this page -->
+  <meta name="ff-draft-assistant" content="1">
+  <title>Fantasy Football Draft Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Fantasy Football Draft Tool</h1>
+    <div class="header-controls">
+      <label class="fmt-label">Scoring
+        <select id="scoring-format">
+          <option value="STD">STD</option>
+          <option value="0.5PPR">0.5 PPR</option>
+          <option value="PPR">PPR</option>
+        </select>
+      </label>
+      <span id="pick-counter" title="Number of players picked so far">Pick: 0</span>
+      <span id="ext-status" class="ext-off" title="Chrome extension draft sync">Extension: not detected</span>
+      <button id="btn-ask" title="Ask the AI for draft advice (Q)">Ask AI (Q)</button>
+      <button id="btn-settings" title="Settings">&#9881;</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="left-panel">
+      <div id="filter-bar">
+        <div id="pos-filters"></div>
+        <input type="search" id="search-box" placeholder="Search players...">
+        <label class="chk"><input type="checkbox" id="show-picked"> Show picked</label>
+        <span id="player-count"></span>
+      </div>
+      <div id="table-wrap">
+        <table id="player-table">
+          <thead>
+            <tr>
+              <th>Rank</th><th>Player</th><th>Team</th><th>Bye</th><th>Pos</th>
+              <th title="ESPN rank">ESPN</th><th title="Sleeper rank">Slpr</th>
+              <th>Note</th><th class="actions-col"></th>
+            </tr>
+          </thead>
+          <tbody id="player-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="right-panel">
+      <div id="ai-panel">
+        <div class="panel-head">
+          <span>AI Output</span>
+          <span id="ai-status"></span>
+        </div>
+        <div id="ai-output" class="md-body">
+          <p class="muted">Click <b>Ask AI</b> (or press Q) to get draft recommendations
+          based on the top available players, your roster, and the draft so far.
+          Configure your API key in Settings (&#9881;) first.</p>
+        </div>
+      </div>
+      <div id="team-panel">
+        <div class="panel-head">
+          <span>Your Team</span>
+          <span id="team-count"></span>
+        </div>
+        <div id="team-list"><p class="muted">No players on your team yet</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="status-bar">Ready</span>
+    <span id="data-stamp"></span>
+  </footer>
+
+  <dialog id="note-dialog">
+    <div class="dialog-head">
+      <span id="note-title"></span>
+      <button class="dialog-close" data-close="note-dialog">&times;</button>
+    </div>
+    <div id="note-body" class="md-body"></div>
+  </dialog>
+
+  <dialog id="settings-dialog">
+    <div class="dialog-head">
+      <span>Settings</span>
+      <button class="dialog-close" data-close="settings-dialog">&times;</button>
+    </div>
+    <form id="settings-form" method="dialog">
+      <fieldset>
+        <legend>OpenAI</legend>
+        <label>API key
+          <input type="password" id="set-apikey" placeholder="sk-..." autocomplete="off">
+        </label>
+        <p class="hint">Stored only in this browser's localStorage. Requests go straight
+        from your browser to api.openai.com — there is no middle server.</p>
+        <label>Model (tried first, then fallbacks)
+          <input type="text" id="set-model" placeholder="gpt-5-nano-2025-08-07">
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Local LLM (Ollama)</legend>
+        <label class="chk"><input type="checkbox" id="set-use-ollama"> Use Ollama instead of OpenAI</label>
+        <label>Endpoint <input type="text" id="set-ollama-endpoint" placeholder="http://localhost:11434"></label>
+        <label>Model <input type="text" id="set-ollama-model" placeholder="llama3.1"></label>
+        <p class="hint">If this page is hosted (not opened from disk), start Ollama with
+        <code>OLLAMA_ORIGINS</code> including this site's origin so the browser may call it.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Prompts</legend>
+        <label>System prompt <textarea id="set-system-prompt" rows="2"></textarea></label>
+        <label>User prompt (your instructions, inserted into the draft context)
+          <textarea id="set-user-prompt" rows="3"></textarea></label>
+        <button type="button" id="btn-reset-prompts">Reset prompts to defaults</button>
+      </fieldset>
+      <div class="dialog-actions">
+        <button type="button" id="btn-reset-draft" class="danger">Reset draft state</button>
+        <button type="submit" id="btn-save-settings">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="data/players-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

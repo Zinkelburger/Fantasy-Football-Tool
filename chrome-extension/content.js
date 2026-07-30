@@ -1,6 +1,24 @@
 // Core functionality shared across all draft sites
 
 function sendDataToServer(data) {
+  // Mirror into extension storage so the static web app can read it via
+  // bridge.js. Storage persists, so the web app tab does not need to be
+  // open while the draft page is scraped.
+  try {
+    if (data && data.type && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({
+        ['ffda_' + data.type]: {
+          site: data.site,
+          players: data.players,
+          updatedAt: Date.now(),
+        },
+      });
+    }
+  } catch (e) {
+    // Extension context invalidated (extension reloaded); ignore.
+  }
+
+  // Also POST to the Go desktop app if it happens to be running.
   fetch('http://localhost:8000', {
     method: 'POST',
     headers: {
@@ -10,7 +28,7 @@ function sendDataToServer(data) {
   })
   .then(response => response.json())
   .then(serverData => console.log('Server response:', serverData))
-  .catch((error) => console.error('Error sending data:', error));
+  .catch(() => { /* Go desktop app not running; web app gets data via storage */ });
 }
 
 function sendHeartbeat() {
