@@ -1,0 +1,2418 @@
+[
+ {
+  "name": "Ja'Marr Chase",
+  "pos": "WR",
+  "team": "CIN",
+  "adp": 1.0,
+  "stdev": 0.88,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Bijan Robinson",
+  "pos": "RB",
+  "team": "ATL",
+  "adp": 2.5,
+  "stdev": 1.02,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Saquon Barkley",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 3.0,
+  "stdev": 1.07,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jahmyr Gibbs",
+  "pos": "RB",
+  "team": "DET",
+  "adp": 4.0,
+  "stdev": 1.16,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Justin Jefferson",
+  "pos": "WR",
+  "team": "MIN",
+  "adp": 5.0,
+  "stdev": 1.25,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "CeeDee Lamb",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 5.5,
+  "stdev": 1.3,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Amon-Ra St. Brown",
+  "pos": "WR",
+  "team": "DET",
+  "adp": 9.0,
+  "stdev": 1.63,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Malik Nabers",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 9.0,
+  "stdev": 1.63,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ashton Jeanty",
+  "pos": "RB",
+  "team": "LV",
+  "adp": 9.5,
+  "stdev": 1.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Christian McCaffrey",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 10.5,
+  "stdev": 1.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Derrick Henry",
+  "pos": "RB",
+  "team": "BAL",
+  "adp": 11.0,
+  "stdev": 1.81,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Nico Collins",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 11.5,
+  "stdev": 1.86,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Puka Nacua",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 12.0,
+  "stdev": 1.91,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brian Thomas Jr.",
+  "pos": "WR",
+  "team": "JAC",
+  "adp": 13.5,
+  "stdev": 2.05,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Josh Jacobs",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 16.5,
+  "stdev": 2.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Bucky Irving",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 16.5,
+  "stdev": 2.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "De'Von Achane",
+  "pos": "RB",
+  "team": "MIA",
+  "adp": 17.0,
+  "stdev": 2.37,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brock Bowers",
+  "pos": "TE",
+  "team": "LV",
+  "adp": 18.0,
+  "stdev": 2.47,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Drake London",
+  "pos": "WR",
+  "team": "ATL",
+  "adp": 18.5,
+  "stdev": 2.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chase Brown",
+  "pos": "RB",
+  "team": "CIN",
+  "adp": 21.5,
+  "stdev": 2.79,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jonathan Taylor",
+  "pos": "RB",
+  "team": "IND",
+  "adp": 21.5,
+  "stdev": 2.79,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "A.J. Brown",
+  "pos": "WR",
+  "team": "PHI",
+  "adp": 22.0,
+  "stdev": 2.84,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Josh Allen",
+  "pos": "QB",
+  "team": "BUF",
+  "adp": 23.0,
+  "stdev": 2.93,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Lamar Jackson",
+  "pos": "QB",
+  "team": "BAL",
+  "adp": 23.5,
+  "stdev": 2.98,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kyren Williams",
+  "pos": "RB",
+  "team": "LAR",
+  "adp": 25.0,
+  "stdev": 3.12,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ladd McConkey",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 25.5,
+  "stdev": 3.17,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Trey McBride",
+  "pos": "TE",
+  "team": "ARI",
+  "adp": 25.5,
+  "stdev": 3.17,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jayden Daniels",
+  "pos": "QB",
+  "team": "WAS",
+  "adp": 29.0,
+  "stdev": 3.49,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaxon Smith-Njigba",
+  "pos": "WR",
+  "team": "SEA",
+  "adp": 30.0,
+  "stdev": 3.59,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyreek Hill",
+  "pos": "WR",
+  "team": "MIA",
+  "adp": 30.0,
+  "stdev": 3.59,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "James Cook",
+  "pos": "RB",
+  "team": "BUF",
+  "adp": 32.0,
+  "stdev": 3.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Omarion Hampton",
+  "pos": "RB",
+  "team": "LAC",
+  "adp": 32.5,
+  "stdev": 3.82,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tee Higgins",
+  "pos": "WR",
+  "team": "CIN",
+  "adp": 34.0,
+  "stdev": 3.96,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Breece Hall",
+  "pos": "RB",
+  "team": "NYJ",
+  "adp": 34.5,
+  "stdev": 4.01,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Terry McLaurin",
+  "pos": "WR",
+  "team": "WAS",
+  "adp": 36.0,
+  "stdev": 4.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Alvin Kamara",
+  "pos": "RB",
+  "team": "NO",
+  "adp": 38.0,
+  "stdev": 4.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Garrett Wilson",
+  "pos": "WR",
+  "team": "NYJ",
+  "adp": 38.0,
+  "stdev": 4.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Joe Burrow",
+  "pos": "QB",
+  "team": "CIN",
+  "adp": 38.0,
+  "stdev": 4.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "George Kittle",
+  "pos": "TE",
+  "team": "SF",
+  "adp": 38.5,
+  "stdev": 4.38,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Marvin Harrison Jr.",
+  "pos": "WR",
+  "team": "ARI",
+  "adp": 40.5,
+  "stdev": 4.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen Hurts",
+  "pos": "QB",
+  "team": "PHI",
+  "adp": 40.5,
+  "stdev": 4.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Mike Evans",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 41.5,
+  "stdev": 4.66,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kenneth Walker III",
+  "pos": "RB",
+  "team": "SEA",
+  "adp": 42.5,
+  "stdev": 4.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Davante Adams",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 42.5,
+  "stdev": 4.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chuba Hubbard",
+  "pos": "RB",
+  "team": "CAR",
+  "adp": 44.5,
+  "stdev": 4.94,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "TreVeyon Henderson",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 49.0,
+  "stdev": 5.36,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "James Conner",
+  "pos": "RB",
+  "team": "ARI",
+  "adp": 49.5,
+  "stdev": 5.4,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Courtland Sutton",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 49.5,
+  "stdev": 5.4,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DJ Moore",
+  "pos": "WR",
+  "team": "CHI",
+  "adp": 50.0,
+  "stdev": 5.45,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DK Metcalf",
+  "pos": "WR",
+  "team": "PIT",
+  "adp": 51.0,
+  "stdev": 5.54,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "RJ Harvey",
+  "pos": "RB",
+  "team": "DEN",
+  "adp": 54.0,
+  "stdev": 5.82,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tetairoa McMillan",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 55.5,
+  "stdev": 5.96,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DeVonta Smith",
+  "pos": "WR",
+  "team": "PHI",
+  "adp": 56.5,
+  "stdev": 6.06,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Xavier Worthy",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 56.5,
+  "stdev": 6.06,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Sam LaPorta",
+  "pos": "TE",
+  "team": "DET",
+  "adp": 58.5,
+  "stdev": 6.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "David Montgomery",
+  "pos": "RB",
+  "team": "DET",
+  "adp": 58.5,
+  "stdev": 6.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Isiah Pacheco",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 58.5,
+  "stdev": 6.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jameson Williams",
+  "pos": "WR",
+  "team": "DET",
+  "adp": 58.5,
+  "stdev": 6.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Patrick Mahomes II",
+  "pos": "QB",
+  "team": "KC",
+  "adp": 60.0,
+  "stdev": 6.38,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rashee Rice",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 60.5,
+  "stdev": 6.43,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "D'Andre Swift",
+  "pos": "RB",
+  "team": "CHI",
+  "adp": 61.0,
+  "stdev": 6.48,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Zay Flowers",
+  "pos": "WR",
+  "team": "BAL",
+  "adp": 61.5,
+  "stdev": 6.52,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "George Pickens",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 62.0,
+  "stdev": 6.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tony Pollard",
+  "pos": "RB",
+  "team": "TEN",
+  "adp": 63.5,
+  "stdev": 6.71,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Aaron Jones Sr.",
+  "pos": "RB",
+  "team": "MIN",
+  "adp": 64.0,
+  "stdev": 6.76,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Calvin Ridley",
+  "pos": "WR",
+  "team": "TEN",
+  "adp": 67.5,
+  "stdev": 7.08,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "T.J. Hockenson",
+  "pos": "TE",
+  "team": "MIN",
+  "adp": 68.5,
+  "stdev": 7.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jerry Jeudy",
+  "pos": "WR",
+  "team": "CLE",
+  "adp": 68.5,
+  "stdev": 7.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Travis Hunter",
+  "pos": "WR",
+  "team": "JAC",
+  "adp": 69.0,
+  "stdev": 7.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Travis Kelce",
+  "pos": "TE",
+  "team": "KC",
+  "adp": 70.0,
+  "stdev": 7.32,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Baker Mayfield",
+  "pos": "QB",
+  "team": "TB",
+  "adp": 70.5,
+  "stdev": 7.36,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaylen Waddle",
+  "pos": "WR",
+  "team": "MIA",
+  "adp": 71.5,
+  "stdev": 7.46,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chris Olave",
+  "pos": "WR",
+  "team": "NO",
+  "adp": 72.5,
+  "stdev": 7.55,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyrone Tracy Jr.",
+  "pos": "RB",
+  "team": "NYG",
+  "adp": 74.0,
+  "stdev": 7.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kaleb Johnson",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 78.0,
+  "stdev": 8.06,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Bo Nix",
+  "pos": "QB",
+  "team": "DEN",
+  "adp": 78.5,
+  "stdev": 8.11,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rome Odunze",
+  "pos": "WR",
+  "team": "CHI",
+  "adp": 79.5,
+  "stdev": 8.2,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaylen Warren",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 80.5,
+  "stdev": 8.3,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Joe Mixon",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 82.5,
+  "stdev": 8.48,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ricky Pearsall",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 83.0,
+  "stdev": 8.53,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jordan Addison",
+  "pos": "WR",
+  "team": "MIN",
+  "adp": 84.0,
+  "stdev": 8.62,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Deebo Samuel Sr.",
+  "pos": "WR",
+  "team": "WAS",
+  "adp": 85.5,
+  "stdev": 8.76,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Mark Andrews",
+  "pos": "TE",
+  "team": "BAL",
+  "adp": 88.0,
+  "stdev": 8.99,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Matthew Golden",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 89.5,
+  "stdev": 9.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Stefon Diggs",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 89.5,
+  "stdev": 9.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jakobi Meyers",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 90.0,
+  "stdev": 9.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cooper Kupp",
+  "pos": "WR",
+  "team": "SEA",
+  "adp": 90.0,
+  "stdev": 9.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Travis Etienne Jr.",
+  "pos": "RB",
+  "team": "JAC",
+  "adp": 90.0,
+  "stdev": 9.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Evan Engram",
+  "pos": "TE",
+  "team": "DEN",
+  "adp": 91.0,
+  "stdev": 9.27,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Khalil Shakir",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 92.0,
+  "stdev": 9.37,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chris Godwin Jr.",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 92.5,
+  "stdev": 9.41,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Emeka Egbuka",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 94.0,
+  "stdev": 9.55,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kyler Murray",
+  "pos": "QB",
+  "team": "ARI",
+  "adp": 95.5,
+  "stdev": 9.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Zach Charbonnet",
+  "pos": "RB",
+  "team": "SEA",
+  "adp": 96.0,
+  "stdev": 9.74,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Warren",
+  "pos": "TE",
+  "team": "IND",
+  "adp": 96.5,
+  "stdev": 9.79,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Quinshon Judkins",
+  "pos": "RB",
+  "team": "CLE",
+  "adp": 97.0,
+  "stdev": 9.83,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brian Robinson Jr.",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 98.0,
+  "stdev": 9.93,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Javonte Williams",
+  "pos": "RB",
+  "team": "DAL",
+  "adp": 98.5,
+  "stdev": 9.97,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jordan Mason",
+  "pos": "RB",
+  "team": "MIN",
+  "adp": 99.0,
+  "stdev": 10.02,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "David Njoku",
+  "pos": "TE",
+  "team": "CLE",
+  "adp": 99.5,
+  "stdev": 10.07,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jared Goff",
+  "pos": "QB",
+  "team": "DET",
+  "adp": 100.0,
+  "stdev": 10.11,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jauan Jennings",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 103.5,
+  "stdev": 10.44,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dak Prescott",
+  "pos": "QB",
+  "team": "DAL",
+  "adp": 104.0,
+  "stdev": 10.49,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Najee Harris",
+  "pos": "RB",
+  "team": "LAC",
+  "adp": 104.5,
+  "stdev": 10.53,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cam Skattebo",
+  "pos": "RB",
+  "team": "NYG",
+  "adp": 105.0,
+  "stdev": 10.58,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Caleb Williams",
+  "pos": "QB",
+  "team": "CHI",
+  "adp": 106.0,
+  "stdev": 10.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rhamondre Stevenson",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 108.0,
+  "stdev": 10.86,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jayden Reed",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 108.5,
+  "stdev": 10.91,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tucker Kraft",
+  "pos": "TE",
+  "team": "GB",
+  "adp": 108.5,
+  "stdev": 10.91,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Michael Pittman Jr.",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 109.5,
+  "stdev": 11.0,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "J.K. Dobbins",
+  "pos": "RB",
+  "team": "DEN",
+  "adp": 110.5,
+  "stdev": 11.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brock Purdy",
+  "pos": "QB",
+  "team": "SF",
+  "adp": 110.5,
+  "stdev": 11.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Josh Downs",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 113.0,
+  "stdev": 11.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Justin Herbert",
+  "pos": "QB",
+  "team": "LAC",
+  "adp": 115.0,
+  "stdev": 11.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Colston Loveland",
+  "pos": "TE",
+  "team": "CHI",
+  "adp": 116.0,
+  "stdev": 11.61,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Keon Coleman",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 117.0,
+  "stdev": 11.7,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jonnu Smith",
+  "pos": "TE",
+  "team": "PIT",
+  "adp": 118.5,
+  "stdev": 11.84,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tank Bigsby",
+  "pos": "RB",
+  "team": "JAC",
+  "adp": 118.5,
+  "stdev": 11.84,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brandon Aiyuk",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 119.0,
+  "stdev": 11.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Justin Fields",
+  "pos": "QB",
+  "team": "NYJ",
+  "adp": 119.0,
+  "stdev": 11.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Austin Ekeler",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 120.5,
+  "stdev": 12.03,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Darnell Mooney",
+  "pos": "WR",
+  "team": "ATL",
+  "adp": 120.5,
+  "stdev": 12.03,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jake Ferguson",
+  "pos": "TE",
+  "team": "DAL",
+  "adp": 123.5,
+  "stdev": 12.3,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dalton Kincaid",
+  "pos": "TE",
+  "team": "BUF",
+  "adp": 126.5,
+  "stdev": 12.58,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Drake Maye",
+  "pos": "QB",
+  "team": "NE",
+  "adp": 127.0,
+  "stdev": 12.63,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaydon Blue",
+  "pos": "RB",
+  "team": "DAL",
+  "adp": 128.0,
+  "stdev": 12.72,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jayden Higgins",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 128.0,
+  "stdev": 12.72,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rachaad White",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 128.5,
+  "stdev": 12.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jordan Love",
+  "pos": "QB",
+  "team": "GB",
+  "adp": 131.0,
+  "stdev": 13.0,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "C.J. Stroud",
+  "pos": "QB",
+  "team": "HOU",
+  "adp": 131.5,
+  "stdev": 13.05,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyjae Spears",
+  "pos": "RB",
+  "team": "TEN",
+  "adp": 132.5,
+  "stdev": 13.14,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Marvin Mims Jr.",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 132.5,
+  "stdev": 13.14,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Bhayshul Tuten",
+  "pos": "RB",
+  "team": "JAC",
+  "adp": 134.5,
+  "stdev": 13.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jerome Ford",
+  "pos": "RB",
+  "team": "CLE",
+  "adp": 135.0,
+  "stdev": 13.38,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Trey Benson",
+  "pos": "RB",
+  "team": "ARI",
+  "adp": 137.5,
+  "stdev": 13.61,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rashid Shaheed",
+  "pos": "WR",
+  "team": "NO",
+  "adp": 139.0,
+  "stdev": 13.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Trevor Lawrence",
+  "pos": "QB",
+  "team": "JAC",
+  "adp": 139.0,
+  "stdev": 13.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "J.J. McCarthy",
+  "pos": "QB",
+  "team": "MIN",
+  "adp": 139.0,
+  "stdev": 13.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kyle Pitts Sr.",
+  "pos": "TE",
+  "team": "ATL",
+  "adp": 139.5,
+  "stdev": 13.8,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Nick Chubb",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 140.0,
+  "stdev": 13.84,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Braelon Allen",
+  "pos": "RB",
+  "team": "NYJ",
+  "adp": 140.5,
+  "stdev": 13.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rico Dowdle",
+  "pos": "RB",
+  "team": "CAR",
+  "adp": 140.5,
+  "stdev": 13.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dallas Goedert",
+  "pos": "TE",
+  "team": "PHI",
+  "adp": 142.5,
+  "stdev": 14.08,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ray Davis",
+  "pos": "RB",
+  "team": "BUF",
+  "adp": 143.5,
+  "stdev": 14.17,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Luther Burden III",
+  "pos": "WR",
+  "team": "CHI",
+  "adp": 144.0,
+  "stdev": 14.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Christian Kirk",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 144.0,
+  "stdev": 14.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Allgeier",
+  "pos": "RB",
+  "team": "ATL",
+  "adp": 150.5,
+  "stdev": 14.82,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dylan Sampson",
+  "pos": "RB",
+  "team": "CLE",
+  "adp": 151.5,
+  "stdev": 14.92,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tre' Harris",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 153.5,
+  "stdev": 15.1,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tua Tagovailoa",
+  "pos": "QB",
+  "team": "MIA",
+  "adp": 154.0,
+  "stdev": 15.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Marquise Brown",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 154.0,
+  "stdev": 15.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Hunter Henry",
+  "pos": "TE",
+  "team": "NE",
+  "adp": 155.0,
+  "stdev": 15.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Keenan Allen",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 156.5,
+  "stdev": 15.38,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Zach Ertz",
+  "pos": "TE",
+  "team": "WAS",
+  "adp": 162.5,
+  "stdev": 15.94,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Michael Penix Jr.",
+  "pos": "QB",
+  "team": "ATL",
+  "adp": 162.5,
+  "stdev": 15.94,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Bryce Young",
+  "pos": "QB",
+  "team": "CAR",
+  "adp": 164.0,
+  "stdev": 16.08,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cam Ward",
+  "pos": "QB",
+  "team": "TEN",
+  "adp": 165.5,
+  "stdev": 16.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Matthew Stafford",
+  "pos": "QB",
+  "team": "LAR",
+  "adp": 167.0,
+  "stdev": 16.36,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DeAndre Hopkins",
+  "pos": "WR",
+  "team": "BAL",
+  "adp": 169.5,
+  "stdev": 16.59,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Rashod Bateman",
+  "pos": "WR",
+  "team": "BAL",
+  "adp": 173.0,
+  "stdev": 16.92,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Isaac Guerendo",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 173.5,
+  "stdev": 16.97,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Adam Thielen",
+  "pos": "WR",
+  "team": "MIN",
+  "adp": 173.5,
+  "stdev": 16.97,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Xavier Legette",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 173.5,
+  "stdev": 16.97,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Geno Smith",
+  "pos": "QB",
+  "team": "LV",
+  "adp": 174.0,
+  "stdev": 17.01,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brenton Strange",
+  "pos": "TE",
+  "team": "JAC",
+  "adp": 174.0,
+  "stdev": 17.01,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cedric Tillman",
+  "pos": "WR",
+  "team": "CLE",
+  "adp": 174.0,
+  "stdev": 17.01,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kyle Williams",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 177.0,
+  "stdev": 17.29,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kyle Monangai",
+  "pos": "RB",
+  "team": "CHI",
+  "adp": 180.0,
+  "stdev": 17.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jack Bech",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 181.0,
+  "stdev": 17.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Isaiah Likely",
+  "pos": "TE",
+  "team": "BAL",
+  "adp": 181.0,
+  "stdev": 17.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Sam Darnold",
+  "pos": "QB",
+  "team": "SEA",
+  "adp": 182.5,
+  "stdev": 17.81,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Aaron Rodgers",
+  "pos": "QB",
+  "team": "PIT",
+  "adp": 184.5,
+  "stdev": 17.99,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jacory Croskey-Merritt",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 185.0,
+  "stdev": 18.04,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Wan'Dale Robinson",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 185.0,
+  "stdev": 18.04,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chris Rodriguez Jr.",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 185.0,
+  "stdev": 18.04,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Mason Taylor",
+  "pos": "TE",
+  "team": "NYJ",
+  "adp": 186.0,
+  "stdev": 18.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cade Otton",
+  "pos": "TE",
+  "team": "TB",
+  "adp": 186.0,
+  "stdev": 18.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brandon Aubrey",
+  "pos": "K",
+  "team": "DAL",
+  "adp": 186.5,
+  "stdev": 18.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kareem Hunt",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 190.0,
+  "stdev": 18.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Justice Hill",
+  "pos": "RB",
+  "team": "BAL",
+  "adp": 190.0,
+  "stdev": 18.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Joshua Palmer",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 190.0,
+  "stdev": 18.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Spencer Rattler",
+  "pos": "QB",
+  "team": "NO",
+  "adp": 191.0,
+  "stdev": 18.6,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ollie Gordon II",
+  "pos": "RB",
+  "team": "MIA",
+  "adp": 192.0,
+  "stdev": 18.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Blake Corum",
+  "pos": "RB",
+  "team": "LAR",
+  "adp": 192.0,
+  "stdev": 18.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Romeo Doubs",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 192.0,
+  "stdev": 18.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chig Okonkwo",
+  "pos": "TE",
+  "team": "TEN",
+  "adp": 192.5,
+  "stdev": 18.74,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DeMario Douglas",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 194.0,
+  "stdev": 18.88,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cameron Dicker",
+  "pos": "K",
+  "team": "LAC",
+  "adp": 196.5,
+  "stdev": 19.11,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaylen Wright",
+  "pos": "RB",
+  "team": "MIA",
+  "adp": 197.5,
+  "stdev": 19.21,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Anthony Richardson Sr.",
+  "pos": "QB",
+  "team": "IND",
+  "adp": 198.5,
+  "stdev": 19.3,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Pat Freiermuth",
+  "pos": "TE",
+  "team": "PIT",
+  "adp": 200.0,
+  "stdev": 19.44,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Russell Wilson",
+  "pos": "QB",
+  "team": "NYG",
+  "adp": 201.0,
+  "stdev": 19.53,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Will Shipley",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 201.5,
+  "stdev": 19.58,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Roschon Johnson",
+  "pos": "RB",
+  "team": "CHI",
+  "adp": 203.5,
+  "stdev": 19.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Amari Cooper",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 206.0,
+  "stdev": 20.0,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Terrance Ferguson",
+  "pos": "TE",
+  "team": "LAR",
+  "adp": 206.0,
+  "stdev": 20.0,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jake Bates",
+  "pos": "K",
+  "team": "DET",
+  "adp": 207.0,
+  "stdev": 20.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brashard Smith",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 207.0,
+  "stdev": 20.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "DJ Giddens",
+  "pos": "RB",
+  "team": "IND",
+  "adp": 207.0,
+  "stdev": 20.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaxson Dart",
+  "pos": "QB",
+  "team": "NYG",
+  "adp": 209.5,
+  "stdev": 20.32,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Woody Marks",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 210.0,
+  "stdev": 20.37,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Mike Gesicki",
+  "pos": "TE",
+  "team": "CIN",
+  "adp": 210.5,
+  "stdev": 20.42,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Alec Pierce",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 211.5,
+  "stdev": 20.51,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jordan James",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 212.0,
+  "stdev": 20.56,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen McMillan",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 212.5,
+  "stdev": 20.6,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ka'imi Fairbairn",
+  "pos": "K",
+  "team": "HOU",
+  "adp": 214.0,
+  "stdev": 20.74,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Daniel Jones",
+  "pos": "QB",
+  "team": "IND",
+  "adp": 219.0,
+  "stdev": 21.21,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dameon Pierce",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 219.0,
+  "stdev": 21.21,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cole Kmet",
+  "pos": "TE",
+  "team": "CHI",
+  "adp": 220.0,
+  "stdev": 21.3,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dalton Schultz",
+  "pos": "TE",
+  "team": "HOU",
+  "adp": 222.0,
+  "stdev": 21.49,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jarquez Hunter",
+  "pos": "RB",
+  "team": "LAR",
+  "adp": 223.0,
+  "stdev": 21.58,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Isaac TeSlaa",
+  "pos": "WR",
+  "team": "DET",
+  "adp": 225.0,
+  "stdev": 21.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Shedeur Sanders",
+  "pos": "QB",
+  "team": "CLE",
+  "adp": 225.0,
+  "stdev": 21.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Harrison Butker",
+  "pos": "K",
+  "team": "KC",
+  "adp": 225.5,
+  "stdev": 21.82,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen Coker",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 227.0,
+  "stdev": 21.96,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brandon McManus",
+  "pos": "K",
+  "team": "GB",
+  "adp": 227.0,
+  "stdev": 21.96,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Pat Bryant",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 227.5,
+  "stdev": 22.0,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Quentin Johnston",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 228.0,
+  "stdev": 22.05,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ja'Tavion Sanders",
+  "pos": "TE",
+  "team": "CAR",
+  "adp": 231.0,
+  "stdev": 22.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Shough",
+  "pos": "QB",
+  "team": "NO",
+  "adp": 231.0,
+  "stdev": 22.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jimmy Garoppolo",
+  "pos": "QB",
+  "team": "LAR",
+  "adp": 231.0,
+  "stdev": 22.33,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Keaton Mitchell",
+  "pos": "RB",
+  "team": "BAL",
+  "adp": 232.5,
+  "stdev": 22.47,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dont'e Thornton Jr.",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 234.5,
+  "stdev": 22.66,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tahj Brooks",
+  "pos": "RB",
+  "team": "CIN",
+  "adp": 235.5,
+  "stdev": 22.75,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "A.J. Dillon",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 237.0,
+  "stdev": 22.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Elijah Arroyo",
+  "pos": "TE",
+  "team": "SEA",
+  "adp": 237.5,
+  "stdev": 22.94,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Bass",
+  "pos": "K",
+  "team": "BUF",
+  "adp": 238.0,
+  "stdev": 22.98,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Darren Waller",
+  "pos": "TE",
+  "team": "MIA",
+  "adp": 238.5,
+  "stdev": 23.03,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Miles Sanders",
+  "pos": "RB",
+  "team": "DAL",
+  "adp": 238.5,
+  "stdev": 23.03,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kendre Miller",
+  "pos": "RB",
+  "team": "NO",
+  "adp": 239.0,
+  "stdev": 23.08,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Juwan Johnson",
+  "pos": "TE",
+  "team": "NO",
+  "adp": 239.0,
+  "stdev": 23.08,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chase McLaughlin",
+  "pos": "K",
+  "team": "TB",
+  "adp": 240.0,
+  "stdev": 23.17,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Joe Flacco",
+  "pos": "QB",
+  "team": "CLE",
+  "adp": 241.0,
+  "stdev": 23.26,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaylin Noel",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 242.5,
+  "stdev": 23.4,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Cam Little",
+  "pos": "K",
+  "team": "JAC",
+  "adp": 244.0,
+  "stdev": 23.54,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tory Horton",
+  "pos": "WR",
+  "team": "SEA",
+  "adp": 246.0,
+  "stdev": 23.73,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Sean Tucker",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 246.0,
+  "stdev": 23.73,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Devin Neal",
+  "pos": "RB",
+  "team": "NO",
+  "adp": 246.5,
+  "stdev": 23.77,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jake Elliott",
+  "pos": "K",
+  "team": "PHI",
+  "adp": 247.5,
+  "stdev": 23.87,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Harold Fannin Jr.",
+  "pos": "TE",
+  "team": "CLE",
+  "adp": 247.5,
+  "stdev": 23.87,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Theo Johnson",
+  "pos": "TE",
+  "team": "NYG",
+  "adp": 248.0,
+  "stdev": 23.91,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dontayvion Wicks",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 250.5,
+  "stdev": 24.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Evan McPherson",
+  "pos": "K",
+  "team": "CIN",
+  "adp": 251.0,
+  "stdev": 24.19,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Michael Wilson",
+  "pos": "WR",
+  "team": "ARI",
+  "adp": 251.5,
+  "stdev": 24.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Lockett",
+  "pos": "WR",
+  "team": "TEN",
+  "adp": 251.5,
+  "stdev": 24.24,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "MarShawn Lloyd",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 253.0,
+  "stdev": 24.38,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen Royals",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 254.0,
+  "stdev": 24.47,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Wil Lutz",
+  "pos": "K",
+  "team": "DEN",
+  "adp": 255.0,
+  "stdev": 24.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kirk Cousins",
+  "pos": "QB",
+  "team": "ATL",
+  "adp": 255.0,
+  "stdev": 24.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Chris Boswell",
+  "pos": "K",
+  "team": "PIT",
+  "adp": 255.0,
+  "stdev": 24.57,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaleel McLaughlin",
+  "pos": "RB",
+  "team": "DEN",
+  "adp": 257.5,
+  "stdev": 24.8,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Roman Wilson",
+  "pos": "WR",
+  "team": "PIT",
+  "adp": 258.0,
+  "stdev": 24.85,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Elic Ayomanor",
+  "pos": "WR",
+  "team": "TEN",
+  "adp": 258.5,
+  "stdev": 24.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Darius Slayton",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 258.5,
+  "stdev": 24.89,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jaylin Lane",
+  "pos": "WR",
+  "team": "WAS",
+  "adp": 259.0,
+  "stdev": 24.94,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Loop",
+  "pos": "K",
+  "team": "BAL",
+  "adp": 259.5,
+  "stdev": 24.99,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Noah Gray",
+  "pos": "TE",
+  "team": "KC",
+  "adp": 260.0,
+  "stdev": 25.03,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Matt Gay",
+  "pos": "K",
+  "team": "WAS",
+  "adp": 261.0,
+  "stdev": 25.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Xavier Restrepo",
+  "pos": "WR",
+  "team": "TEN",
+  "adp": 261.0,
+  "stdev": 25.13,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Adonai Mitchell",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 262.0,
+  "stdev": 25.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen Milroe",
+  "pos": "QB",
+  "team": "SEA",
+  "adp": 262.0,
+  "stdev": 25.22,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Raheem Mostert",
+  "pos": "RB",
+  "team": "LV",
+  "adp": 262.5,
+  "stdev": 25.27,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Diontae Johnson",
+  "pos": "WR",
+  "team": "",
+  "adp": 263.0,
+  "stdev": 25.31,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Trevor Etienne",
+  "pos": "RB",
+  "team": "CAR",
+  "adp": 267.0,
+  "stdev": 25.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kenneth Gainwell",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 267.0,
+  "stdev": 25.69,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Dyami Brown",
+  "pos": "WR",
+  "team": "JAC",
+  "adp": 268.5,
+  "stdev": 25.83,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Conklin",
+  "pos": "TE",
+  "team": "LAC",
+  "adp": 269.0,
+  "stdev": 25.87,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Brandin Cooks",
+  "pos": "WR",
+  "team": "NO",
+  "adp": 269.0,
+  "stdev": 25.87,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jake Moody",
+  "pos": "K",
+  "team": "SF",
+  "adp": 269.0,
+  "stdev": 25.87,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ray-Ray McCloud III",
+  "pos": "WR",
+  "team": "ATL",
+  "adp": 271.0,
+  "stdev": 26.06,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Audric Estime",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 271.0,
+  "stdev": 26.06,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Calvin Austin III",
+  "pos": "WR",
+  "team": "PIT",
+  "adp": 272.0,
+  "stdev": 26.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Zack Moss",
+  "pos": "RB",
+  "team": "",
+  "adp": 272.0,
+  "stdev": 26.15,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Taysom Hill",
+  "pos": "TE",
+  "team": "NO",
+  "adp": 273.0,
+  "stdev": 26.25,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Noah Fant",
+  "pos": "TE",
+  "team": "CIN",
+  "adp": 274.0,
+  "stdev": 26.34,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Antonio Gibson",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 275.5,
+  "stdev": 26.48,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Elijah Mitchell",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 275.5,
+  "stdev": 26.48,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Troy Franklin",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 277.5,
+  "stdev": 26.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Samaje Perine",
+  "pos": "RB",
+  "team": "CIN",
+  "adp": 280.0,
+  "stdev": 26.9,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jason Sanders",
+  "pos": "K",
+  "team": "MIA",
+  "adp": 280.0,
+  "stdev": 26.9,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Andrei Iosivas",
+  "pos": "WR",
+  "team": "CIN",
+  "adp": 280.5,
+  "stdev": 26.95,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jordan Whittington",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 282.0,
+  "stdev": 27.09,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Oronde Gadsden II",
+  "pos": "TE",
+  "team": "LAC",
+  "adp": 283.0,
+  "stdev": 27.18,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Devin Singletary",
+  "pos": "RB",
+  "team": "NYG",
+  "adp": 284.0,
+  "stdev": 27.27,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Younghoe Koo",
+  "pos": "K",
+  "team": "ATL",
+  "adp": 284.0,
+  "stdev": 27.27,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Emanuel Wilson",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 285.0,
+  "stdev": 27.37,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ben Sinnott",
+  "pos": "TE",
+  "team": "WAS",
+  "adp": 285.0,
+  "stdev": 27.37,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Christian Watson",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 289.0,
+  "stdev": 27.74,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tyler Higbee",
+  "pos": "TE",
+  "team": "LAR",
+  "adp": 290.0,
+  "stdev": 27.83,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tutu Atwell",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 290.0,
+  "stdev": 27.83,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Daniel Carlson",
+  "pos": "K",
+  "team": "LV",
+  "adp": 292.0,
+  "stdev": 28.02,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Will Reichard",
+  "pos": "K",
+  "team": "MIN",
+  "adp": 294.0,
+  "stdev": 28.2,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Kayshon Boutte",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 294.5,
+  "stdev": 28.25,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Ty Johnson",
+  "pos": "RB",
+  "team": "BUF",
+  "adp": 296.0,
+  "stdev": 28.39,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Khalil Herbert",
+  "pos": "RB",
+  "team": "",
+  "adp": 297.0,
+  "stdev": 28.48,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Marquez Valdes-Scantling",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 299.0,
+  "stdev": 28.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Malik Washington",
+  "pos": "WR",
+  "team": "MIA",
+  "adp": 299.0,
+  "stdev": 28.67,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Tre Tucker",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 300.0,
+  "stdev": 28.76,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Damien Martinez",
+  "pos": "RB",
+  "team": "",
+  "adp": 301.0,
+  "stdev": 28.86,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "KeAndre Lambert-Smith",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 302.0,
+  "stdev": 28.95,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Jalen Tolbert",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 305.0,
+  "stdev": 29.23,
+  "source": "fantasypros-wayback"
+ },
+ {
+  "name": "Curtis Samuel",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 306.0,
+  "stdev": 29.32,
+  "source": "fantasypros-wayback"
+ }
+]
