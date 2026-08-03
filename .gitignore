@@ -3,7 +3,7 @@ venv
 log/
 filtered_2024
 gpt_query
-2024/.env
+archive/2024/.env
 reddit-scraper/filtered_data
 reddit-scraper/corpus
 reddit-scraper/__pycache__
@@ -11,9 +11,9 @@ reddit-scraper/.env
 reddit-scraper/venv
 reddit-scraper/markdown_data
 reddit-scraper/ff-hound
-go/build/
-go/releases
-go/status
+archive/go-tool/build/
+archive/go-tool/releases
+archive/go-tool/status
 __pycache__
 .claude
 espn_cache
@@ -21,10 +21,10 @@ ffhound_analysis/
 opportunity_score
 
 # Compiled Go binaries (32MB each -- build with `make build` / `make build-local`)
-go/draft_assist
-go/fantasy-tool
-go/fantasy-football-tool
-go/dist/
+archive/go-tool/draft_assist
+archive/go-tool/fantasy-tool
+archive/go-tool/fantasy-football-tool
+archive/go-tool/dist/
 
 # Go coverage artifacts (`make test-coverage`)
 coverage.out

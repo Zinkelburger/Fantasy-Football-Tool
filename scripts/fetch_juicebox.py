@@ -9,7 +9,7 @@ The sheets are updated through the preseason (they carry their own
 See ../DATA-SOURCES.md for the links and staleness policy.
 
 Usage:
-    python scripts/fetch_juicebox.py                 # -> 2026/data/
+    python scripts/fetch_juicebox.py                 # -> data/juicebox/<year>/
     python scripts/fetch_juicebox.py --year 2027
 """
 
@@ -31,7 +31,7 @@ SHEETS = {
         "id": "1HTixsrRtIIpnUafVkOIhET83vCFjKXSUGiG24-5jTHY",
         "title": "JuiceBoxOne's Abusing Fantasy Draft Rankings",
         "note": "per-platform draft ranks (ESPN/Sleeper/Yahoo/CBS x scoring format) "
-                "+ Landmine risk score. Source of ESPN_Rank/Sleeper_Rank in go/*.csv.",
+                "+ Landmine risk score. Source of ESPN_Rank/Sleeper_Rank in data/ranks/*.csv.",
     },
     "cheatsheet": {
         "id": "199izMhbkOOjTsNmrK-D56dYnnViJBYFfBEtxK268h4Y",
@@ -65,7 +65,7 @@ def main():
     ap.add_argument("--outdir", default=None)
     args = ap.parse_args()
 
-    outdir = pathlib.Path(args.outdir) if args.outdir else ROOT / args.year / "data"
+    outdir = pathlib.Path(args.outdir) if args.outdir else ROOT / "data" / "juicebox" / args.year
     outdir.mkdir(parents=True, exist_ok=True)
 
     manifest = {"fetched_at": datetime.date.today().isoformat(), "sheets": {}}

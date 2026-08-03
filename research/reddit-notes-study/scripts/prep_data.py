@@ -1,22 +1,22 @@
 """Step 1: join every reddit-note file with market rank and actual results.
 
 Inputs (already in the repo):
-  2024/analysis/*.md            raw reddit comment pastes, one player per file
-  2025/go/analysis/*.md         LLM-summarized outlooks, one player per file
-  2024/ADR.csv                  2024 preseason ADP board
-  2025/go/std_with_depth.csv    2025 preseason consensus rank (ESPN+Sleeper)
+  archive/2024/analysis/*.md         raw reddit comment pastes, one player per file
+  archive/2025/go/analysis/*.md      LLM-summarized outlooks, one player per file
+  archive/2024/ADR.csv               2024 preseason ADP board
+  archive/2025/go/std_with_depth.csv 2025 preseason consensus rank (ESPN+Sleeper)
   league-sim/data/weekly_{y}.parquet  actual weekly stat lines (nflverse)
 
 Output: data/joined_{year}.csv - one row per note file with market rank,
 actual season points (ESPN standard scoring, weeks 1-17), and positional
 finish. Run with league-sim's venv (needs pandas + pyarrow):
-  ../../league-sim/venv/bin/python prep_data.py
+  ../../../league-sim/venv/bin/python prep_data.py
 """
 import pandas as pd, os, re, unicodedata
 from pathlib import Path
 
 STUDY = Path(__file__).resolve().parent.parent
-ROOT = STUDY.parent
+ROOT = STUDY.parent.parent  # research/reddit-notes-study -> repo root
 DATA = STUDY / "data"
 
 def norm(name):
@@ -47,14 +47,14 @@ def season_points(year):
     return g
 
 def market_2024():
-    adr = pd.read_csv(ROOT / "2024/ADR.csv")
+    adr = pd.read_csv(ROOT / "archive/2024/ADR.csv")
     adr = adr.rename(columns={"Name": "player", "Pos": "pos", "ADP": "market_rank"})
     adr = adr[["player", "pos", "market_rank"]].dropna(subset=["player"])
     adr["key"] = adr.player.map(norm)
     return adr.drop_duplicates("key")
 
 def market_2025():
-    m = pd.read_csv(ROOT / "2025/go/std_with_depth.csv")
+    m = pd.read_csv(ROOT / "archive/2025/go/std_with_depth.csv")
     m = m.rename(columns={"Player": "player", "POS": "pos", "Rank": "market_rank"})
     m = m[["player", "pos", "market_rank"]]
     m["key"] = m.player.map(norm)
@@ -89,5 +89,5 @@ def build(year, notes_dir, market):
     print("  no stat line (DST/meta files or true zero-point busts):",
           ", ".join(df[df.total_pts.isna()].note_name.tolist()))
 
-build(2024, ROOT / "2024/analysis", market_2024())
-build(2025, ROOT / "2025/go/analysis", market_2025())
+build(2024, ROOT / "archive/2024/analysis", market_2024())
+build(2025, ROOT / "archive/2025/go/analysis", market_2025())

@@ -30,8 +30,9 @@ projection input, because we measured that it isn't one.
 1. **Draft assist tool** — season board (league-sim
    `analysis/player_model.py`, beats ADP at QB/WR/TE, +stack at RB) +
    wait-cost pick logic (`PickValue`, finding 23 slope logic) + rules
-   from findings (QB by r6, TE discipline, K last). Prior art: go/
-   draft tool + webapp/ static port + chrome-extension pick sync.
+   from findings (QB by r6, TE discipline, K last). Prior art: legacy
+   Go draft tool (archive/go-tool) + webapp/ static port +
+   chrome-extension pick sync.
 2. **Strategy blogs** — findings 01–26 are the drafts: discipline
    (03), RB-vs-WR curves (23), hindsight optima (24), PPR imports
    warning (02), waiver reality (22). Mostly editing work, not new

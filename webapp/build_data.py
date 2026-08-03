@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bundle player CSVs and analysis notes from ../go into webapp/data/players-data.js.
+"""Bundle player CSVs and analysis notes from ../data into webapp/data/players-data.js.
 
 The output is a plain JS file (not JSON) so the web app works from file:// with no
 server and no fetch/CORS concerns. Re-run this whenever the CSVs or notes change.
@@ -12,17 +12,17 @@ import sys
 from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-GO_DIR = os.path.join(HERE, "..", "go")
+DATA_DIR = os.path.join(HERE, "..", "data")
 OUT_PATH = os.path.join(HERE, "data", "players-data.js")
 
-# Scoring format -> CSV file (matches go/loader.go getPlayerDataFilename fallbacks)
+# Scoring format -> CSV file (matches archive/go-tool/loader.go getPlayerDataFilename)
 FORMATS = {
     "STD": "std_with_depth.csv",
     "0.5PPR": "0.5_ppr_with_depth.csv",
     "PPR": "ppr_with_depth.csv",
 }
 
-# Matches go/loader.go nameCleaner: strips Jr./Sr./II/III/IV/V suffixes
+# Matches archive/go-tool/loader.go nameCleaner: strips Jr./Sr./II/III/IV/V suffixes
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$")
 
 
@@ -62,7 +62,7 @@ def load_format(path: str):
 
 def load_notes():
     notes = {}
-    analysis_dir = os.path.join(GO_DIR, "analysis")
+    analysis_dir = os.path.join(DATA_DIR, "notes")
     for fn in sorted(os.listdir(analysis_dir)):
         if not fn.endswith(".md"):
             continue
@@ -77,7 +77,7 @@ def load_notes():
 def main():
     formats = {}
     for fmt, fname in FORMATS.items():
-        path = os.path.join(GO_DIR, fname)
+        path = os.path.join(DATA_DIR, "ranks", fname)
         if not os.path.exists(path):
             sys.exit(f"ERROR: missing CSV {path}")
         formats[fmt] = load_format(path)
@@ -86,7 +86,7 @@ def main():
     notes = load_notes()
     print(f"notes: {len(notes)} analysis files")
 
-    # Same check as go/main.go: every player should have a note file
+    # Same check as the legacy Go tool: every player should have a note file
     missing = []
     for fmt, players in formats.items():
         for p in players:

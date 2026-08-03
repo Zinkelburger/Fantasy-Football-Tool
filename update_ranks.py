@@ -13,7 +13,7 @@ No keys, no auth, stdlib only. Sources (all verified working 2026-08-03):
 
 What it writes:
 
-1. go/{std,0.5_ppr,ppr}_with_depth.csv — ESPN_Rank and Sleeper_Rank
+1. data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — ESPN_Rank and Sleeper_Rank
    columns only. Rank / Player / Team / Bye / POS are never touched:
    Rank is OUR board, this script only refreshes the market columns.
 2. league-sim/data/market/adp_2026.csv — tracked snapshot joining all
@@ -37,7 +37,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-GO = ROOT / "go"
+RANKS = ROOT / "data" / "ranks"
 SNAPSHOT = ROOT / "league-sim" / "data" / "market" / "adp_2026.csv"
 
 SEASON = 2026
@@ -151,7 +151,7 @@ def fetch_ffc():
 def update_csvs(espn, sleeper):
     unmatched = set()
     for fname, slp_field in FORMATS.items():
-        path = GO / fname
+        path = RANKS / fname
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             fieldnames = reader.fieldnames
@@ -185,7 +185,7 @@ def write_snapshot(espn, sleeper, sleeper_meta, ffc):
     """One tracked CSV joining all sources: our STD board players first, then
     any other player inside Sleeper's top-300 STD ADP (so the site's
     model-vs-market join covers deep QB/TE the 225-player board omits)."""
-    with open(GO / "std_with_depth.csv", newline="", encoding="utf-8") as f:
+    with open(RANKS / "std_with_depth.csv", newline="", encoding="utf-8") as f:
         board = list(csv.DictReader(f))
     rows = [(row["Player"], row["Team"], row["POS"], norm(row["Player"]))
             for row in board]

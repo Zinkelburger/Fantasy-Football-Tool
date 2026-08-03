@@ -30,7 +30,7 @@ jobs:
         run: |
           git config user.name "rank-refresh-bot"
           git config user.email "actions@github.com"
-          git add go/*.csv league-sim/data/market/adp_2026.csv
+          git add data/ranks/*.csv league-sim/data/market/adp_2026.csv
           git diff --cached --quiet && echo "no ADP movement" && exit 0
           git commit -m "data: refresh ESPN/Sleeper/FFC ranks ($(date -u +%F))"
           git push

@@ -2,8 +2,8 @@
 """Season checklist step 1: turn a FantasyPros overall-ADP export into
 
   1. combined_with_depth.csv  — input for the scraper/matcher (this dir)
-  2. ../go/{std,0.5_ppr,ppr}_with_depth.csv — board CSVs for the draft tool
-     and the web app (columns: Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank)
+  2. ../data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — board CSVs for the
+     draft tool (columns: Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank)
 
 FantasyPros 2026 format: Rank,"Player (Bye)",POS,Sleeper,RTSports,AVG,Real-Time
 The player cell is "Jahmyr Gibbs   DET (6)"; free agents are a bare name.
@@ -22,7 +22,7 @@ import re
 import pandas as pd
 
 HERE = pathlib.Path(__file__).resolve().parent
-GO_DIR = HERE.parent / "go"
+BOARD_DIR = HERE.parent / "data" / "ranks"
 OUT = HERE / "combined_with_depth.csv"
 
 # board file -> the JuiceBoxOne scoring-format label used in its filename
@@ -88,7 +88,7 @@ def juicebox_ranks(directory: str) -> dict:
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("fantasypros_csv")
-    ap.add_argument("--no-board", action="store_true", help="skip the go/ board CSVs")
+    ap.add_argument("--no-board", action="store_true", help="skip the board CSVs")
     ap.add_argument("--juicebox", metavar="DIR",
                     help="directory of JuiceBoxOne per-platform ranking CSVs "
                          "(supplies the ESPN_Rank/Sleeper_Rank comparison columns)")
@@ -153,9 +153,9 @@ def main():
             ranks = jb.get((site, fmt_label))
             if ranks:
                 b[col] = [str(ranks.get(clean_name(n).lower(), "")) for n in b["Player"]]
-        b[board_cols].to_csv(GO_DIR / fname, index=False)
+        b[board_cols].to_csv(BOARD_DIR / fname, index=False)
 
-    print(f"wrote {len(board)} players to {len(BOARD_FILES)} board CSVs in {GO_DIR}")
+    print(f"wrote {len(board)} players to {len(BOARD_FILES)} board CSVs in {BOARD_DIR}")
     if jb:
         for (site, fmt), ranks in sorted(jb.items()):
             print(f"  merged {len(ranks)} {site} ranks for {fmt}")
