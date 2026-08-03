@@ -434,7 +434,7 @@ function initApp() {
   let teamGroupsCollapsed = store.load('teamGroupsCollapsed', {}); // pos -> true
   let predictMode = store.load('predictMode', false); // predictions stay on, re-simulated after every live pick
   let tourIndex = -1;           // -1 = tour not running
-  let predicted = null;         // [{pick, round, team, name, pos}] from Predict picks
+  let predicted = null;         // [{pick, round, team, name, pos}] from the pick simulation
   let predictedAtCount = -1;    // pick count the prediction was made at (stale otherwise)
   let predictedMeta = null;     // {followNext, byPos, suggestion} — only valid while predicted is
 
@@ -1257,10 +1257,24 @@ function initApp() {
     $('board-rounds').value = settings.numRounds;
     $('board-bot-ranks').value = settings.botRanks || 'auto';
     $('board-bot-algo').value = settings.botAlgo || 'need';
+    // The button states the assumption instead of hiding it behind a gear —
+    // "which ranking do the bots use" is the question every surprising
+    // prediction comes back to, so the answer is always on screen.
+    $('bot-config-label').textContent = 'Bots: ' + botRanksLabel();
     // Predict mode is a toggle: while it's on (and auto-updating), the only
     // button that makes sense is the way out.
     $('btn-predict').hidden = predictMode;
     $('btn-clear-predict').hidden = !predictMode;
+  }
+
+  // Human name for the ranking the bots sort on. 'auto' resolves the same way
+  // computePrediction() does, so the label never claims a source the
+  // simulation didn't actually use.
+  function botRanksLabel() {
+    const src = !settings.botRanks || settings.botRanks === 'auto'
+      ? (draftSite() === 'sleeper' ? 'sleeper' : 'espn')
+      : settings.botRanks;
+    return { espn: 'ESPN ADP', sleeper: 'Sleeper rank', mine: 'my board' }[src] || src;
   }
 
   // What each position looks like NOW vs at your next pick, per the
@@ -1269,9 +1283,9 @@ function initApp() {
   function renderOutlook(info) {
     const el = $('board-outlook');
     if (!predicted) {
-      el.innerHTML = '<span class="muted" title="Predict picks simulates the room between now ' +
+      el.innerHTML = '<span class="muted" title="“Who should I take?” simulates the room between now ' +
         'and your turn, then stays on and re-simulates after every real pick">' + (info
-        ? `Next pick <b>${info.next}</b>, ${info.until} away · <b>Predict picks</b> to see what survives.`
+        ? `Next pick <b>${info.next}</b>, ${info.until} away · <b>Who should I take?</b> to see what survives.`
         : 'Click your column header to set your draft slot.') + '</span>';
       return;
     }
@@ -1294,34 +1308,51 @@ function initApp() {
     let suggest = '';
     if (meta && meta.suggestion) {
       const s = meta.suggestion;
-      // Name the fallback. "costs 4 ranks to wait" is an abstraction over the
-      // choice actually in front of you — Irving now vs Chase Brown at your
-      // next turn — and the number means nothing without the name it refers
-      // to. Cost 0 means nothing drops off before your following turn —
-      // usually because it's back-to-back at the snake turn. Saying "costs 0
-      // ranks to wait" invites the obvious "then why this player?"; the
-      // honest answer is that no position is scarce, so it's best available.
+      // Answer first, reasoning second. This panel is read while a clock runs,
+      // so the name leads and the arithmetic justifies it underneath — the
+      // question is "who do I take", not "what does the simulation forecast".
+      // Cost 0 means nothing drops off before your following turn — usually
+      // back-to-back at the snake turn. A bare "0" invites the obvious "then
+      // why this player?"; the honest answer is that no position is scarce.
       const why = !s.B
-        ? `${s.pos} runs out before your next turn`
+        ? `${s.pos} runs out entirely before pick ${meta.followNext} — last chance at the position`
         : s.cost > 0
-          ? `wait and it's <b>${escapeHtml(s.B.name)}</b> ${escapeHtml(s.B.rank)} at pick ` +
-            `${meta.followNext} — ${s.cost} rank${s.cost === 1 ? '' : 's'} worse`
-          : `still there at pick ${meta.followNext} — nothing drops off, so best available`;
+          ? `${s.pos} falls ${s.cost} spot${s.cost === 1 ? '' : 's'} by pick ${meta.followNext} — ` +
+            `pass and it's <b>${escapeHtml(s.B.name)}</b> ${escapeHtml(s.B.rank)}`
+          : `nothing drops off before pick ${meta.followNext} — no position is scarce, ` +
+            'so this is simply best available';
       suggest = '<div class="ol-suggest" title="For each position you\'d draft now, ' +
         'this compares the best player there against the best one still left at your ' +
-        'following turn. The position that loses the most rank spots is the pick.">' +
-        `Take <b>${escapeHtml(s.A.name)}</b> — ${s.pos}, rank ${escapeHtml(s.A.rank)} · ${why}</div>`;
+        'following turn. The position that falls furthest is the pick.">' +
+        `<div class="ol-suggest-head">${onClock ? 'Your pick now' : `At your pick ${info.next}`} — ` +
+        `<b>${escapeHtml(s.A.name)}</b> <span class="ol-suggest-meta">${s.pos} · your #${escapeHtml(s.A.rank)}</span></div>` +
+        `<div class="ol-suggest-why">${why}</div></div>`;
     }
 
-    const cell = (p) => p
-      ? `${escapeHtml(p.name)} <span class="ol-rank">${escapeHtml(p.rank)}</span>` : '—';
+    // Two numbers per name, because two different rankings drive this table:
+    // your board rank (what the cost is measured in) and the ranking the bots
+    // sort on (what decides who's actually gone). Showing only the first is
+    // what makes a faller look impossible — "my #18 is still here at pick 28?"
+    // reads as a broken sim until you can see ESPN has him 36th.
+    const srcLabel = { espn: 'ESPN', sleeper: 'Sleeper' }[meta && meta.botSrc] || '';
+    const myRank = (p) => {
+      const o = meta && meta.effRank ? meta.effRank(p) : null;
+      return o === null || o === undefined ? p.rank : String(o).replace(/\.0$/, '');
+    };
+    const cell = (p) => {
+      if (!p) return '—';
+      const bot = srcLabel && p[meta.botSrc] ? p[meta.botSrc] : '';
+      return `${escapeHtml(p.name)} <span class="ol-rank">${escapeHtml(myRank(p))}</span>` +
+        (bot ? ` <span class="ol-adp">${srcLabel}&nbsp;${escapeHtml(bot)}</span>` : '');
+    };
 
     const head = '<tr><th></th>' +
-      (onClock ? '' : `<th>Best now (rank)</th><th title="Predicted to be drafted before your turn">Gone</th>`) +
-      `<th>${onClock ? 'Best available (rank)' : `At your pick ${info.next}`}</th>` +
-      `<th>If you wait${follow ? ` — pick ${follow}` : ''}</th>` +
-      '<th title="Rank spots you give up by waiting one turn instead of taking this position now">' +
-      'Wait cost</th></tr>';
+      (onClock ? '' : '<th>Best now</th>' +
+        '<th title="How many at this position the simulation expects to come off the board before your turn">Taken before you</th>') +
+      `<th>${onClock ? 'Best available' : `Yours at ${info.next}`}</th>` +
+      `<th title="The best one at this position the simulation still leaves you at your following turn">If you pass${follow ? ` — pick ${follow}` : ''}</th>` +
+      '<th title="How much further down YOUR board the best one at this position sits if you pass now and come back next turn. 0 means waiting costs you nothing there.">' +
+      'Falls</th></tr>';
 
     const rows = [];
     for (const pos of ['QB', 'RB', 'WR', 'TE']) {
@@ -1334,20 +1365,32 @@ function initApp() {
         ? '<td>—</td><td>—</td>'
         : pv.cost >= 999
           ? `<td class="ol-gone">none left</td><td class="ol-gone">runs out</td>`
-          : `<td>${cell(pv.B)}</td><td class="ol-cost">${pv.cost}</td>`;
+          : `<td>${cell(pv.B)}</td>` +
+            `<td class="ol-cost">${pv.cost === 0 ? '<span class="ol-free">same</span>'
+              : `${pv.cost} spot${pv.cost === 1 ? '' : 's'}`}</td>`;
       rows.push('<tr>' +
         `<td><span class="pos-chip pos-${pos}">${pos}</span></td>` +
         (onClock ? '' : `<td>${cell(now)}</td><td class="ol-gone">${gone}</td>`) +
         `<td>${cell(atPick)}</td>` + waitCells + '</tr>');
     }
 
+    // Spell out whose ranking is whose under the table. The numbers are only
+    // interpretable as a pair, and the bots' source is the assumption most
+    // worth doubting — so it's named here, next to the button that changes it.
+    const legend = '<div class="ol-legend muted">' +
+      '<span class="ol-rank">18</span> your board rank' +
+      (srcLabel ? ` · <span class="ol-adp">${srcLabel}&nbsp;36</span> what the bots draft from` +
+        ' — <b>Falls</b> is measured on your board, but who disappears is decided by ' +
+        `${srcLabel}` : '') +
+      '</div>';
+
     el.innerHTML = suggest +
-      `<div class="muted">${onClock
+      `<div class="ol-status muted">${onClock
         ? `<b>You're on the clock — make the pick in ${siteTab()}.</b>`
         : `Simulated through pick ${info.next}`} ` +
       '<span title="Predict mode is live: the window re-simulates automatically after every ' +
       'real pick">· live</span></div>' +
-      `<table><thead>${head}</thead><tbody>${rows.join('')}</tbody></table>`;
+      `<table><thead>${head}</thead><tbody>${rows.join('')}</tbody></table>` + legend;
   }
 
   // Cell text scales to the column width: as large as fits where there's
@@ -1584,11 +1627,15 @@ function initApp() {
         suggestion = { pos, A, B, cost };
       }
     }
-    predictedMeta = { followNext, byPos, suggestion };
+    // botSrc rides along so the outlook can show the number the bots actually
+    // sorted on next to your own rank. Without it the table mixes two rank
+    // systems silently, and any player your board likes more than the site
+    // does reads as an inexplicable faller.
+    predictedMeta = { followNext, byPos, suggestion, botSrc: src, effRank };
     return info;
   }
 
-  // The Predict picks button: turn predict mode on. From here on the
+  // The "Who should I take?" button: turn predict mode on. From here on the
   // simulation refreshes itself after every real pick, until Return to live.
   function runPrediction() {
     const info = computePrediction();
@@ -2004,7 +2051,7 @@ function initApp() {
     { target: '#tab-bar', title: 'Tabs',
       text: 'AI Output and Draft Board live here permanently; player notes open as tabs next to them. A normal click on a player replaces the current note tab, Ctrl+click adds another, × (or the X key) closes one.' },
     { target: '#tab-strip .tab:nth-child(2)', title: 'The draft board',
-      text: 'A snake-draft grid: every pick colored by position, your next pick pink. Team headers count what each team has drafted by position — read across a row to spot a run forming; a red 0 means they are badly short there. Hover a header for what they still need. "Predict picks" simulates every pick between now and your turn (no AI) and keeps re-simulating as real picks land; "Return to live" clears it.' },
+      text: 'A snake-draft grid: every pick colored by position, your next pick pink. Team headers count what each team has drafted by position — read across a row to spot a run forming; a red 0 means they are badly short there. Hover a header for what they still need. "Who should I take?" simulates every pick between now and your turn (no AI) and keeps re-simulating as real picks land; "Return to live" clears it.' },
     { target: '#btn-ask', title: 'Ask AI',
       text: 'Sends the draft state — pick number, who\'s gone, your roster, and the notes of the top 15 available — to the AI and streams back advice. Press Q anytime.' },
     { target: '#team-panel .panel-head', title: 'Your team',
@@ -2235,6 +2282,28 @@ function initApp() {
     if (predictMode) computePrediction();
     renderBoard();
     renderTable();
+  });
+  // Gear popover: click to open, click anywhere else (or Escape) to dismiss.
+  // Kept out of the Debug tab because it explains the predictions, not the
+  // internals — you reach for it the moment a prediction looks wrong.
+  $('btn-bot-config').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const box = $('bot-config');
+    box.hidden = !box.hidden;
+    $('btn-bot-config').setAttribute('aria-expanded', String(!box.hidden));
+  });
+  $('bot-config').addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', () => {
+    if ($('bot-config') && !$('bot-config').hidden) {
+      $('bot-config').hidden = true;
+      $('btn-bot-config').setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $('bot-config') && !$('bot-config').hidden) {
+      $('bot-config').hidden = true;
+      $('btn-bot-config').setAttribute('aria-expanded', 'false');
+    }
   });
   $('btn-predict').addEventListener('click', runPrediction);
   $('btn-clear-predict').addEventListener('click', () => {

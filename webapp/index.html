@@ -90,24 +90,32 @@
                 <input type="number" id="board-rounds" min="8" max="30">
               </label>
             </span>
-            <span id="bot-config">
-              <label title="Which rankings the simulated opponents draft from. Site ADP (auto) = the draft site's own column — ESPN or Sleeper, whichever the draft is on. My board rank = your rank column, including any edits.">Bots follow
-                <select id="board-bot-ranks">
-                  <option value="auto">site ADP (auto)</option>
-                  <option value="espn">ESPN ADP</option>
-                  <option value="sleeper">Sleeper rank</option>
-                  <option value="mine">my board rank</option>
-                </select>
-              </label>
-              <label title="need-aware: best available filtered by roster sense — no early second QB/TE, no K/DST until the end, missing starters forced late. best available: strictly the next name in the ranking, needs ignored.">Bot style
-                <select id="board-bot-algo">
-                  <option value="need">need-aware</option>
-                  <option value="ba">best available</option>
-                </select>
-              </label>
+            <span id="bot-config-wrap">
+              <button id="btn-bot-config" type="button" aria-expanded="false"
+                title="What the simulated opponents draft from. This is the single biggest assumption behind the pick suggestion — if the ranking is off, so is everything below it.">&#9881; <span id="bot-config-label"></span></button>
+              <span id="bot-config" hidden>
+                <label title="Which rankings the simulated opponents draft from. Site ADP (auto) = the draft site's own column — ESPN or Sleeper, whichever the draft is on. My board rank = your rank column, including any edits.">Bots follow
+                  <select id="board-bot-ranks">
+                    <option value="auto">site ADP (auto)</option>
+                    <option value="espn">ESPN ADP</option>
+                    <option value="sleeper">Sleeper rank</option>
+                    <option value="mine">my board rank</option>
+                  </select>
+                </label>
+                <label title="need-aware: best available filtered by roster sense — no early second QB/TE, no K/DST until the end, missing starters forced late. best available: strictly the next name in the ranking, needs ignored.">Bot style
+                  <select id="board-bot-algo">
+                    <option value="need">need-aware</option>
+                    <option value="ba">best available</option>
+                  </select>
+                </label>
+                <p class="muted bot-config-note">Opponents take the best name left in
+                  this ranking (adjusted for roster needs). Anyone your board rates
+                  far higher than this ranking does will look like they "last" — that's
+                  the ranking disagreeing with you, not the draft room.</p>
+              </span>
             </span>
             <button id="btn-predict"
-              title="Simulates every pick between now and your next turn — opponents draft by the 'Bots follow' ranking, using the 'Bot style' rule (no AI). Stays on and re-simulates automatically as real picks come in.">Predict picks</button>
+              title="Answers who to take right now. Simulates every pick between now and your next turn — opponents draft by the 'Bots follow' ranking, using the 'Bot style' rule (no AI) — then names the position that thins out worst before you pick again. Stays on and re-answers automatically as real picks come in.">Who should I take?</button>
             <button id="btn-clear-predict" hidden
               title="Remove the simulated picks and just follow the draft — real picks always show live either way">Return to live</button>
           </div>
@@ -208,7 +216,7 @@
         <dt>Bye</dt><dd>The week the player's team doesn't play. Don't stack your starters on one bye.</dd>
         <dt>✅ / ❌</dt><dd>Your target / avoid markers.</dd>
         <dt>★</dt><dd>On your team. &nbsp; <b>✎</b> — a note you edited.</dd>
-        <dt>Orange rows</dt><dd>After "Predict picks" on the Draft Board: players the simulation
+        <dt>Orange rows</dt><dd>After "Who should I take?" on the Draft Board: players the simulation
           expects to be gone before your next turn.</dd>
       </dl>
       <p class="hint">Picked / +Team buttons are hidden by default — during a live draft the

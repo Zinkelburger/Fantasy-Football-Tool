@@ -35,7 +35,7 @@ need or jargon I have to guess at.
 - Picked players are struck through and dimmed (hidden by default).
 - Players on my team are marked with a ★.
 - A pink "Your next pick" line shows where my pick lands (see draft-board);
-  orange rows are players predicted gone by then after "Predict picks".
+  orange rows are players predicted gone by then after "Who should I take?".
 - The data-generated stamp lives in the ? help dialog, so I can tell if my
   rankings are stale.
 

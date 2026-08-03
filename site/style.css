@@ -290,21 +290,6 @@ body.draft-mode #main { max-width: none; padding: 0; }
   border: 0;
   background: var(--bg);
 }
-#draft-exit {
-  position: fixed;
-  top: 0.6rem;
-  right: 0.8rem;
-  background: rgba(35, 35, 40, 0.92);
-  border: 1px solid var(--border);
-  color: var(--fg-dim);
-  border-radius: 99px;
-  padding: 0.25rem 0.8rem;
-  text-decoration: none;
-  font-size: 0.85rem;
-  z-index: 20;
-}
-#draft-exit:hover { color: var(--fg); border-color: var(--accent); }
-
 /* ------------------------------------------------------------ footer */
 #site-footer {
   border-top: 1px solid var(--border);

@@ -500,7 +500,30 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 #board-toolbar select, #board-toolbar input { padding: 0.1rem 0.3rem; font-size: 0.9rem; }
 #board-toolbar input { width: 3.4em; }
 #board-toolbar button { padding: 0.15rem 0.6rem; font-size: 0.9rem; }
-#board-config, #bot-config { display: inline-flex; gap: 0.7rem; align-items: center; }
+#board-config { display: inline-flex; gap: 0.7rem; align-items: center; }
+/* Bot ranking lives in a popover anchored to its button so the toolbar keeps
+   one line, but the button text still states the current source. */
+#bot-config-wrap { position: relative; display: inline-flex; }
+#bot-config {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  /* Anchored to the button's right edge — it sits at the end of the toolbar,
+     so opening leftward is what keeps the panel on screen. */
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 20rem;
+  padding: 0.7rem 0.8rem;
+  background: var(--bg-panel, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+#bot-config[hidden] { display: none; }
+#bot-config label { display: flex; justify-content: space-between; gap: 0.6rem; align-items: center; }
+#bot-config .bot-config-note { margin: 0; font-size: 0.82rem; line-height: 1.45; }
 #board-config[hidden] { display: none; }
 #board-config-summary { flex: 1; }
 #btn-predict { border-color: var(--orange); }
@@ -509,12 +532,20 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
 }
-#board-outlook table { border-collapse: collapse; }
-#board-outlook td { padding: 0.08rem 0.6rem 0.08rem 0; white-space: nowrap; }
+#board-outlook table { border-collapse: collapse; width: 100%; }
+/* Roomy rows: this block is read mid-draft with a clock running, so the four
+   position lines need to separate at a glance rather than pack tight. */
+#board-outlook td {
+  padding: 0.42rem 0.9rem 0.42rem 0;
+  line-height: 1.35;
+  white-space: nowrap;
+  border-top: 1px solid var(--border);
+}
+#board-outlook tbody tr:hover td { background: var(--bg-hover, rgba(127, 127, 127, 0.09)); }
 /* Column labels carry the wording, so each cell can be a bare value instead
    of repeating "now:" / "gone before you" / "waiting costs" on every row. */
 #board-outlook th {
-  padding: 0 0.6rem 0.15rem 0;
+  padding: 0 0.9rem 0.4rem 0;
   text-align: left;
   font-weight: 400;
   font-size: 0.88em;
@@ -522,15 +553,39 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
   white-space: nowrap;
   border-bottom: 1px solid var(--border);
 }
-#board-outlook tbody tr:first-child td { padding-top: 0.18rem; }
 #board-outlook .ol-gone { color: var(--orange); }
 #board-outlook .ol-rank { color: var(--fg-dim); font-size: 0.88em; }
+/* The bots' ranking is deliberately quieter than your own rank — it explains
+   the simulation, it isn't the number you draft off. */
+#board-outlook .ol-adp {
+  font-size: 0.8em;
+  color: var(--fg-dim);
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
 #board-outlook .ol-cost { font-weight: 700; text-align: right; }
+#board-outlook .ol-free { font-weight: 400; color: var(--fg-dim); }
+#board-outlook .ol-status { padding-bottom: 0.5rem; }
+#board-outlook .ol-legend {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: normal;
+}
+/* Answer on top in full size, reasoning under it in a quieter line — the
+   name is what you act on, the arithmetic is what you check afterwards. */
 .ol-suggest {
-  margin: 0.1rem 0 0.35rem;
-  padding-left: 0.5rem;
+  margin: 0.15rem 0 0.6rem;
+  padding: 0.45rem 0 0.5rem 0.6rem;
+  line-height: 1.5;
   border-left: 3px solid var(--accent);
 }
+.ol-suggest-head { font-size: 1.06em; }
+.ol-suggest-meta { color: var(--fg-dim); font-size: 0.85em; }
+.ol-suggest-why { margin-top: 0.2rem; font-size: 0.87em; color: var(--fg-dim); }
+.ol-suggest-why b { color: var(--fg); font-weight: 600; }
 .ol-suggest b { color: var(--accent); }
 #board-grid-wrap { flex: 1; overflow: auto; }
 /* 12 columns x 15 rounds, sized to the panel: columns stretch to fill the

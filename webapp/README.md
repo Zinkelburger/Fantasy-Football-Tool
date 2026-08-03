@@ -45,13 +45,17 @@ Whichever you choose, the resulting origin must be listed in the extension's
   position, past picks greyed, your next pick pink — on the main board too, a
   pink "Your next pick — #N" line shows how far away you are. Team headers
   show each team's roster chips plus a needs line ("needs QB, TE"), bold red
-  when a team is deep in the draft with none of a position. **Predict
-  picks** deterministically simulates just the picks between now and your
+  when a team is deep in the draft with none of a position. **Who should I
+  take?** deterministically simulates just the picks between now and your
   turn — opponents draft by their own site's rankings, adjusted for team
   needs (no AI) — tints predicted-gone players orange on the board, shows
-  best available now vs at your pick per position with a "wait costs ~n"
-  figure, and headlines a **Suggested pick** (the position that drops off
-  hardest before your following pick, among ones your roster needs). It
+  best available now vs at your pick per position with a "falls" figure
+  (board spots lost by waiting), and headlines a **Suggested pick** (the
+  position that drops off hardest before your following pick, among ones
+  your roster needs) — naming who you'd fall back to if you passed. Every
+  name shows both your board rank and the ranking the bots draft from, and
+  a toolbar button states which ranking that is ("Bots: ESPN ADP") and
+  opens the controls to change it. It
   stays on, re-simulating after every real pick, until **Return to live**.
   League shape defaults to 12 teams / 15 rounds with the slot auto-detected;
   the controls appear in Debug mode

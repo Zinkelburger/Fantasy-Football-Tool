@@ -142,9 +142,12 @@
     </section>
 
     <!-- ============================================= DRAFT -->
+    <!-- No exit affordance on purpose: the draft tool is full-screen and the
+         draft is locked in once you're in it. An "✕ exit" in the corner of a
+         live draft reads as "close this" — the one thing you never want to
+         hit mid-pick. Leaving is closing the tab (or browser back). -->
     <section id="view-draft" class="view" hidden>
       <iframe id="draft-frame" title="Draft assistant"></iframe>
-      <a href="#/" id="draft-exit" title="Exit the draft tool">✕ exit</a>
     </section>
 
   </main>
