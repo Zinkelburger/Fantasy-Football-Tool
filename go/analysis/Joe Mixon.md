@@ -1,32 +1,10 @@
-Joe Mixon (RB1, HOU) – 2025 Fantasy Outlook: Concise Expert Notes
+**Joe Mixon** (free agent, RB, no bye) — board rank 191
 
-- Quick verdict: High risk; do not draft as a reliable RB1 in standard redraft unless you’re playing near-free-agent value and can absorb weeks of zero production.
+**Room sentiment:** Not a draft debate at all. 54 mentions, and the volume comes almost entirely from one thread — "Mixon told former teammates his career is over" — which is a retrospective, not an outlook.
 
-- Availability status: Extremely uncertain. Unexplained prolonged absence from team activities; ankle/foot injury; not practicing; projected to start on NFI list. Likely to miss the first month (Weeks 1–4) or more if timelines don’t improve.
+- **The news the corpus is reacting to:** he reportedly told former teammates his career is over. A follow-up states he "has no trade value as he is rumored to be retiring." Most of that thread is people recounting past fantasy seasons and arguing about the murky circumstances of the injury that ended his last season.
+- **He is a free agent,** and the only forward-looking angle is as a threat to someone else's job: "Najee and Mixon are free agents and could nuke his value if signed," in the Jacksonville backfield context, plus a similar note that either "could come in at some point this season."
+- **The rest are historical comparisons,** mostly for David Montgomery in Houston: "19.3 carries, 3.7 targets, and 18.9 FPG across his full 12 games" in 2024, and "a similarly bad Texans OL paired with a 28-year old Mixon produced an RB5 ppg season." Those are arguments about Montgomery.
+- **Market position:** ADP 202 — name recognition, not an expected role.
 
-- Role if healthy: Potential lead back with significant workload on paper, but the upside is dominated by injury risk and uncertain return timing. If he returns, workload could be substantial; however, any re-aggravation or lingering issues could crater your season.
-
-- Immediate impact on backfield: Clear opportunity for a backup/roster churning back to step in (Ashton Jeanty highlighted as a riser with RB1 upside in certain analyses). If Mixon misses time, Jeanty could absorb a large share of carries and targets. Expect committee dynamics to be messy upon any return.
-
-- ADP/value (current signal): Major drop in value. ADP fell from Round 5 to Round 7 (RB32, ~94th overall). Indicates widespread perception of high risk and delayed/faded upside. Drafting him at that floor requires willingness to absorb 4+ weeks of no production and potential shutdown risk.
-
-- Week 1 outlook: Very unlikely to play or be productive. If officially ruled out, Mixon becomes a pure fantasy bench/dead roster risk for early weeks.
-
-- Contingency/gameplay implications:
-  - If Mixon is out Week 1: expect Jeanty to be the primary beneficiary; plan to pivot to Jeanty or a different backfield option in lineups.
-  - If Mixon clears and returns midseason: monitor for workload split and conditioning; risk remains for re-injury and efficiency decline.
-
-- Redraft draft strategy:
-  - Do not spend premium capital; treat as ultra-late-round lottery ticket only if you have depth and can bench for 4–6 weeks.
-  - Prioritize reliable RBs with clear path to volume; for handcuff/late flier exposure, consider Jeanty (or equivalent) instead of Mixon.
-  - In leagues with NFI/PUP rules, expect a longer ramp-up; factor in several weeks of non-production.
-
-- Dynasty considerations: Long-term risk remains high due to age, injury history, and uncertainty about role upon return. Only consider if you’re willing to gamble on health recovery and a potentially diminished early-career workload.
-
-- Key discussion points to monitor:
-  - Official status updates on practice, injury progress, and PUP/IR designation.
-  - Timeline for clearance and expected Week 1 status.
-  - Backfield committee plans (Jeanty’s workload, other backs, offseason moves).
-  - Any changes in team offense or QB stability that could influence volume.
-
-- Bottom line: Avoid Mixon as a reliable anchor RB1 in 2025. If you’re drafting, he’s a high-risk, late-round speculative move; otherwise, pivot to healthier, more secure options.
+**Draft take:** Do not draft. No team, and the room believes he's retiring; revisit only if he signs somewhere and a role is reported.

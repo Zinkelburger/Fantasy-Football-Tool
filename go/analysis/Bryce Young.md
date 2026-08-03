@@ -1,34 +1,10 @@
-Bryce Young (CAR) — 2025 Fantasy Outlook: concise, Reddit-driven take
+**Bryce Young** (CAR, QB, bye 5) — board rank 194
 
-- Overall view: Moderate upside as a QB2 with real weekly upside if the offense hits. Not a lock as a weekly starter in 1-QB leagues unless you’re chasing upside; safer in 2-QB/superflex where a breakout would matter.
+**Room sentiment:** Bearish, loudly and near-unanimously — 47 mentions, and almost every one is somebody explaining why they won't draft Tetairoa McMillan. He's discussed as an obstacle, not an asset.
 
-- Sentiment snapshot:
-  - Positive breakout chatter: many see a second-year leap (Canales familiarity, OL/run game). Some call him a “Little Burrow” type breakout candidate.
-  - Skepticism remains: a sizable slice of redraft chatter views him as potentially overvalued at some ADPs; a few would rather wait and diversify QB depth rather than lock him as a primary starter.
+- The highest-voted line about him in the corpus is simply "The concern is Bryce Young" (381), followed by "Bryce Young caps his ceiling and their OL is already kinda injured."
+- Numbers the room cites: 3,000 passing yards and 23 TDs last season; he "wasn't top 30 in passing yards per game and wasn't in the top 20 for comp%." Projected 3,074.5 passing yards this year, near the bottom of the league, in a scheme expected to "lean run-heavy once again."
+- A real but small minority defends him: "Bryce literally fed him to a high end WR2 finish last year," and "Bryce Young isn't very good, but neither are Stroud or Penix and look how high their WRs are going." Another poster is blunt the other way: "Panthers winning the division apparently made people forget Bryce Young is still complete ass."
+- Superflex ADP is 10.02/109.8, meaningfully earlier than his 1-QB board rank.
 
-- Key catalysts for 2025:
-  - Coaching/fit: Improved comfort with OC Dave Canales.
-  - Weapons: Xavier Legette addition; clear WR1 presence in the Carolina pass game.
-  - O-line/run game: Expected stability/improvement that should boost efficiency and offensive sustainability.
-  - Past accuracy signal: 2024 marks progress—top-10 in accuracy on throws of 20+ air yards (no pressure) and solid outside-target accuracy, which bodes well if the Panthers lean into passing more when needed.
-
-- Team/offense context to watch:
-  - WR situation: One clear WR1 opportunity with Legette in the mix; surrounding WRs (and drops by WRs in 2024) remain a small concern for volume distribution.
-  - Defense/pace: If the defense falters or the Panthers trail, Young could be in more passing situations and fantasy-friendly game scripts.
-
-- What to expect in 2025:
-  - Pass volume: Likely a step up, but not a guaranteed high-volume fantasy season; could oscillate by game script.
-  - Efficiency: Potential to be more efficient in the air due to system and development, which helps when volume isn’t elite.
-  - Floor: Some weeks will be volatile; risk of low-by-committee weeks if weapons underperform or game script turns run-heavy.
-
-- Draft/roster strategy (actionable):
-  - 1-QB leagues: target as a mid-to-late QB2; don’t reach early. Pair him with a solid RB/WR core; look for safer weekly floor with a high ceiling on matchups.
-  - 2-QB or Superflex: include him as a real upside QB2 with plausible weekly starter potential; happy to draft earlier if the rest of your team has depth and you’re chasing upside.
-  - Portfolio approach: pair with at least one high-floor QB to smooth weeks; avoid overloading on Young-led weeks if structural risk remains (WR drops, pace).
-
-- Risk flags to monitor:
-  - Sustained volume/usage: If Legette or other WRs don’t eat into the target pool, Young’s fantasy floor could be lower.
-  - Efficiency regression: If OL/run game gains don’t materialize, efficiency could suffer.
-  - Volatility: Week-to-week game scripts could swing his fantasy output more than top-tier QBs.
-
-- Quick takeaway: Bryce Young in 2025 is the archetype of a high-ceiling QB2 with plausible breakout weeks, especially in 2-QB formats. The strongest case for him is improved offense structure and a clear WR1 target; the biggest downside is hit-or-miss volume and reliance on efficiency to carry average-week outputs.
+**Draft take:** No reason to roster him in a 1-QB league. He's a superflex QB2 at best, and his real draft relevance is as the discount you're accepting when you take McMillan.

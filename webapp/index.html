@@ -21,7 +21,10 @@
       </label>
       <span id="pick-counter" title="Number of players picked so far">Pick: 0</span>
       <span id="ext-status" class="ext-off" title="Chrome extension draft sync">Extension: not detected</span>
-      <button id="btn-ask" title="Ask the AI for draft advice (Q)">Ask AI (Q)</button>
+      <button id="btn-ask" title="Ask the AI for draft advice (Q)">Ask AI</button>
+      <button id="btn-reset-top" class="danger" hidden
+        title="Clear picks, roster, markers and extension data (debug/manual mode)">Reset draft</button>
+      <button id="btn-help" title="Help — shortcuts, what everything means, guided tour (?)">?</button>
       <button id="btn-settings" title="Settings">&#9881;</button>
     </div>
   </header>
@@ -30,7 +33,8 @@
     <section id="left-panel">
       <div id="filter-bar">
         <div id="pos-filters"></div>
-        <input type="search" id="search-box" placeholder="Search players...">
+        <input type="search" id="search-box" placeholder="Search players..."
+          title="Search by player or NFL team — press / to jump here">
         <label class="chk"><input type="checkbox" id="show-picked"> Show picked</label>
         <span id="player-count"></span>
       </div>
@@ -38,9 +42,18 @@
         <table id="player-table">
           <thead>
             <tr>
-              <th>Rank</th><th>Player</th><th>Team</th><th>Bye</th><th>Pos</th>
-              <th title="ESPN rank">ESPN</th><th title="Sleeper rank">Slpr</th>
-              <th>Note</th><th class="actions-col"></th>
+              <th id="th-rank" class="sortable"
+                title="Overall rank — the board order. Blue numbers are your own imported ranks. Click to sort by this (the default).">Rank</th>
+              <th title="Click a row to open the player's note">Player</th>
+              <th title="NFL team">Team</th>
+              <th title="Bye week — the week this player's team doesn't play (don't stack your starters on one bye)">Bye</th>
+              <th title="Position and NFL-team depth — WR2 = that team's 2nd-ranked WR. Hover a cell for the full depth chart with ranks. Blue ⛓ = this player backs up someone on your roster (their handcuff).">Pos</th>
+              <th id="th-espn" class="sortable"
+                title="ESPN's own ranking. (+n) = ESPN is n spots higher on them than board rank (goes earlier there); (−n) = lower (may fall to you). Click to sort by ESPN.">ESPN</th>
+              <th id="th-sleeper" class="sortable"
+                title="Sleeper's own ranking. (+n) = Sleeper is n spots higher on them than board rank (goes earlier there); (−n) = lower (may fall to you). Click to sort by Sleeper.">Sleeper</th>
+              <th title="Analysis note preview — click the row for the full note (✎ = you edited it)">Note</th>
+              <th class="actions-col" id="th-actions"></th>
             </tr>
           </thead>
           <tbody id="player-tbody"></tbody>
@@ -48,23 +61,87 @@
       </div>
     </section>
 
+    <div id="panel-divider" title="Drag to resize — double-click to reset"></div>
+
     <section id="right-panel">
-      <div id="ai-panel">
-        <div class="panel-head">
-          <span>AI Output</span>
+      <div id="tabbed-panel">
+        <div id="tab-bar">
+          <div id="tab-strip"></div>
           <span id="ai-status"></span>
         </div>
         <div id="ai-output" class="md-body">
           <p class="muted">Click <b>Ask AI</b> (or press Q) to get draft recommendations
           based on the top available players, your roster, and the draft so far.
-          Configure your API key in Settings (&#9881;) first.</p>
+          Configure your API key in Settings (&#9881;) first — or press <b>?</b> for
+          help and a guided tour of the whole app.</p>
+        </div>
+        <div id="board-view" hidden>
+          <div id="board-toolbar">
+            <span id="board-config-summary" class="muted"
+              title="League shape — adjust it in debug/manual mode (Settings → Debug)"></span>
+            <span id="board-config" hidden>
+              <label title="Number of teams in your league">Teams
+                <select id="board-teams"></select>
+              </label>
+              <label title="Your draft position (auto = detected from your first pick)">Your slot
+                <select id="board-slot"></select>
+              </label>
+              <label title="Rounds in the draft">Rounds
+                <input type="number" id="board-rounds" min="8" max="30">
+              </label>
+            </span>
+            <span id="bot-config">
+              <label title="Which rankings the simulated opponents draft from. Site ADP (auto) = the draft site's own column — ESPN or Sleeper, whichever the draft is on. My board rank = your rank column, including any edits.">Bots follow
+                <select id="board-bot-ranks">
+                  <option value="auto">site ADP (auto)</option>
+                  <option value="espn">ESPN ADP</option>
+                  <option value="sleeper">Sleeper rank</option>
+                  <option value="mine">my board rank</option>
+                </select>
+              </label>
+              <label title="need-aware: best available filtered by roster sense — no early second QB/TE, no K/DST until the end, missing starters forced late. best available: strictly the next name in the ranking, needs ignored.">Bot style
+                <select id="board-bot-algo">
+                  <option value="need">need-aware</option>
+                  <option value="ba">best available</option>
+                </select>
+              </label>
+            </span>
+            <button id="btn-predict"
+              title="Simulates every pick between now and your next turn — opponents draft by the 'Bots follow' ranking, using the 'Bot style' rule (no AI). Stays on and re-simulates automatically as real picks come in.">Predict picks</button>
+            <button id="btn-clear-predict" hidden
+              title="Remove the simulated picks and just follow the draft — real picks always show live either way">Return to live</button>
+          </div>
+          <div id="board-outlook"></div>
+          <div id="board-grid-wrap"><div id="board-grid"></div></div>
+        </div>
+        <div id="note-view" hidden>
+          <div id="note-toolbar">
+            <span id="note-meta" class="muted"></span>
+            <button id="btn-edit-note" title="Edit this note — saved in this browser only (E)">Edit</button>
+          </div>
+          <div id="note-body" class="md-body"></div>
+          <div id="note-editor" hidden>
+            <textarea id="note-textarea" spellcheck="false"></textarea>
+            <div class="dialog-actions">
+              <button type="button" id="btn-revert-note" class="danger"
+                title="Discard your edits and restore the bundled note">Revert to bundled</button>
+              <span class="btn-row">
+                <button type="button" id="btn-cancel-note">Cancel</button>
+                <button type="button" id="btn-save-note">Save</button>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div id="team-panel">
         <div class="panel-head">
-          <span>Your Team</span>
+          <span class="panel-head-left">
+            <button id="btn-team-collapse" title="Collapse Your Team">&raquo;</button>
+            <span>Your Team</span>
+          </span>
           <span id="team-count"></span>
         </div>
+        <div id="team-needs" hidden></div>
         <div id="team-list"><p class="muted">No players on your team yet</p></div>
       </div>
     </section>
@@ -72,15 +149,74 @@
 
   <footer>
     <span id="status-bar">Ready</span>
-    <span id="data-stamp"></span>
+    <span class="muted" title="Keyboard shortcuts, column glossary, guided tour">Press <b>?</b> for help</span>
   </footer>
 
-  <dialog id="note-dialog">
-    <div class="dialog-head">
-      <span id="note-title"></span>
-      <button class="dialog-close" data-close="note-dialog">&times;</button>
+  <div id="tour-overlay" hidden>
+    <div id="tour-highlight"></div>
+    <div id="tour-tip">
+      <button id="tour-close" title="End tour">&times;</button>
+      <h3 id="tour-title"></h3>
+      <p id="tour-text"></p>
+      <div class="tour-foot">
+        <span id="tour-step-count"></span>
+        <span class="btn-row">
+          <button id="tour-skip">Skip tour</button>
+          <button id="tour-next">Next</button>
+        </span>
+      </div>
     </div>
-    <div id="note-body" class="md-body"></div>
+  </div>
+
+  <dialog id="help-dialog">
+    <div class="dialog-head">
+      <span>How to use</span>
+      <button class="dialog-close" data-close="help-dialog">&times;</button>
+    </div>
+    <div id="help-body">
+      <p><button id="btn-start-tour">&#9654; Start the guided tour</button>
+        <span class="muted">— spotlights each part of the app and explains it, step by step.</span></p>
+      <h3>Keyboard</h3>
+      <table class="help-keys">
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>move the selected row</td>
+            <td><kbd>Enter</kbd></td><td>open the selected player's note</td></tr>
+        <tr><td><kbd>D</kbd> / <kbd>Space</kbd></td><td>cycle the ✅/❌ target marker</td>
+            <td><kbd>Ctrl+Enter</kbd> / <kbd>Ctrl</kbd>+click</td><td>open the note in an extra tab</td></tr>
+        <tr><td><kbd>P</kbd></td><td>mark picked / undo</td>
+            <td><kbd>E</kbd></td><td>edit the selected player's note</td></tr>
+        <tr><td><kbd>T</kbd></td><td>add to / remove from your team</td>
+            <td><kbd>X</kbd></td><td>close the active note tab</td></tr>
+        <tr><td><kbd>Q</kbd></td><td>ask the AI</td>
+            <td><kbd>A</kbd> / <kbd>B</kbd></td><td>jump to AI Output / Draft Board tab</td></tr>
+        <tr><td><kbd>/</kbd></td><td>jump to search</td>
+            <td><kbd>R</kbd></td><td>refresh the board</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>cancel an edit · close the note tab · end the tour</td>
+            <td><kbd>?</kbd></td><td>this help</td></tr>
+        <tr><td colspan="4" class="muted">Keys are ignored while you're typing in any box —
+            and buttons show their shortcut in the hover tooltip.</td></tr>
+      </table>
+      <h3>What things mean</h3>
+      <dl class="help-gloss">
+        <dt>Rank</dt><dd>Overall board order. A blue number is a rank you imported yourself.
+          Click the Rank / ESPN / Sleeper headers to sort by that column.</dd>
+        <dt>Pos (e.g. WR2)</dt><dd>Position plus NFL-team depth: WR2 means that team's 2nd-ranked
+          WR — a quick read on target share and role.</dd>
+        <dt>ESPN / Sleeper</dt><dd>That site's own ranking; the column shown matches the site your
+          draft is on (override in Settings). <b>(+n)</b> = the site is n spots higher on them
+          than the board, so they'll go earlier there; <b>(−n)</b> = n spots lower — they may
+          fall to you.</dd>
+        <dt>Bye</dt><dd>The week the player's team doesn't play. Don't stack your starters on one bye.</dd>
+        <dt>✅ / ❌</dt><dd>Your target / avoid markers.</dd>
+        <dt>★</dt><dd>On your team. &nbsp; <b>✎</b> — a note you edited.</dd>
+        <dt>Orange rows</dt><dd>After "Predict picks" on the Draft Board: players the simulation
+          expects to be gone before your next turn.</dd>
+      </dl>
+      <p class="hint">Picked / +Team buttons are hidden by default — during a live draft the
+        extension handles picks automatically. Turn on <b>Manual mode</b> in Settings (&#9881;)
+        → Debug to draft by hand. You can also drag the divider between the board and this
+        panel to resize them (double-click it to reset).</p>
+      <p id="help-data-stamp" class="muted"></p>
+    </div>
   </dialog>
 
   <dialog id="settings-dialog">
@@ -89,7 +225,16 @@
       <button class="dialog-close" data-close="settings-dialog">&times;</button>
     </div>
     <form id="settings-form" method="dialog">
-      <fieldset>
+      <div id="settings-tabs">
+        <button type="button" class="stab" data-stab="ai">AI</button>
+        <button type="button" class="stab" data-stab="prompts">Prompts</button>
+        <button type="button" class="stab" data-stab="draft">Draft</button>
+        <button type="button" class="stab" data-stab="data">My data</button>
+        <button type="button" class="stab" data-stab="debug">Debug</button>
+        <button type="button" class="stab stab-all" data-stab="all"
+          title="Every setting on one page">View all</button>
+      </div>
+      <fieldset data-stab="ai">
         <legend>OpenAI</legend>
         <label>API key
           <input type="password" id="set-apikey" placeholder="sk-..." autocomplete="off">
@@ -100,7 +245,7 @@
           <input type="text" id="set-model" placeholder="gpt-5-nano-2025-08-07">
         </label>
       </fieldset>
-      <fieldset>
+      <fieldset data-stab="ai">
         <legend>Local LLM (Ollama)</legend>
         <label class="chk"><input type="checkbox" id="set-use-ollama"> Use Ollama instead of OpenAI</label>
         <label>Endpoint <input type="text" id="set-ollama-endpoint" placeholder="http://localhost:11434"></label>
@@ -108,15 +253,64 @@
         <p class="hint">If this page is hosted (not opened from disk), start Ollama with
         <code>OLLAMA_ORIGINS</code> including this site's origin so the browser may call it.</p>
       </fieldset>
-      <fieldset>
+      <fieldset data-stab="prompts">
         <legend>Prompts</legend>
         <label>System prompt <textarea id="set-system-prompt" rows="2"></textarea></label>
         <label>User prompt (your instructions, inserted into the draft context)
           <textarea id="set-user-prompt" rows="3"></textarea></label>
         <button type="button" id="btn-reset-prompts">Reset prompts to defaults</button>
       </fieldset>
-      <div class="dialog-actions">
+      <fieldset data-stab="draft">
+        <legend>Draft</legend>
+        <label>Site rank column
+          <select id="set-rank-source">
+            <option value="auto">Auto — match the site my draft is on (ESPN until detected)</option>
+            <option value="espn">Always ESPN</option>
+            <option value="sleeper">Always Sleeper</option>
+            <option value="both">Show both</option>
+          </select>
+        </label>
+        <p class="hint">League size, rounds and your slot live on the Draft Board tab: the slot
+        auto-detects from your first pick (or click your column header), and the Teams/Rounds
+        controls appear there in Debug mode. Defaults: 12 teams, 15 rounds.</p>
+      </fieldset>
+      <fieldset data-stab="data">
+        <legend>Rankings &amp; your data</legend>
+        <div class="btn-row">
+          <button type="button" id="btn-import-rankings">Import rankings (CSV)&hellip;</button>
+          <button type="button" id="btn-export-rankings">Download rankings (CSV)</button>
+          <button type="button" id="btn-revert-rankings">Revert to bundled rankings</button>
+        </div>
+        <p class="hint">Import a spreadsheet (CSV) with Rank and Player columns — or just a
+        ranked list of names — to re-order the board for the current scoring format.
+        Tip: Download, reorder the rows in Excel/Sheets, re-import. The bundled data is
+        never touched; you can always revert.</p>
+        <div class="btn-row">
+          <button type="button" id="btn-export-backup">Export my data</button>
+          <button type="button" id="btn-import-backup">Import my data&hellip;</button>
+          <button type="button" id="btn-export-notes">Download edited notes</button>
+        </div>
+        <p class="hint">"My data" = target markers, picks, your team, rank overrides, edited
+        notes, and prompts in one JSON file — move your prep to another browser or keep a
+        backup. Your API key is never included.</p>
+        <input type="file" id="file-rankings" accept=".csv,.txt,text/csv,text/plain" hidden>
+        <input type="file" id="file-backup" accept=".json,application/json" hidden>
+      </fieldset>
+      <fieldset data-stab="debug">
+        <legend>Debug / manual mode</legend>
+        <label class="chk"><input type="checkbox" id="set-manual-mode">
+          Manual mode — run the draft by hand</label>
+        <p class="hint">Off by default: in a live draft the extension marks picks and your roster
+        automatically. Turning this on shows the Picked / +Team buttons on every row, the ×
+        remove buttons in Your Team, a Reset draft button in the header, and the Teams / Slot /
+        Rounds controls on the Draft Board. "Undo" stays available on picked rows either way,
+        and the P / T keys always work.</p>
         <button type="button" id="btn-reset-draft" class="danger">Reset draft state</button>
+        <p class="hint">Clears picked players, your team, target markers, and the extension's
+        stored draft data — use it between drafts or while testing.</p>
+      </fieldset>
+      <div class="dialog-actions">
+        <span></span>
         <button type="submit" id="btn-save-settings">Save</button>
       </div>
     </form>

@@ -1,32 +1,10 @@
-Dak Prescott (DAL) – 2025 Fantasy Outlook: Extremely concise, action-oriented notes
+**Dak Prescott** (DAL, QB, bye 14) — board rank 90
 
-- Overall stance: Mid-range QB1/value in 1QB formats; not a top-5 ceiling unless offense/volume spikes. consensus sentiment is supportive but not sensational.
+**Room sentiment:** Quietly positive, low volume — 19 mentions, almost entirely inside "wait on QB" threads rather than standalone discussion. Nobody is arguing hard either way.
 
-- 2025 projection range (offense-independent of exact ADP): ~4,350–4,500 passing yards with ~27–30 TDs; floor/ceiling both carry solid Week-to-Week floor due to volume and offense efficiency. Potential upside to 4,500+ yards and 30+ TD if offense stays as pass-happy as recent years.
+- He is a named target in the most-upvoted late-QB post in the corpus ("Is there even an elite QB advantage in 2026?", 185), and another poster lists his favorite ESPN round 8-10 QBs as Dak, Brock Purdy, Trevor Lawrence and Justin Herbert.
+- Supporting context: a projection post has Dallas at 3,999.5 passing yards, and a rankings writeup notes CeeDee Lamb leads the team at a 25% target share with George Pickens at 23%, "giving Dak Prescott two legitimate number one options."
+- The counterweight is a modeling post giving him a 21% chance to finish top 6 — the lowest of the four QBs listed (Purdy 32%, Bo Nix 29%, Lawrence 26%). "Dak vs Bo Nix" recurs with no consensus answer.
+- Optimism exists but is unsupported: several top-3/top-5 "hill I'll die on" claims, all at 1-3 upvotes.
 
-- Health and form: Fully recovered from hamstring issue; reported improvements in strength/body composition; no lingering health concerns expected.
-
-- Key offensive weapons/usage context:
-  - CeeDee Lamb: Clear alpha; primary target share; remains the target magnet and fantasy anchor.
-  - Jake Ferguson (TE): New extension; with Dak, roughly 5.3 targets per game in 2024 (with Dak), indicating a reliable weekly floor for TD-heavy fantasy output. Could be a volume-driven TAMTE option, but TDs and red-zone usage likely keep him in a tight-end streaming/weekly-TE1 mix.
-  - George Pickens: Added as a 2025 target; could siphon some targets from Ferguson and add upside on big plays, but how much remains to be seen. Expect Lamb still dominant; Ferguson/Pickens to divvy secondary targets.
-  - Noah Fant (Noah Fant): Not directly impacting Dallas much; external addition in Cincinnati reduces concern about Cowboys’ TE/DC usage only indirectly (less of a factor than Ferguson/Lamb/Pickens).
-
-- ADP/draft strategy implications:
-  - 1QB leagues: Dak is commonly drafted outside the top 5–12, i.e., late QB1 territory. In practice, you can wait at QB and still land him as a solid weekly starter.
-  - Relative value vs. peers: Consider him over “waits” like Purdy in drafts for safer floor and established chemistry with Lamb; upside depends on how the Dallas offense unfolds with Pickens and Ferguson.
-
-- Advantage/ceiling indicators:
-  - Historically efficient: >20 PPG in 4 of his last 6 seasons; 3+ full seasons with 16+ games show consistency.
-  - Offensive pace: Cowboys have shown high-scoring capability; 17-game seasons inflate volume and fantasy outputs when the offense stays balanced between pass and run.
-
-- Risk factors to monitor:
-  - Target distribution: Lamb-led, Ferguson as a near-equal to secondary option; Pickens adds volatility to the target pool; Ferguson’s TD-dependence remains a concern.
-  - TD regression/positive regression: Mike Clay’s projection (~4,350–4,500/27) is conservative; actual numbers could push higher if the offense remains efficient and red-zone volume holds.
-  - Game flow volatility: Any shift toward run-heavy game plans or injuries to Lamb could compress Dak’s upside; no current injury red flags beyond the hamstring improvement noted.
-
-- Week-to-week playability tips:
-  - Start Dak as a safe QB1 in most weeks; consider Ferguson as a streaming/simple TE2 with TD upside; monitor Pickens’ early involvement to gauge weekly target skew.
-  - If Lamb misses time, Dak’s value spikes; if Pickens emerges as a true secondary alpha, Dak’s ceiling increases slightly but the floor remains solid.
-
-- Bottom line: Dak is a realistic, dependable mid-round QB1 with a high floor due to volume and offense efficiency. He offers a solid late-round value in 1QB leagues, with meaningful upside if Pickens proves to be a steady secondary target and Ferguson maintains strong red-zone usage. The main actionable path is to draft him in position to pair with Lamb (and possibly Ferguson) and avoid overpaying for top-5 QB premiums.
+**Draft take:** A fine late QB1 if you skip the position early — take him in the 9th-11th alongside whoever falls. Don't pay up; the room's own numbers call him a coin flip for top-6.

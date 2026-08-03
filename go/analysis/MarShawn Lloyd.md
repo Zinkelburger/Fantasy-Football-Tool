@@ -1,33 +1,11 @@
-Bottom line: Do not draft MarShawn Lloyd in redraft; only consider as a desperate dynasty flier or IR stash if you have space. Expect minimal Week 1 relevance and a low floor in 2025.
+**MarShawn Lloyd** (GB, RB, bye 11) — board rank 189
 
-Concise notes
+**Room sentiment:** Bemused rather than bullish — 18 mentions, and most are jokes about his availability. "Packer fan here — the consensus is that Marshawn Lloyd doesn't exist."
 
-- 2025 role and outlook
-  - primary: RB2 on a run-heavy backfield, but path to meaningful touches is blocked by Josh Jacobs (and competition from Emmanuel Wilson/Chris Brooks).
-  - Week 1 and early weeks: very unlikely to contribute due to groin/hamstring injury history.
-  - Compensation: even if healthy midseason, workload is uncertain; Packers/GB backfield loves a committee, not a clear lead.
+- The one real news item: a camp roundup states **"MarShawn Lloyd is expected to assume the RB2 role if he can finally stay healthy,"** and a follow-up comment adds "he has been staying healthy so far."
+- Hartitz places him in handcuff Tier 4, "there's a favorite, but we have questions," accompanied by "damnit do I love drafting me some MarShawn Lloyd" and "let's just draft MarShawn Lloyd and see what happens."
+- Bull case, such as it is: with Lloyd healthy, one poster wouldn't be surprised to see him take passing downs from Josh Jacobs, and another says "if (huge if) Marshawn Lloyd can actually stay healthy, Jacobs could lose half his carries."
+- Bear case is his availability record, and the room expresses it entirely through jokes — the running gag about him missing time is the dominant tone. He also shows up on at least one best-ball underweight list.
+- ADP: Sleeper 12-man superflex 20.12 (227.3), and $4 in an auction example. He costs essentially nothing.
 
-- Injury and health sentiment
-  - Chronic injury history (hamstring, groin issues) flagged as a major red flag.
-  - Training camp reports: non-contact groin issue; Jacobs and camp notes imply uncertainty about his availability.
-  - FF Hound consensus: undraftable due to injury risk; Week 1 absence likely.
-
-- Competitiveness and backing group
-  - Behind Jacobs, Lloyd competes with Emmanuel Wilson and Chris Brooks for the backup role; Wilson showed solid per-carry metrics but limited pass game involvement.
-  - Lloyd’s pass-catching and overall explosiveness are less proven; injury risk compounds uncertainty.
-
-- Draft strategy implications
-  - Redraft: avoid Lloyd entirely; target higher-floor backups or handcuffs with clearer roles.
-  - Dynasty: only stash if you have IR/movable roster space and a long-term view; expect IR situations to be common.
-  - If you’re targeting late-round contingent backs, prioritize D.J. Giddens (handcuff to Taylor) over Lloyd.
-
-- Waiver/watch list considerations
-  - If Jacobs misses time, Wilson (or Brooks) would be the preferred immediate pickups over Lloyd.
-  - Lloyd remains a low-probability, high-risk option even in a Jacobs-injured scenario.
-
-- Sentiment snapshot
-  - Predominant view across posts: Lloyd is a risky, unreliable fantasy asset due to injury history; a few still see upside in a deep bench or dynamic offense, but the probability of meaningful 2025 fantasy production is small.
-
-- Actionable takeaway
-  - Do not roster Lloyd in redraft leagues; consider him only as a speculative dynasty stash if you’re comfortable rotting away a bench spot.
-  - Monitor camp updates and Jacobs’ workload, but do not expect Lloyd to become a reliable weekly contributor in 2025.
+**Draft take:** Best-ball or last-round redraft material as a Jacobs contingency. The room likes the price, not the player — do not plan around him.

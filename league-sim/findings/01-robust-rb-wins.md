@@ -91,6 +91,34 @@ exploiting neglect. (Validation script inline in the 2026-07-30
 session; reproduce by counting positions in
 `data/espn/league_*.json` picks vs `run_draft` output.)
 
+## Update 2026-08-02 (environment v5 spot-check)
+
+A seat-rotated v5 run (n=432/strategy, `analysis/hybrid_strats.py`)
+confirms the levels ahead of the full grid rerun: robust_rb **.610
+all-play / 21% titles**, still atop the family-room board. Three new
+results sharpen the interpretation:
+
+- **The opening *is* the plan.** Welding the wait-cost drafter onto a
+  forced RB×3 opening (`rb3_pv`) reproduces robust_rb exactly
+  (paired diff −0.000 ± 0.008) — after three RBs, the mid-round engine
+  doesn't matter. Conversely, pick_value left alone spends 57% of its
+  first three picks on RB anyway; the two plans are a statistical tie
+  (+0.010 ± 0.012).
+- **The edge is room-specific.** In the sharp room (METHODS,
+  `villain="bpa"`), robust_rb keeps only +0.005 ± 0.010 over the
+  in-room control while the wait-cost drafter keeps +0.023 ± 0.010.
+  RB-RB-RB's margin over other disciplined plans is a harvest of this
+  family's measured RB-lateness (+5.1 picks), not a law of nature.
+- **The mechanism now has equations.** Finding 23: RB value = 191 −
+  31·ln(rank) vs WR 156 − 21·ln(rank) — a 45%-steeper decay, premium
+  already priced into ADP, so the edge is taking the fast-depreciating
+  position first (forced-swap test: +0.017 all-play in round 1,
+  +0.015 round 2, noise by round 3).
+- **Hindsight agrees on round 1.** 58% of hindsight-optimal drafts
+  open RB (median buy: the season's actual RB1) even with perfect
+  knowledge of every alternative — the RB-first skeleton survives the
+  strongest test available (finding 24).
+
 ## Caveats
 
 - Roughly 9 of the ~10 points of all-play edge here is shared by
@@ -100,6 +128,8 @@ session; reproduce by counting positions in
 - 2022 shows the plan can trail its rivals in an RB-bust year even
   while beating the field. Never present the average without that row.
 - Tested against this family model; a room full of RB-hungry sharks
-  would erode the edge (the RBs would be gone).
+  would erode the edge (the RBs would be gone). *Now measured*: see
+  the 2026-08-02 update — the erosion is nearly total in a
+  fully-disciplined room.
 - The result is format-local: in PPR or TE-flex leagues this exact
   claim is known to flip (which is finding 02's point in reverse).

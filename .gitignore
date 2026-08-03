@@ -5,6 +5,7 @@ filtered_2024
 gpt_query
 2024/.env
 reddit-scraper/filtered_data
+reddit-scraper/corpus
 reddit-scraper/__pycache__
 reddit-scraper/.env
 reddit-scraper/venv
@@ -34,3 +35,5 @@ coverage.html
 
 # Trained models (regenerate: python injury_predictor/unified_injury_predictor.py)
 *.pkl
+public/
+chrome-extension/dist/

@@ -11,6 +11,15 @@
   --green: #3fb950;
   --red: #f85149;
   --yellow: #d29922;
+  --pink: #e85d9e;
+  --orange: #d9873c;
+  /* Position palette (Sleeper-style draft board) */
+  --pos-qb: #d65a75;
+  --pos-rb: #3fbf9f;
+  --pos-wr: #5a9cf7;
+  --pos-te: #d9873c;
+  --pos-k:  #9a7bd0;
+  --pos-dst: #8a9a5b;
   font-size: 15px;
 }
 
@@ -66,6 +75,8 @@ button.danger { color: var(--red); }
 button:disabled { opacity: 0.5; cursor: default; }
 
 #pick-counter { color: var(--fg-dim); font-size: 0.85rem; }
+/* Your turn is the one moment in the draft you must not miss */
+#pick-counter.your-turn { color: var(--pink); font-weight: 700; }
 
 #ext-status { font-size: 0.8rem; padding: 0.15rem 0.5rem; border-radius: 10px; }
 .ext-off { background: #3a2a2a; color: #d99; }
@@ -77,16 +88,26 @@ main {
   min-height: 0;
 }
 
+/* Default split: 40% board, 60% tabs/notes side (drag the divider to change) */
 #left-panel {
-  flex: 3;
+  flex: 2;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border-right: 1px solid var(--border);
 }
 
+#panel-divider {
+  flex: 0 0 6px;
+  cursor: col-resize;
+  background: var(--border);
+  background-clip: content-box;
+  padding: 0 2px; /* 2px visible line, 6px grab area */
+}
+#panel-divider:hover, body.dragging #panel-divider { background-color: var(--accent); }
+body.dragging { cursor: col-resize; user-select: none; }
+
 #right-panel {
-  flex: 2;
+  flex: 3;
   display: flex;
   flex-direction: column;
   min-width: 320px;
@@ -121,16 +142,46 @@ main {
   white-space: nowrap;
   z-index: 1;
 }
+#player-table th.sortable { cursor: pointer; }
+#player-table th.sortable:hover { color: var(--accent); }
+#player-table th.sorted::after { content: ' ↓'; color: var(--accent); }
+/* Reads as a label for the empty action column, not as a column of data */
+#player-table th.actions-col {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+  opacity: 0.75;
+  text-align: right;
+}
+
+/* Site-rank delta vs board rank — deliberately quiet, it's context not alarm */
+.rk-diff { font-size: 0.78em; color: var(--fg-dim); }
 #player-table td { padding: 0.28rem 0.5rem; white-space: nowrap; }
 #player-table tbody tr:nth-child(odd) { background: var(--bg-row-alt); }
 #player-table tbody tr:hover { background: var(--bg-hover); }
 
+#player-table tbody tr.selected,
+#player-table tbody tr.selected:hover { background: #2c3a58; }
+#player-table tbody tr.selected td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+
+td.rank-override { color: var(--accent); font-weight: 600; }
+
+/* The backup directly behind a player you already roster — the handcuff you
+   went looking for. Marked, not colored-over, so it reads at a glance
+   without competing with the position colors elsewhere. */
+#player-table td.pos-cell.is-handcuff { color: var(--accent); font-weight: 600; }
+.hc-mark { margin-left: 0.25em; font-size: 0.85em; opacity: 0.9; }
+
 tr.picked td { opacity: 0.45; text-decoration: line-through; }
 tr.picked td.row-actions { text-decoration: none; }
-tr.onteam td.player-name::after { content: " ★"; color: var(--yellow); }
 
-td.player-name { cursor: pointer; color: var(--accent); }
-td.player-name:hover { text-decoration: underline; }
+/* The whole row is the click target (opens the note) — the name is not a
+   special link, so it isn't styled like one. */
+#player-tbody tr { cursor: pointer; }
+td.player-name { font-weight: 500; }
+/* Fixed-width flag slot so cycling ✅/❌ or joining the team never reflows the row */
+.name-flags { display: inline-block; width: 2.6em; margin-left: 0.3em; text-decoration: none; }
+.flag-star { color: var(--yellow); }
 td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
 
 .row-actions button {
@@ -138,16 +189,96 @@ td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-ov
   font-size: 0.8rem;
   margin-left: 0.2rem;
 }
+/* Fixed button widths: '–' vs '✅', 'Picked' vs 'Undo' must not resize columns */
+.row-actions .act-mark { width: 2.4em; padding-left: 0; padding-right: 0; text-align: center; }
+.row-actions .act-pick { min-width: 4.8em; }
+.row-actions .act-team { min-width: 4.6em; }
 .row-actions .todraft-yes { color: var(--green); }
 .row-actions .todraft-no { color: var(--red); }
 
-#ai-panel {
+/* Row inserted where your next pick lands (snake math from the Draft Board) */
+tr.next-pick-marker td {
+  background: rgba(232, 93, 158, 0.14);
+  color: var(--pink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.15rem 0.5rem;
+  border-top: 1px solid var(--pink);
+  border-bottom: 1px solid var(--pink);
+  cursor: default;
+}
+/* Waiting is a hint; your actual turn is an alert. Solid fill, dark text,
+   bigger than the rows around it — impossible to scroll past. */
+tr.next-pick-marker.on-clock td {
+  background: var(--pink);
+  color: #16161a;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 0.32rem 0.5rem;
+}
+/* Predicted to be drafted before your next turn (from "Predict picks") */
+#player-table tbody tr.pred-gone { background: rgba(217, 135, 60, 0.10); }
+#player-table tbody tr.pred-gone td:first-child { box-shadow: inset 3px 0 0 var(--orange); }
+#player-table tbody tr.pred-gone:hover { background: rgba(217, 135, 60, 0.18); }
+#player-table tbody tr.pred-gone.selected { background: #2c3a58; }
+
+#tabbed-panel {
   flex: 3;
   display: flex;
   flex-direction: column;
   min-height: 0;
   border-bottom: 1px solid var(--border);
 }
+
+#tab-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+#tab-strip { display: flex; flex: 1; min-width: 0; overflow-x: auto; }
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  border-radius: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-dim);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.tab.active { background: var(--bg); color: var(--fg); font-weight: 600; }
+.tab .tab-label { max-width: 9em; overflow: hidden; text-overflow: ellipsis; }
+/* Generous hitbox — a mid-draft click target must not need aim. The
+   negative margins keep the tab itself the same height. */
+.tab .tab-x {
+  color: var(--fg-dim);
+  padding: 0.25rem 0.45rem;
+  margin: -0.25rem -0.35rem -0.25rem -0.1rem;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 3px;
+}
+.tab .tab-x:hover { color: var(--red); background: var(--bg-hover); }
+#ai-status { padding: 0 0.6rem; font-size: 0.8rem; color: var(--fg-dim); white-space: nowrap; }
+
+#note-view { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+#note-view[hidden] { display: none; }
+#note-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+#note-toolbar button { padding: 0.1rem 0.5rem; font-size: 0.85rem; }
+#note-body { flex: 1; overflow: auto; padding: 0.7rem 1rem; }
 #team-panel {
   flex: 2;
   display: flex;
@@ -158,27 +289,102 @@ td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-ov
 .panel-head {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0.35rem 0.7rem;
   background: var(--bg-panel);
   border-bottom: 1px solid var(--border);
   font-weight: 600;
   font-size: 0.9rem;
 }
-#ai-status, #team-count { color: var(--fg-dim); font-weight: 400; }
+#team-count { color: var(--fg-dim); font-weight: 400; }
+.panel-head-left { display: flex; align-items: center; gap: 0.45rem; }
+
+#btn-team-collapse {
+  border: none;
+  background: none;
+  padding: 0 0.25rem;
+  font-size: 1.05rem;
+  color: var(--fg-dim);
+  transform: rotate(90deg);   /* » pointing down = click to collapse */
+}
+#btn-team-collapse:hover { color: var(--accent); }
+#team-panel.collapsed #btn-team-collapse { transform: rotate(-90deg); }
+#team-panel.collapsed { flex: 0 0 auto; }
+#team-panel.collapsed #team-list { display: none; }
 
 #ai-output, #team-list { flex: 1; overflow: auto; padding: 0.6rem 0.8rem; }
 
 .muted { color: var(--fg-dim); }
 
-#team-list h4 {
-  margin: 0.5rem 0 0.2rem;
+#team-needs {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
   color: var(--fg-dim);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
 }
-#team-list ul { margin: 0; padding-left: 1.1rem; }
-#team-list li { padding: 0.05rem 0; }
-#team-list li button { padding: 0 0.3rem; font-size: 0.75rem; margin-left: 0.3rem; }
+#team-panel.collapsed #team-needs { display: none; }
+
+/* Position color chips (team panel depth slots + draft board cells) */
+.pos-chip {
+  display: inline-block;
+  min-width: 2.6em;
+  text-align: center;
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #16161a;
+}
+.pos-QB  { background: var(--pos-qb); }
+.pos-RB  { background: var(--pos-rb); }
+.pos-WR  { background: var(--pos-wr); }
+.pos-TE  { background: var(--pos-te); }
+.pos-K   { background: var(--pos-k); }
+.pos-DST { background: var(--pos-dst); }
+.pos-UNK { background: var(--fg-dim); }
+
+#team-list { padding: 0.3rem 0.5rem; }
+.team-group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0.3rem 0.2rem 0.15rem;
+  color: var(--fg-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+.team-group-head:hover { color: var(--fg); border-color: transparent; }
+.team-group-head .tg-arrow { font-size: 0.7rem; width: 0.9em; }
+/* Name column is capped, not 1fr, so team/bye/rank sit right next to the
+   name instead of drifting to the panel's far edge. */
+.team-row {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 10.5em) 2.6em 3.4em 2.8em auto;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.16rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+/* In the team panel the chips are quiet — you don't need your own QB
+   glowing red at you all draft. Full colors stay on the Draft Board. */
+#team-list .pos-chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+}
+.team-row:hover { background: var(--bg-hover); }
+.team-row .t-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.team-row .t-team, .team-row .t-bye, .team-row .t-rank {
+  color: var(--fg-dim); font-size: 0.78rem; white-space: nowrap;
+}
+.team-row .t-rm { padding: 0 0.3rem; font-size: 0.75rem; }
 
 footer {
   display: flex;
@@ -230,11 +436,262 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 }
 .dialog-close { border: none; background: none; font-size: 1.3rem; padding: 0 0.3rem; }
 
-#note-dialog { display: flex; flex-direction: column; }
-#note-dialog:not([open]) { display: none; }
-#note-body { overflow: auto; padding: 0.7rem 1rem; }
+#note-editor { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; padding: 0.7rem 1rem; overflow: auto; }
+#note-editor[hidden] { display: none; }
+#note-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 8rem;
+  font-family: ui-monospace, "JetBrains Mono", Consolas, monospace;
+  font-size: 0.85rem;
+  resize: none;
+}
+
+/* Guided tour */
+#tour-overlay { position: fixed; inset: 0; z-index: 50; }
+#tour-overlay[hidden] { display: none; }
+#tour-highlight {
+  position: fixed;
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  pointer-events: none;
+  transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+#tour-tip {
+  position: fixed;
+  width: min(330px, 88vw);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+#tour-tip h3 { margin: 0 0 0.4rem; font-size: 1rem; padding-right: 1.2rem; }
+#tour-tip p { margin: 0 0 0.8rem; font-size: 0.9rem; }
+.tour-foot { display: flex; justify-content: space-between; align-items: center; }
+#tour-step-count { color: var(--fg-dim); font-size: 0.8rem; }
+#tour-close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.4rem;
+  border: none;
+  background: none;
+  font-size: 1.1rem;
+  color: var(--fg-dim);
+  padding: 0 0.2rem;
+}
+
+.btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.3rem 0; }
+
+/* ---------- Draft Board tab ---------- */
+#board-view { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+#board-view[hidden] { display: none; }
+#board-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  padding: 0.35rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--fg-dim);
+}
+#board-toolbar select, #board-toolbar input { padding: 0.1rem 0.3rem; font-size: 0.9rem; }
+#board-toolbar input { width: 3.4em; }
+#board-toolbar button { padding: 0.15rem 0.6rem; font-size: 0.9rem; }
+#board-config, #bot-config { display: inline-flex; gap: 0.7rem; align-items: center; }
+#board-config[hidden] { display: none; }
+#board-config-summary { flex: 1; }
+#btn-predict { border-color: var(--orange); }
+#board-outlook {
+  padding: 0.35rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+#board-outlook table { border-collapse: collapse; }
+#board-outlook td { padding: 0.08rem 0.6rem 0.08rem 0; white-space: nowrap; }
+/* Column labels carry the wording, so each cell can be a bare value instead
+   of repeating "now:" / "gone before you" / "waiting costs" on every row. */
+#board-outlook th {
+  padding: 0 0.6rem 0.15rem 0;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.88em;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+#board-outlook tbody tr:first-child td { padding-top: 0.18rem; }
+#board-outlook .ol-gone { color: var(--orange); }
+#board-outlook .ol-rank { color: var(--fg-dim); font-size: 0.88em; }
+#board-outlook .ol-cost { font-weight: 700; text-align: right; }
+.ol-suggest {
+  margin: 0.1rem 0 0.35rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--accent);
+}
+.ol-suggest b { color: var(--accent); }
+#board-grid-wrap { flex: 1; overflow: auto; }
+/* 12 columns x 15 rounds, sized to the panel: columns stretch to fill the
+   width, and each cell reads pick / name / position like a real draft board. */
+#board-grid { display: grid; gap: 2px; padding: 0.4rem; }
+.bd-head {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--bg-panel);
+  border-radius: 4px;
+  padding: 0.35rem 0.2rem;
+  font-size: calc(var(--bd-font, 13px) * 0.95);
+  text-align: center;
+  min-width: 0;
+  /* All headers share one grid row, so they're already as tall as the team
+     with the most positions drafted. Anchor to the top so every team name
+     still sits on the same line no matter how many rows sit beneath it. */
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.bd-head .bd-team-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Drafted counts, one position per line: a vertical stack costs no column
+   width, where a comma list would force every column as wide as its longest
+   line. Fixed line order makes the same position scannable across columns. */
+.bd-head .bd-has {
+  margin-top: 0.2rem;
+  font-size: 0.82em;
+  line-height: 1.25;
+  color: var(--fg-dim);
+}
+.bd-head .bd-has > * { display: block; font-weight: 600; }
+.need-bad { color: var(--red); font-weight: 700; }
+button.bd-head { border: 1px solid transparent; cursor: pointer; }
+button.bd-head:hover { border-color: var(--accent); }
+.bd-head.your-col { outline: 1px solid var(--pink); }
+.bd-round {
+  align-self: center;
+  color: var(--fg-dim);
+  font-size: calc(var(--bd-font, 13px) * 0.85);
+  text-align: center;
+}
+.bd-cell {
+  border-radius: 4px;
+  padding: 0.26rem 0.3rem; /* airy vertically; horizontal stays tight */
+  font-size: var(--bd-font, 13px);
+  line-height: 1.22;
+  /* Exactly the three lines a filled cell holds — pick, name, position — so
+     the box hugs its text and every cell is identical. In em, so it tracks
+     the width-driven font. */
+  height: calc(3.25em + 0.52rem);
+  min-width: 0;
+  background: var(--bg-row);
+  overflow: hidden;
+  /* Centred, so a one-line name sits in the middle of its box rather than
+     hanging from the top with the reserved second line empty beneath it. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* Empty slots are a dim pick number, centered — they should read as
+   whitespace, not as content competing with the picks that exist. */
+.bd-cell.empty {
+  align-items: center;
+  color: var(--fg-dim);
+  opacity: 0.5;
+}
+.bd-cell .bd-pick { font-size: 0.82em; opacity: 0.7; }
+.bd-cell .bd-meta {
+  font-size: 0.82em;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* One line: a name that wrapped would need a second line reserved in every
+   cell on the board, and that padding around the short names is worse than
+   an ellipsis on the long ones. Full name in the tooltip. */
+.bd-cell .bd-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Real picks keep their position color — the board should look like a board.
+   They're only slightly muted so predictions still read as the live edge. */
+.bd-cell.done { opacity: 0.82; }
+.bd-cell.done.pos-QB, .bd-cell.pred.pos-QB { background: var(--pos-qb); color: #16161a; }
+.bd-cell.done.pos-RB, .bd-cell.pred.pos-RB { background: var(--pos-rb); color: #16161a; }
+.bd-cell.done.pos-WR, .bd-cell.pred.pos-WR { background: var(--pos-wr); color: #16161a; }
+.bd-cell.done.pos-TE, .bd-cell.pred.pos-TE { background: var(--pos-te); color: #16161a; }
+.bd-cell.done.pos-K, .bd-cell.pred.pos-K { background: var(--pos-k); color: #16161a; }
+.bd-cell.done.pos-DST, .bd-cell.pred.pos-DST { background: var(--pos-dst); color: #16161a; }
+.bd-cell.done.pos-UNK, .bd-cell.pred.pos-UNK { background: var(--bg-hover); color: var(--fg); }
+.bd-cell.done .bd-pick, .bd-cell.pred .bd-pick { color: inherit; opacity: 0.75; }
+/* Simulated picks: full color but dashed orange border marks them as guesses */
+.bd-cell.pred { border: 1px dashed var(--orange); opacity: 0.9; }
+.bd-cell.your-col { box-shadow: inset 0 0 0 1px rgba(232, 93, 158, 0.35); }
+.bd-cell.next-your {
+  box-shadow: inset 0 0 0 2px var(--pink);
+  background: rgba(232, 93, 158, 0.16);
+}
+.bd-cell.next-your .bd-pick { color: var(--pink); font-weight: 700; }
+/* Same alert, on the board itself. Beats the .empty rule's dimming — this is
+   the one empty cell that must not recede. */
+.bd-cell.next-your.on-clock {
+  background: var(--pink);
+  box-shadow: inset 0 0 0 2px var(--pink);
+  color: #16161a;
+  opacity: 1;
+}
+.bd-cell.next-your.on-clock .bd-pick { color: #16161a; opacity: 0.8; }
+.bd-cell .bd-clock {
+  font-weight: 800;
+  font-size: 0.8em;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Help dialog ---------- */
+#help-body { padding: 0.8rem 1rem; overflow: auto; font-size: 0.9rem; }
+#help-body h3 { margin: 0.9rem 0 0.35rem; font-size: 0.95rem; }
+.help-keys td { padding: 0.12rem 0.9rem 0.12rem 0; font-size: 0.85rem; }
+.help-keys td:nth-child(even) { color: var(--fg-dim); }
+kbd {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 0.35em;
+  font-size: 0.8em;
+  font-family: inherit;
+}
+.help-gloss { margin: 0.3rem 0; }
+.help-gloss dt { font-weight: 600; margin-top: 0.4rem; }
+.help-gloss dd { margin: 0.05rem 0 0 1rem; color: var(--fg-dim); font-size: 0.85rem; }
 
 #settings-form { padding: 0.8rem 1rem; overflow: auto; }
+#settings-tabs {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+}
+#settings-tabs .stab {
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--fg-dim);
+}
+#settings-tabs .stab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+#settings-tabs .stab-all { margin-left: auto; }
+#settings-form fieldset[hidden] { display: none; }
 #settings-form fieldset {
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -253,6 +710,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 
 @media (max-width: 860px) {
   main { flex-direction: column; }
-  #left-panel { border-right: none; border-bottom: 1px solid var(--border); }
+  #left-panel { border-bottom: 1px solid var(--border); flex: 3 !important; width: auto !important; }
+  #panel-divider { display: none; }
   #right-panel { min-width: 0; }
 }

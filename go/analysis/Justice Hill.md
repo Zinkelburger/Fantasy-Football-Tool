@@ -1,31 +1,10 @@
-Justice Hill (BAL) – 2025 fantasy notes and takeaways
+**Justice Hill** (BAL, RB, bye 13) — board rank 170
 
-- Role in 2025
-  - Primary Ravens complement to Derrick Henry. Training Camp Week 3: Hill is clearly ahead of Keaton Mitchell, who sits as the 3rd RB; Henry, Hill, then Mitchell.
-  - Described historically as a “very good change-of-pace back” with efficiency when used, suggesting a stable but limited ceiling unless volume climbs.
-  - Keaton Mitchell could siphon some touches, but Hill remains the clearer 2nd-back in most gameplans.
+**Room sentiment:** Quiet — only 4 mentions, and none of them are actually analysis of his 2026 outlook. The dossier is thin.
 
-- Expected workload and scoring profile
-  - Likely 8–12 carries per game with a handful of targets in the pass game (floor-ish PPR flex option if Henry is healthy).
-  - Ceiling hinges on Henry’s health; if Henry misses time, Hill’s workload could spike and he becomes a legitimately high-end RB2/low-end RB1 in that scenario.
-  - In a balanced backfield, Hill is more of a floor-friendly piece than a weekly ceiling risk unless Baltimore leans heavily on Mitchell.
+- The one concrete role note: he's the receiving back in Baltimore, with Derrick Henry's work described as almost entirely rushing.
+- Otherwise he's used as a reference point for other players — the archetype of a "just ok RB2 on a good team that excels at pass protection and can also run well behind a competent o-line," and a comp for how the Giants might use Tyrone Tracy.
+- One poster asked directly whether he's fantasy viable. The corpus contains no answer.
+- No camp reports, no injury news, no depth-chart items, no ADP debate.
 
-- Draft sentiment and strategy
-  - Not a target in 10-team leagues; better value in 12-team or deeper formats as a late-round flier or handcuff/backup.
-  - In dynasty/keeper leagues, Hill’s value persists as long as he’s in BAL and healthy.
-  - Monitor camp reports on Henry’s durability and Mitchell’s utilization; shifts in those can cap or boost Hill’s value quickly.
-
-- Risks and red flags
-  - Keaton Mitchell presence could cap peak Week-to-Week upside; Mitchell is the clear wildcard if he earns touches.
-  - Derrick Henry’s age/injury risk remains the biggest leverage point for Hill’s upside.
-  - Ravens offense volatility or game plan changes could dampen Hill’s output even with a steady role.
-
-- What to watch (barometers)
-  - Health and workload distribution in preseason/early season games (Henry vs Hill snap/carry split).
-  - Mitchell’s role in Week 1/early games; if Mitchell eats into third-down/short-yardage, Hill’s ceiling could drop.
-  - Any shift in Ravens’ game plan that increases Hill’s involvement as a receiver.
-
-- Takeaway for 2025
-  - Baseline: steady RB2/flex if Henry stays healthy; modest ceiling.
-  - Upside: becomes a strong RB2 if Henry misses time or if Mitchell doesn’t absorb enough work.
-  - Actionable move: draft Hill as a safe late-round RB with contingency on Henry’s health; roster him as a potential flex with equity in deeper leagues.
+**Draft take:** The community isn't discussing him, which is itself information — no hype and no reported role change. Waiver-wire name in a 12-team league; only worth a final pick if you roster Henry and want the pass-down back in case Henry misses time.

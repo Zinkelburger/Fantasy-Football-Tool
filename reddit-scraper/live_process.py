@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Live processing script for fantasy football player analysis.
-Uses GPT-5-nano-2025-08-07 for real-time processing instead of batch processing.
+Queries the OpenAI API player-by-player instead of batch processing.
 Processes the first 200 non-kicker, non-defense players.
 """
 
@@ -9,61 +9,25 @@ import os
 import sys
 import pathlib
 from datetime import datetime
-from typing import Set, List
-import re
+from typing import List
 
 from OpenAIQuery import OpenAIQuery
 from FootballPlayer import FootballPlayer
+from pipeline_utils import (
+    SYSTEM_PROMPT,
+    build_summary_prompt,
+    extract_discussion_content,
+    find_discussion_file,
+    get_processed_slugs,
+)
 
 
 # Configuration
-OPENAI_MODEL = "gpt-5-nano-2025-08-07"
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-nano-2025-08-07")
 EXCLUDED_POSITIONS = ["DST", "K"]
 FILTERED_DATA_DIR = "filtered_data"
 OUT_DIR = "markdown_data"
 MAX_PLAYERS = 200
-
-
-def get_processed_slugs(out_dir: str) -> Set[str]:
-    """Detect already-processed players by the presence of their summary files."""
-    processed: Set[str] = set()
-    if not os.path.isdir(out_dir):
-        return processed
-
-    for filename in os.listdir(out_dir):
-        if filename.endswith(".md") and len(filename) > len(".md"):
-            base = filename[: -len(".md")]
-            slug = re.sub(r"[^a-z0-9]", "_", base.lower()).strip("_")
-            processed.add(slug)
-    return processed
-
-
-def extract_high_confidence_content(filtered_text: str) -> str:
-    """Extract the HIGH CONFIDENCE sections from filtered discussion text."""
-    lines = filtered_text.split('\n')
-    high_confidence_content = []
-    in_high_confidence_section = False
-    current_section = []
-    
-    for line in lines:
-        if "--- HIGH CONFIDENCE SECTION ---" in line:
-            in_high_confidence_section = True
-            current_section = []
-            continue
-            
-        # Stop when we hit processing metadata or end of file
-        if line.startswith("--- PROCESSING METADATA ---"):
-            if in_high_confidence_section and current_section:
-                high_confidence_content.extend(current_section)
-            break
-            
-        if in_high_confidence_section:
-            current_section.append(line)
-    
-    if in_high_confidence_section and current_section:
-        high_confidence_content.extend(current_section)
-    
-    return '\n'.join(high_confidence_content).strip()
 
 
 def main():
@@ -153,15 +117,13 @@ def main():
             skipped_count += 1
             continue
         
-        discussion_file = os.path.join(
-            filtered_data_dir_abs, f"{player.slug}_filtered_discussion.txt"
-        )
-        
-        if not os.path.exists(discussion_file):
-            print(f"    ⚠️  No filtered discussion file found - skipping")
+        discussion_file = find_discussion_file(filtered_data_dir_abs, player.slug)
+
+        if discussion_file is None:
+            print(f"    ⚠️  No discussion file found - skipping")
             skipped_count += 1
             continue
-        
+
         try:
             with open(discussion_file, "r", encoding="utf-8") as f:
                 filtered_text = f.read().strip()
@@ -169,36 +131,20 @@ def main():
             print(f"    ❌ Error reading discussion file: {e}")
             error_count += 1
             continue
-        
-        if not filtered_text:
-            print(f"    ⚠️  Empty discussion file - skipping")
+
+        discussion_content = extract_discussion_content(filtered_text)
+
+        if not discussion_content:
+            print(f"    ⚠️  No discussion content found - skipping")
             skipped_count += 1
             continue
-        
-        high_confidence_content = extract_high_confidence_content(filtered_text)
-        
-        if not high_confidence_content:
-            print(f"    ⚠️  No high confidence content found - skipping")
-            skipped_count += 1
-            continue
-        
-        # Create prompt
-        prompt = (
-            f"Player: {player.player_name} | Team: {player.team_name} | Position/Depth: {player.player_depth}\n"
-            "Analyze the following Reddit posts/comments and FF Hound expert analysis about this player. "
-            "Provide extremely concise and detailed notes of the 2025 fantasy football outlook, sentiment, and key discussion points for this player.\n\n"
-            "Don't spew random optimistic bullshit. Be realistic and focus on actionable insights. "
-            "There may be extraneous details or players with the same names. Be precise in your analysis.\n\n"
-            f"--- Combined High Confidence Data ---\n{high_confidence_content}"
-        )
-        
+
+        prompt = build_summary_prompt(player, discussion_content)
+
         # Query OpenAI
         try:
             print(f"    🤖 Querying {OPENAI_MODEL}...")
-            messages = openai_client.create_system_user_query(
-                "You are a sharp fantasy football analyst providing draft advice based on Reddit community insights.",
-                prompt
-            )
+            messages = openai_client.create_system_user_query(SYSTEM_PROMPT, prompt)
             
             response = openai_client.query(messages, stream=False)
             

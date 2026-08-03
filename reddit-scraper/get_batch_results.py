@@ -15,7 +15,7 @@ from typing import List, Dict
 
 
 # Configuration
-OPENAI_MODEL = "gpt-5-mini"  # Should match submit script
+OPENAI_MODEL = os.getenv("OPENAI_BATCH_MODEL", "gpt-5-mini")  # Should match submit script
 BATCH_ID_FILE = "batch_info.json"
 
 

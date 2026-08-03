@@ -1,44 +1,10 @@
-Concise, action-oriented notes for Mike Evans (TB) – 2025
+**Mike Evans** (SF, WR, bye 8) — board rank 62
 
-- 2025 outlook at a glance
-  - Likely a high-floor WR1 again, with strong TD upside. ADP around WR19 (roughly pick 4.2 rounds), price of a mid-WR2 but feasible as a value.
-  - Projections in chatter: 12+ TDs suggested; 1,000+ receiving yards likely if offense stays pass-heavy and health cooperates.
+**Room sentiment:** Bullish and getting louder — 87 mentions, most piled into the 49ers injury threads. The dissent is about age and durability, not role.
 
-- Why Evans still matters (community sentiment)
-  - Consistent producer: multiple posts cite him as a safe high-floor option, often outperforming his ADP.
-  - End-zone machine: historically leads team/end-zone targets; favorable TD runway remains a core asset.
-  - Godwin injury context: with Godwin on PUP/miss time, Evans should see elevated early-season targets; long-term impact depends on Godwin’s return and usage.
+- The catalyst is Ricky Pearsall going on season-ending IR for PCL surgery. The reaction thread's top comment (351) is literally "Mike Evans to the moon," with "Mike Evans time!" (199) behind it. NBC's Matt Maiocco says San Francisco's top two receivers should be "Mike Evans and De'Zhaun Stribling."
+- The bear case is age and health: he turns 33 in August, coming off an injury-riddled 2025. The argument is live — one poster mocks "Mike Evans the ironman?" and the reply (41) counters he has missed less than a season total in 12 years. A report has him out of practice with a quad strain, which skeptics seized on.
+- Competition isn't trivial: Deebo Samuel is back, Christian Kirk was signed, Kittle is coming off an Achilles, and CMC absorbs volume.
+- Price is the argument. A projection post has him at ADP 88.6 for 824.5 yards; "Mike Evans is two rounds too low" (27) is the popular take.
 
-- Key risk factors and caveats
-  - Age and durability: turns 32 soon; ageism discussions acknowledge potential steadier decline or maintenance of role depending on health.
-  - Godwin return timing: if Godwin re-enters, Evans could see target-sharing creep; could cap ceiling late season.
-  - Offense/teammate volatility: other Buccaneers pass-catchers (rookies/second-year guys) could siphon targets; X-factor is how the QB and scheme deal with condensed target distribution.
-
-- What to expect in 2025 (numbers are approximate talk-point targets)
-  - Target profile: high target share if offense is pass-forward; expect ~110-125 targets in a good year.
-  - Yardage: roughly 1,000+ yards (a realistic range given usage and offense).
-  - TDs: 9–12 TDs possible, with some projections pointing toward 12+ in a favorable year.
-  - Week-to-week: boomer-bust weeks exist; plan for steady weekly floors but don’t rely on him as an every-week anchor.
-
-- Draft and roster strategy (actionable)
-  - Value slot: draft Evans as WR19 in mid-rounds; don’t reach; pair with a solid anchor RB/WR in early rounds.
-  - Build around reliability: pair with at least one high-floor WR or a steady RB to anchor weeks Evans might dip.
-  - Risk mitigation: consider a backup plan for weeks Evans has tough matchups or if he’s limited by health; keep waivers/bench options ready.
-  - Contingency play: if Godwin misses extended time, Evans’ upside increases; if Godwin returns quickly, monitor target share and red-zone looks.
-
-- Comparisons and board feel
-  - In the same tier as Sutton, MHJ, DJ Moore, etc.—Evans is the safest floor pick among many marginal upside options; volatility leans toward managing a +1 WR who can anchor weeks.
-  - Relative to mid-round WRs, Evans is a safer baseline with consistent TD upside rather than a high-ceiling, injury-prone option.
-
-- Takeaways from FF Hound/expert notes
-  - Evans projected as WR14 (around 27 overall) with 12+ TD upside in a condensed target environment.
-  - Veteran value play: age used as a selling point for targeting him over some younger-but-riskier options.
-  - Fade candidates noted by experts: avoid over-reliance on Evans if you’re anchoring an early-RB-heavy build; plan the rest of your WR corps accordingly.
-
-- Quick punchlist for your draft
-  - If he’s there around WR19, consider him as a solid WR2 with WR1 upside in your lineup.
-  - Don’t draft him as your weekly anchor; pair with a reliable, high-upside WR or a solid RB early.
-  - Monitor Godwin’s status in training camp and early season; plan for increased Evans volume if Godwin sits.
-  - Have a plan for weeks Evans doesn’t hit—bi-weekable options or a favorable matchup-based start.
-
-Bottom line: Evans remains a realistic, high-floor option with meaningful TD upside in 2025. Treat him as a solid WR2 with clear upside in the right circumstances, but don’t rely on him to carry or anchor an entire team every week.
+**Draft take:** Good value in the 5th-7th as a WR3 with red-zone-driven WR2 upside now that Pearsall is out. Take the discount; don't reach.

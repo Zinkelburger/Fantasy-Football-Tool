@@ -5,7 +5,14 @@
 // the web app's page and relays that data in via window.postMessage. Because
 // the data is persisted in extension storage, the draft tab and the web app
 // tab do NOT need to be open at the same time — whenever the app tab opens
-// (or regains focus), it receives the latest state.
+// (or regains focus), it receives the latest state. Nor do they need to be
+// *focused*: chrome.storage.onChanged fires in background tabs, so the app tab
+// updates live while you sit on the draft page.
+//
+// The manifest lists the exact origins this runs on. If you host the app
+// somewhere new, add that origin there — but keep it exact. A wildcard like
+// https://*.github.io/* would inject this into every GitHub Pages site on the
+// internet.
 
 (function () {
   'use strict';

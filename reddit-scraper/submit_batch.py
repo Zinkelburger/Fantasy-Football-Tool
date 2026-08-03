@@ -6,6 +6,13 @@ Creates and submits a batch to OpenAI, saves the batch ID for later retrieval.
 
 from OpenAIQuery import OpenAIQuery, BatchRequest
 from FootballPlayer import FootballPlayer
+from pipeline_utils import (
+    SYSTEM_PROMPT,
+    build_summary_prompt,
+    extract_discussion_content,
+    find_discussion_file,
+    get_processed_slugs,
+)
 import json
 import os
 import pathlib
@@ -13,52 +20,9 @@ from datetime import datetime
 from typing import Set, List, Dict
 
 # Configuration
-OPENAI_MODEL = "gpt-5-mini"  # Batch processing uses gpt-5-mini, live uses gpt-5-nano-2025-08-07
+OPENAI_MODEL = os.getenv("OPENAI_BATCH_MODEL", "gpt-5-mini")  # Batch uses gpt-5-mini, live uses gpt-5-nano
 EXCLUDED_POSITIONS = ["DST", "K"]
 BATCH_ID_FILE = "batch_info.json"
-
-
-def get_processed_slugs(out_dir: str) -> Set[str]:
-    """Detect already-processed players by the presence of their summary files."""
-    processed: Set[str] = set()
-    if not os.path.isdir(out_dir):
-        return processed
-
-    for filename in os.listdir(out_dir):
-        if filename.endswith(".md") and len(filename) > len(".md"):
-            base = filename[: -len(".md")]
-            import re
-            slug = re.sub(r"[^a-z0-9]", "_", base.lower()).strip("_")
-            processed.add(slug)
-    return processed
-
-
-def extract_high_confidence_content(filtered_text: str) -> str:
-    """Extract the HIGH CONFIDENCE sections from filtered discussion text (now includes ff-hound data)."""
-    lines = filtered_text.split('\n')
-    high_confidence_content = []
-    in_high_confidence_section = False
-    current_section = []
-    
-    for line in lines:
-        if "--- HIGH CONFIDENCE SECTION ---" in line:
-            in_high_confidence_section = True
-            current_section = []
-            continue
-            
-        # Stop when we hit processing metadata or end of file
-        if line.startswith("--- PROCESSING METADATA ---"):
-            if in_high_confidence_section and current_section:
-                high_confidence_content.extend(current_section)
-            break
-            
-        if in_high_confidence_section:
-            current_section.append(line)
-    
-    if in_high_confidence_section and current_section:
-        high_confidence_content.extend(current_section)
-    
-    return '\n'.join(high_confidence_content).strip()
 
 
 def prepare_batch_requests(
@@ -71,11 +35,9 @@ def prepare_batch_requests(
         if player.slug in processed_slugs:
             continue
 
-        discussion_file = os.path.join(
-            filtered_data_dir_abs, f"{player.slug}_filtered_discussion.txt"
-        )
+        discussion_file = find_discussion_file(filtered_data_dir_abs, player.slug)
 
-        if not os.path.exists(discussion_file):
+        if discussion_file is None:
             continue
 
         try:
@@ -84,25 +46,13 @@ def prepare_batch_requests(
         except Exception:
             continue
 
-        if not filtered_text:
-            continue
+        discussion_content = extract_discussion_content(filtered_text)
 
-        high_confidence_content = extract_high_confidence_content(filtered_text)
-        
-        if not high_confidence_content:
+        if not discussion_content:
             continue
-
-        prompt = (
-            f"Player: {player.player_name} | Team: {player.team_name} | Position/Depth: {player.player_depth}\n"
-            "Analyze the following Reddit posts/comments and FF Hound expert analysis about this player. "
-            "Provide extremely concise and detailed notes of the 2025 fantasy football outlook, sentiment, and key discussion points for this player.\n\n"
-            "Don't spew random optimistic bullshit. Be realistic and focus on actionable insights. "
-            "There may be extraneous details or players with the same names. Be precise in your analysis.\n\n"
-            f"--- Combined High Confidence Data ---\n{high_confidence_content}"
-        )
 
         batch_data.append(
-            {"player": player, "prompt": prompt, "high_confidence_content": high_confidence_content}
+            {"player": player, "prompt": build_summary_prompt(player, discussion_content)}
         )
 
     return batch_data
@@ -187,10 +137,7 @@ def main():
     batch_requests = []
     for data in batch_data:
         player = data["player"]
-        messages = openai_client.create_system_user_query(
-            "You are a sharp fantasy football analyst providing draft advice based on Reddit community insights.",
-            data["prompt"],
-        )
+        messages = openai_client.create_system_user_query(SYSTEM_PROMPT, data["prompt"])
 
         batch_requests.append(
             BatchRequest(

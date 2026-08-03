@@ -72,16 +72,19 @@ class HeroStats:
 def hero_experiment(year: int, hero: str, n_sims: int = 100, seed: int = 0,
                     league: LeagueConfig = DEFAULT_LEAGUE,
                     sc: ScoringConfig = DEFAULT_SCORING,
-                    hero_kwargs: dict | None = None) -> HeroStats:
-    """Hero vs 11 family bots; hero rotates seats so draft-slot luck
-    averages out. Same seed sequence for every hero -> common random
-    numbers across strategy comparisons."""
+                    hero_kwargs: dict | None = None,
+                    villain: str = "family") -> HeroStats:
+    """Hero vs 11 villain bots (default: the calibrated family room);
+    hero rotates seats so draft-slot luck averages out. Same seed
+    sequence for every hero -> common random numbers across strategy
+    comparisons within a room. villain="bpa" gives a theoretical sharp
+    room: no draft noise, hero-grade waivers."""
     pool, table = get_pool(year, sc)
     stats = HeroStats(year=year, strategy=hero)
     for i in range(n_sims):
         rng = random.Random((seed, year, i).__hash__() & 0x7FFFFFFF)
         seat = i % league.n_teams
-        strategies = [make("family") for _ in range(league.n_teams)]
+        strategies = [make(villain) for _ in range(league.n_teams)]
         strategies[seat] = make(hero, **(hero_kwargs or {}))
         for s in strategies:
             s.bind_year(year)

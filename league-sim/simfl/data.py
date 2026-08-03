@@ -185,6 +185,46 @@ def load_schedule_byes(year: int) -> dict[str, int]:
     return byes
 
 
+def load_injury_reports(year: int) -> dict[str, dict[int, str]]:
+    """gsis player_id -> {week: Friday game status} for one season,
+    statuses Questionable/Doubtful/Out only. Real report data, so the
+    sim's managers read the same news the family did."""
+    inj = (pl.read_parquet(DATA_DIR / "injuries_2017_2025.parquet")
+           .filter(pl.col("season") == year,
+                   pl.col("report_status").is_in(["Questionable", "Doubtful", "Out"]))
+           .select("gsis_id", pl.col("week").cast(pl.Int64), "report_status"))
+    out: dict[str, dict[int, str]] = {}
+    for r in inj.iter_rows(named=True):
+        if r["gsis_id"]:
+            out.setdefault(r["gsis_id"], {})[r["week"]] = r["report_status"]
+    return out
+
+
+def load_expected_points(year: int) -> dict[str, dict[int, float]]:
+    """gsis player_id -> {week: expected points} from nflverse
+    ff_opportunity, rescored under league rules (pass 1/25 + 4TD − 2INT,
+    rush/rec 1/10 + 6TD, 2pt = 2). Opportunity-based: what the week's
+    usage was worth, before the TD/long-play dice landed."""
+    df = (pl.read_parquet(DATA_DIR / "ff_opportunity_2017_2025.parquet")
+          .filter(pl.col("season") == str(year),
+                  pl.col("position").is_in(["QB", "RB", "WR", "TE"])))
+    ep = (pl.col("pass_yards_gained_exp") / 25
+          + pl.col("pass_touchdown_exp") * 4
+          + pl.col("pass_interception_exp") * -2
+          + pl.col("rush_yards_gained_exp") / 10
+          + pl.col("rush_touchdown_exp") * 6
+          + pl.col("rec_yards_gained_exp") / 10
+          + pl.col("rec_touchdown_exp") * 6
+          + (pl.col("pass_two_point_conv_exp") + pl.col("rec_two_point_conv_exp")
+             + pl.col("rush_two_point_conv_exp")) * 2)
+    df = df.with_columns(ep.fill_null(0.0).alias("ep"))
+    out: dict[str, dict[int, float]] = {}
+    for pid, week, val in df.select("player_id", "week", "ep").iter_rows():
+        if pid:
+            out.setdefault(pid, {})[int(week)] = val
+    return out
+
+
 def load_rookie_years() -> dict[str, int]:
     """gsis player_id -> entry year."""
     cache = DATA_DIR / "rookie_years.json"

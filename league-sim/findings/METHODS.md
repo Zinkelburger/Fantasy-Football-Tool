@@ -60,6 +60,15 @@ field scores all-play 0.500 ± 0.006 and wins titles at ≈ 1/12 in every
 season. Any deviation a strategy shows is therefore signal, not
 harness bias.
 
+**The sharp room (added 2026-08-02):** `hero_experiment(...,
+villain="bpa")` swaps the eleven family bots for eleven disciplined
+ADP drafters with hero-grade waivers — a theoretical room with no
+measured family habits. Any strategy's edge splits into a
+room-exploiting part (family room minus sharp room) and a
+room-independent part (what survives sharp villains). The null test
+holds there too: bpa-in-bpa-room = 0.497. Used by finding 03's
+sharp-room table (`analysis/sharp_room.py`).
+
 Metrics:
 - **All-play win %** — each week, your score vs all 11 others; the
   schedule-luck-free measure of team strength. Baseline 0.500.

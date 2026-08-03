@@ -1,0 +1,43 @@
+{
+  "fetched_at": "2026-08-03",
+  "sheets": {
+    "rankings": {
+      "id": "1HTixsrRtIIpnUafVkOIhET83vCFjKXSUGiG24-5jTHY",
+      "title": "JuiceBoxOne's Abusing Fantasy Draft Rankings",
+      "note": "per-platform draft ranks (ESPN/Sleeper/Yahoo/CBS x scoring format) + Landmine risk score. Source of ESPN_Rank/Sleeper_Rank in go/*.csv.",
+      "url": "https://docs.google.com/spreadsheets/d/1HTixsrRtIIpnUafVkOIhET83vCFjKXSUGiG24-5jTHY/edit",
+      "sheet_last_updated": "2026-07-31",
+      "tabs": [
+        "juicebox_rankings_Main.csv",
+        "juicebox_rankings_2026_Draft_Values.csv",
+        "juicebox_rankings_ESPN_Standard.csv",
+        "juicebox_rankings_ESPN_Half_PPR.csv",
+        "juicebox_rankings_ESPN_PPR.csv",
+        "juicebox_rankings_Sleeper_Standard.csv",
+        "juicebox_rankings_Sleeper_Half_PPR.csv",
+        "juicebox_rankings_Sleeper_PPR.csv",
+        "juicebox_rankings_Sleeper_Superflex.csv",
+        "juicebox_rankings_Yahoo_Standard.csv",
+        "juicebox_rankings_Yahoo_Half_PPR.csv",
+        "juicebox_rankings_Yahoo_PPR.csv",
+        "juicebox_rankings_CBS_PPR.csv",
+        "juicebox_rankings_Fleaflicker_PPR.csv",
+        "juicebox_rankings_ALL_Standard_Drafts.csv",
+        "juicebox_rankings_ALL_Half_PPR_Drafts.csv",
+        "juicebox_rankings_ALL_PPR_Drafts.csv"
+      ]
+    },
+    "cheatsheet": {
+      "id": "199izMhbkOOjTsNmrK-D56dYnnViJBYFfBEtxK268h4Y",
+      "title": "JuiceSheets Draft Cheat Sheets",
+      "note": "projected fantasy points (PROJ) per scoring format, plus ADP/VALUE. The 'Combined' tab is the useful one: one row per player with team, bye, platform ranks and Proj Std/Half/PPR.",
+      "url": "https://docs.google.com/spreadsheets/d/199izMhbkOOjTsNmrK-D56dYnnViJBYFfBEtxK268h4Y/edit",
+      "sheet_last_updated": "2026-07-31",
+      "tabs": [
+        "juicebox_cheatsheet_Introduction.csv",
+        "juicebox_cheatsheet_Cheat_Sheet.csv",
+        "juicebox_cheatsheet_Combined.csv"
+      ]
+    }
+  }
+}

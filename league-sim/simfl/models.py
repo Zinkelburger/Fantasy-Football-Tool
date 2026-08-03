@@ -17,6 +17,10 @@ class PlayerSeason:
     rookie: bool
     bye: int
     week_pts: dict[int, float]  # only weeks with a stat line
+    week_status: dict[int, str] = field(default_factory=dict)  # real Friday
+    #   injury-report game status (Questionable/Doubtful/Out) by week
+    week_ep: dict[int, float] = field(default_factory=dict)  # expected pts
+    #   (opportunity-based, league scoring); empty for kickers
     draft_rank: int = 0         # ADP order, prev-season points as fallback
     pos_rank: int = 0           # draft_rank order within position
     prior_ppg: float = 0.0      # leak-free preseason expectation
@@ -29,6 +33,17 @@ class PlayerSeason:
 
     def on_bye(self, week: int) -> bool:
         return week == self.bye
+
+    def done_for_season(self, week: int) -> bool:
+        """News proxy, judged with knowledge through `week`: missed 3+
+        straight non-bye weeks and never plays again this season. By
+        that point the real-world injury report had long said IR /
+        out-for-year, so managers may treat the roster spot as dead.
+        A player who does return later never trips this — his future
+        game keeps the miss count negative until it actually happens."""
+        last = max(self.week_pts, default=0)
+        misses = week - last - (1 if last < self.bye <= week else 0)
+        return misses >= 3
 
     def __repr__(self):
         adp = f"{self.adp:.1f}" if self.adp else "--"

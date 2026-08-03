@@ -99,6 +99,83 @@ function computePickedFromAvailable(availableNames, allPlayers) {
   return allPlayers.filter(p => !availableSet.has(p.name)).map(p => p.name);
 }
 
+// Split one CSV line, honoring double-quoted cells ("Smith, John").
+function splitCsvLine(line) {
+  const cells = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else cur += ch;
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ',') {
+      cells.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur);
+  return cells;
+}
+
+function csvCell(v) {
+  const s = String(v == null ? '' : v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+// Forgiving rankings parser for user-supplied files. Accepts:
+//  - a CSV with a header naming a Player (or Name) column, Rank column optional;
+//  - headerless "rank,name" rows;
+//  - a plain list of names, optionally numbered like "12. Justin Jefferson"
+//    (the number is the rank; otherwise the line's position is).
+function parseRankingsText(text) {
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const entries = [];
+  if (!lines.length) return entries;
+
+  let start = 0;
+  const header = splitCsvLine(lines[0]).map(c => c.trim().toLowerCase());
+  let nameCol = header.indexOf('player');
+  if (nameCol < 0) nameCol = header.indexOf('name');
+  const rankCol = nameCol >= 0 ? header.indexOf('rank') : -1;
+  if (nameCol >= 0) start = 1;
+
+  for (let i = start; i < lines.length; i++) {
+    const cells = splitCsvLine(lines[i]).map(c => c.trim());
+    let name = '';
+    let rank = NaN;
+    if (nameCol >= 0) {
+      name = cells[nameCol] || '';
+      if (rankCol >= 0) rank = parseFloat(cells[rankCol]);
+    } else if (cells.length >= 2 && /^\d+(\.\d+)?$/.test(cells[0])) {
+      rank = parseFloat(cells[0]);
+      name = cells[1];
+    } else {
+      const m = /^(\d+)[.)]\s+(.+)$/.exec(lines[i]);
+      if (m) { rank = parseFloat(m[1]); name = m[2].trim(); }
+      else name = cells[0];
+    }
+    if (!name) continue;
+    entries.push({ rank: isFinite(rank) ? rank : entries.length + 1, name });
+  }
+  return entries;
+}
+
+// The exported sheet re-numbers Rank 1..N in board order, so "reorder the rows
+// in Excel and re-import" works without fixing numbers by hand.
+function buildRankingsCsv(playersInOrder) {
+  const out = ['Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank'];
+  playersInOrder.forEach((p, i) => {
+    out.push([i + 1, p.name, p.team, p.bye, p.pos, p.espn, p.sleeper].map(csvCell).join(','));
+  });
+  return out.join('\n') + '\n';
+}
+
 const POSITION_ORDER = { QB: 1, RB: 2, WR: 3, TE: 4, K: 5, DST: 6, DEF: 6 };
 
 function groupByPosition(players) {
@@ -118,6 +195,92 @@ function groupByPosition(players) {
     current.players.push(p);
   }
   return groups;
+}
+
+function normPos(pos) { return pos === 'DEF' ? 'DST' : pos; }
+
+// Typical single-QB lineup: these are the starting slots a roster must fill
+// (FLEX on top of them). Used for the team-panel "still need" line, the draft
+// board needs chips, and the pick predictor.
+const STARTER_SLOTS = { QB: 1, RB: 2, WR: 2, TE: 1, K: 1, DST: 1 };
+// How many of a position a team will draft at most (predictor only).
+const ROSTER_CAPS = { QB: 2, RB: 6, WR: 6, TE: 2, K: 1, DST: 1 };
+// A team that reaches this round with ZERO players at a position is in real
+// trouble — the needs lines flag it in bold ("really needs RB").
+const BADLY_NEEDED_BY_ROUND = { QB: 10, RB: 4, WR: 4, TE: 12 };
+// Draft-board header order: roughly how much of a draft the position decides,
+// so the lines you actually read sit nearest the team name. K/DST aren't on
+// the bundled board but can arrive from the extension's pick feed.
+const BOARD_POS_ORDER = ['RB', 'WR', 'QB', 'TE', 'DST', 'K'];
+
+/* ---------- snake draft math (1-based picks, teams 1..T) ---------- */
+function snakeTeamForPick(pick, teams) {
+  const round = Math.ceil(pick / teams);
+  const idx = (pick - 1) % teams;
+  return round % 2 === 1 ? idx + 1 : teams - idx;
+}
+
+function nextPickForTeam(team, teams, picksMade) {
+  if (!(team >= 1 && team <= teams)) return null;
+  for (let n = picksMade + 1; ; n++) {
+    if (snakeTeamForPick(n, teams) === team) return n;
+  }
+}
+
+// The shared draft-sense rule: would a team with `have` players at `pos`
+// reasonably draft that position in `round`? No hoarding QBs/TEs early, no
+// early K/DST, positional caps, and when a mustFill set is given only those
+// positions (missing starters) qualify.
+function wouldDraft(pos, have, round, rounds, mustFillSet) {
+  if (have >= (ROSTER_CAPS[pos] || 6)) return false;
+  const roundsLeft = rounds - round;
+  if ((pos === 'K' || pos === 'DST') && roundsLeft > 2) return false;
+  if (pos === 'QB' && have >= 1 && round < 10) return false;
+  if (pos === 'TE' && have >= 1 && round < 12) return false;
+  if (mustFillSet && !mustFillSet.has(pos)) return false;
+  return true;
+}
+
+// Deterministic autopick — simulates picks with plain rules, no AI: each
+// team takes the best available in the order given (the caller decides the
+// preference order, e.g. the draft site's own rankings). algo 'need'
+// (default) filters through wouldDraft(); 'ba' is pure best available —
+// strictly the next name in the order, needs ignored. Positions the pool
+// doesn't carry (the bundled board has no K/DST) are simply never required.
+//
+// available: [{name, pos, team}] in preference order (team = NFL team, kept
+// only so the board can label the cell). teamCounts: per-team {POS: n}, index
+// team-1. Returns [{pick, round, team, name, pos, nfl}] — here `team` is the
+// drafting slot 1..T and `nfl` is the player's NFL team.
+function predictDraft(available, teamCounts, startPick, endPick, teams, rounds, algo) {
+  const avail = available.map(p => ({ name: p.name, pos: normPos(p.pos), nfl: p.team }));
+  const counts = teamCounts.map(c => Object.assign({}, c));
+  const poolPos = new Set(avail.map(p => p.pos));
+  const out = [];
+  for (let n = startPick; n <= endPick && avail.length; n++) {
+    const team = snakeTeamForPick(n, teams);
+    const c = counts[team - 1] || (counts[team - 1] = {});
+    const round = Math.ceil(n / teams);
+
+    let i = 0;
+    if (algo !== 'ba') {
+      const gaps = new Set();
+      let gapCount = 0;
+      for (const pos of Object.keys(STARTER_SLOTS)) {
+        if (!poolPos.has(pos)) continue;
+        const gap = STARTER_SLOTS[pos] - (c[pos] || 0);
+        if (gap > 0) { gaps.add(pos); gapCount += gap; }
+      }
+      const mustFill = gapCount > rounds - round ? gaps : null;
+
+      i = avail.findIndex(p => wouldDraft(p.pos, c[p.pos] || 0, round, rounds, mustFill));
+      if (i < 0) i = 0; // every rule blocked -> pure best available
+    }
+    const p = avail.splice(i, 1)[0];
+    c[p.pos] = (c[p.pos] || 0) + 1;
+    out.push({ pick: n, round, team, name: p.name, pos: p.pos, nfl: p.nfl });
+  }
+  return out;
 }
 
 function escapeHtml(s) {
@@ -187,6 +350,13 @@ const DEFAULT_SETTINGS = {
   ollamaEndpoint: 'http://localhost:11434',
   ollamaModel: '',
   scoringFormat: 'STD',
+  manualMode: false,      // show Picked/+Team buttons (off = extension drives)
+  rankSource: 'auto',     // which site-rank column: auto|espn|sleeper|both
+  numTeams: 12,           // draft board: league size
+  draftSlot: 0,           // draft board: your position, 0 = auto-detect
+  numRounds: 15,          // draft board: rounds
+  botRanks: 'auto',       // predictor: ranking the bots draft by (auto|espn|sleeper|mine)
+  botAlgo: 'need',        // predictor: need-aware filter or pure best available (need|ba)
   // Same defaults as go/prompts/*.md
   systemPrompt: 'You are a fantasy football expert. Give a summary of who to draft and why.',
   userPrompt: 'Output the top several players you think could help me the most along with an ' +
@@ -202,6 +372,9 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     cleanName, fuzzyMatchPlayer, truncateNote, buildUserPrompt,
     computePickedFromAvailable, groupByPosition, renderMarkdown, escapeHtml,
+    splitCsvLine, csvCell, parseRankingsText, buildRankingsCsv,
+    normPos, snakeTeamForPick, nextPickForTeam, predictDraft, wouldDraft,
+    STARTER_SLOTS, ROSTER_CAPS, BADLY_NEEDED_BY_ROUND,
     DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS,
   };
 } else {
@@ -237,56 +410,112 @@ function initApp() {
   let manualTeam = store.load('manualTeam', []);                // canonical names
   let toDraft = store.load('toDraft', {});                      // name -> 'yes' | 'no'
   let extState = store.load('extState', {});                    // raw bridge payloads
+  let extPickedRaw = store.load('extPickedRaw', []);            // union of raw scraped picks
+  let unpicked = new Set(store.load('unpicked', []));           // canonical names un-picked by hand
+  let rankOverrides = store.load('rankOverrides', {});          // format -> { cleanName: rank }
+  let noteOverrides = store.load('noteOverrides', {});          // cleanName -> markdown
 
   /* ---------- volatile state ---------- */
   let posFilter = 'All';
   let searchText = '';
   let showPicked = false;
+  let sortBy = 'board';         // 'board' | 'espn' | 'sleeper' (view only)
   let extDetected = false;
   let querying = false;
   let lastQueryAt = 0;
+  let selectedName = null;      // row the keyboard acts on
+  let visibleNames = [];        // board order of currently rendered rows
+  let openNotes = [];           // note tabs, in tab order (player names)
+  let activeTab = 'ai';         // 'ai' or a player name
+  let lastNoteTab = null;       // the note tab a plain click replaces (Obsidian-style)
+  let tabHistory = ['ai'];      // visit order (MRU last); closing a tab falls back here
+  let noteEditingName = null;   // player whose note is being edited, or null
+  let teamCollapsed = store.load('teamCollapsed', false);
+  let teamGroupsCollapsed = store.load('teamGroupsCollapsed', {}); // pos -> true
+  let predictMode = store.load('predictMode', false); // predictions stay on, re-simulated after every live pick
+  let tourIndex = -1;           // -1 = tour not running
+  let predicted = null;         // [{pick, round, team, name, pos}] from Predict picks
+  let predictedAtCount = -1;    // pick count the prediction was made at (stale otherwise)
+  let predictedMeta = null;     // {followNext, byPos, suggestion} — only valid while predicted is
 
   /* ---------- derived data ---------- */
   function allPlayers() {
     return DATA.formats[settings.scoringFormat] || DATA.formats.STD;
   }
 
-  function noteFor(player) {
+  function bundledNoteFor(player) {
     return DATA.notes[cleanName(player.name)] || '';
   }
 
-  // Raw picked names from the extension (ESPN sends picked directly;
-  // Sleeper sends available, which we invert).
-  function extPickedRawNames() {
-    const players = allPlayers();
-    const picked = extState.picked_players;
-    const available = extState.available_players;
-    let names = [];
-    if (picked && Array.isArray(picked.players)) names = picked.players.slice();
-    if ((!names.length) && available && Array.isArray(available.players) && available.players.length) {
-      names = computePickedFromAvailable(available.players, players);
-    }
-    return names;
+  function noteEditedFor(player) {
+    return Object.prototype.hasOwnProperty.call(noteOverrides, cleanName(player.name));
   }
 
-  // Canonical picked set = extension picks (fuzzy-matched) + manual picks.
-  function pickedSet() {
+  // Edited notes shadow the bundled ones everywhere (table preview, dialog,
+  // and the Ask AI prompt) without touching the bundled data.
+  function noteFor(player) {
+    return noteEditedFor(player) ? noteOverrides[cleanName(player.name)] : bundledNoteFor(player);
+  }
+
+  function currentRankOverrides() {
+    return rankOverrides[settings.scoringFormat] || {};
+  }
+
+  function rankOverrideFor(player) {
+    const r = currentRankOverrides()[cleanName(player.name)];
+    return typeof r === 'number' && isFinite(r) ? r : null;
+  }
+
+  // Board order = your imported ranks where present, bundled rank otherwise;
+  // bundled rank breaks ties so a partial import stays stable.
+  function boardPlayers() {
+    const eff = (p) => {
+      const o = rankOverrideFor(p);
+      return o === null ? (p.rankNum || 9999) : o;
+    };
+    return allPlayers().slice().sort((a, b) =>
+      eff(a) - eff(b) || (a.rankNum || 9999) - (b.rankNum || 9999));
+  }
+
+  // ESPN's pick feed is a ticker: it can show only the recent picks, so any one
+  // scrape is a *partial* view. Players never come off a draft board, so we
+  // accumulate every name the extension has ever reported rather than trusting
+  // the latest scrape — otherwise a short feed silently un-picks the board.
+  function mergeExtPicked(names) {
+    const seen = new Set(extPickedRaw);
+    let added = 0;
+    for (const raw of names) {
+      const name = (raw || '').trim();
+      if (name && !seen.has(name)) { seen.add(name); extPickedRaw.push(name); added++; }
+    }
+    if (added) store.save('extPickedRaw', extPickedRaw);
+    return added;
+  }
+
+  // Canonical picks contributed by the extension. Two different shapes:
+  //  - ESPN posts picked players, an append-only log -> accumulated above.
+  //  - Sleeper posts the full available list; inverting it is a complete
+  //    snapshot, so it is recomputed each time instead of accumulated.
+  function extPickedCanonical() {
     const players = allPlayers();
-    const set = new Set(manualPicked);
-    for (const raw of extPickedRawNames()) {
+    const set = new Set();
+    for (const raw of extPickedRaw) {
       const match = fuzzyMatchPlayer(raw, players);
       if (match) set.add(match);
+    }
+    const available = extState.available_players;
+    if (available && Array.isArray(available.players) && available.players.length) {
+      for (const name of computePickedFromAvailable(available.players, players)) set.add(name);
     }
     return set;
   }
 
-  function extPickedCanonical() {
-    const players = allPlayers();
-    const set = new Set();
-    for (const raw of extPickedRawNames()) {
-      const match = fuzzyMatchPlayer(raw, players);
-      if (match) set.add(match);
-    }
+  // Canonical picked set = extension picks + manual picks, minus anything you
+  // un-picked by hand (which is how a bad fuzzy match gets corrected).
+  function pickedSet() {
+    const set = new Set(manualPicked);
+    for (const name of extPickedCanonical()) set.add(name);
+    for (const name of unpicked) set.delete(name);
     return set;
   }
 
@@ -309,9 +538,104 @@ function initApp() {
   }
 
   function pickNumber() {
-    // go/http_server.go: pick number == count of picked players
-    const ext = extPickedRawNames().length;
-    return Math.max(ext, pickedSet().size);
+    // go/http_server.go: pick number == count of picked players. The raw count
+    // is the better number because it also covers picks that aren't on our
+    // board at all (K/DST), which fuzzy matching drops.
+    return Math.max(extPickedRaw.length, pickedSet().size);
+  }
+
+  // Which site the extension is scraping ('espn' | 'sleeper' | null): every
+  // payload is tagged with its origin, newest one wins.
+  function draftSite() {
+    let site = null;
+    let at = 0;
+    for (const key of ['picked_players', 'available_players', 'roster_players']) {
+      const v = extState[key];
+      if (v && v.site && (v.updatedAt || 0) >= at) { at = v.updatedAt || 0; site = v.site; }
+    }
+    return site;
+  }
+
+  // Where you actually make the pick. This tool only mirrors the draft — it
+  // has no way to draft for you — so anything telling you to act says so by
+  // name when the extension knows which room you're in.
+  // Returns the whole phrase, not just the name: the unknown-site fallback
+  // ("your league site") doesn't take a "tab" suffix the way "your ESPN tab"
+  // does, and gluing them at each call site produced "your your league site".
+  function siteTab() {
+    const s = draftSite();
+    return s === 'sleeper' ? 'your Sleeper tab' : s === 'espn' ? 'your ESPN tab' : 'your league site';
+  }
+
+  // Which site-rank column(s) to show. Auto = the site the draft is on;
+  // ESPN until anything else is detected (the family league is ESPN).
+  function siteColumns() {
+    const s = settings.rankSource;
+    if (s === 'espn' || s === 'sleeper') return [s];
+    if (s === 'both') return ['espn', 'sleeper'];
+    return draftSite() === 'sleeper' ? ['sleeper'] : ['espn'];
+  }
+
+  // Picks in draft order, for the snake board. ESPN's feed arrives in pick
+  // order; manual picks in click order; Sleeper picks (derived from the
+  // available-list diff) carry no order, so they fall back to board order —
+  // approximate, and only for Sleeper.
+  function pickLogEntries() {
+    const players = allPlayers();
+    const seen = new Set();
+    const entries = [];
+    const push = (name, player) => {
+      if (!name || seen.has(name)) return;
+      seen.add(name);
+      entries.push({ name, player });
+    };
+    for (const raw of extPickedRaw) {
+      const m = fuzzyMatchPlayer(raw, players);
+      if (m) { if (!unpicked.has(m)) push(m, playerByName(m)); }
+      else push(raw.trim(), null); // off-board pick (K/DST): still occupies a slot
+    }
+    for (const name of manualPicked) if (!unpicked.has(name)) push(name, playerByName(name));
+    const canonical = extPickedCanonical();
+    for (const p of boardPlayers()) {
+      if (canonical.has(p.name) && !unpicked.has(p.name)) push(p.name, p);
+    }
+    return entries;
+  }
+
+  // Your draft position: the explicit setting wins; otherwise inferred from
+  // the first pick in the log that landed on your roster.
+  function effectiveSlot(entries) {
+    if (settings.draftSlot >= 1) return Math.min(settings.draftSlot, settings.numTeams);
+    const list = entries || pickLogEntries();
+    const mine = new Set(teamNames());
+    for (let i = 0; i < list.length; i++) {
+      if (mine.has(list[i].name)) return snakeTeamForPick(i + 1, settings.numTeams);
+    }
+    return null;
+  }
+
+  function rosterCountsByTeam(entries, teams) {
+    const counts = Array.from({ length: teams }, () => ({}));
+    entries.forEach((en, i) => {
+      const t = snakeTeamForPick(i + 1, teams);
+      if (t <= teams && en.player) {
+        const pos = normPos(en.player.pos);
+        counts[t - 1][pos] = (counts[t - 1][pos] || 0) + 1;
+      }
+    });
+    return counts;
+  }
+
+  // {slot, next, until} for the pink "your next pick" markers, or null when
+  // the slot is unknown or the draft is over.
+  function yourNextPick(entries) {
+    const list = entries || pickLogEntries();
+    const slot = effectiveSlot(list);
+    if (!slot) return null;
+    const made = Math.max(list.length, pickNumber());
+    const next = nextPickForTeam(slot, settings.numTeams, made);
+    if (!next || next > settings.numTeams * settings.numRounds) return null;
+    return { slot, next, until: next - made - 1 };
   }
 
   /* ---------- rendering ---------- */
@@ -334,92 +658,346 @@ function initApp() {
     const extPicked = extPickedCanonical();
     const team = new Set(teamNames());
     const search = searchText.trim().toLowerCase();
+    const manual = settings.manualMode;
+
+    const sites = siteColumns();
+    $('th-espn').hidden = !sites.includes('espn');
+    $('th-sleeper').hidden = !sites.includes('sleeper');
+    const nCols = 7 + sites.length;
+
+    // Sorting is a view of the board, not a reordering of it: the AI top-15,
+    // predictions, and the pick marker all still use board (rank) order.
+    if (sortBy !== 'board' && !sites.includes(sortBy)) sortBy = 'board';
+    $('th-rank').classList.toggle('sorted', sortBy === 'board');
+    $('th-espn').classList.toggle('sorted', sortBy === 'espn');
+    $('th-sleeper').classList.toggle('sorted', sortBy === 'sleeper');
+    let list = boardPlayers();
+    if (sortBy !== 'board') {
+      const num = (v) => { const n = parseInt(v, 10); return isFinite(n) ? n : Infinity; };
+      list = list.slice().sort((a, b) =>
+        (sortBy === 'espn' ? num(a.espn) - num(b.espn) : num(a.sleeper) - num(b.sleeper)));
+    }
+
+    // NFL-team depth: WR2 = that team's 2nd-ranked WR. Bundled rank, so your
+    // imported ranks don't reshuffle other teams' depth charts.
+    const depthByName = new Map();
+    const depthListByName = new Map();  // name -> the whole team+position chart
+    {
+      const byTeamPos = new Map();
+      for (const q of allPlayers()) {
+        const k = q.team + '|' + q.pos;
+        if (!byTeamPos.has(k)) byTeamPos.set(k, []);
+        byTeamPos.get(k).push(q);
+      }
+      for (const arr of byTeamPos.values()) {
+        arr.sort((a, b) => (a.rankNum || 9999) - (b.rankNum || 9999));
+        arr.forEach((q, i) => { depthByName.set(q.name, i + 1); depthListByName.set(q.name, arr); });
+      }
+    }
+
+    // "Who's behind this guy, and by how much?" — the gap to the next player
+    // at the same position on the same NFL team. A small gap means a
+    // contested job; a large one means a clean workload whose backup is a
+    // cheap handcuff. Also flags the backup directly behind a player you
+    // already roster, which is the handcuff you actually want to find.
+    function depthInfo(p) {
+      const chart = depthListByName.get(p.name) || [p];
+      const i = chart.indexOf(p);
+      const rank = (q) => (q.rankNum && q.rankNum < 9999) ? q.rankNum : null;
+      // Say "behind", never a signed number: a bigger rank is a worse player,
+      // so "+112" reads backwards to anyone scanning quickly.
+      const top = rank(chart[0]);
+      const lines = chart.slice(0, 4).map((q, j) => {
+        const r = rank(q);
+        const gap = (j > 0 && r !== null && top !== null) ? ` — ${r - top} behind` : '';
+        return `${j + 1}. ${q.name} (rank ${r === null ? 'unranked' : r})${gap}` +
+          (team.has(q.name) ? ' ← yours' : '');
+      });
+      const ahead = i > 0 ? chart[i - 1] : null;
+      const handcuffFor = (ahead && team.has(ahead.name)) ? ahead : null;
+      return {
+        handcuffFor,
+        title: (handcuffFor ? `Handcuff to your ${handcuffFor.name}. ` : '') +
+          `${p.team} ${p.pos} depth by rank:\n` + lines.join('\n') +
+          (chart.length > 4 ? `\n…${chart.length - 4} more` : ''),
+      };
+    }
+
+    // Context for the pink "your next pick" marker and the orange
+    // predicted-gone rows (both fed by the Draft Board tab).
+    const entries = pickLogEntries();
+    const nextInfo = yourNextPick(entries);
+    const predGone = new Map(); // name -> simulated pick number
+    if (predicted && nextInfo) {
+      for (const pr of predicted) if (pr.pick < nextInfo.next) predGone.set(pr.name, pr.pick);
+    }
+    // The marker counts *all* available players above it, so it only makes
+    // sense on the unfiltered, rank-ordered board.
+    const wantMarker = Boolean(nextInfo) && posFilter === 'All' && !search && sortBy === 'board';
+
     const tbody = $('player-tbody');
     tbody.innerHTML = '';
 
     let shown = 0;
     let available = 0;
-    for (const p of allPlayers()) {
+    let availShown = 0;
+    let markerPlaced = false;
+    visibleNames = [];
+    // Every row advertises its click behavior — Ctrl+click is invisible otherwise.
+    const openHint = 'Click / Enter: open the note · Ctrl+click / Ctrl+Enter: open in an extra tab';
+    for (const p of list) {
       const isPicked = picked.has(p.name);
       if (!isPicked) available++;
       if (posFilter !== 'All' && p.pos !== posFilter) continue;
       if (isPicked && !showPicked) continue;
       if (search && !(p.name.toLowerCase().includes(search) || p.team.toLowerCase().includes(search))) continue;
+
+      if (wantMarker && !markerPlaced && !isPicked && availShown === nextInfo.until) {
+        const mtr = document.createElement('tr');
+        mtr.className = 'next-pick-marker' + (nextInfo.until === 0 ? ' on-clock' : '');
+        mtr.title = 'Where your next pick lands if players go roughly in board order — ' +
+          'set Teams / Your slot on the Draft Board tab';
+        mtr.innerHTML = `<td colspan="${nCols}">▼ ` +
+          (nextInfo.until === 0
+            ? `You're on the clock (pick ${nextInfo.next}) — make it in ${siteTab()}`
+            : `Your next pick — pick ${nextInfo.next}, ${nextInfo.until} away`) +
+          (predGone.size ? ' · orange rows = predicted gone by then' : '') + `</td>`;
+        tbody.appendChild(mtr);
+        markerPlaced = true;
+      }
+
       shown++;
+      if (!isPicked) availShown++;
+      visibleNames.push(p.name);
 
       const tr = document.createElement('tr');
+      tr.dataset.name = p.name;
+      tr.title = openHint;
       if (isPicked) tr.classList.add('picked');
       if (team.has(p.name)) tr.classList.add('onteam');
+      if (p.name === selectedName) tr.classList.add('selected');
+      if (!isPicked && predGone.has(p.name)) {
+        tr.classList.add('pred-gone');
+        tr.title = `Predicted gone before your next pick — simulation has them taken at #${predGone.get(p.name)}\n${openHint}`;
+      }
 
       const mark = toDraft[p.name];
       const markLabel = mark === 'yes' ? '✅' : mark === 'no' ? '❌' : '–';
       const markClass = mark === 'yes' ? 'todraft-yes' : mark === 'no' ? 'todraft-no' : '';
       const fromExt = extPicked.has(p.name);
+      const ovRank = rankOverrideFor(p);
+
+      // Picked/+Team live behind Manual mode (Settings) — in a live draft the
+      // extension does this. Undo stays: it's how a bad fuzzy match gets fixed.
+      const pickBtn = (manual || isPicked)
+        ? `<button class="act-pick" title="${isPicked
+            ? (fromExt ? 'Un-pick — use this if the extension matched the wrong player' : 'Undo pick')
+            : (unpicked.has(p.name) ? 'Re-pick (you un-picked this one)' : 'Mark as picked/drafted by someone')} (P)"` +
+          `>${isPicked ? 'Undo' : 'Picked'}</button>`
+        : '';
+      const teamBtn = manual
+        ? `<button class="act-team" title="${team.has(p.name) ? 'Remove from your team' : 'Add to your team'} (T)">` +
+          `${team.has(p.name) ? '−Team' : '+Team'}</button>`
+        : '';
 
       tr.innerHTML =
-        `<td>${escapeHtml(p.rank)}</td>` +
-        `<td class="player-name">${escapeHtml(p.name)}${mark === 'yes' ? ' ✅' : mark === 'no' ? ' ❌' : ''}</td>` +
+        (ovRank !== null
+          ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
+          : `<td>${escapeHtml(p.rank)}</td>`) +
+        `<td class="player-name">${escapeHtml(p.name)}<span class="name-flags">` +
+        `${mark === 'yes' ? '✅' : mark === 'no' ? '❌' : ''}` +
+        `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}</span></td>` +
         `<td>${escapeHtml(p.team)}</td>` +
         `<td>${escapeHtml(p.bye)}</td>` +
-        `<td>${escapeHtml(p.pos)}</td>` +
-        `<td>${escapeHtml(p.espn)}</td>` +
-        `<td>${escapeHtml(p.sleeper)}</td>` +
-        `<td class="note-cell">${escapeHtml(truncateNote(noteFor(p)))}</td>` +
+        (() => {
+          const d = depthInfo(p);
+          return `<td class="pos-cell${d.handcuffFor ? ' is-handcuff' : ''}" ` +
+            `title="${escapeHtml(d.title)}">` +
+            `${escapeHtml(p.pos)}${depthByName.get(p.name) || ''}` +
+            (d.handcuffFor ? '<span class="hc-mark" aria-hidden="true">⛓</span>' : '') + '</td>';
+        })() +
+        sites.map(s => {
+          const label = s === 'espn' ? 'ESPN' : 'Sleeper';
+          const raw = s === 'espn' ? p.espn : p.sleeper;
+          const site = parseInt(raw, 10);
+          const base = ovRank !== null ? ovRank : p.rankNum;
+          if (!isFinite(site) || !isFinite(base)) return `<td>${escapeHtml(String(raw))}</td>`;
+          // Signed like the user thinks about it: how the site feels vs the
+          // board. (+n) = the site is n spots HIGHER on them (goes earlier
+          // there), (−n) = n spots lower (may fall to you there).
+          const d = base - site;
+          const diff = d === 0 ? '' :
+            ` <span class="rk-diff">(${d > 0 ? '+' : ''}${d})</span>`;
+          const tip = d === 0 ? `${label} agrees with the board rank`
+            : d > 0 ? `${label} is ${d} spots higher on them than the board — they'll go earlier there`
+            : `${label} is ${-d} spots lower on them than the board — they may fall to you there`;
+          return `<td title="${escapeHtml(tip)}">${site}${diff}</td>`;
+        }).join('') +
+        `<td class="note-cell"${noteEditedFor(p) ? ' title="You edited this note"' : ''}>` +
+        `${noteEditedFor(p) ? '✎ ' : ''}${escapeHtml(truncateNote(noteFor(p)))}</td>` +
         `<td class="row-actions">` +
-        `<button class="act-pick" title="${isPicked ? (fromExt ? 'Synced from extension' : 'Undo pick') : 'Mark as picked/drafted by someone'}"` +
-        `${fromExt ? ' disabled' : ''}>${isPicked ? 'Undo' : 'Picked'}</button>` +
-        `<button class="act-mark ${markClass}" title="Cycle target/avoid marker">${markLabel}</button>` +
-        `<button class="act-team" title="${team.has(p.name) ? 'Remove from your team' : 'Add to your team'}">` +
-        `${team.has(p.name) ? '−Team' : '+Team'}</button>` +
+        pickBtn +
+        `<button class="act-mark ${markClass}" title="Cycle target/avoid marker (D or Space)">${markLabel}</button>` +
+        teamBtn +
         `</td>`;
 
-      tr.querySelector('.player-name').addEventListener('click', () => showNote(p));
-      tr.querySelector('.act-pick').addEventListener('click', () => togglePicked(p.name));
+      // One click = select + open the note (Ctrl+click opens an extra tab).
+      // Clicks on the row's buttons don't count.
+      tr.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        selectedName = p.name;
+        updateSelection();
+        openNote(p, e.ctrlKey || e.metaKey);
+      });
+      const pickEl = tr.querySelector('.act-pick');
+      if (pickEl) pickEl.addEventListener('click', () => togglePicked(p.name));
       tr.querySelector('.act-mark').addEventListener('click', () => cycleToDraft(p.name));
-      tr.querySelector('.act-team').addEventListener('click', () => toggleTeam(p.name));
+      const teamEl = tr.querySelector('.act-team');
+      if (teamEl) teamEl.addEventListener('click', () => toggleTeam(p.name));
       tbody.appendChild(tr);
     }
 
     $('player-count').textContent =
       `${shown} shown · ${available} available · ${picked.size} picked`;
-    $('pick-counter').textContent = `Pick: ${pickNumber()}`;
+
+    // Where a "Picked" button would be if this tool drafted for you. It
+    // doesn't — you pick on your league site and the extension mirrors it —
+    // and the blank column is exactly where someone goes looking for that
+    // button, so the answer belongs here rather than buried in Settings.
+    const thActions = $('th-actions');
+    if (thActions) {
+      thActions.textContent = manual ? '' : 'pick on site';
+      thActions.title = manual
+        ? 'Manual mode: draft by hand with these buttons'
+        : 'This tool never drafts for you — make picks in your ESPN/Sleeper ' +
+          'draft room and they appear here automatically. Settings → Manual ' +
+          'mode lets you draft by hand instead.';
+    }
+    // Whose turn it is, not just how many picks have gone. In a manual
+    // (debug) draft you pick for all 12 teams in turn — the snake decides who
+    // each click belongs to — so this line is the only thing telling you
+    // which team you're currently drafting for.
+    const made = pickNumber();
+    const totalPicks = settings.numTeams * settings.numRounds;
+    const onClock = made + 1;
+    const counterEl = $('pick-counter');
+    if (onClock > totalPicks) {
+      counterEl.textContent = `Draft complete · ${made} picks`;
+      counterEl.title = `All ${totalPicks} picks are in`;
+      counterEl.classList.remove('your-turn');
+    } else {
+      const onTeam = snakeTeamForPick(onClock, settings.numTeams);
+      const round = Math.ceil(onClock / settings.numTeams);
+      const inRound = onClock - (round - 1) * settings.numTeams;
+      const mine = effectiveSlot(entries) === onTeam;
+      counterEl.textContent = `Pick ${onClock} (${round}.${String(inRound).padStart(2, '0')}) · ` +
+        `${mine ? '★ You' : 'Team ' + onTeam} on the clock`;
+      counterEl.title = mine
+        ? `Your pick — make it in ${siteTab()}; it will appear here automatically`
+        : `Team ${onTeam} picks next. In debug mode your next "Picked" click drafts for them.`;
+      counterEl.classList.toggle('your-turn', mine);
+    }
   }
 
   function renderTeam() {
     const players = teamPlayers();
     const box = $('team-list');
-    $('team-count').textContent = players.length ? `${players.length} players` : '';
+    $('team-count').textContent = players.length
+      ? `${players.length} player${players.length === 1 ? '' : 's'}` : '';
+
+    // "Still need" = unfilled starting slots. K/DST aren't on the board but
+    // the league still starts them, so they show up here until draft's end.
+    const needsEl = $('team-needs');
+    if (players.length) {
+      const counts = {};
+      for (const p of players) {
+        const pos = normPos(p.pos);
+        counts[pos] = (counts[pos] || 0) + 1;
+      }
+      const needs = Object.keys(STARTER_SLOTS).filter(pos => (counts[pos] || 0) < STARTER_SLOTS[pos]);
+      // Bold-red when a position is *badly* needed: this deep into the draft
+      // with none of them. K/DST are never flagged — they're not on the board,
+      // so a drafted one can't be counted (they stay listed until the end).
+      const curRound = Math.ceil((pickNumber() + 1) / settings.numTeams);
+      needsEl.hidden = false;
+      needsEl.innerHTML = needs.length
+        ? 'Still need: ' + needs.map(pos =>
+            (!counts[pos] && curRound >= (BADLY_NEEDED_BY_ROUND[pos] || 99))
+              ? `<b class="need-bad" title="Round ${curRound} with no ${pos} yet — really needs one">${pos}</b>`
+              : pos).join(', ')
+        : 'All starting spots filled ✓';
+    } else {
+      needsEl.hidden = true;
+    }
+
     if (!players.length) {
-      box.innerHTML = '<p class="muted">No players on your team yet</p>';
+      box.innerHTML = '<p class="muted">No players on your team yet — they appear here ' +
+        'automatically once the extension sees your draft room.</p>';
       return;
     }
+
     box.innerHTML = '';
     for (const group of groupByPosition(players)) {
-      const h = document.createElement('h4');
-      h.textContent = `=== ${group.pos} ===`;
-      box.appendChild(h);
-      const ul = document.createElement('ul');
-      for (const p of group.players) {
-        const li = document.createElement('li');
-        li.textContent = `${p.name} (${p.team}, rank ${p.rank})`;
-        if (manualTeam.includes(p.name)) {
+      const pos = normPos(group.pos);
+      const collapsed = Boolean(teamGroupsCollapsed[pos]);
+
+      const head = document.createElement('button');
+      head.type = 'button';
+      head.className = 'team-group-head';
+      head.title = collapsed ? `Show your ${pos}s` : `Hide your ${pos}s`;
+      head.innerHTML = `<span class="tg-arrow">${collapsed ? '▸' : '▾'}</span>` +
+        `<span>${escapeHtml(pos)}</span><span class="muted">· ${group.players.length}</span>`;
+      head.addEventListener('click', () => {
+        teamGroupsCollapsed[pos] = !collapsed;
+        store.save('teamGroupsCollapsed', teamGroupsCollapsed);
+        renderTeam();
+      });
+      box.appendChild(head);
+      if (collapsed) continue;
+
+      // Depth chart within the position: RB1, RB2, ... by rank.
+      group.players.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'team-row';
+        row.innerHTML =
+          `<span class="pos-chip pos-${escapeHtml(pos)}" title="Your ${pos}${i + 1}">${escapeHtml(pos)}${i + 1}</span>` +
+          `<span class="t-name">${escapeHtml(p.name)}</span>` +
+          `<span class="t-team" title="NFL team">${escapeHtml(p.team)}</span>` +
+          `<span class="t-bye" title="Bye week — week ${escapeHtml(String(p.bye || '?'))}, they don't play">Bye ${escapeHtml(String(p.bye || '?'))}</span>` +
+          `<span class="t-rank" title="Overall rank">#${escapeHtml(String(p.rank))}</span>`;
+        const real = playerByName(p.name);
+        if (real) {
+          row.title = `${p.name} — click: open the note · Ctrl+click: extra tab`;
+          row.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            openNote(real, e.ctrlKey || e.metaKey);
+          });
+        }
+        if (settings.manualMode && manualTeam.includes(p.name)) {
           const rm = document.createElement('button');
+          rm.className = 't-rm';
           rm.textContent = '×';
           rm.title = 'Remove from your team';
           rm.addEventListener('click', () => toggleTeam(p.name));
-          li.appendChild(rm);
+          row.appendChild(rm);
         }
-        ul.appendChild(li);
-      }
-      box.appendChild(ul);
+        box.appendChild(row);
+      });
     }
   }
 
+  // This tool never makes a pick for you — you draft on ESPN/Sleeper and the
+  // extension mirrors it here. That's easy to misread as a missing feature
+  // ("where's the pick button?"), so the badge says which way the data flows,
+  // not just whether a connection exists.
   function renderExtStatus() {
     const el = $('ext-status');
     if (!extDetected) {
       el.textContent = 'Extension: not detected';
       el.className = 'ext-off';
+      el.title = 'Picks are not syncing. Draft on your league site as usual — ' +
+        'to see those picks here, install the extension, or turn on Manual mode ' +
+        'in Settings to mark them by hand.';
       return;
     }
     const stamps = ['picked_players', 'available_players', 'roster_players']
@@ -431,22 +1009,76 @@ function initApp() {
       el.textContent = 'Extension: connected · no draft data yet';
     }
     el.className = 'ext-on';
+    el.title = 'Picks sync in automatically from your draft site. Make every ' +
+      'pick there — this board is a live mirror and never drafts for you.';
   }
 
   function renderAll() {
+    // Predictions follow the live draft: in predict mode every new real pick
+    // re-simulates the window instead of leaving a stale snapshot around.
+    if (predictMode) {
+      if (pickNumber() !== predictedAtCount) computePrediction();
+    } else if (predicted) {
+      predicted = null;
+      predictedMeta = null;
+    }
+    $('btn-reset-top').hidden = !settings.manualMode;
     renderPosFilters();
     renderTable();
     renderTeam();
     renderExtStatus();
+    renderTabs();
   }
 
   function setStatus(msg) { $('status-bar').textContent = msg; }
 
+  /* ---------- keyboard row selection ---------- */
+  function updateSelection() {
+    document.querySelectorAll('#player-tbody tr').forEach(tr =>
+      tr.classList.toggle('selected', tr.dataset.name === selectedName));
+  }
+
+  function moveSelection(delta) {
+    if (!visibleNames.length) return;
+    const i = visibleNames.indexOf(selectedName);
+    const next = i < 0
+      ? (delta > 0 ? 0 : visibleNames.length - 1)
+      : Math.min(Math.max(i + delta, 0), visibleNames.length - 1);
+    selectedName = visibleNames[next];
+    updateSelection();
+    const tr = document.querySelector('#player-tbody tr.selected');
+    if (tr) tr.scrollIntoView({ block: 'nearest' });
+  }
+
+  function selectedPlayer() {
+    return selectedName ? (allPlayers().find(p => p.name === selectedName) || null) : null;
+  }
+
+  // Picking the selected row usually removes it from view; move the selection
+  // to the row that takes its place so a rapid keyboard run keeps flowing.
+  function keepSelectionNear(action) {
+    const i = visibleNames.indexOf(selectedName);
+    action();
+    if (!visibleNames.includes(selectedName)) {
+      selectedName = visibleNames[Math.min(Math.max(i, 0), visibleNames.length - 1)] || null;
+      updateSelection();
+    }
+  }
+
   /* ---------- actions ---------- */
+  // Un-picking an extension-sourced pick records an override instead of trying
+  // to edit the scraped data, which the next scrape would just overwrite.
   function togglePicked(name) {
-    if (manualPicked.has(name)) manualPicked.delete(name);
-    else manualPicked.add(name);
+    const fromExt = extPickedCanonical().has(name);
+    if (pickedSet().has(name)) {
+      manualPicked.delete(name);
+      if (fromExt) unpicked.add(name);
+    } else {
+      unpicked.delete(name);
+      if (!fromExt) manualPicked.add(name);
+    }
     store.save('manualPicked', [...manualPicked]);
+    store.save('unpicked', [...unpicked]);
     renderAll();
   }
 
@@ -466,11 +1098,512 @@ function initApp() {
     renderAll();
   }
 
-  function showNote(player) {
-    $('note-title').textContent = `${player.name} — ${player.team} ${player.pos}, rank ${player.rank}`;
-    const note = noteFor(player);
-    $('note-body').innerHTML = note ? renderMarkdown(note) : '<p class="muted">No note file for this player.</p>';
-    $('note-dialog').showModal();
+  /* ---------- note tabs (Obsidian-style: click replaces, Ctrl+click adds) ---------- */
+  function playerByName(name) {
+    return allPlayers().find(p => p.name === name) || null;
+  }
+
+  function unsavedEditFor(name) {
+    if (noteEditingName !== name) return false;
+    const p = playerByName(name);
+    return p ? $('note-textarea').value !== noteFor(p) : false;
+  }
+
+  // True = safe to drop any in-progress edit of `name` (none, unchanged, or
+  // the user agreed to discard). Clears the editing state on the way out.
+  function confirmDiscardEdit(name) {
+    if (noteEditingName !== name) return true;
+    if (unsavedEditFor(name) && !confirm(`Discard unsaved edits to ${name}'s note?`)) return false;
+    noteEditingName = null;
+    return true;
+  }
+
+  // 'ai' and 'board' are permanent tabs; everything else is a player note.
+  function isNoteTab(tab) { return tab !== 'ai' && tab !== 'board'; }
+
+  function touchTabHistory(tab) {
+    dropFromTabHistory(tab);
+    tabHistory.push(tab);
+  }
+
+  function dropFromTabHistory(tab) {
+    const i = tabHistory.indexOf(tab);
+    if (i >= 0) tabHistory.splice(i, 1);
+  }
+
+  function openNote(player, inNewTab) {
+    const name = player.name;
+    if (!openNotes.includes(name)) {
+      const replaceTarget = inNewTab ? null : (isNoteTab(activeTab) ? activeTab : lastNoteTab);
+      const i = replaceTarget ? openNotes.indexOf(replaceTarget) : -1;
+      if (i >= 0) {
+        if (!confirmDiscardEdit(replaceTarget)) return;
+        openNotes[i] = name;
+        dropFromTabHistory(replaceTarget);
+      } else {
+        openNotes.push(name);
+      }
+    }
+    activeTab = name;
+    lastNoteTab = name;
+    touchTabHistory(name);
+    renderTabs();
+  }
+
+  function closeNote(name) {
+    if (!confirmDiscardEdit(name)) return;
+    const i = openNotes.indexOf(name);
+    if (i < 0) return;
+    openNotes.splice(i, 1);
+    dropFromTabHistory(name);
+    // Most recently visited tab that still exists ('ai'/'board' always do).
+    const isOpen = (t) => !isNoteTab(t) || openNotes.includes(t);
+    const fallback = [...tabHistory].reverse().find(isOpen) || 'ai';
+    if (lastNoteTab === name) {
+      lastNoteTab = [...tabHistory].reverse().find(t => isNoteTab(t) && openNotes.includes(t)) || null;
+    }
+    if (activeTab === name) activateTab(fallback);
+    else renderTabs();
+  }
+
+  function activateTab(tab) {
+    activeTab = tab;
+    if (isNoteTab(tab)) lastNoteTab = tab;
+    touchTabHistory(tab);
+    renderTabs();
+  }
+
+  function renderTabs() {
+    const strip = $('tab-strip');
+    strip.innerHTML = '';
+    const mkTab = (label, tab, closable, title) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab' + (activeTab === tab ? ' active' : '');
+      btn.title = title || label;
+      const lbl = document.createElement('span');
+      lbl.className = 'tab-label';
+      lbl.textContent = label;
+      btn.appendChild(lbl);
+      if (closable) {
+        const x = document.createElement('span');
+        x.className = 'tab-x';
+        x.textContent = '×';
+        x.title = 'Close (X / Esc)';
+        x.addEventListener('click', (e) => { e.stopPropagation(); closeNote(tab); });
+        btn.appendChild(x);
+      }
+      btn.addEventListener('click', () => activateTab(tab));
+      strip.appendChild(btn);
+    };
+    mkTab('AI Output', 'ai', false, 'AI draft advice (A)');
+    mkTab('Draft Board', 'board', false, 'Snake draft board with pick prediction (B)');
+    for (const name of openNotes) mkTab(name, name, true);
+
+    $('ai-output').hidden = activeTab !== 'ai';
+    $('board-view').hidden = activeTab !== 'board';
+    $('note-view').hidden = activeTab === 'ai' || activeTab === 'board';
+    if (activeTab === 'board') renderBoard();
+    else if (activeTab !== 'ai') renderNotePane();
+  }
+
+  function renderNotePane() {
+    const p = playerByName(activeTab);
+    if (!p) return;
+    const edited = noteEditedFor(p);
+    const editing = noteEditingName === p.name;
+    $('note-meta').textContent = `${p.team} ${p.pos}, rank ${p.rank}${edited ? ' · edited' : ''}`;
+    $('note-editor').hidden = !editing;
+    $('note-body').hidden = editing;
+    $('btn-edit-note').hidden = editing;
+    $('btn-revert-note').disabled = !edited;
+    if (!editing) {
+      // While editing, never touch the textarea — it holds the user's draft
+      // (even across tab switches; the draft survives until Save or Cancel).
+      const note = noteFor(p);
+      $('note-body').innerHTML = note
+        ? renderMarkdown(note)
+        : '<p class="muted">No note for this player yet — click Edit to write one.</p>';
+    }
+  }
+
+  /* ---------- Draft Board tab ---------- */
+  function shortPlayerName(name) {
+    const parts = name.split(/\s+/);
+    return parts.length < 2 ? name : parts[0][0] + '. ' + parts.slice(1).join(' ');
+  }
+
+  function syncBoardToolbar(slot) {
+    // League shape is auto/default (12 teams, 15 rounds, slot auto-detected);
+    // the controls to change it only appear in debug/manual mode.
+    const dbg = settings.manualMode;
+    $('board-config').hidden = !dbg;
+    $('board-config-summary').hidden = dbg;
+    if (!dbg) {
+      $('board-config-summary').textContent =
+        `${settings.numTeams} teams · ${settings.numRounds} rounds · ` +
+        (slot ? `your slot: ${slot}` : 'your slot: click your column below');
+    }
+    const teamsSel = $('board-teams');
+    if (!teamsSel.options.length) {
+      for (const n of [8, 10, 12, 14, 16]) teamsSel.add(new Option(String(n), String(n)));
+    }
+    teamsSel.value = String(settings.numTeams);
+    const slotSel = $('board-slot');
+    slotSel.innerHTML = '';
+    slotSel.add(new Option('auto', '0'));
+    for (let i = 1; i <= settings.numTeams; i++) slotSel.add(new Option(String(i), String(i)));
+    slotSel.value = String(
+      settings.draftSlot >= 1 && settings.draftSlot <= settings.numTeams ? settings.draftSlot : 0);
+    $('board-rounds').value = settings.numRounds;
+    $('board-bot-ranks').value = settings.botRanks || 'auto';
+    $('board-bot-algo').value = settings.botAlgo || 'need';
+    // Predict mode is a toggle: while it's on (and auto-updating), the only
+    // button that makes sense is the way out.
+    $('btn-predict').hidden = predictMode;
+    $('btn-clear-predict').hidden = !predictMode;
+  }
+
+  // What each position looks like NOW vs at your next pick, per the
+  // simulation. This is the "should I take a QB now?" answer: if the drop-off
+  // between the two names is steep, the position is about to dry up.
+  function renderOutlook(info) {
+    const el = $('board-outlook');
+    if (!predicted) {
+      el.innerHTML = '<span class="muted" title="Predict picks simulates the room between now ' +
+        'and your turn, then stays on and re-simulates after every real pick">' + (info
+        ? `Next pick <b>${info.next}</b>, ${info.until} away · <b>Predict picks</b> to see what survives.`
+        : 'Click your column header to set your draft slot.') + '</span>';
+      return;
+    }
+    if (!info) {
+      el.innerHTML = '<span class="muted">Click your column header to set your draft slot.</span>';
+      return;
+    }
+    const picked = pickedSet();
+    const goneByThen = new Set(predicted.filter(pr => pr.pick < info.next).map(pr => pr.name));
+    const avail = boardPlayers().filter(p => !picked.has(p.name));
+    const meta = predictedMeta;
+
+    // On the clock there is no gap between "now" and "your pick": nothing can
+    // go before you, so a "gone before you" column is always 0 and the "now"
+    // and "at your pick" columns are the same player. Drop both — what's left
+    // is the only live comparison, take it now vs. wait for your next turn.
+    const onClock = info.until <= 0;
+    const follow = meta ? meta.followNext : null;
+
+    let suggest = '';
+    if (meta && meta.suggestion) {
+      const s = meta.suggestion;
+      // Name the fallback. "costs 4 ranks to wait" is an abstraction over the
+      // choice actually in front of you — Irving now vs Chase Brown at your
+      // next turn — and the number means nothing without the name it refers
+      // to. Cost 0 means nothing drops off before your following turn —
+      // usually because it's back-to-back at the snake turn. Saying "costs 0
+      // ranks to wait" invites the obvious "then why this player?"; the
+      // honest answer is that no position is scarce, so it's best available.
+      const why = !s.B
+        ? `${s.pos} runs out before your next turn`
+        : s.cost > 0
+          ? `wait and it's <b>${escapeHtml(s.B.name)}</b> ${escapeHtml(s.B.rank)} at pick ` +
+            `${meta.followNext} — ${s.cost} rank${s.cost === 1 ? '' : 's'} worse`
+          : `still there at pick ${meta.followNext} — nothing drops off, so best available`;
+      suggest = '<div class="ol-suggest" title="For each position you\'d draft now, ' +
+        'this compares the best player there against the best one still left at your ' +
+        'following turn. The position that loses the most rank spots is the pick.">' +
+        `Take <b>${escapeHtml(s.A.name)}</b> — ${s.pos}, rank ${escapeHtml(s.A.rank)} · ${why}</div>`;
+    }
+
+    const cell = (p) => p
+      ? `${escapeHtml(p.name)} <span class="ol-rank">${escapeHtml(p.rank)}</span>` : '—';
+
+    const head = '<tr><th></th>' +
+      (onClock ? '' : `<th>Best now (rank)</th><th title="Predicted to be drafted before your turn">Gone</th>`) +
+      `<th>${onClock ? 'Best available (rank)' : `At your pick ${info.next}`}</th>` +
+      `<th>If you wait${follow ? ` — pick ${follow}` : ''}</th>` +
+      '<th title="Rank spots you give up by waiting one turn instead of taking this position now">' +
+      'Wait cost</th></tr>';
+
+    const rows = [];
+    for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+      const now = avail.find(p => p.pos === pos);
+      if (!now) continue;
+      const atPick = avail.find(p => p.pos === pos && !goneByThen.has(p.name));
+      const gone = avail.filter(p => p.pos === pos && goneByThen.has(p.name)).length;
+      const pv = meta && meta.byPos[pos];
+      const waitCells = !pv
+        ? '<td>—</td><td>—</td>'
+        : pv.cost >= 999
+          ? `<td class="ol-gone">none left</td><td class="ol-gone">runs out</td>`
+          : `<td>${cell(pv.B)}</td><td class="ol-cost">${pv.cost}</td>`;
+      rows.push('<tr>' +
+        `<td><span class="pos-chip pos-${pos}">${pos}</span></td>` +
+        (onClock ? '' : `<td>${cell(now)}</td><td class="ol-gone">${gone}</td>`) +
+        `<td>${cell(atPick)}</td>` + waitCells + '</tr>');
+    }
+
+    el.innerHTML = suggest +
+      `<div class="muted">${onClock
+        ? `<b>You're on the clock — make the pick in ${siteTab()}.</b>`
+        : `Simulated through pick ${info.next}`} ` +
+      '<span title="Predict mode is live: the window re-simulates automatically after every ' +
+      'real pick">· live</span></div>' +
+      `<table><thead>${head}</thead><tbody>${rows.join('')}</tbody></table>`;
+  }
+
+  // Cell text scales to the column width: as large as fits where there's
+  // room, smaller (never unreadable) when 12+ columns share a narrow panel.
+  // Everything else in a cell is sized in em off this, so one number drives
+  // the whole grid. Re-run on resize, not just on render — the panel divider
+  // changes the width without changing the board's contents.
+  function sizeBoardFont() {
+    const wrap = $('board-grid-wrap');
+    const grid = $('board-grid');
+    if (!wrap || !grid || !wrap.clientWidth) return;
+    // Mirrors the grid template: round gutter + padding + inter-column gaps.
+    const teams = settings.numTeams;
+    const colW = (wrap.clientWidth - 21 - 0.8 * 15 - 2 * teams) / teams;
+    // Sized to fit ~10 bold characters, which covers the median shortened
+    // name ("J. Chase", 9 chars). Longer ones wrap to a second line rather
+    // than holding the whole grid down to their width.
+    // Rounded, and only written when it actually changes: resizing the text
+    // resizes the grid, which can add or remove the scrollbar this
+    // measurement depends on. Quantising keeps that from oscillating.
+    const px = Math.round(Math.max(12, Math.min(16, (colW - 10) / 5.6)) * 2) / 2;
+    const next = px + 'px';
+    if (grid.style.getPropertyValue('--bd-font') !== next) {
+      grid.style.setProperty('--bd-font', next);
+    }
+  }
+
+  function renderBoard() {
+    const teams = settings.numTeams;
+    const rounds = settings.numRounds;
+    const entries = pickLogEntries();
+    const made = entries.length;
+    const info = yourNextPick(entries);
+    const slot = info ? info.slot : effectiveSlot(entries);
+    syncBoardToolbar(slot);
+    const counts = rosterCountsByTeam(entries, teams);
+    const predByPick = new Map();
+    if (predicted) for (const pr of predicted) predByPick.set(pr.pick, pr);
+
+    renderOutlook(info);
+
+    const grid = $('board-grid');
+    // Equal columns that grow with the panel — the board fills whatever width
+    // it's given and never needs a horizontal scroll to see all teams.
+    grid.style.gridTemplateColumns = `1.4em repeat(${teams}, minmax(0, 1fr))`;
+    sizeBoardFont();
+    grid.innerHTML = '';
+
+    // The round the draft is in right now — the "badly needs" threshold.
+    const curRound = Math.min(Math.ceil((made + 1) / teams), rounds);
+
+    grid.appendChild(document.createElement('div')); // corner above round numbers
+    for (let t = 1; t <= teams; t++) {
+      const h = document.createElement('button');
+      h.type = 'button';
+      h.className = 'bd-head' + (slot === t ? ' your-col' : '');
+      const c = counts[t - 1];
+      const needs = Object.keys(STARTER_SLOTS)
+        .filter(pos => pos !== 'K' && pos !== 'DST' && (c[pos] || 0) < STARTER_SLOTS[pos]);
+      const badly = new Set(needs.filter(pos => !c[pos] && curRound >= BADLY_NEEDED_BY_ROUND[pos]));
+      const roster = BOARD_POS_ORDER
+        .filter(pos => c[pos]).map(pos => `${pos} ${c[pos]}`).join(', ');
+      h.title = (slot === t ? 'Your team' : `Team ${t} — click if this is your draft slot`) +
+        (roster ? ` · has ${roster}` : ' · empty roster') +
+        (needs.length
+          ? ' · ' + needs.map(pos => badly.has(pos)
+              ? `REALLY needs ${pos} (round ${curRound}, none yet)` : `needs ${pos}`).join(' · ')
+          : ' · starters filled');
+      // What they've actually drafted, one line per position they own —
+      // positions at zero are simply absent. Draft-priority order, so the
+      // lines that matter most sit closest to the team name. The headers all
+      // share a row of the grid, so they already size to the busiest team;
+      // a team with 3 RBs stays one line, and everyone grows only when
+      // someone spreads across more positions.
+      const hasLine = '<div class="bd-has">' + BOARD_POS_ORDER
+        .filter(pos => c[pos])
+        .map(pos => `<span>${pos} ${c[pos]}</span>`).join('') + '</div>';
+      h.innerHTML = `<div class="bd-team-name">${slot === t ? '★ You' : 'Team ' + t}</div>` +
+        hasLine;
+      h.addEventListener('click', () => {
+        settings.draftSlot = settings.draftSlot === t ? 0 : t; // click again = back to auto
+        store.save('settings', settings);
+        if (predictMode) computePrediction(); // the window is defined by your slot
+        renderBoard();
+        renderTable(); // the pink marker on the main board moves too
+      });
+      grid.appendChild(h);
+    }
+
+    for (let round = 1; round <= rounds; round++) {
+      const rl = document.createElement('div');
+      rl.className = 'bd-round';
+      rl.textContent = String(round);
+      rl.title = `Round ${round}`;
+      grid.appendChild(rl);
+      for (let col = 1; col <= teams; col++) {
+        // Snake: odd rounds run 1..T, even rounds T..1.
+        const n = round % 2 === 1 ? (round - 1) * teams + col : round * teams - col + 1;
+        const pickLabel = `${round}.${String(n - (round - 1) * teams).padStart(2, '0')}`;
+        const cell = document.createElement('div');
+        let cls = 'bd-cell';
+        if (col === slot) cls += ' your-col';
+        // A filled cell reads top-to-bottom like any draft board: pick
+        // number, name, then position and NFL team. The full name is in the
+        // tooltip for the few that don't fit on one line.
+        const fill = (name, pos, nfl) =>
+          `<div class="bd-pick">${pickLabel}</div>` +
+          `<div class="bd-name">${escapeHtml(shortPlayerName(name))}</div>` +
+          `<div class="bd-meta">${escapeHtml(pos === 'UNK' ? (nfl || '') : pos + (nfl ? ' · ' + nfl : ''))}</div>`;
+        if (n <= made) {
+          const en = entries[n - 1];
+          const pos = en.player ? normPos(en.player.pos) : 'UNK';
+          cls += ` done pos-${pos}`;
+          cell.title = `#${n} (${pickLabel}) — ${en.name}` +
+            (en.player ? ` (${en.player.team} ${en.player.pos})` : '');
+          cell.innerHTML = fill(en.name, pos, en.player ? en.player.team : '');
+        } else if (predByPick.has(n)) {
+          const pr = predByPick.get(n);
+          cls += ` pred pos-${pr.pos}`;
+          cell.title = `#${n} (${pickLabel}) — predicted: ${pr.name} (${pr.pos})`;
+          cell.innerHTML = fill(pr.name, pr.pos, pr.nfl);
+        } else {
+          cls += ' empty';
+          cell.title = `Pick #${n}` + (col === slot ? ' — yours' : '');
+          cell.innerHTML = `<div class="bd-pick">${pickLabel}</div>`;
+        }
+        if (info && n === info.next) {
+          cls += ' next-your';
+          if (info.until <= 0) {
+            // Your turn, right now. This cell goes solid pink and says so —
+            // it's the one thing on the board you must not scroll past.
+            // (info.next is always an unmade, unpredicted pick, so there's no
+            // player content here to overwrite.)
+            cls += ' on-clock';
+            cell.innerHTML = `<div class="bd-pick">${pickLabel}</div>` +
+              '<div class="bd-clock">YOUR PICK</div>';
+            cell.title = `Pick ${n} — you're on the clock. Make it in ${siteTab()}.`;
+          } else {
+            cell.title += ' — your next pick';
+          }
+        }
+        cell.className = cls;
+        grid.appendChild(cell);
+      }
+    }
+  }
+
+  // Simulate only the picks between now and YOUR next turn — that's the
+  // decision-relevant window ("who makes it back to me?"), not the whole
+  // draft. By default opponents don't share your board: they draft by their
+  // own site's rankings (ESPN or Sleeper, whichever the draft is on),
+  // need-adjusted — but the toolbar's "Bots follow" / "Bot style" selects
+  // can pin the ranking source or drop the need filter.
+  //
+  // Recomputes from the current live state and returns the pick info (or
+  // null when your slot is unknown). In predict mode renderAll() calls this
+  // again after every real pick, so the simulation tracks the live draft.
+  // On the clock (until 0) there is nothing to simulate before your pick,
+  // but the outlook/suggestion is exactly what you want right then.
+  function computePrediction() {
+    predicted = null;
+    predictedMeta = null;
+    predictedAtCount = pickNumber();
+    const teams = settings.numTeams;
+    const rounds = settings.numRounds;
+    const entries = pickLogEntries();
+    const info = yourNextPick(entries);
+    if (!info) return null;
+    const picked = pickedSet();
+    const num = (v) => { const n = parseInt(v, 10); return isFinite(n) ? n : Infinity; };
+    const effRank = (p) => {
+      const o = rankOverrideFor(p);
+      return o === null ? (p.rankNum || 9999) : o;
+    };
+    const src = !settings.botRanks || settings.botRanks === 'auto'
+      ? (draftSite() === 'sleeper' ? 'sleeper' : 'espn')
+      : settings.botRanks;
+    // 'mine' = your board order, edits included; a site column falls back to
+    // board rank for players the site didn't rank (num() -> Infinity).
+    const botRank = src === 'mine' ? effRank : (p) => num(p[src]);
+    const algo = settings.botAlgo;
+    const avail = boardPlayers()
+      .filter(p => !picked.has(p.name))
+      .sort((a, b) => (botRank(a) - botRank(b)) || ((a.rankNum || 9999) - (b.rankNum || 9999)));
+    const made = Math.max(entries.length, pickNumber());
+    predicted = predictDraft(avail, rosterCountsByTeam(entries, teams),
+      made + 1, info.next - 1, teams, rounds, algo);
+
+    // Naive pick value for YOUR turn: for each position, compare the best
+    // player there at your pick (A) vs the best left at your FOLLOWING pick
+    // (B), with opponents simulated in between. rank(B) − rank(A) is the
+    // cost of waiting one turn; among positions you'd reasonably draft, the
+    // steepest drop is the suggested pick. (With ranks as the value scale,
+    // max wait-cost is exactly the two-pick-lookahead optimum.) The extended
+    // simulation is internal — the grid still only shows up to your pick.
+    const goneNames = new Set(predicted.map(pr => pr.name));
+    const followNext = nextPickForTeam(info.slot, teams, info.next);
+    const countsAfter = rosterCountsByTeam(entries, teams);
+    for (const pr of predicted) {
+      countsAfter[pr.team - 1][pr.pos] = (countsAfter[pr.team - 1][pr.pos] || 0) + 1;
+    }
+    const ext = predictDraft(avail.filter(p => !goneNames.has(p.name)), countsAfter,
+      info.next + 1, Math.min(followNext - 1, teams * rounds), teams, rounds, algo);
+    const goneByFollowing = new Set([...goneNames, ...ext.map(pr => pr.name)]);
+
+    const myCounts = {};
+    for (const p of teamPlayers()) {
+      const pos = normPos(p.pos);
+      myCounts[pos] = (myCounts[pos] || 0) + 1;
+    }
+    const round = Math.ceil(info.next / teams);
+    const boardAvail = boardPlayers().filter(p => !picked.has(p.name));
+    const myGaps = new Set();
+    let myGapCount = 0;
+    const poolPos = new Set(boardAvail.map(p => normPos(p.pos)));
+    for (const pos of Object.keys(STARTER_SLOTS)) {
+      if (!poolPos.has(pos)) continue;
+      const gap = STARTER_SLOTS[pos] - (myCounts[pos] || 0);
+      if (gap > 0) { myGaps.add(pos); myGapCount += gap; }
+    }
+    const myMustFill = myGapCount > rounds - round ? myGaps : null;
+
+    const byPos = {};
+    let suggestion = null;
+    for (const pos of ['QB', 'RB', 'WR', 'TE']) {
+      const A = boardAvail.find(p => p.pos === pos && !goneNames.has(p.name));
+      if (!A) continue;
+      const B = boardAvail.find(p => p.pos === pos && !goneByFollowing.has(p.name));
+      const cost = B ? effRank(B) - effRank(A) : 999;
+      byPos[pos] = { A, B, cost };
+      if (!wouldDraft(pos, myCounts[pos] || 0, round, rounds, myMustFill)) continue;
+      if (!suggestion || cost > suggestion.cost ||
+          (cost === suggestion.cost && effRank(A) < effRank(suggestion.A))) {
+        suggestion = { pos, A, B, cost };
+      }
+    }
+    predictedMeta = { followNext, byPos, suggestion };
+    return info;
+  }
+
+  // The Predict picks button: turn predict mode on. From here on the
+  // simulation refreshes itself after every real pick, until Return to live.
+  function runPrediction() {
+    const info = computePrediction();
+    if (!info) {
+      setStatus('Set your draft slot first — click your column header on the grid below');
+      return;
+    }
+    predictMode = true;
+    store.save('predictMode', true);
+    setStatus(info.until <= 0
+      ? `You're on the clock — take the suggested pick in ${siteTab()}; predictions continue after you pick`
+      : `Simulated the ${info.until} picks before your turn (#${info.next}) — ` +
+        'stays on and re-simulates as real picks come in');
+    renderTable();
+    renderBoard();
   }
 
   /* ---------- extension bridge (see chrome-extension/bridge.js) ---------- */
@@ -480,16 +1613,21 @@ function initApp() {
     if (!msg || msg.source !== 'ffda-ext') return;
 
     extDetected = true;
+    // The bridge says hello with an empty payload before any draft page has
+    // been scraped; that is not "data received", it is just a handshake.
+    let gotData = false;
     if (msg.type === 'state' && msg.data) {
       for (const key of ['picked_players', 'roster_players', 'available_players']) {
-        if (msg.data[key]) extState[key] = msg.data[key];
+        if (msg.data[key]) { extState[key] = msg.data[key]; gotData = true; }
       }
-      store.save('extState', extState);
-      setStatus('Draft data received from extension');
-      renderAll();
-    } else {
-      renderExtStatus();
     }
+    if (!gotData) { renderExtStatus(); return; }
+
+    store.save('extState', extState);
+    const picked = extState.picked_players;
+    if (picked && Array.isArray(picked.players)) mergeExtPicked(picked.players);
+    setStatus('Draft data received from extension');
+    renderAll();
   });
 
   function requestExtState() {
@@ -512,6 +1650,7 @@ function initApp() {
     for (const m of OPENAI_FALLBACK_MODELS) if (!models.includes(m)) models.push(m);
 
     let lastErr = null;
+    let gotResponse = false;
     for (const model of models) {
       try {
         const resp = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -522,6 +1661,7 @@ function initApp() {
           },
           body: JSON.stringify({ model, messages, stream: true }),
         });
+        gotResponse = true;
         if (!resp.ok) {
           const text = await resp.text().catch(() => '');
           lastErr = new Error(`${model}: HTTP ${resp.status} ${text.slice(0, 300)}`);
@@ -550,6 +1690,17 @@ function initApp() {
       } catch (e) {
         lastErr = e;
       }
+    }
+    // An invalid API key is rejected at OpenAI's edge with a response that
+    // carries no CORS headers, so the browser surfaces it as a generic
+    // "Failed to fetch" rather than a 401. Never reaching *any* response while
+    // a key is set almost always means the key is wrong.
+    if (!gotResponse && settings.apiKey) {
+      throw new Error(
+        'Could not reach the OpenAI API. This is usually a bad API key — an ' +
+        'invalid key fails as a network error in the browser, not a 401. ' +
+        'Check the key in Settings (⚙). Original error: ' +
+        String(lastErr && lastErr.message || lastErr));
     }
     throw lastErr || new Error('all models failed');
   }
@@ -586,6 +1737,7 @@ function initApp() {
   // Mirrors ui.go performLLMQuery: top-15 available players' full notes,
   // picked list, grouped roster, pick number -> one prompt.
   async function askLLM() {
+    activateTab('ai'); // the answer (or the how-to-configure card) lands here
     if (!llmConfigured()) {
       $('ai-output').innerHTML = renderMarkdown(
         '## LLM not configured\n\n' +
@@ -608,7 +1760,7 @@ function initApp() {
 
     try {
       const picked = pickedSet();
-      const available = allPlayers().filter(p => !picked.has(p.name));
+      const available = boardPlayers().filter(p => !picked.has(p.name));
       const top = available.slice(0, 15);
 
       let allNotes = '';
@@ -660,7 +1812,129 @@ function initApp() {
     }
   }
 
+  /* ---------- file import / export ---------- */
+  function download(filename, text, mime) {
+    const url = URL.createObjectURL(new Blob([text], { type: mime }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importRankingsFile(file) {
+    file.text().then((text) => {
+      const entries = parseRankingsText(text);
+      if (!entries.length) { alert('No player rows found in that file.'); return; }
+      const players = allPlayers();
+      const overrides = {};
+      const unmatched = [];
+      for (const e of entries) {
+        const match = fuzzyMatchPlayer(e.name, players);
+        if (match) overrides[cleanName(match)] = e.rank;
+        else unmatched.push(e.name);
+      }
+      if (!Object.keys(overrides).length) {
+        alert('None of those names matched players on the board — nothing was imported.');
+        return;
+      }
+      const fmt = settings.scoringFormat;
+      rankOverrides[fmt] = overrides;
+      store.save('rankOverrides', rankOverrides);
+      renderAll();
+      setStatus(`Imported ${Object.keys(overrides).length} custom ranks for the ${fmt} board`);
+      if (unmatched.length) {
+        alert(`Applied ${Object.keys(overrides).length} ranks to the ${fmt} board.\n\n` +
+          `${unmatched.length} name(s) didn't match anyone on the board and were skipped:\n- ` +
+          unmatched.join('\n- '));
+      }
+    });
+  }
+
+  function importBackupFile(file) {
+    file.text().then((text) => {
+      let b;
+      try { b = JSON.parse(text); } catch (e) { alert('Not a valid backup file (bad JSON).'); return; }
+      if (!b || b.app !== 'ff-draft-tool') { alert('Not a draft-prep backup file.'); return; }
+      if (!confirm('Replace your prep (markers, picks, team, rank overrides, note edits, prompts) ' +
+        "with this file's data? Your API key is kept as-is.")) return;
+      settings = Object.assign({}, DEFAULT_SETTINGS, b.settings || {}, { apiKey: settings.apiKey });
+      manualPicked = new Set(b.manualPicked || []);
+      manualTeam = Array.isArray(b.manualTeam) ? b.manualTeam : [];
+      toDraft = b.toDraft || {};
+      unpicked = new Set(b.unpicked || []);
+      rankOverrides = b.rankOverrides || {};
+      noteOverrides = b.noteOverrides || {};
+      store.save('settings', settings);
+      store.save('manualPicked', [...manualPicked]);
+      store.save('manualTeam', manualTeam);
+      store.save('toDraft', toDraft);
+      store.save('unpicked', [...unpicked]);
+      store.save('rankOverrides', rankOverrides);
+      store.save('noteOverrides', noteOverrides);
+      $('scoring-format').value = settings.scoringFormat;
+      $('settings-dialog').close();
+      renderAll();
+      setStatus('Prep imported from backup');
+    });
+  }
+
+  function exportBackup() {
+    const backup = {
+      app: 'ff-draft-tool',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      settings: Object.assign({}, settings, { apiKey: '' }), // never export the secret
+      manualPicked: [...manualPicked],
+      manualTeam,
+      toDraft,
+      unpicked: [...unpicked],
+      rankOverrides,
+      noteOverrides,
+    };
+    download('draft-prep-backup.json', JSON.stringify(backup, null, 2), 'application/json');
+    setStatus('Prep exported (API key not included)');
+  }
+
   /* ---------- settings dialog ---------- */
+  let settingsTab = 'ai';
+  function applySettingsTab() {
+    document.querySelectorAll('#settings-tabs .stab').forEach(b =>
+      b.classList.toggle('active', b.dataset.stab === settingsTab));
+    document.querySelectorAll('#settings-form fieldset').forEach(fs =>
+      fs.hidden = settingsTab !== 'all' && fs.dataset.stab !== settingsTab);
+  }
+  document.querySelectorAll('#settings-tabs .stab').forEach(b =>
+    b.addEventListener('click', () => { settingsTab = b.dataset.stab; applySettingsTab(); }));
+
+  // Save is greyed out until a field actually differs from what's stored —
+  // compared against a snapshot taken when the dialog opens, so changing a
+  // value and changing it back re-disables it.
+  function settingsFormValues() {
+    return JSON.stringify({
+      apiKey: $('set-apikey').value,
+      model: $('set-model').value,
+      useOllama: $('set-use-ollama').checked,
+      ollamaEndpoint: $('set-ollama-endpoint').value,
+      ollamaModel: $('set-ollama-model').value,
+      systemPrompt: $('set-system-prompt').value,
+      userPrompt: $('set-user-prompt').value,
+      manualMode: $('set-manual-mode').checked,
+      rankSource: $('set-rank-source').value,
+    });
+  }
+  let settingsSnapshot = '';
+  function updateSaveEnabled() {
+    const dirty = settingsFormValues() !== settingsSnapshot;
+    const btn = $('btn-save-settings');
+    btn.disabled = !dirty;
+    btn.title = dirty ? 'Save your changes' : 'Nothing changed yet';
+  }
+  $('settings-form').addEventListener('input', updateSaveEnabled);
+  $('settings-form').addEventListener('change', updateSaveEnabled);
+
   function openSettings() {
     $('set-apikey').value = settings.apiKey;
     $('set-model').value = settings.model;
@@ -669,6 +1943,11 @@ function initApp() {
     $('set-ollama-model').value = settings.ollamaModel;
     $('set-system-prompt').value = settings.systemPrompt;
     $('set-user-prompt').value = settings.userPrompt;
+    $('set-manual-mode').checked = settings.manualMode;
+    $('set-rank-source').value = settings.rankSource;
+    applySettingsTab();
+    settingsSnapshot = settingsFormValues();
+    updateSaveEnabled();
     $('settings-dialog').showModal();
   }
 
@@ -680,6 +1959,8 @@ function initApp() {
     settings.ollamaModel = $('set-ollama-model').value.trim();
     settings.systemPrompt = $('set-system-prompt').value;
     settings.userPrompt = $('set-user-prompt').value;
+    settings.manualMode = $('set-manual-mode').checked;
+    settings.rankSource = $('set-rank-source').value;
     store.save('settings', settings);
     setStatus('Settings saved (this browser only)');
     renderAll();
@@ -691,14 +1972,120 @@ function initApp() {
     manualTeam = [];
     toDraft = {};
     extState = {};
+    extPickedRaw = [];
+    unpicked = new Set();
+    predicted = null;
+    predictedMeta = null;
+    predictMode = false;
+    store.save('predictMode', false);
     store.save('manualPicked', []);
     store.save('manualTeam', []);
     store.save('toDraft', {});
     store.save('extState', {});
+    store.save('extPickedRaw', []);
+    store.save('unpicked', []);
     window.postMessage({ source: 'ffda-page', type: 'clear-state' }, '*');
     setStatus('Draft state cleared');
     renderAll();
   }
+
+  /* ---------- guided tour ---------- */
+  const TOUR_STEPS = [
+    { target: '#player-table', title: 'The board',
+      text: 'Every draftable player, best available on top. As the draft goes on, picked players drop off so this is always "who can I still get". A pink line shows where your next pick lands.' },
+    { target: '#pos-filters', title: 'Position filters',
+      text: 'Show only one position — handy when you know you need an RB and want to compare who\'s left.' },
+    { target: '#search-box', title: 'Search',
+      text: 'Type a few letters of a name or team. The board narrows as you type — fastest way to find someone mid-draft. Press / to jump here.' },
+    { target: '#player-tbody tr', title: 'Player notes',
+      text: 'Click any row to open that player\'s full analysis note in a tab on the right — Ctrl+click opens it in an extra tab (like Obsidian). Press E to edit the note and make it yours.' },
+    { target: '#player-tbody tr .row-actions', title: 'Target markers',
+      text: 'The ✅/❌ button (or D / Space) cycles your target-or-avoid marker. Manual Picked/+Team buttons are hidden by default — the extension tracks the draft for you. Turn on Manual mode in Settings to run a draft by hand.' },
+    { target: '#tab-bar', title: 'Tabs',
+      text: 'AI Output and Draft Board live here permanently; player notes open as tabs next to them. A normal click on a player replaces the current note tab, Ctrl+click adds another, × (or the X key) closes one.' },
+    { target: '#tab-strip .tab:nth-child(2)', title: 'The draft board',
+      text: 'A snake-draft grid: every pick colored by position, your next pick pink. Team headers count what each team has drafted by position — read across a row to spot a run forming; a red 0 means they are badly short there. Hover a header for what they still need. "Predict picks" simulates every pick between now and your turn (no AI) and keeps re-simulating as real picks land; "Return to live" clears it.' },
+    { target: '#btn-ask', title: 'Ask AI',
+      text: 'Sends the draft state — pick number, who\'s gone, your roster, and the notes of the top 15 available — to the AI and streams back advice. Press Q anytime.' },
+    { target: '#team-panel .panel-head', title: 'Your team',
+      text: 'Your roster as a depth chart — QB1, RB1, RB2 … — with a "still need" line for unfilled starting spots. Click a player to open their note; the » button collapses the panel.' },
+    { target: '#ext-status', title: 'Live draft sync',
+      text: 'With the Chrome extension installed, picks flow in automatically from the ESPN or Sleeper draft room — this badge turns green when connected. The board even shows the rank column for whichever site you\'re drafting on.' },
+    { target: '#btn-help', title: 'Help',
+      text: 'Press ? anytime for the keyboard shortcuts, what every column means, and this tour again.' },
+    { target: '#btn-settings', title: 'Settings',
+      text: 'API key for the AI, Manual mode, the site-rank column, import/export your own rankings as a spreadsheet (CSV), and backing up all your prep to a file.' },
+  ];
+
+  function tourActive() { return tourIndex >= 0; }
+
+  function startTour() {
+    tourIndex = 0;
+    $('tour-overlay').hidden = false;
+    showTourStep();
+  }
+
+  function endTour() {
+    tourIndex = -1;
+    $('tour-overlay').hidden = true;
+  }
+
+  function showTourStep() {
+    // Skip steps whose target isn't on the page right now.
+    while (tourIndex < TOUR_STEPS.length && !document.querySelector(TOUR_STEPS[tourIndex].target)) {
+      tourIndex++;
+    }
+    if (tourIndex >= TOUR_STEPS.length) { endTour(); return; }
+    const step = TOUR_STEPS[tourIndex];
+    const el = document.querySelector(step.target);
+    el.scrollIntoView({ block: 'nearest' });
+
+    const r = el.getBoundingClientRect();
+    const pad = 5;
+    const hl = $('tour-highlight');
+    hl.style.top = (r.top - pad) + 'px';
+    hl.style.left = (r.left - pad) + 'px';
+    hl.style.width = (r.width + pad * 2) + 'px';
+    hl.style.height = (r.height + pad * 2) + 'px';
+
+    $('tour-title').textContent = step.title;
+    $('tour-text').textContent = step.text;
+    $('tour-step-count').textContent = `${tourIndex + 1} / ${TOUR_STEPS.length}`;
+    $('tour-next').textContent = tourIndex === TOUR_STEPS.length - 1 ? 'Done' : 'Next';
+
+    // Position the tip after its content has resized it: below the target if
+    // there's room, above otherwise, clamped to the viewport.
+    const tip = $('tour-tip');
+    tip.style.visibility = 'hidden';
+    requestAnimationFrame(() => {
+      const th = tip.offsetHeight;
+      const tw = tip.offsetWidth;
+      let top = r.bottom + pad + 8;
+      if (top + th > window.innerHeight - 8) top = r.top - th - pad - 8;
+      if (top < 8) top = 8;
+      const left = Math.min(Math.max(r.left, 8), Math.max(window.innerWidth - tw - 8, 8));
+      tip.style.top = top + 'px';
+      tip.style.left = left + 'px';
+      tip.style.visibility = 'visible';
+    });
+  }
+
+  $('tour-next').addEventListener('click', () => { tourIndex++; showTourStep(); });
+  $('tour-skip').addEventListener('click', endTour);
+  $('tour-close').addEventListener('click', endTour);
+  window.addEventListener('resize', () => { if (tourActive()) showTourStep(); });
+
+  // Board text tracks the panel width — window resize and divider drags both
+  // land here, so no re-render is needed to keep the cells legible.
+  if (window.ResizeObserver) new ResizeObserver(sizeBoardFont).observe($('board-grid-wrap'));
+
+  /* ---------- help dialog (? opens it; the tour starts from inside) ---------- */
+  function openHelp() { $('help-dialog').showModal(); }
+  $('btn-help').addEventListener('click', openHelp);
+  $('btn-start-tour').addEventListener('click', () => {
+    $('help-dialog').close();
+    startTour();
+  });
 
   /* ---------- wire up ---------- */
   $('scoring-format').value = settings.scoringFormat;
@@ -709,27 +2096,270 @@ function initApp() {
   });
   $('search-box').addEventListener('input', (e) => { searchText = e.target.value; renderTable(); });
   $('show-picked').addEventListener('change', (e) => { showPicked = e.target.checked; renderTable(); });
+  const setSort = (s) => { sortBy = s; renderTable(); };
+  $('th-rank').addEventListener('click', () => setSort('board'));
+  $('th-espn').addEventListener('click', () => setSort('espn'));
+  $('th-sleeper').addEventListener('click', () => setSort('sleeper'));
   $('btn-ask').addEventListener('click', askLLM);
   $('btn-settings').addEventListener('click', openSettings);
   $('settings-form').addEventListener('submit', saveSettings);
   $('btn-reset-prompts').addEventListener('click', () => {
     $('set-system-prompt').value = DEFAULT_SETTINGS.systemPrompt;
     $('set-user-prompt').value = DEFAULT_SETTINGS.userPrompt;
+    updateSaveEnabled(); // programmatic .value changes fire no input event
   });
   $('btn-reset-draft').addEventListener('click', resetDraftState);
+  $('btn-reset-top').addEventListener('click', resetDraftState);
   document.querySelectorAll('.dialog-close').forEach(btn => {
     btn.addEventListener('click', () => $(btn.dataset.close).close());
   });
 
-  document.addEventListener('keydown', (e) => {
-    const tag = (e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-    if (document.querySelector('dialog[open]')) return;
-    if (e.key === 'q' || e.key === 'Q') { e.preventDefault(); askLLM(); }
-    if (e.key === 'r' || e.key === 'R') { e.preventDefault(); renderAll(); setStatus('Refreshed ' + new Date().toLocaleTimeString()); }
+  /* ---------- note editing ---------- */
+  function startNoteEdit() {
+    // Editing a different note than the one mid-edit? Settle that draft first.
+    if (noteEditingName && noteEditingName !== activeTab && !confirmDiscardEdit(noteEditingName)) return;
+    const p = playerByName(activeTab);
+    if (!p) return;
+    noteEditingName = p.name;
+    $('note-textarea').value = noteFor(p);
+    renderNotePane();
+    $('note-textarea').focus();
+  }
+  $('btn-edit-note').addEventListener('click', startNoteEdit);
+  function cancelNoteEdit() {
+    // Asks before discarding a changed draft; no-op prompt when unchanged.
+    if (!confirmDiscardEdit(noteEditingName)) return;
+    renderNotePane();
+  }
+  $('btn-cancel-note').addEventListener('click', cancelNoteEdit);
+  $('btn-save-note').addEventListener('click', () => {
+    const p = playerByName(noteEditingName);
+    if (!p) return;
+    const key = cleanName(p.name);
+    const text = $('note-textarea').value;
+    // Saving the bundled text unchanged just clears the override.
+    if (text === bundledNoteFor(p)) delete noteOverrides[key];
+    else noteOverrides[key] = text;
+    store.save('noteOverrides', noteOverrides);
+    noteEditingName = null;
+    renderAll();
+    setStatus(`Note for ${p.name} saved (this browser only)`);
+  });
+  $('btn-revert-note').addEventListener('click', () => {
+    const p = playerByName(activeTab);
+    if (!p) return;
+    if (!confirm(`Discard your edits to ${p.name}'s note and restore the bundled one?`)) return;
+    delete noteOverrides[cleanName(p.name)];
+    store.save('noteOverrides', noteOverrides);
+    noteEditingName = null;
+    renderAll();
   });
 
-  $('data-stamp').textContent = `Data generated ${DATA.generatedAt}`;
+  /* ---------- resizable panel split ---------- */
+  let leftPct = store.load('leftPct', null); // null = default flex ratio
+
+  function applySplit() {
+    $('left-panel').style.flex = leftPct === null ? '' : `0 0 ${leftPct}%`;
+  }
+  $('panel-divider').addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    document.body.classList.add('dragging');
+    const main = document.querySelector('main');
+    const onMove = (ev) => {
+      const r = main.getBoundingClientRect();
+      leftPct = Math.min(80, Math.max(25, ((ev.clientX - r.left) / r.width) * 100));
+      applySplit();
+    };
+    const onUp = () => {
+      document.body.classList.remove('dragging');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      store.save('leftPct', leftPct);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+  $('panel-divider').addEventListener('dblclick', () => {
+    leftPct = null;
+    store.remove('leftPct');
+    applySplit();
+  });
+
+  /* ---------- Your Team collapse ---------- */
+  function applyTeamCollapsed() {
+    $('team-panel').classList.toggle('collapsed', teamCollapsed);
+    $('btn-team-collapse').title = teamCollapsed ? 'Expand Your Team' : 'Collapse Your Team';
+  }
+  $('btn-team-collapse').addEventListener('click', () => {
+    teamCollapsed = !teamCollapsed;
+    store.save('teamCollapsed', teamCollapsed);
+    applyTeamCollapsed();
+  });
+
+  /* ---------- draft board toolbar ---------- */
+  // League-shape or slot changes redefine the simulated window — in predict
+  // mode, re-simulate under the new shape instead of going stale.
+  $('board-teams').addEventListener('change', (e) => {
+    settings.numTeams = parseInt(e.target.value, 10) || 12;
+    if (settings.draftSlot > settings.numTeams) settings.draftSlot = 0;
+    store.save('settings', settings);
+    if (predictMode) computePrediction();
+    renderBoard();
+    renderTable();
+  });
+  $('board-slot').addEventListener('change', (e) => {
+    settings.draftSlot = parseInt(e.target.value, 10) || 0;
+    store.save('settings', settings);
+    if (predictMode) computePrediction();
+    renderBoard();
+    renderTable();
+  });
+  $('board-rounds').addEventListener('change', (e) => {
+    const v = parseInt(e.target.value, 10);
+    settings.numRounds = v >= 8 && v <= 30 ? v : DEFAULT_SETTINGS.numRounds;
+    store.save('settings', settings);
+    if (predictMode) computePrediction();
+    renderBoard();
+    renderTable();
+  });
+  $('board-bot-ranks').addEventListener('change', (e) => {
+    settings.botRanks = e.target.value;
+    store.save('settings', settings);
+    if (predictMode) computePrediction();
+    renderBoard();
+    renderTable();
+  });
+  $('board-bot-algo').addEventListener('change', (e) => {
+    settings.botAlgo = e.target.value;
+    store.save('settings', settings);
+    if (predictMode) computePrediction();
+    renderBoard();
+    renderTable();
+  });
+  $('btn-predict').addEventListener('click', runPrediction);
+  $('btn-clear-predict').addEventListener('click', () => {
+    predictMode = false;
+    store.save('predictMode', false);
+    predicted = null;
+    predictedMeta = null;
+    setStatus('Back to live only — simulated picks removed (real picks always show as they happen)');
+    renderTable();
+    renderBoard();
+  });
+
+  /* ---------- rankings & data import/export ---------- */
+  $('btn-import-rankings').addEventListener('click', () => $('file-rankings').click());
+  $('file-rankings').addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    e.target.value = '';
+    if (f) importRankingsFile(f);
+  });
+  $('btn-export-rankings').addEventListener('click', () => {
+    download(`rankings-${settings.scoringFormat.replace('.', '_')}.csv`,
+      buildRankingsCsv(boardPlayers()), 'text/csv');
+    setStatus('Rankings downloaded — reorder in a spreadsheet, then Import to apply');
+  });
+  $('btn-revert-rankings').addEventListener('click', () => {
+    const fmt = settings.scoringFormat;
+    if (!Object.keys(currentRankOverrides()).length) {
+      setStatus(`No custom ranks on the ${fmt} board`);
+      return;
+    }
+    if (!confirm(`Remove your custom ranks from the ${fmt} board and restore the bundled order?`)) return;
+    delete rankOverrides[fmt];
+    store.save('rankOverrides', rankOverrides);
+    renderAll();
+    setStatus(`${fmt} board restored to bundled rankings`);
+  });
+  $('btn-export-backup').addEventListener('click', exportBackup);
+  $('btn-import-backup').addEventListener('click', () => $('file-backup').click());
+  $('file-backup').addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    e.target.value = '';
+    if (f) importBackupFile(f);
+  });
+  $('btn-export-notes').addEventListener('click', () => {
+    const names = Object.keys(noteOverrides).sort();
+    if (!names.length) { setStatus('No edited notes to download'); return; }
+    const parts = names.map(n => `----- ${n}.md -----\n\n${noteOverrides[n]}\n`);
+    download('edited-notes.md', parts.join('\n'), 'text/markdown');
+    setStatus(`${names.length} edited note(s) downloaded`);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (tourActive()) {
+      if (e.key === 'Escape') endTour();
+      return;
+    }
+    const tag = (e.target.tagName || '').toLowerCase();
+    // Esc inside the note editor cancels the edit (E started it).
+    if (e.key === 'Escape' && noteEditingName && e.target.id === 'note-textarea') {
+      e.preventDefault();
+      cancelNoteEdit();
+      return;
+    }
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    // A just-clicked button keeps focus; Space/Enter must activate IT (the
+    // browser default), not also fire a shortcut on the selected row.
+    if (tag === 'button' && (e.key === ' ' || e.key === 'Enter')) return;
+    if (document.querySelector('dialog[open]')) return;
+    const sel = selectedPlayer();
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (sel) { e.preventDefault(); openNote(sel, true); }
+      return;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    switch (e.key) {
+      case 'q': case 'Q':
+        e.preventDefault(); askLLM(); break;
+      case 'r': case 'R':
+        e.preventDefault(); renderAll(); setStatus('Refreshed ' + new Date().toLocaleTimeString()); break;
+      case 'ArrowDown':
+        e.preventDefault(); moveSelection(1); break;
+      case 'ArrowUp':
+        e.preventDefault(); moveSelection(-1); break;
+      case 'd': case 'D': case ' ':
+        if (sel) { e.preventDefault(); cycleToDraft(sel.name); }
+        break;
+      case 'p': case 'P':
+        if (sel) { e.preventDefault(); keepSelectionNear(() => togglePicked(sel.name)); }
+        break;
+      case 't': case 'T':
+        if (sel) { e.preventDefault(); toggleTeam(sel.name); }
+        break;
+      case 'Enter':
+        if (sel) { e.preventDefault(); openNote(sel, false); }
+        break;
+      case 'e': case 'E':
+        // Open the selected player's note and jump straight into editing.
+        if (sel) {
+          e.preventDefault();
+          openNote(sel, false);
+          if (activeTab === sel.name) startNoteEdit();
+        }
+        break;
+      case 'a': case 'A':
+        e.preventDefault(); activateTab('ai'); break;
+      case 'b': case 'B':
+        e.preventDefault(); activateTab('board'); break;
+      case 'x': case 'X':
+        // Same as clicking the tab's × — Esc still works too.
+        if (isNoteTab(activeTab)) { e.preventDefault(); closeNote(activeTab); }
+        break;
+      case '/':
+        e.preventDefault(); $('search-box').focus(); break;
+      case '?':
+        e.preventDefault(); openHelp(); break;
+      case 'Escape':
+        if (isNoteTab(activeTab)) { e.preventDefault(); closeNote(activeTab); }
+        break;
+    }
+  });
+
+  $('help-data-stamp').textContent =
+    `Player data generated ${DATA.generatedAt} — rebuild with build_data.py when rankings change.`;
+  applySplit();
+  applyTeamCollapsed();
   renderAll();
   setStatus('Ready — listening for draft updates');
 }

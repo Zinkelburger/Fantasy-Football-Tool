@@ -17,6 +17,16 @@ is real (21% vs 13% sustained-run rate) but converts to only
 +0.5 all-play / +1.1 titles, within noise. RB as bench tiebreak,
 nothing more.
 
+**B10. Second-QB insurance** (extended to TE) — *graduated to
+[finding 20](20-second-qb-te.md)*: null on every forced-vs-banned
+contrast, on two independent base drafters (|Δ| ≤ 0.25 ± 0.35 all-play).
+The backup does play (QB2 starts ~27% of weeks on a frozen roster), but
+waivers sell the same coverage. Real effects found instead: QB2 forced
+at r12–14 costs 0.4–0.6, and punting TE1 to r10 without streaming costs
+1.4. Also documents a `pick_value` wart — a global `BENCH_WEIGHT` over
+raw (non-replacement-adjusted) points makes it take a QB2 ~100% of the
+time; worth ≈0.1–0.3 to fix, i.e. nothing.
+
 **B3. Handcuff strategy at scale** — *graduated to
 [finding 13](13-handcuffs-are-free-insurance.md)*: ran the full grid
 twice (with and without news-aware projections, which shipped
@@ -64,12 +74,6 @@ about draft-order lotteries.
 (calibration data). Cohort: rookies vs veterans at equal ADP, hit and
 bust rates by position. Is the family's rookie thing a leak or a lean?
 
-**B10. Second-QB insurance.** The league drafts a 2nd QB in 58% of
-team-drafts (QB2 median round 13). Sim: baseline family vs family
-forced to skip QB2 (extra bench RB/WR instead — connects to B2). The
-QB availability numbers (91% early-QB availability, best of any
-position) suggest QB2 is mostly wasted, but bye-week friction is real.
-
 **B11. WR archetypes out-of-sample.** Findings 08-10 predictions
 frozen before the 2026 season: bad-team-WR1s should hit ≥40%,
 fallen studs should bust ≥50%. Score them next January.
@@ -87,3 +91,23 @@ hypothesis: backs who can't protect don't see the field.)
 
 **B13. Trades.** Not modeled, no historical league trade data in the
 exports. Out of scope unless the league exports activity logs.
+
+**B15. QB-Elo streaming/downgrade features.** nfelo's continued QB-Elo
+(`data/market/qb_elos.csv`) tracks per-QB value live (same-season corr
+with fantasy PPG 0.78) and its `qb_adj` columns price starter→backup
+downgrades per game. Tests: (a) does adding own-QB value to the weekly
+QB model beat M4's .434? (b) can the sim's `Streamer("QB")` policy
+rank wire QBs by QB-Elo instead of trailing points, and does that
+close any of late-QB's −2.9 gap (finding 06)? (c) opponent-QB-out
+context for weekly projections. See finding 26's nfelo section.
+
+**B14. Knowable-information oracle.** Finding 24 measured the
+*foresight* ceiling: +685 pts/season over disciplined drafting. Rerun
+the same beam search but restrict the oracle's evaluation to
+information available at draft time (previous-season points, ADP,
+age/rookie status, the finding 15–18 signals) and score the resulting
+rosters on the *actual* season. The gap splits into "knowable at the
+draft" (a real skill ceiling a better bot could chase) vs "pure luck."
+Machinery exists (`analysis/oracle_draft.py` — swap `board.tot`/
+`hero_eval`'s objective for a draft-time projection, keep hindsight
+scoring); the design question is which projection defines "knowable."

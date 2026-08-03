@@ -1,38 +1,10 @@
-Concise 2025 outlook for Brock Purdy (SF) — QB1/backup in SF, depending on format
+**Brock Purdy** (SF, QB, bye 8) — board rank 110
 
-- Overall role and value
-  - 1QB leagues: mid-range starter at best. Likely a QB2 option you tolerate behind a top-8 QB.
-  - SuperFlex/2QB: solid QB2 with true upside; value is in waiting on QB and still landing a high-floor passer.
-  - ADP signals: around QB13 in many formats; sleepers/value around 52.2 (sleeper ADP) with strong upside if offense stays clean.
+**Room sentiment:** Quietly positive as a value QB — 24 mentions, low volume but essentially no detractors. The recurring theme is that he's mispriced.
 
-- Why the upside could be real
-  - FF Hound projection: Mike Clayuffs Purdy for top-tier passing yardage (first/second in the league by some projections) — huge upside if that hits.
-  - Preseason trust and mechanics: strong offseason chemistry with Shanahan; demonstrated accuracy on anticipation routes.
-  - Offense is quarterback-friendly: SF routinely supports high passing volumes in big games when game script allows; Purdy has shown efficiency in this system.
+- The pricing argument is the whole case. In Hartitz's QB tiers he's flagged as the outlier: "Brock Purdy sitting in tier 3 with an ADP of QB13 late in round 9." Another poster: "Healthy Brock Purdy is a 20ppg player and is going 1-2 rounds after Herbert ADP wise."
+- One poster's model gives him "about a 32% chance to finish Top 6" — the best of the group listed (Bo Nix 29%, Trevor Lawrence 26%, Dak 21%). He's a repeat name in "favorite QBs in Rounds 8-10" lists and in auction advice to wait and get "the Jaxson Dart, Brock Purdy, Patrick Mahomes type guys for $1."
+- Projected 3,799.5 passing yards. Superflex ADP 5.03/53.4; called a league-winner specifically in 2QB formats.
+- The risk the room mostly skips past is the receiving corps: the 49ers "don't expect Ricky Pearsall to make any contributions in 2026," Deebo Samuel is back on a one-year deal, and the running joke is "Brock Purdy will throw passes to Mac Jones."
 
-- Why the floor is relatively safe (compared to other sleepers)
-  - High-quality offensive structure: Shanahan offense, CMC utilized heavily (healthy CMC tends to keep SF efficiently scoring and scoring opportunities flowing).
-  - Proven comfort with key weapons when healthy: Kittle, Ayuk and others remain efficient targets; Purdy has already shown they can produce with him in the mix.
-  - Floor from consistency: even with some target-tree volatility, SF’s offense typically sustains a reasonable ceiling for Purdy as a passer.
-
-- Key risk factors and caveats
-  - Receiving corps volatility: Deebo Samuel departure and injuries to Ayuk/Jennings/other coverage pieces could shrink target depth and big-play opportunities.
-  - JuJu Jennings/Jones/Jennings contract/hold-in scenarios: any instability there can disrupt Week-1 chemistry and rhythm.
-  - Checkdown tendency with CMC: more checkdowns and higher green-light checks when CMC is healthy could dampen pure passing ceiling and big-play upside.
-  - Schedule/defensive volatility: while the offense is strong, any string of adverse matchups or injuries on SF can cap weeks.
-  - Mobility/health risk modest: Purdy isn’t a rushing threat like a true dual-threat; rely on passing volume more than rushing for fantasy value.
-
-- Draft/roster strategy implications
-  - 1QB leagues: target Purdy in the middle-to-late rounds if you wait on QB; he’s a risk-managed pick with upside rather than a land-the-elite-QB target.
-  - SuperFlex/2QB: pair Purdy with a true elite QB1 or stack him with a high-floor QB2; he’s a strong buy as a back-end starter in this format.
-  - Auction/value angle: he’s listed among undervalued QBs; consider him as a low-cost QB2 with potential high return.
-  - Contingency planning: have a clear plan for Week 1 if SF’s receiving corps isn’t fully healthy; you may need to pivot to a different offense if circumstances deteriorate early.
-
-- What to monitor in offseason/up to draft
-  - Injury/availability updates for Ayuk, Deebo, and Jennings; incidence of holdouts or contract disputes.
-  - Any reports on SF’s pass-heavy game scripts in camp; early preseason efficiency metrics.
-  - CMC usage trends in August/September; if CMC dominates touches, expect more short-area throws and checkdowns.
-  - Mike Clay or other credible projections confirming Purdy’s passing-yard outlook; a top-2 passing-yard projection would materially boost his fantasy case.
-
-- Bottom line
-  - Purdy is a high-floor, mid-range QB2 with legitimate upside if SF’s passing volume remains strong and the receiver group holds up. He’s best deployed in 2QB/SFlex formats or as a wait-on-QB target in 1QB leagues. Be prepared for weeks where his ceiling is capped if Deebo/Aiyuk aren’t healthy, but he carries hidden upside if the offense clicks and the high-yardage projection materializes.
+**Draft take:** The standard late-QB target. In 1-QB leagues wait and take him as your only quarterback around rounds 8-10; in superflex he's worth going a round early for.

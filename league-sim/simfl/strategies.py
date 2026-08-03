@@ -303,10 +303,83 @@ class PickValueHC(PickValue):
         return super().score(p, rnd, team, state, rng)
 
 
+# --- MockoScience imports (reddit, 2025 PPR study): strategy shapes
+# from their permutation sim, tested here in OUR format (12T STD,
+# RB/WR flex). Their own caveat predicts these lose RB-heavy formats.
+class DualWRRB(DraftStrategy):
+    """Their best PPR strategy: 2 RBs + 2 WRs within the first five
+    picks (rounds 1-5 restricted to RB/WR, max 3 of either)."""
+    name = "dual_wrrb"
+    label = "Dual WR-RB (2+2 by r5)"
+
+    def banned(self, p, rnd, team, state):
+        if rnd <= 5 and (p.pos not in ("RB", "WR")
+                         or team.count_pos(p.pos) >= 3):
+            return True
+        return super().banned(p, rnd, team, state)
+
+
+class ThreePillars(DraftStrategy):
+    """QB + RB + WR, one each, in the first three rounds (any order)."""
+    name = "three_pillars"
+    label = "Three Pillars (QB/RB/WR by r3)"
+
+    def banned(self, p, rnd, team, state):
+        if rnd <= 3 and (p.pos not in ("QB", "RB", "WR")
+                         or team.count_pos(p.pos) >= 1):
+            return True
+        return super().banned(p, rnd, team, state)
+
+
+class Rainbow(DraftStrategy):
+    """QB/WR/RB/TE, one each, in the first four rounds (any order)."""
+    name = "rainbow"
+    label = "Rainbow (QB/WR/RB/TE by r4)"
+
+    def banned(self, p, rnd, team, state):
+        if rnd <= 4 and (p.pos == "K" or team.count_pos(p.pos) >= 1):
+            return True
+        return super().banned(p, rnd, team, state)
+
+
+class HeroWR(DraftStrategy):
+    """Mirror of HeroRB per their definition: one early WR, then a
+    WR desert until the mid rounds."""
+    name = "hero_wr"
+    label = "Hero WR"
+
+    def banned(self, p, rnd, team, state):
+        if rnd == 1 and p.pos != "WR":
+            return True
+        if p.pos == "WR" and 2 <= rnd <= 6:
+            return True
+        return super().banned(p, rnd, team, state)
+
+    def score(self, p, rnd, team, state, rng):
+        s = super().score(p, rnd, team, state, rng)
+        if p.pos == "WR" and rnd > 6 and team.count_pos("WR") < 5:
+            s *= 0.85
+        return s
+
+
+class RobustThenValue(PickValue):
+    """RB-RB-RB skeleton welded onto the wait-cost engine: does forcing
+    robust_rb's opening onto pick_value's mid-round math beat either
+    parent, or is the opening already what the math picks?"""
+    name = "rb3_pv"
+    label = "RB x3, then pick value"
+
+    def banned(self, p, rnd, team, state):
+        if rnd <= 3 and p.pos != "RB":
+            return True
+        return super().banned(p, rnd, team, state)
+
+
 STRATEGIES: dict[str, type] = {
     cls.name: cls for cls in
     (BPA, Family, RobustRB, ZeroRB, HeroRB, EarlyQB, LateQB, PuntTE,
-     WRHeavy, PickValue, PickValueHC)
+     WRHeavy, PickValue, PickValueHC, RobustThenValue,
+     DualWRRB, ThreePillars, Rainbow, HeroWR)
 }
 
 
@@ -359,3 +432,97 @@ STRATEGIES["bench_rb"] = type("BenchRBs", (BenchTilt,), {
     "prefer": "RB", "avoid": "WR", "name": "bench_rb", "label": "Bench: hoard RBs"})
 STRATEGIES["bench_wr"] = type("BenchWRs", (BenchTilt,), {
     "prefer": "WR", "avoid": "RB", "name": "bench_wr", "label": "Bench: hoard WRs"})
+
+
+class SecondArm:
+    """Mixin: force (or forbid) a *second* QB/TE in the late rounds.
+
+    `arms` is a tuple of (pos, round): at the first legal round >= that
+    round the strategy spends the pick on the best remaining player at
+    that position, no matter what the board says. round=None forbids the
+    second one outright, so the bench spot goes to RB/WR instead.
+    `no_before` optionally delays the *first* one (punt-then-darts).
+
+    Deliberately base-agnostic — it overrides `pick`/`banned` and never
+    touches `score` — so the identical intervention can be bolted onto
+    the plain drafter and onto PickValue and compared like for like.
+    """
+    arms: tuple = ()
+    no_before: dict = {}
+
+    def banned(self, p, rnd, team, state):
+        for pos, at in self.arms:
+            if p.pos != pos:
+                continue
+            if team.count_pos(pos) >= 1:
+                return at is None or rnd < at
+        first = self.no_before.get(p.pos)
+        if first is not None and team.count_pos(p.pos) == 0 and rnd < first:
+            return True
+        return super().banned(p, rnd, team, state)
+
+    def pick(self, state, team, rng):
+        rnd = len(team.roster) + 1
+        elig = None
+        for pos, at in self.arms:
+            if at is None or rnd < at or team.count_pos(pos) != 1:
+                continue
+            if elig is None:
+                elig = state.eligible_positions(team)
+            if pos not in elig:
+                continue      # engine says the roster can't afford it yet
+            cands = [p for p in state.available if p.pos == pos]
+            if cands:
+                return cands[0]   # board is already in draft_rank order
+        return super().pick(state, team, rng)
+
+
+def _arm(name: str, label: str, base: type, arms: tuple,
+         no_before: dict | None = None) -> None:
+    STRATEGIES[name] = type(
+        f"Arm_{name}", (SecondArm, base),
+        {"arms": arms, "no_before": no_before or {},
+         "name": name, "label": label})
+
+
+# --- on the plain disciplined drafter (comparable to finding 14) ------
+for _r in (10, 12, 14):
+    _arm(f"te2_r{_r}", f"2nd TE in round {_r}", DraftStrategy, (("TE", _r),))
+    _arm(f"qb2_r{_r}", f"2nd QB in round {_r}", DraftStrategy, (("QB", _r),))
+_arm("te2_never", "Never a 2nd TE", DraftStrategy, (("TE", None),))
+_arm("qb2_never", "Never a 2nd QB", DraftStrategy, (("QB", None),))
+_arm("te_darts", "Punt TE, two late darts", DraftStrategy,
+     (("TE", 12),), {"TE": 10})
+# Same punt, single dart: isolates "delay TE1" from "add a TE2", since
+# te_darts moves both levers at once.
+_arm("te_punt_only", "Punt TE to r10, no 2nd", DraftStrategy,
+     (("TE", None),), {"TE": 10})
+_arm("both_late", "2nd TE r12 + 2nd QB r13", DraftStrategy,
+     (("TE", 12), ("QB", 13)))
+
+# --- the same arms on top of the wait-cost drafter --------------------
+_arm("pv_te2_r12", "PickValue + 2nd TE r12", PickValue, (("TE", 12),))
+_arm("pv_qb2_r12", "PickValue + 2nd QB r12", PickValue, (("QB", 12),))
+_arm("pv_te2_never", "PickValue, never a 2nd TE", PickValue, (("TE", None),))
+_arm("pv_qb2_never", "PickValue, never a 2nd QB", PickValue, (("QB", None),))
+_arm("pv_both", "PickValue + 2nd TE r12 + 2nd QB r13", PickValue,
+     (("TE", 12), ("QB", 13)))
+# PickValue with the early-QB option removed: the wait-cost math still
+# decides *when* after r6, it just can't spend a top-5-round pick there.
+_arm("pv_late_qb", "PickValue, no QB before r6", PickValue, (), {"QB": 6})
+
+
+class _NoWire:
+    """Mixin: same drafter, but never uses the waiver wire. Paired
+    against the stock version this prices the wire in lineup points."""
+
+    def __init__(self, *a, **kw):
+        from .waivers import NoClaims
+        super().__init__(*a, **kw)
+        self.waiver_policy = NoClaims()
+
+
+for _base in (PickValue, RobustRB, BPA):
+    _n = f"{_base.name}_nowire"
+    STRATEGIES[_n] = type(f"NoWire_{_base.__name__}", (_NoWire, _base),
+                          {"name": _n, "label": f"{_base.label} (no waivers)"})

@@ -1,37 +1,11 @@
-Concise notes for David Njoku (CLE) – 2025 fantasy outlook
+**David Njoku** (LAC, TE, bye 7) — board rank 149
 
-- Role/ADP
-  - Position: TE1
-  - ADP: TE11, around 112th overall
+**Room sentiment:** Bearish and low-volume — 27 mentions, almost none about drafting him. He appears mostly as a name in arguments about Ladd McConkey's and Oronde Gadsden's target competition.
 
-- Core sentiment from Reddit/FF Hound
-  - Strongly tied to Joe Flacco starting at QB; viewed as a real lift to Browns pass game
-  - FF Hound pins Njoku as a mover of early-season volume with Flacco at the helm
-  - Njoku is seen as a safer, floor-anchoring option among Browns pass-catchers in the near term
-  - Competing mentions: Loveland/Warren as later-round TE options; Njoku seen as the safer floor pick
+- **He signed with the Chargers, and the room reads it as a role signing.** One poster frames the offseason as "Jim Harbaugh added a fullback, blocking tight end, Njoku." Los Angeles also brought in Charlie Kolar, "who they paid more than both Njoku and Gadsden are making combined, and is probably to be on the field a ton for his blocking."
+- **The direct opinions are negative:** "Njoku looked cooked last year." "Njoku is washed." Multiple posters say they're "not all that worried about Gadsden / Njoku" as competition for the Chargers' receivers — they don't expect real volume.
+- **The crowded room is the structural problem.** McConkey, Quentin Johnston, Harris, Gadsden, Kolar, plus pass-catching backs. One comment: "it's entirely possible that six different guys have 700 yard seasons and no one is top 24 for fantasy."
+- **The only bull framing is narrow:** "an extremely late-round Best Ball pick, because of his potential to randomly post a 2-TD game as a red-zone threat."
+- **Market position:** Hartitz bottom TE tier (one reader would drop him further), ADP 156.
 
-- Why Njoku gains with Flacco
-  - Flacco starting suggests sustained throwing volume (veteran starter profile)
-  - Historical note cited: Flacco starts have produced higher attempts and yardage, translating to 16+ fantasy points per start in those samples
-  - Njoku stands to benefit from predictable target volume in a pass-heavy workload
-
-- Expected fantasy profile (2025)
-  - Early-season floor: elevated by volume expectations; weekly floor likely solid for a TE11-range player
-  - Ceiling: capped by stability of Flacco as starter and Browns’ overall game script; upside mainly from red-zone looks and consistent target volume
-  - Week-to-week volatility remains tied to QB health/role and Browns’ game plan
-
-- Risks and caveats
-  - QB volatility: If Flacco’s role shifts or the offense leans more run-heavy, Njoku’s volume could soften
-  - Offensive efficiency: Flacco’s efficiency and sustainment across the season matter; this is a potential dampener if his play declines
-  - Teammate competition: Jerry Jeudy, Cedric Tillman (and others) could siphon some targets; Njoku’s value hinges on being the primary TE target
-
-- Draft strategy and in-season use
-  - Draft NJOKU around ADP 112 as a reliable TE1 floor with upside if the Browns stay pass-happy
-  - Pairing idea: consider a high-upside TE2 early if you miss top-8 TEs; Njoku provides steadiness to pair with a boom/bust TE2
-  - In-season management: lean on Njoku in Weeks 1–4 to capitalize on early-volume expectations; monitor Flacco’s status and Browns’ game plan to adjust expectations
-  - Trade consideration: if Njoku overperforms early and you own a more crowded TE room, you could leverage him for a ceiling-focused upgrade later in the season
-
-- Bottom line
-  - Realistic play: Njoku is your safer, roughly TE11 floor with meaningful Week-to-Week upside if the Browns maintain a pass-friendly approach under Flacco
-  - Key risk: QB stability and overall Browns offensive efficiency; major upside only if Flacco sustains the volume and the team continues to throw with frequency
-  - Immediate takeaway: target him as a solid early-season anchor at tight end, but don’t overpay for ceiling that relies too heavily on quarterback stability
+**Draft take:** Waiver-wire TE, not a redraft target. Best ball or bye-week fill only, and even there the room expects the Chargers to spread it around.

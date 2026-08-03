@@ -1,44 +1,10 @@
-Jaydon Blue (DAL) – RB, listed as RB2 in depth but backfield is fluid
+**Jaydon Blue** (DAL, RB, bye 14) — board rank 225
 
-Bottom-line takeaway
-- High upside if Miles Sanders is limited or misses time; current camp buzz supports more touches for Blue, but he remains a high-variance, late-round flier in 2025.
+**Room sentiment:** Thin coverage (9 mentions) and mildly positive — no one argues against him, but no one is making a real case either. He's treated as a last-pick name, not a debate.
 
-Concise 2025 outlook
-- Role expectation
-  - Primary hurdle: crowded Cowboys backfield (Javonte Williams, Miles Sanders, Jaydon Blue).
-  - Blue’s best path to fantasy relevance is as a third-down/receiving back or a change-of-pace option; he’s the most intriguing rookie in the group for pass-game use.
-  - Miles Sanders injury bodes well for small-sample opportunity if volatility in the backfield persists; Blue could inherit a larger share if Sanders misses time.
+- **Camp reports are the only substance:** his "speed has been on display so far in Cowboys camp as he appears to be the handcuff to Javonte Williams," and a separate roundup says he "has broken off a couple big runs with the 1st team / Seems to be the RB2 early in camp (has good contingent value)."
+- **The specific path to targets:** one poster notes Javonte was "slowly losing his receiving usage toward the end of the season, and the Cowboys have been very vocal this offseason about Jaydon Blue or Malik Davis stepping into that pass-catching role in 2026." Davis is real competition for that job.
+- **Analyst placement:** Ian Hartitz puts him in handcuff tier 4, "There's a favorite, but we have questions," with the comment "Maybe Jaydon Blue is a thing this year."
+- **Price:** ADP ~227-233 — the 20th round in superflex tables. Named by an Establish The Run analyst as a last-pick dart throw.
 
-- Usage signals from camp/press
-  - Notable: Blue “continues to make noise” and show speed in Cowboys camp; positive signal for workload expansion.
-  - KaVontae Turpin also mixing into backfield reps, which supports the idea of a multi-tool backfield and non-traditional usage for Blue.
-  - General camp buzz aligns with the notion that Blue may command more touches than initially projected.
-
-- Offensive context
-  - Cowboys offense tilted toward passing; backfield roles are typically split, with a potential emphasis on receiving value for a guy like Blue.
-  - CD Lamb and D.J. Moore (and others) soak passing volume; Blue’s ceiling largely tied to receiving/use in offenses’ game plans.
-
-- Floor and ceiling estimates (practical, not guarantees)
-  - Floor: Low-end FLEX in standard formats if Sanders and Williams stay healthy; limited touches (roughly 4–8 per game) with minimal upside.
-  - Best-case ceiling: Moderate RB3 with weekly flex appeal in PPR if he earns 8–12 touches plus 2–4 receptions per game and occasional goal-line work; real breakout requires Sanders to miss time or a larger-than-expected shift in Cowboys’ backfield usage.
-  - Dynasty/long-term: Clear late-round rookie investment with legitimate long-term upside if he can carve out a consistent role behind a veteran-heavy backfield.
-
-- Risk factors
-  - Backfield competition is stiff; early-down work unlikely to be prominent unless injuries.
-  - Cowboys’ scoring/conversion volatility could cap TD upside; heavy passing emphasis could limit rushing TD opportunities.
-  - Injury risk not negligible; any setback could delay or derail a breakout path.
-
-- Draft/roster strategy (actionable)
-  - Redraft: stash in rounds ~10–12 in ESPN/Yahoo/etc. formats; do not reach; treat as a speculative bench utility with upside in the back half of the season.
-  - Best-ball: strong target in late rounds; high-ceiling lottery ticket that can pay off if the backfield shifts.
-  - Dynasty: keep as a hold for 2025–2026+, especially if Sanders’ role wavers or a future opportunity opens.
-  - In-season play: monitor Sanders’ injury status and any backfield depth-chart changes; be ready to pivot to Blue if he earns a larger snap share or if a back exits due to injury.
-
-Key discussion points from the threads
-- Blue is increasingly viewed as a potential up-tick in Cowboys touch-load if current momentum continues and/or Sanders’ knee issue lingers.
-- The Cowboys’ offense is generally pass-heavy; Blue’s value hinges on passing-game usage (PPR upside) rather than routine early-down work.
-- Drafting stance: consensus support for stashing Blue in longer-horizon formats (rookie/second-year upside); not a reliable weekly starter in early 2025 unless backfield changes occur.
-- Competitive context: backfield ambiguity is a recurring theme in these threads; Blue is one of the few in this room with a plausible path to meaningful touches rather than pure handcuff status.
-
-Bottom line
-- Blue is a realistic late-round gamble with meaningful upside if he seizes pass-game opportunities or if Sanders/Williams deal with injury/time share issues. Treat as a high-variance bench stash in redraft; target more aggressively in best-ball and dynasty leagues.
+**Draft take:** Pure final-pick handcuff. Worth the roster spot if you drafted Javonte Williams; otherwise a preseason watch-list name for the pass-catching role.

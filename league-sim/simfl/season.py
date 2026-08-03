@@ -37,14 +37,56 @@ class SeasonResult:
     champion: Team
     transactions: list[tuple]
     slot_points: dict[int, dict[str, float]]  # team idx -> slot -> reg-season pts
+    # Optional (track_wire=True): what the waiver wire was actually
+    # offering. week -> pos -> realized points of the FA a manager would
+    # have claimed for that week, judged on leak-free projection.
+    # 'pre' = before that week's claims resolve (what the front of the
+    # priority queue sees), 'post' = what survives (the back of it).
+    wire_pre: dict[int, dict[str, list]] = field(default_factory=dict)
+    wire_post: dict[int, dict[str, list]] = field(default_factory=dict)
+    wire_size: dict[int, dict[str, int]] = field(default_factory=dict)
+    wire_picks: dict[int, dict[str, str]] = field(default_factory=dict)
+    # week -> team idx in waiver priority order (front of the queue
+    # first). Under reverse_standings the winners are structurally last,
+    # so this is what a good team's wire access actually looks like.
+    waiver_order: dict[int, list[int]] = field(default_factory=dict)
 
     def team_by_strategy(self, name: str) -> list[Team]:
         return [t for t in self.teams if t.strategy.name == name]
 
 
+def wire_snapshot(free_agents: dict, table: ProjectionTable, week: int,
+                  depth: int = 3):
+    """The claimable free agents per position for `week`, chosen the way
+    a manager must (leak-free projection), scored on what they then
+    really did. Only players active that week — you can see the inactive
+    list before claiming.
+
+    Returns the top `depth` realized scores per position, not just the
+    best: the wire is an option, and what matters is how often *any*
+    claimable body is startable, not the average of the pool. `picks`
+    carries the chosen player's id so rest-of-season follow-through
+    (the late-round dart throw) can be scored afterwards.
+    """
+    best: dict[str, list[float]] = {}
+    picks: dict[str, str] = {}
+    size: dict[str, int] = {}
+    by_pos: dict[str, list] = {}
+    for p in free_agents.values():
+        if p.pos in ("QB", "RB", "WR", "TE") and p.played(week):
+            by_pos.setdefault(p.pos, []).append(p)
+    for pos, cands in by_pos.items():
+        cands.sort(key=lambda p: -table.fa_proj(p, week))
+        best[pos] = [c.points(week) for c in cands[:depth]]
+        picks[pos] = cands[0].pid
+        size[pos] = len(cands)
+    return best, picks, size
+
+
 def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
                table: ProjectionTable, rng: random.Random,
-               names: list[str] | None = None) -> SeasonResult:
+               names: list[str] | None = None,
+               track_wire: bool = False) -> SeasonResult:
     assert len(strategies) == league.n_teams
     teams = [Team(idx=i, name=(names[i] if names else f"{s.label} (seat {i+1})"),
                   strategy=s) for i, s in enumerate(strategies)]
@@ -68,6 +110,11 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
     schedule = round_robin(league.n_teams, rng)
     slot_points: dict[int, dict[str, float]] = {t.idx: {} for t in teams}
     transactions: list[tuple] = []
+    wire_pre: dict[int, dict] = {}
+    wire_post: dict[int, dict] = {}
+    wire_size: dict[int, dict] = {}
+    wire_picks: dict[int, dict] = {}
+    waiver_order: dict[int, list] = {}
 
     for week in range(1, league.regular_season_weeks + 1):
         scores = {}
@@ -98,8 +145,18 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
             t.all_play_wins += sum(1 for v in others if scores[t.idx] > v)
             t.all_play_wins += sum(0.5 for v in others if scores[t.idx] == v)
             t.all_play_games += len(others)
-        transactions += run_waivers(waiver_priority(), teams, week, table,
+        if track_wire:
+            pre, picks, size = wire_snapshot(free_agents, table, week + 1)
+            wire_pre[week + 1] = pre
+            wire_picks[week + 1] = picks
+            wire_size[week + 1] = size
+        order = waiver_priority()
+        if track_wire:
+            waiver_order[week + 1] = [t.idx for t in order]
+        transactions += run_waivers(order, teams, week, table,
                                     free_agents, league, rng)
+        if track_wire:
+            wire_post[week + 1] = wire_snapshot(free_agents, table, week + 1)[0]
 
     standings = sorted(teams, key=lambda t: (t.wins + 0.5 * t.ties, t.points_for),
                        reverse=True)
@@ -124,4 +181,6 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
 
     return SeasonResult(teams=teams, standings=standings, playoff_seeds=seeds,
                         champion=champion, transactions=transactions,
-                        slot_points=slot_points)
+                        slot_points=slot_points, wire_pre=wire_pre,
+                        wire_post=wire_post, wire_size=wire_size,
+                        wire_picks=wire_picks, waiver_order=waiver_order)

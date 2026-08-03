@@ -1,11 +1,27 @@
 // Core functionality shared across all draft sites
 
+// Last payload sent per type, so an unchanged scrape costs nothing. The
+// draft rooms mutate on every clock tick, and without this each tick meant a
+// storage write plus a POST, which then re-rendered the whole web app board.
+//
+// Unchanged data is still re-sent every RESEND_MS so that a Go desktop app
+// started *after* the draft page can still catch up.
+const lastSent = new Map();
+const RESEND_MS = 10000;
+
 function sendDataToServer(data) {
+  if (!data || !data.type) return;
+
+  const serialized = JSON.stringify(data.players);
+  const prev = lastSent.get(data.type);
+  if (prev && prev.body === serialized && Date.now() - prev.at < RESEND_MS) return;
+  lastSent.set(data.type, { body: serialized, at: Date.now() });
+
   // Mirror into extension storage so the static web app can read it via
   // bridge.js. Storage persists, so the web app tab does not need to be
   // open while the draft page is scraped.
   try {
-    if (data && data.type && chrome.storage && chrome.storage.local) {
+    if (chrome.storage && chrome.storage.local) {
       chrome.storage.local.set({
         ['ffda_' + data.type]: {
           site: data.site,
@@ -112,17 +128,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Extension is now active on all ESPN Fantasy pages
 console.log('ESPN Fantasy extension loaded on:', window.location.href);
 
-// Debug: Log all ESPN cookies immediately  
-console.log('🔍 Requesting cookies from background script...');
-chrome.runtime.sendMessage({type: "debugCookies"}, function(response) {
-  if (chrome.runtime.lastError) {
-    console.error('❌ Background script error:', chrome.runtime.lastError);
-  } else {
-    console.log('🍪 Debug: All ESPN cookies:', response);
-  }
-});
-
-console.log('🍪 Document cookies:', document.cookie);
+// NOTE: do not log document.cookie or the ESPN cookie jar here. They contain
+// espn_s2 and SWID, which are full session credentials, and the draft-day
+// console is often visible on a shared screen.
 
 // Only start heartbeat and auth monitoring when servers are likely running
 // (This reduces console spam when extension loads)

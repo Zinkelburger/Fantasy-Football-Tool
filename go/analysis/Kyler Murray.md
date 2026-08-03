@@ -1,27 +1,9 @@
-- 2025 outlook (Kyler Murray, ARI, QB1): High ceiling if he returns to dual-threat form and Arizona’s offense clicks; floor remains solid because of rushing ability, but the upside is no guarantee if pass efficiency and rushing volume don’t rebound.
+**Kyler Murray** (MIN, QB, bye 6) — board rank 153
 
-- Consensus/ADP vibe: Often treated as a mid-range QB1 with upside; sleeper value around QB11 in many 1-QB formats (5th–6th round range). Some vibes push him as a steal if he’s healthy and can link with a better supporting cast; others see him as not worth overpaying given newer run-game rules/coach plans.
+**Room sentiment:** The most argued player in this batch — 127 mentions, genuinely split, and loud on both sides. He appears on multiple "do not draft no matter what" lists *and* multiple "hill I'll die on" lists.
 
-- Health and durability: Coming off a major knee injury and a year where he didn’t run as much as in prior seasons. Health status is the biggest swing factor. If mobility returns fully, fantasy ceiling rises meaningfully; if not, rushing floor erodes.
+- **Camp situation:** the Vikings have Murray and JJ McCarthy taking an even split of first-team snaps, and the QB saga "plagued the opening days" of OTAs. The room's read is that McCarthy "has very little chance to win the starting job unless Kyler looks completely incompetent" — but leash length is an open question.
+- **Bull case:** "huge upside versus [cost] and we could easily see a Darnold type year" (65); Murray and Jaxson Dart named as the late QBs who "will easily out produce their draft costs due to their rushing and improved situations" (31); "Kyler is at the best place for him at this point in his career" (10). Minnesota's defense is good and he'll "run the ball 100 times."
+- **Bear case:** he was a top-15 fantasy QB in 0 of 5 full games last season. Recurring criticism of his deep ball and throws over the middle; 10 of Trey McBride's 11 TDs came with Brissett rather than Murray. "His ceiling is so high, but his floor is so low." Sleeper superflex ADP 81.6.
 
-- rushing upside and floor: Murray still carries top-tier rushing potential when healthy (despite reports of lower designed run rate). His rushing produces a reliable floor in fantasy; a top-5 QB rushing year is plausible if mobility returns and offensive design supports it.
-
-- passing/quarterback style: There are concerns about passing efficiency and deep-ball accuracy (historically below-avg deep-throw metrics in some targets/files). In a favorable pass-catch environment (MHJ or other quality weapons), he can still post solid passing numbers, but efficiency hurdles could cap ceiling.
-
-- supporting cast and offense: Arizona’s surrounding cast is a key variable. If MHJ or equivalent weapons produce, Murray’s volume and efficiency could improve. However, there’s risk tied to how the offense is built and how much Murray is asked to throw versus rely on legs.
-
-- Key risk factors to monitor in drafts:
-  - 5th–6th round cost vs safer floor QBs.
-  - Whether the run-heavy ceiling is realistically reachable with current coaching plans.
-  - Ability to sustain passing efficiency (especially on deep throws) with target quality and scheme.
-  - Injury/rehab trajectory and whether he shows mobility/throwing has fully returned in preseason.
-
-- Draft/roster-use guidance:
-  - If you’re prioritizing ceiling in a best-ball or SuperFlex build and can tolerate weeks of mismatch, Murray is an appealing swing-for-the-fences pick around QB11.
-  - If you prefer stability and fewer bust weeks, you may want to wait or pivot to safer mid-range QBs, because the floor while healthy is hinged on rushing and pass efficiency returning.
-  - Pairing tip: if you land MHJ or other high-volume weapons, Murray’s upside heightens; without reliable weapons, his ceiling is more conditional.
-
-- Actionable takeaway:
-  - Target as a late-5th to early-6th round pick in 1-QB leagues or as a SuperFlex option where you can ride a weekly rushing floor with upside.
-  - In drafts, compare him to Fields/ARich and other mobile QBs; if you value perceived safety (healthy rushes, floor), Murray’s still risk-adjusted value may be closer to a 2nd-tier QB1 rather than a top-5 lock.
-  - Monitor preseason indicators: how much he’s using his legs, passing efficiency, and the Cardinals’ offensive setup. A strong preseason showing could push him into “ceiling still intact” territory; a disappointing look could push him toward safer QB2 territory.
+**Draft take:** Only worth it as a late or second QB, which is how the room recommends him — pair him with a floor option rather than starting him alone. The upside argument is real; so is the volatility.

@@ -102,11 +102,20 @@ while Bucky is out. This upgrade compressed every hero's edge by
 |---|---|---|---|---|
 | v1 | original (noise=1×ADP sd, rb_bias 0.88) | rolling priority | EWMA | `results_v1_precalibration/` |
 | v2 | calibrated to real drafts (noise floor 30, rookie 0.95) | reverse-standings + per-seat activity | EWMA | `results_v2_pre_newsread/` |
-| v3 (current) | as v2 | as v2 | EWMA + news promotion | `results/` |
+| v3 | as v2 | as v2 | EWMA + news promotion | `results/` (pre-rerun) |
+| v4 | as v2 | + `done_for_season` cuts | + real Friday injury reports (Q-discount by pos), promotion recalibrated 0.85/0.55/0.30 | (never gridded) |
+| v5 (current) | as v2 | + free-agency pass fills post-waiver holes; no claims on knowably-done players; drops never empty a starting slot; 2 claims name distinct drops | as v4 + EWMA runs over 50/50 actual/expected-points blend (LOO-chosen, `analysis/ep_projections.py`) | `results/` after rerun |
 
 Findings 01–12 cite v1 numbers; orderings replicate in v2/v3 but
 levels differ (e.g. robust_rb .518 → .607 → .598). Rerun any of them
 against `results/` before putting a level (not an ordering) on a slide.
+v5's waiver fixes were driven by three measured artifacts of v3/v4: the
+default policy spent 25% of its claims on players already out for the
+year, a sniped hole claim had no fallback (≈2.6 empty hero starting
+slots a season, mostly TE/K — a real manager just grabs the next name
+in free agency Wednesday), and an upgrade could cut the team's only
+active player at a position. Post-fix: 0% dead claims, 0.03 empty
+slots/season.
 
 ## Reproduce
 

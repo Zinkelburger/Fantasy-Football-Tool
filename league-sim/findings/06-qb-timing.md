@@ -62,6 +62,23 @@ stream the position.
   `venv/bin/python -m simfl.grid --heroes early_qb,late_qb -n 240`,
   `venv/bin/python -m simfl.plots` (fig6).
 
+## Update 2026-08-02 (environment v5, independent confirmation)
+
+The wait-cost drafter (`pick_value`) spends 18% of its first-three
+picks on QB when left alone. Banning that (`pv_late_qb`, no QB before
+r6) moves it +0.005 ± 0.010 in the family room — nothing — which is
+this finding's "fairly priced" claim re-derived from a different
+direction at v5. In the *sharp* room (finding 03) the same ban
+*costs* −0.008: against opponents who don't let QBs slip ~7 picks the
+way the family does, the early-QB option has real value. Both rooms
+agree the late-QB plan is the losing one.
+
+The hindsight-optimal drafts (finding 24, 2026-08-03) explain *why*
+the option prices fairly: the oracle buys the season's actual QB1 in
+rounds 2–3 in 69 of 72 optimal drafts. The right QB is a round-2
+bargain every year — "fairly priced" is entirely a statement about
+not knowing which one it is.
+
 ## Caveats
 
 - Early QB's .592 is *par vs BPA's .591*, not an edge — the finding

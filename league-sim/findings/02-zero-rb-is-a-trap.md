@@ -28,6 +28,33 @@ From the same backtest as finding 01 (environment v3):
 Zero RB per-year: .525, .523, **.618**, .567, .522, .535. Its lone
 good year is 2022 — the RB-bust season its thesis predicts — and even
 then it merely matched plain BPA (.612) while Robust RB fell to .580.
+
+## Update 2026-08-03: the MockoScience imports (environment v5)
+
+A league-mate surfaced the r/fantasyfootball "MockoScience 2025 PPR"
+permutation study; we imported its four named strategies not already
+tested here (their definitions, credited — `DualWRRB`, `ThreePillars`,
+`Rainbow`, `HeroWR` in `simfl/strategies.py`) and ran them in our
+format (12T **STD**, RB/WR flex; v5, n=432 paired vs robust_rb):
+
+| Strategy (their def) | All-play | Titles | paired Δ vs robust_rb |
+|---|---|---|---|
+| Dual WR-RB (2+2 by r5, *their #1*) | .595 | 18% | **−0.016 ± 0.011** |
+| Hero WR | .594 | 22% | −0.017 ± 0.011 |
+| Three Pillars (QB/RB/WR by r3) | .568 | 19% | −0.043 ± 0.013 |
+| Rainbow (QB/WR/RB/TE by r4) | .561 | 12% | **−0.050 ± 0.013** |
+
+Their own caveat ("applicable only to PPR — HPPR results are way more
+RB heavy") is exactly right, one format further: the loss ordering
+tracks how many early picks each shape diverts from the RB curve
+(finding 23's 45%-steeper decay), and Rainbow additionally pays the
+early-TE tax (finding 05). Their #1 PPR strategy is a significant
+loser here. Format is not a detail; it's most of the answer.
+
+Their per-seat claim (slots 1–4 and 10–12 best) is unresolvable at
+this sample (36–72 leagues/seat, se ≈ .015): the family-null room
+shows no seat effect beyond noise, robust_rb hints late-middle seats —
+proper test remains backlog B8.
 One vindicating year in six, and the vindication was a tie with
 having no thesis at all.
 

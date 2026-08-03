@@ -16,12 +16,28 @@ from .models import PlayerSeason, Team
 EWMA_ALPHA = 0.35       # weight on the newest game
 PRIOR_GAMES = 5         # observed games until the prior mostly fades
 
+# The EWMA runs over a 50/50 blend of actual points and opportunity-
+# based EXPECTED points (nflverse ff_opportunity rescored to league
+# rules): usage is stickier than TD luck. Chosen leave-one-year-out on
+# lineup regret (analysis/ep_projections.py): w=0.5 picked in 4/6
+# held-out years, saving ~71 league-wide lineup points a season vs
+# actual-only; the surface is flat for w in [0.25, 0.75]. Weeks with no
+# EP row (kickers, 10% coverage gaps) fall back to actual.
+EP_WEIGHT = 0.5
 
 FA_PRIOR = 2.5          # skeptical prior for judging free agents
 
-NEWS_PROMOTE = 0.75     # a promoted backup RB projects at this share of
-                        # the sidelined starter's projection ("everyone
-                        # reads the injury news"), for rosters and FAs
+# A promoted backup RB projects at max(his own EWMA, k * the sidelined
+# starter's projection) — "everyone reads the injury news" — for
+# rosters and FAs. k is calibrated per absence length so that the
+# estimator is unbiased against the backup's actual scoring over 577
+# real promotion weeks 2020-2025 (analysis/validate_promote.py):
+# fresh news is worth most, and by week 4 of an absence the backup's
+# own tape has priced it (the level ratios decay 1.00 / 0.83 / 0.66,
+# but max() inflation pushes the zero-bias k lower).
+NEWS_PROMOTE_WK1 = 0.85
+NEWS_PROMOTE_WK23 = 0.55
+NEWS_PROMOTE_LONG = 0.30
 STARTER_ADP_CUTOFF = 120  # only real starters generate promotion news
 
 
@@ -44,7 +60,9 @@ class ProjectionTable:
                     fa_row[w] = min(blend * ewma + (1 - blend) * FA_PRIOR, row[w])
                 if w in p.week_pts:
                     pts = p.week_pts[w]
-                    ewma = pts if not seen else EWMA_ALPHA * pts + (1 - EWMA_ALPHA) * ewma
+                    x = ((1 - EP_WEIGHT) * pts
+                         + EP_WEIGHT * p.week_ep.get(w, pts))
+                    ewma = x if not seen else EWMA_ALPHA * x + (1 - EWMA_ALPHA) * ewma
                     seen += 1
             self._proj[p.pid] = row
             self._fa[p.pid] = fa_row
@@ -64,13 +82,21 @@ class ProjectionTable:
             starter = rbs[0]
             if starter.adp is None or starter.adp > STARTER_ADP_CUTOFF:
                 continue
+            spell = 0
             for w in range(1, max_week + 1):
                 if starter.played(w):
+                    spell = 0
                     continue
+                if starter.on_bye(w):
+                    continue
+                spell += 1
                 cuff = next((p for p in rbs[1:] if p.played(w)), None)
                 if cuff is None:
                     continue
-                val = NEWS_PROMOTE * self._proj[starter.pid][w]
+                k = (NEWS_PROMOTE_WK1 if spell == 1
+                     else NEWS_PROMOTE_WK23 if spell <= 3
+                     else NEWS_PROMOTE_LONG)
+                val = k * self._proj[starter.pid][w]
                 if val > self._proj[cuff.pid][w]:
                     self._proj[cuff.pid][w] = val
                 if val > self._fa[cuff.pid][w]:
@@ -88,18 +114,35 @@ class ProjectionTable:
         by observed availability (recent DNPs that weren't byes), floored
         by pedigree — managers remember why they drafted someone and
         don't cut a slow-starting early pick for a scrub."""
+        if p.done_for_season(week - 1):
+            return 0.0  # knowably out for the year: the spot is dead
         v = self.proj(p, week)
         misses = sum(1 for w in range(max(1, week - 2), week)
                      if not p.played(w) and not p.on_bye(w))
         return max(v * (1.0, 0.75, 0.45)[min(misses, 2)], 0.6 * p.prior_ppg)
 
 
+# Managers discount a player carrying a Questionable tag when choosing
+# between close lineup calls: expected points of Q-tagged players vs
+# their own healthy baseline, 2018-2025, n=991 played-while-listed
+# weeks (analysis/injury_model.py). QBs play through at nearly full
+# value; TEs degrade most.
+Q_DISCOUNT = {"QB": 0.90, "RB": 0.90, "WR": 0.80, "TE": 0.75}
+
+
 def set_lineup(team: Team, week: int, table: ProjectionTable,
                league: LeagueConfig) -> tuple[dict[str, list[PlayerSeason]], float]:
-    """Greedy best-projection lineup among players active this week.
-    Returns ({slot: players}, actual_points_scored)."""
+    """Greedy best-projection lineup among players active this week,
+    Questionable tags discounted. Returns ({slot: players}, actual pts)."""
+
+    def eff(p: PlayerSeason) -> float:
+        v = table.proj(p, week)
+        if p.week_status.get(week) == "Questionable":
+            v *= Q_DISCOUNT.get(p.pos, 1.0)
+        return v
+
     active = [p for p in team.roster if p.played(week)]
-    active.sort(key=lambda p: -table.proj(p, week))
+    active.sort(key=lambda p: -eff(p))
     used: set[str] = set()
     lineup: dict[str, list[PlayerSeason]] = {}
     for pos, n in league.starters.items():

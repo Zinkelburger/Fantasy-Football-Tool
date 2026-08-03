@@ -14,8 +14,9 @@ observed points, so nobody peeks at the future.
 import polars as pl
 
 from .config import POSITIONS, ScoringConfig
-from .data import (load_adp, load_rookie_years, load_schedule_byes,
-                   load_weekly, norm_name)
+from .data import (load_adp, load_expected_points, load_injury_reports,
+                   load_rookie_years, load_schedule_byes, load_weekly,
+                   norm_name)
 from .models import PlayerSeason
 
 
@@ -97,6 +98,11 @@ def build_pool(year: int, sc: ScoringConfig) -> list[PlayerSeason]:
                 bye=byes.get(d["team"], 0), week_pts=d["weeks"])
 
     players = list(pool.values())
+    reports = load_injury_reports(year)
+    epts = load_expected_points(year)
+    for p in players:
+        p.week_status = reports.get(p.pid, {})
+        p.week_ep = epts.get(p.pid, {})
     players.sort(key=lambda p: (p.adp if p.adp is not None else 9999,
                                 -prev_tot.get(p.pid, 0.0), p.name))
     curve = _ppg_curve(prev)

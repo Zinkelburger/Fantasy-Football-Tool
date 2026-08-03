@@ -1,30 +1,11 @@
-Here's the concise, actionable 2025 outlook for Malik Nabers (NYG, WR1) based on the Reddit threads and FF Hound input you provided.
+**Malik Nabers** (NYG, WR, bye 8) — board rank 35
 
-- 2025 fantasy role and upside
-  - Likely weekly target driver if healthy and if he earns a clearWR1-type role on NYG; ceiling resembles a high-end WR2 with spike-game weeks in a plus Giants pass offense.
-  - Rich Hribar’s takeaway (Antonio Brown-like upside) is the key sentiment driving his upside narrative. Safe floor is lower; big-boom potential exists if he commands 20%+ of targets and 2nd/3rd reads get open.
+**Room sentiment:** Deeply divided and by far the most-discussed player in this group (193 mentions). Every camp update moves his price, and the split is entirely about the knee, not the talent.
 
-- Injury and availability risk
-  - Camp/injury chatter: Nabers has missed time with a minor back issue (described as normal camp tightness); some chatter about toe/hip-type concerns and occasional turf/shoulder chatter elsewhere in mixed posts. Expect narrow early-season risk; monitor for practice updates.
-  - Any actual decline in Week 1 readiness or early-season limitation could cap early-season output and push Nabers toward a slippery start.
+- Injury facts as reported: torn ACL **and a full lateral meniscus repair** in the right knee in Week 4 last season, surgery in late October plus a clean-up procedure this spring — two surgeries. He **avoided the camp PUP list** and has been running, cutting, running routes and doing individual drills. Harbaugh said he's on schedule but gave no guarantee.
+- Timeline is contested. The Athletic's Dan Duggan calls it "fair to be optimistic" for Week 1 on a reduced early-camp workload; Raanan speculated he could miss the first 4-5 games. A well-upvoted skeptic notes this injury usually needs 6-8 weeks of NFL ramp-up.
+- Bull case: little target competition (Isaiah Likely, Darnell Mooney), a rookie-year target share cited as high as 30-40%, and "70% of Nabers is enough for a WR1 season." Several say a healthy Nabers belongs at the 1/2 turn and expect his price to climb.
+- Bear case beyond health: **Matt Nagy as OC** is the most-repeated non-injury concern, plus Dart's low passing volume. He appears repeatedly on do-not-draft lists.
+- ADP is moving: consensus average rank 33.33, Sleeper 4.03 (43.5), with some reporting he fell to them in the 5th.
 
-- Offensive context and competition
-  - Giants QB situation: Consensus noise suggests Russell Wilson as the likely Week 1 starter with Daniel Jones not in the mix; this is a stable but not explosive passing attack, which caps ceiling unless Nabers earns a true top-two target share.
-  - Competition for targets: Posts imply relatively less competition for targets than some other WRs, but the Giants have emerging options; Nabers’ value hinges on earning a primary or near-primary target share rather than being a floor-rocket in a crowded room.
-
-- ADP and sentiment signals
-  - Market view: Nabers is being drafted around late 1st into early 2nd in many mocks, and in some auction dynamics he sits around high-end WR2 value (e.g., 8th in one mock). The room sees upside but remains wary of injury risk and offense ceiling.
-  - General comp picks: Dave’s approach leans toward Nabers as upside at the end of a build, often alongside Nico Collins as a safe late-round target. The consensus sentiment is still “upside play,” not a lock-startable WR1.
-
-- Draft strategy takeaways
-  - If you can stomach the injury risk and the week-to-week volatility, Nabers is a strong late-round upside target or a best-ball stash.
-  - Pairing strategy: consider Nabers with Nico Collins (as Dave did) or another mid-round target to mitigate risk and secure a high-upside pair.
-  - In redraft, don’t reach; if Nabers slides, add him as a bench swing at the end of the draft, not as a starting-week-one anchor.
-  - In auction formats, Nabers sits as a high-upside mid-range pick; use him as a value-target if his price remains reasonable relative to ceiling.
-
-- When to move on Nabers in-season
-  - If Nabers practices fully and shows a strong connection with Wilson early in camp/preseason, his likelihood of a solid target share increases; push him up slightly.
-  - If back/toe/shoulder chatter persists or he misses multiple practices, treat him as risk-managed—prefer safer upside with a clearer path (e.g., a Nico Collins-type late-round pick) and avoid overpaying.
-
-- Bottom-line verdict
-  - Nabers is a high-upside, risk-adjusted play for 2025. He won’t be a safe week-to-week WR1, but in the right lineup (late-round add, or bench with weeks where Giants pass volume spikes) he can deliver league-winning upside. Monitor camp updates closely; his value hinges on securing a primary target role and staying healthy.
+**Draft take:** A price question, not a talent question. At round 4-5 the median case is worth it; at the 2/3 turn you're paying for health nobody can confirm. Check practice reports the week of your draft.

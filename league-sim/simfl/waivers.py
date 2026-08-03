@@ -1,10 +1,17 @@
-"""Waiver-wire policies and the rolling-priority claim processor.
+"""Waiver-wire policies and the claim processor.
 
 After each week's games every team may submit ranked claims (add, drop).
 Claims resolve in priority order; a successful claim sends that team to
-the back of the line (ESPN rolling priority). The free-agent pool is
-whatever no simulated team rosters — so 'can I stream a TE?' is answered
-by the sim itself, not by assumption.
+the back of the line for the rest of that run. The order itself is
+supplied by season.py per LeagueConfig.waiver_mode: the Sumfun default
+"reverse_standings" rebuilds it worst-record-first every week (ESPN
+waiverOrderReset=True), so contenders are structurally last in line for
+the breakout claims; "rolling" persists one order across weeks. After
+claims resolve, unclaimed players revert to first-come free agency and
+teams fill any still-empty lineup slot from the pool (as on ESPN, where
+a sniped claim just means grabbing the next name Wednesday). The
+free-agent pool is whatever no simulated team rosters — so 'can I
+stream a TE?' is answered by the sim itself, not by assumption.
 """
 
 import random
@@ -25,17 +32,44 @@ class WaiverPolicy:
     projection upgrades over the worst bench player."""
 
     upgrade_threshold = 3.0   # projected ppg edge required to bother
+    uses_free_agency = True   # grabs a body midweek if a slot is empty
 
-    def droppable(self, team: Team, week: int, table: ProjectionTable) -> list[PlayerSeason]:
+    def _opens_hole(self, team, week, drop, league) -> bool:
+        """Would cutting him leave a next-week starting slot short(er)?
+        Nobody cuts their only active TE. Exact for a single flex group:
+        a removal hurts iff his position — or the shared flex pool — has
+        no spare active body."""
+        if not drop.played(week + 1):
+            return False
+        active: dict[str, int] = {}
+        for p in team.roster:
+            if p.played(week + 1):
+                active[p.pos] = active.get(p.pos, 0) + 1
+        if active.get(drop.pos, 0) <= league.starters.get(drop.pos, 0):
+            return True
+        if drop.pos in league.flex_positions:
+            bodies = sum(active.get(fp, 0) for fp in league.flex_positions)
+            need = (sum(league.starters[fp] for fp in league.flex_positions)
+                    + league.starters.get("FLEX", 0))
+            if bodies <= need:
+                return True
+        return False
+
+    def droppable(self, team: Team, week: int, table: ProjectionTable,
+                  league: LeagueConfig) -> list[PlayerSeason]:
         """Roster sorted worst-first by keep value, respecting early-pick
-        loyalty (nobody cuts their 3rd-rounder in week 2)."""
+        loyalty (nobody cuts their 3rd-rounder in week 2) and never
+        offering a player whose exit would empty a starting slot."""
         cands = []
         for p in team.roster:
             draft_round = team.drafted_round.get(p.pid, 99)
-            if week <= LOYALTY_WEEKS and draft_round <= EARLY_ROUND_LOYALTY:
+            if (week <= LOYALTY_WEEKS and draft_round <= EARLY_ROUND_LOYALTY
+                    and not p.done_for_season(week)):
                 continue
             if p.pos == "K":
                 continue  # kickers swap only via hole-fixing
+            if self._opens_hole(team, week, p, league):
+                continue
             cands.append(p)
         cands.sort(key=lambda p: table.keep_value(p, week + 1))
         return cands
@@ -46,20 +80,20 @@ class WaiverPolicy:
             if not pool:
                 continue
             add = max(pool, key=lambda p: table.fa_proj(p, week + 1))
-            drop = self._hole_drop(team, week, table, pos)
+            drop = self._hole_drop(team, week, table, pos, league)
             if drop is not None:
                 claims.append((add, drop))
 
-    def _hole_drop(self, team, week, table, pos):
+    def _hole_drop(self, team, week, table, pos, league):
         if pos == "K":
             ks = [p for p in team.roster if p.pos == "K"]
             if ks:
                 return min(ks, key=lambda p: table.keep_value(p, week + 1))
-        drops = self.droppable(team, week, table)
+        drops = self.droppable(team, week, table, league)
         return drops[0] if drops else None
 
     def upgrades(self, team, week, table, fa_by_pos, league) -> list[tuple]:
-        drops = self.droppable(team, week, table)
+        drops = self.droppable(team, week, table, league)
         if not drops:
             return []
         floor_val = table.keep_value(drops[0], week + 1)
@@ -68,11 +102,17 @@ class WaiverPolicy:
             if team.count_pos(pos) >= POS_CAPS[pos]:
                 continue
             for p in fa_by_pos.get(pos, [])[:12]:
+                if p.done_for_season(week):
+                    continue  # the news says out for the year: not a claim
                 gain = table.fa_proj(p, week + 1) - floor_val
                 if gain > self.upgrade_threshold:
                     cands.append((gain, p))
         cands.sort(key=lambda t: -t[0])
-        return [(p, drops[0]) for _, p in cands[:MAX_CLAIMS]]
+        # Distinct drops so both claims can clear in one run (an ESPN
+        # claim names its drop; pairing both with the same body silently
+        # voids the second).
+        return [(p, drops[i]) for i, (_, p) in enumerate(cands[:MAX_CLAIMS])
+                if i < len(drops)]
 
     def desired_claims(self, team: Team, week: int, table: ProjectionTable,
                        fa_by_pos: dict[str, list[PlayerSeason]],
@@ -89,7 +129,15 @@ class WaiverPolicy:
 # (46 adds in 3 of 6 years) churns 3x more than seats 3 and 7.
 SEAT_SEASON_ADDS = [30.8, 30.0, 18.0, 12.3, 23.2, 39.7,
                     24.0, 12.0, 21.3, 15.7, 14.7, 25.8]
-_FULL_ACTIVITY_ADDS = 34.0  # adds/season a trait-1.0 chaser produces
+# Scale mapping a seat's real adds to its weekly chase probability.
+# Honesty note: the raw counters include D/ST and kicker streaming the
+# sim doesn't roster, and one waiver run per week at MAX_CLAIMS=2 caps
+# realized churn regardless of trait (a trait-1.0 chaser lands ~13-17
+# adds/season in-sim vs ~150/league realized total). So the traits are
+# faithful RELATIVE pressure, not absolute counts; any error leaves the
+# rival room too passive, which makes hero-facing wire values upper
+# bounds.
+_FULL_ACTIVITY_ADDS = 34.0
 
 
 class PointsChaser(WaiverPolicy):
@@ -114,7 +162,7 @@ class PointsChaser(WaiverPolicy):
         self._fix_holes(team, week, table, fa_by_pos, league, claims)
         if rng.random() >= min(self._trait(team), 1.0):
             return claims[:MAX_CLAIMS]
-        drops = self.droppable(team, week, table)
+        drops = self.droppable(team, week, table, league)
         if not drops:
             return claims[:MAX_CLAIMS]
         floor_val = table.keep_value(drops[0], week + 1)
@@ -135,6 +183,17 @@ class PointsChaser(WaiverPolicy):
         picks.sort(key=lambda t: -t[0])
         claims += [(p, drops[i]) for i, (_, p) in enumerate(picks)]
         return claims[:MAX_CLAIMS]
+
+
+class NoClaims(WaiverPolicy):
+    """Never touches the wire. Exists to price it: run the same drafter
+    with and against this and the difference in lineup points IS what
+    the waiver wire is worth over a season."""
+
+    uses_free_agency = False
+
+    def desired_claims(self, team, week, table, fa_by_pos, league, rng):
+        return []
 
 
 class Streamer(WaiverPolicy):
@@ -158,7 +217,7 @@ class Streamer(WaiverPolicy):
                 if mine and team.count_pos(self.pos) >= POS_CAPS[self.pos]:
                     drop = min(mine, key=lambda p: table.keep_value(p, week + 1))
                 else:
-                    drops = self.droppable(team, week, table)
+                    drops = self.droppable(team, week, table, league)
                     drop = drops[0] if drops else None
                 if drop is not None:
                     claims.append((add, drop))
@@ -202,5 +261,34 @@ def run_waivers(priority: list[Team], teams: list[Team], week: int,
             priority.remove(t)
             priority.append(t)
         if not moved:
+            break
+
+    # Waivers clear midweek; the pool then reverts to first-come free
+    # agency. Nobody real fields an empty lineup slot because their one
+    # claim got sniped Wednesday — they grab the next body. Priority
+    # order stands in for reaction speed.
+    for _pass in range(3):
+        filled = False
+        for t in priority:
+            pol = t.strategy.waiver_policy
+            if not pol.uses_free_agency:
+                continue
+            for pos in lineup_holes(t, week + 1, league):
+                cands = [p for p in free_agents.values()
+                         if p.pos == pos and p.played(week + 1)]
+                if not cands:
+                    continue
+                add = max(cands, key=lambda p: table.fa_proj(p, week + 1))
+                drop = pol._hole_drop(t, week, table, pos, league)
+                if drop is None:
+                    continue
+                t.roster.remove(drop)
+                t.roster.append(add)
+                del free_agents[add.pid]
+                free_agents[drop.pid] = drop
+                t.moves += 1
+                log.append((week, t, add, drop))
+                filled = True
+        if not filled:
             break
     return log

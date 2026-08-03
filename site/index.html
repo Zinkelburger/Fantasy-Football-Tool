@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Film-Free Football Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="site-header">
+    <a class="brand" href="#/">
+      <span class="brand-dot"></span> The Film-Free Football Lab
+    </a>
+    <nav id="site-nav">
+      <a href="#/" data-route="home">Home</a>
+      <a href="#/weekly" data-route="weekly">Weekly</a>
+      <a href="#/board" data-route="board">2026 Board</a>
+      <a href="#/blog" data-route="blog">Research</a>
+      <a href="#/draft" data-route="draft" class="nav-draft">Draft Tool</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================= HOME -->
+    <section id="view-home" class="view">
+      <div class="hero">
+        <h1>Projections with receipts.</h1>
+        <p class="tagline">Every ranking on this site comes from a model
+        that was backtested before it was believed — and every method is
+        published in full. No film takes, no vibes, no hedging.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#/weekly">This week's boards</a>
+          <a class="btn" href="#/blog">Read the research</a>
+        </div>
+      </div>
+
+      <div class="cards">
+        <a class="card" href="#/board">
+          <h3><span class="pill pill-board">Draft</span> 2026 season board</h3>
+          <p>A ridge-regression projection over 8 seasons of data —
+          usage, TD luck, age, draft capital, salary structure. It
+          out-ranks the ADP consensus at QB, WR and TE, and says so
+          with confidence intervals.</p>
+          <span class="card-stat">+.08 Spearman vs ADP</span>
+        </a>
+        <a class="card" href="#/weekly">
+          <h3><span class="pill pill-weekly">Weekly</span> Full-position boards</h3>
+          <p>Skill positions from a validated weekly model; D/ST and
+          kicker streaming straight from the one number that matters —
+          the Vegas line — plus the few tiebreaks that survived testing.</p>
+          <span class="card-stat">QB .43 · RB .63 · D/ST .30 rank corr</span>
+        </a>
+        <a class="card" href="#/blog">
+          <h3><span class="pill pill-research">Research</span> The findings</h3>
+          <p>28 numbered findings with methodology and honest caveats:
+          what actually wins drafts, which folklore survives testing,
+          and which popular stats are noise.</p>
+          <span class="card-stat">28 findings · 6 simulated seasons</span>
+        </a>
+        <a class="card" href="#/draft">
+          <h3><span class="pill pill-draft">Live</span> Draft assistant</h3>
+          <p>The full-screen draft-day tool: live board, value alerts,
+          pick sync. Opens in distraction-free mode — you'll want the
+          whole screen.</p>
+          <span class="card-stat">launches full screen →</span>
+        </a>
+      </div>
+
+      <div class="strip">
+        <div><b>Honesty policy</b> — a model that fails a backtest gets
+        published anyway, labeled as a null. Roughly a third of our
+        findings are things that <i>don't</i> work: WR/CB matchup data,
+        team Elo for season projections, "injury-prone" labels.</div>
+      </div>
+    </section>
+
+    <!-- ============================================= WEEKLY -->
+    <section id="view-weekly" class="view" hidden>
+      <div class="view-head">
+        <h2>Weekly boards</h2>
+        <span id="weekly-label" class="dim"></span>
+      </div>
+      <div class="tabs" id="weekly-tabs">
+        <button data-tab="dst" class="tab pos-dst active">D/ST</button>
+        <button data-tab="k" class="tab pos-k">K</button>
+        <button data-tab="skill" class="tab">QB / RB / WR / TE</button>
+      </div>
+      <div id="weekly-dst" class="tab-pane">
+        <p class="blurb">Ranked by <b>opponent implied total</b> — worth
+        .304 within-week rank correlation on its own; everything else
+        anyone tells you about D/ST streaming adds ≤.005
+        (<a href="#/blog/27-dst-model">finding 27</a>).</p>
+        <div class="tbl"><table id="dst-table"></table></div>
+      </div>
+      <div id="weekly-k" class="tab-pane" hidden>
+        <p class="blurb">Ranked by <b>own-team implied total</b> with a
+        dome bump. The kicker himself barely matters — stream the
+        situation (<a href="#/blog/28-kicker-model">finding 28</a>).</p>
+        <div class="tbl"><table id="k-table"></table></div>
+      </div>
+      <div id="weekly-skill" class="tab-pane" hidden>
+        <div class="empty-state">
+          <h3>Skill-position boards go live with the season</h3>
+          <p>The weekly model needs two weeks of current-season form
+          (it blends trailing production with usage-based expected
+          points, opponent strength and the Vegas total). First boards
+          post September 2026 — with movement reasons.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= BOARD -->
+    <section id="view-board" class="view" hidden>
+      <div class="view-head">
+        <h2>2026 season board</h2>
+        <span class="dim">returning players · model v1 · rookies via ADP
+        until the rookie model ships</span>
+      </div>
+      <div class="tabs" id="board-tabs"></div>
+      <div class="tbl"><table id="board-table"></table></div>
+      <h3 class="sub-head">Market environment — what Vegas already thinks
+        of every 2026 offense</h3>
+      <p class="blurb">Implied points per game across all 272 games of
+      the 2026 schedule (consensus of ~9 books, snapshot Aug 2026).
+      Use it as draft-day context: a top-5 environment lifts every
+      pass-catcher in it.</p>
+      <div class="tbl half"><table id="market-table"></table></div>
+    </section>
+
+    <!-- ============================================= BLOG -->
+    <section id="view-blog" class="view" hidden>
+      <div class="view-head"><h2>Research</h2>
+        <span class="dim">newest first · confidence labels are earned,
+        not vibes</span></div>
+      <div id="blog-list"></div>
+    </section>
+
+    <section id="view-post" class="view" hidden>
+      <a class="back" href="#/blog">← all research</a>
+      <article id="post-body" class="post"></article>
+    </section>
+
+    <!-- ============================================= DRAFT -->
+    <section id="view-draft" class="view" hidden>
+      <iframe id="draft-frame" title="Draft assistant"></iframe>
+      <a href="#/" id="draft-exit" title="Exit the draft tool">✕ exit</a>
+    </section>
+
+  </main>
+
+  <footer id="site-footer">
+    <span>Built on public data — nflverse, OverTheCap, FFC ADP, Vegas
+    lines. Methods credited: Kapania (2012), subvertadown, nfelo,
+    MockoScience.</span>
+    <span class="dim">No accounts. No ads. No film.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,5 +1,13 @@
 // Sleeper Draft Assistant functionality
 
+function debounce(fn, wait) {
+  let timer = null;
+  return function () {
+    clearTimeout(timer);
+    timer = setTimeout(fn, wait);
+  };
+}
+
 function extractSleeperAvailablePlayers() {
   const playerElements = document.querySelectorAll('.player-rank-item2 .name-wrapper');
   const playerNames = Array.from(playerElements).map(el => {
@@ -26,8 +34,9 @@ function startObserverFor(selector, callback) {
     // Run the callback once immediately to get the initial data.
     callback();
 
-    // Create an observer that will run the callback whenever the target's children change.
-    const observer = new MutationObserver(callback);
+    // Create an observer that will run the callback whenever the target's
+    // children change, debounced so a burst of mutations costs one scrape.
+    const observer = new MutationObserver(debounce(callback, 250));
     observer.observe(targetNode, { childList: true, subtree: true });
     console.log(`Observer started for: ${selector}`);
   } else {

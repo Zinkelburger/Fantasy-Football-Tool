@@ -1,40 +1,11 @@
- concise notes for Nico Collins (Houston) – 2025 fantasy outlook
+**Nico Collins** (HOU, WR, bye 8) — board rank 26
 
-- Role/expectation
-  - Clear WR1 for C.J. Stroud; main outside target in a rising passing attack.
-  - OC change to Nick Caley ( Rams background) expected to bolster the air game and route concepts; more volume possible.
+**Room sentiment:** Quietly bullish, and the room knows the market isn't with it — the loudest line is "Nico Collins only trails Puka in yards per route run over the last three seasons and it's like none of you even care."
 
-- Target share & efficiency
-  - High-efficiency profile: 3.0+ Yards per Route Run in each of the last two seasons (rare feat; one of the few to do it twice).
-  - Estimated 22–28% of team targets if Houston passes at a solid volume; target range roughly 100–125 looks if offense improves.
-  - Low-to-mid risk of being surplus to a crowdedWR room this year, but Collins has shown per-route value that sustains fantasy output.
+- Hartitz tier 2 ("overall WR1 upside") with Jefferson, AJ Brown, Lamb and London. Consensus average rank 24.67, ADP ~27.7, projected 1,074.5 yards; goes 3.05 in a 12-man superflex sample.
+- Even the fade-article writers concede the player: "elite talent and target hog," "an elite WR for three years straight, is very talented and still young."
+- The bear case is entirely C.J. Stroud. One ranker's full comment: "16 Nico Collins (no clue how Stroud will be this year)." Another explains the apathy directly: "we remember JJ McCarthy would have been an upgrade over CJ Stroud in the playoffs."
+- Secondary risk is target erosion — Jayden Higgins is drawing early camp targets and is being called Houston's clear WR2, and Tank Dell is returning.
+- Value framing recurs: "extreme value pick... could easily be better than the likes of AJ Brown." One skeptic notes that stripping his last two games leaves him WR31.
 
-- Surrounding cast & competition
-  - Robbie/rookie risk: Dell rehabbing; two rookies (Jayden Higgins, Jaylin Noel) add depth but not proven Week 1 producers.
-  - chatter/consensus notes a potential second starter alongside Collins (some talk of Christian Kirk as a Co-1), but Collins remains the top target in most plans; expect two-wide sets with Collins plus another outside option.
-
-- Realistic production range
-  - Targets: 100–125
-  - Receiving yards: 900–1100
-  - TDs: 5–9
-  - Floor: 70–90 receptions for 800–900+ yards if efficiency dips or offense stalls
-  - Ceiling: 110+ receptions in a fully healthy, high-volume pass year
-
-- Injury/availability risk
-  - Missed meaningful time in prior seasons; still carries some risk of missed games/components if the offense stalls or players ahead of him re-emerge.
-
-- Draft strategy & roster fit
-  - ADP/usage: Late First Round pick (around 1.12 in a 12-team format) as a high-upside WR1 option.
-  - Value perspective: Not “no-brainer” elite; but a realistic, high-floor WR1 with upside if Caley’s system boosts pass volume.
-  - Pairing notes: Consider pairing with a high-volume late-round target (e.g., Malik Nabers or other high-target players) to balance risk; Collins + Nabers/J. Higgins/J. Noel stack potential depends on draft plan.
-
-- Sentiment & chatter
-  - Positive but not reckless: Stroud calling him a “unicorn” and some analysts listing him as a top-5 WR in certain rankings; a positive signal of upside.
-  - Some market chatter about a “two-TE/WR” approach in Houston could cap ceilings if volume doesn’t rise as expected; still, Collins is the safest anchor among Texans receivers.
-
-- Immediate red flags to monitor
-  - Met expectations hinge on Houston increasing pass volume and OC/system stability.
-  - If Dell returns fully and rookies contribute immediately, Collins’ share could be pressured; otherwise he should remain the primary target.
-
-Bottom line
-- Realistic 2025 outlook: solid to strong WR1 with multi-week upside if the offense improves; safe floor with high per-route efficiency but not a slam-dunk elite ceiling. Target around 1.12 in drafts as a high-upside anchor if you’re chasing volume and efficiency leverage.
+**Draft take:** A late-second/early-third target where you pay for the receiver and discount the quarterback. If he slides past the other tier-2 WRs, take him.
