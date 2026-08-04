@@ -16,13 +16,13 @@ What it writes:
 1. data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — ESPN_Rank and Sleeper_Rank
    columns only. Rank / Player / Team / Bye / POS are never touched:
    Rank is OUR board, this script only refreshes the market columns.
-2. league-sim/data/market/adp_2026.csv — tracked snapshot joining all
-   three sources by player, consumed by site/build_site.py for the
+2. engine/league-sim/data/market/adp_2026.csv — tracked snapshot joining
+   all three sources by player, consumed by site/build_site.py for the
    model-vs-market view.
 
 Run it, eyeball the diff, then rebuild + redeploy:
 
-    python3 update_ranks.py
+    python3 engine/update_ranks.py
     python3 build_deploy.py         # rebundles webapp + site data
     git add -A && git commit        # Cloudflare Pages redeploys on push
 
@@ -36,9 +36,10 @@ import sys
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 RANKS = ROOT / "data" / "ranks"
-SNAPSHOT = ROOT / "league-sim" / "data" / "market" / "adp_2026.csv"
+SNAPSHOT = HERE / "league-sim" / "data" / "market" / "adp_2026.csv"
 
 SEASON = 2026
 UA = {"User-Agent": "Mozilla/5.0 (foss.football rank refresh; github.com/Zinkelburger/Fantasy-Football-Tool)"}

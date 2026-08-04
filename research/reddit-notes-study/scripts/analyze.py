@@ -3,7 +3,7 @@
 Reads data/joined_{year}.csv (prep_data.py) and data/sentiment_scores.csv
 (LLM scoring step, see scoring_prompt.md). Writes the full merged dataset
 to data/final_dataset.csv and prints the statistics that back README.md:
-  ../../league-sim/venv/bin/python analyze.py > ../results/correlation_output.txt
+  ../../../engine/league-sim/venv/bin/python analyze.py > ../results/correlation_output.txt
 
 Core design: 'value' = positional market rank minus positional finish
 rank, so value > 0 means the player BEAT his draft cost. Any real edge

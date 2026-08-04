@@ -4,7 +4,7 @@
 # work. Season note: bump the cron to daily in the two weeks before Labor
 # Day — that's when ADP moves fastest.
 #
-# Optional: delete this file if you'd rather run `python3 update_ranks.py`
+# Optional: delete this file if you'd rather run `python3 engine/update_ranks.py`
 # by hand before drafts.
 name: refresh-ranks
 
@@ -25,12 +25,12 @@ jobs:
         with:
           python-version: "3.12"
       - name: Refresh ranks from public APIs
-        run: python3 update_ranks.py
+        run: python3 engine/update_ranks.py
       - name: Commit if anything moved
         run: |
           git config user.name "rank-refresh-bot"
           git config user.email "actions@github.com"
-          git add data/ranks/*.csv league-sim/data/market/adp_2026.csv
+          git add data/ranks/*.csv engine/league-sim/data/market/adp_2026.csv
           git diff --cached --quiet && echo "no ADP movement" && exit 0
           git commit -m "data: refresh ESPN/Sleeper/FFC ranks ($(date -u +%F))"
           git push

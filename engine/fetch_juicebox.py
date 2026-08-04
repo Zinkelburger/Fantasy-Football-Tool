@@ -6,11 +6,11 @@ Both sheets are public, so this needs no auth or API key — Google's
 
 The sheets are updated through the preseason (they carry their own
 "Date of Last Update" cell, which this records), so re-run before drafting.
-See ../DATA-SOURCES.md for the links and staleness policy.
+See ../docs/DATA-SOURCES.md for the links and staleness policy.
 
 Usage:
-    python scripts/fetch_juicebox.py                 # -> data/juicebox/<year>/
-    python scripts/fetch_juicebox.py --year 2027
+    python engine/fetch_juicebox.py                  # -> data/juicebox/<year>/
+    python engine/fetch_juicebox.py --year 2027
 """
 
 import argparse

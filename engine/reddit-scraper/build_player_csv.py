@@ -2,7 +2,7 @@
 """Season checklist step 1: turn a FantasyPros overall-ADP export into
 
   1. combined_with_depth.csv  — input for the scraper/matcher (this dir)
-  2. ../data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — board CSVs for the
+  2. ../../data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — board CSVs for the
      draft tool (columns: Rank,Player,Team,Bye,POS,ESPN_Rank,Sleeper_Rank)
 
 FantasyPros 2026 format: Rank,"Player (Bye)",POS,Sleeper,RTSports,AVG,Real-Time
@@ -22,7 +22,7 @@ import re
 import pandas as pd
 
 HERE = pathlib.Path(__file__).resolve().parent
-BOARD_DIR = HERE.parent / "data" / "ranks"
+BOARD_DIR = HERE.parent.parent / "data" / "ranks"
 OUT = HERE / "combined_with_depth.csv"
 
 # board file -> the JuiceBoxOne scoring-format label used in its filename

@@ -17,14 +17,15 @@ every hero faces the IDENTICAL sequence of rooms and the per-sim paired
 delta vs bpa is exact. (rand_10 draws RNG, breaking pairing slightly —
 its CI is still valid, just not variance-reduced.)
 
-Run:  ../../league-sim/venv/bin/python mock_drafts.py 240 > ../results/mock_draft_output.txt
+Run:  ../../../engine/league-sim/venv/bin/python mock_drafts.py 240 > ../results/mock_draft_output.txt
 """
 import sys, json, re, unicodedata
 from pathlib import Path
 import pandas as pd
 
 STUDY = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(STUDY.parent / "league-sim"))
+ROOT = STUDY.parent.parent  # research/reddit-notes-study -> repo root
+sys.path.insert(0, str(ROOT / "engine" / "league-sim"))
 DATA = STUDY / "data"
 
 from simfl import strategies as st

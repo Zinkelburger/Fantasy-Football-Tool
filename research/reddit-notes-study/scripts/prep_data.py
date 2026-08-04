@@ -5,12 +5,12 @@ Inputs (already in the repo):
   archive/2025/go/analysis/*.md      LLM-summarized outlooks, one player per file
   archive/2024/ADR.csv               2024 preseason ADP board
   archive/2025/go/std_with_depth.csv 2025 preseason consensus rank (ESPN+Sleeper)
-  league-sim/data/weekly_{y}.parquet  actual weekly stat lines (nflverse)
+  engine/league-sim/data/weekly_{y}.parquet  actual weekly stat lines (nflverse)
 
 Output: data/joined_{year}.csv - one row per note file with market rank,
 actual season points (ESPN standard scoring, weeks 1-17), and positional
 finish. Run with league-sim's venv (needs pandas + pyarrow):
-  ../../../league-sim/venv/bin/python prep_data.py
+  ../../../engine/league-sim/venv/bin/python prep_data.py
 """
 import pandas as pd, os, re, unicodedata
 from pathlib import Path
@@ -26,7 +26,7 @@ def norm(name):
     return re.sub(r"\s+", " ", n).strip()
 
 def season_points(year):
-    w = pd.read_parquet(ROOT / f"league-sim/data/weekly_{year}.parquet")
+    w = pd.read_parquet(ROOT / f"engine/league-sim/data/weekly_{year}.parquet")
     w = w[w["week"] <= 17].copy()
     fg_pts = (3*(w.fg_made_0_19 + w.fg_made_20_29 + w.fg_made_30_39)
               + 4*w.fg_made_40_49 + 5*(w.fg_made_50_59 + w.fg_made_60_)

@@ -50,14 +50,14 @@ Draft Tool iframe) — reload the unpacked extension after pulling.
 ## Refresh data
 
 ```bash
-python3 update_ranks.py      # (repo root) pull current ESPN/Sleeper/FFC
-                             # ranks into go/*.csv + the ADP snapshot
-python3 site/build_site.py   # rebuild this site's JSON from tracked files
+python3 engine/update_ranks.py  # (repo root) pull current ESPN/Sleeper/FFC
+                                # ranks into data/ranks/*.csv + ADP snapshot
+python3 site/build_site.py      # rebuild this site's JSON from tracked files
 ```
 
-Reads (all tracked in-repo): `league-sim/data/market/
+Reads (all tracked in-repo): `engine/league-sim/data/market/
 model_board_2026.csv`, `implied_2026.csv`, `games.csv` (week-1 lines),
-and `league-sim/findings/NN-*.md`. Re-run after a model refresh or a
+and `engine/league-sim/findings/NN-*.md`. Re-run after a model refresh or a
 new finding. In-season, the weekly builder extends to skill positions
 (SITE_PLAN items 2–3).
 

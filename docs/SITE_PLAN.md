@@ -13,10 +13,10 @@ below draws on some mix of:
 
 | family | signals | status |
 |---|---|---|
-| Production & usage | weekly stats, usage-based expected points, targets/carries, snap trends (nflverse) | HAVE — league-sim/data, EP blend validated (finding 26: usage is the #1 weekly signal) |
+| Production & usage | weekly stats, usage-based expected points, targets/carries, snap trends (nflverse) | HAVE — engine/league-sim/data, EP blend validated (finding 26: usage is the #1 weekly signal) |
 | Market | game lines → implied totals (weekly env), player props (in-season player prior), ADP (draft market), preseason team environment | HAVE lines 1999-2025 + live via Odds API (.env key); props tool ready, posts Sept; historical props behind $59 one-month plan |
 | Context | injuries/status, depth charts, weather, team ratings (own Elo/SRS, nfelo), QB-Elo, salary/contracts, draft capital | HAVE historical; need in-season weekly refresh |
-| Narrative | reddit/blogs/podcasts scraped + LLM-summarized | PARTIAL — reddit-scraper/ exists; reddit-notes-study verdict: tone adds NO projection edge over ADP. Use for *explanations*, not numbers |
+| Narrative | reddit/blogs/podcasts scraped + LLM-summarized | PARTIAL — engine/reddit-scraper/ exists; research/reddit-notes-study verdict: tone adds NO projection edge over ADP. Use for *explanations*, not numbers |
 
 Key architecture rule learned from the findings: **the projection
 engine and the narrative engine are separate systems.** Numbers come
@@ -27,7 +27,7 @@ projection input, because we measured that it isn't one.
 
 ## Product → engine mapping
 
-1. **Draft assist tool** — season board (league-sim
+1. **Draft assist tool** — season board (engine/league-sim
    `analysis/player_model.py`, beats ADP at QB/WR/TE, +stack at RB) +
    wait-cost pick logic (`PickValue`, finding 23 slope logic) + rules
    from findings (QB by r6, TE discipline, K last). Prior art: legacy
@@ -53,7 +53,7 @@ projection input, because we measured that it isn't one.
 
 ## Gaps, prioritized
 
-1. **K + DST models — BOTH DONE** (league-sim findings 27/28).
+1. **K + DST models — BOTH DONE** (engine/league-sim findings 27/28).
    DST: opponent implied total = .304 within-week rank corr,
    everything else adds ≤.005. K: .186 ceiling, kicker's own history
    worth .079 — stream win prob + dome/wind + coach FG-tendency.
@@ -63,7 +63,7 @@ projection input, because we measured that it isn't one.
    nothing new to build, just wiring.
 3. **Rookie season model** (blocks 4): draft capital + landing spot;
    backlogged as finding-25 caveat.
-4. **Narrative engine** (blocks 3's reasons, 5): reddit-scraper +
+4. **Narrative engine** (blocks 3's reasons, 5): engine/reddit-scraper +
    podcast/blog feeds → per-player weekly summary via LLM batch.
    Explicitly NOT a projection input.
 5. **Accuracy harness**: score our weekly/season lists against

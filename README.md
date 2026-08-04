@@ -15,22 +15,35 @@ Website: [draftassistant.football](https://draftassistant.football/)
 | `webapp/` | the draft tool — static web app, deployed to draftassistant.football |
 | `site/` | foss.football — weekly rankings, 2026 board, research posts |
 | `chrome-extension/` | tracks your live draft and syncs picks into the tool ([Chrome store](https://chromewebstore.google.com/detail/draft-assistant-player-ex/neakbjfmpdmpnibgjeljflnmionbjidi)) |
-| `league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
+| `engine/` | everything that produces numbers and notes (see below) |
 | `data/` | shared data: `ranks/` board CSVs, `notes/` per-player summaries, `juicebox/` external rankings |
-| `reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes |
 | `research/` | one-off studies: kicker/DST/injury prediction, opportunity scores, the reddit-notes backtest |
 | `archive/` | superseded code — the original Go desktop tool, the 2024 Python tool, season snapshots |
+| `docs/` | `DATA-SOURCES.md` (external feeds + staleness) and `SITE_PLAN.md` (the six products) |
 | `build_deploy.py` | rebuilds webapp + site data bundles and assembles `public/` for Cloudflare Pages |
-| `update_ranks.py` | refreshes ESPN/Sleeper/FFC market ranks (also runs twice weekly via GitHub Actions) |
 
-`DATA-SOURCES.md` tracks every external data feed and when it was last
-fetched — check it before a draft. `SITE_PLAN.md` maps the six planned
-products onto the stats engine.
+Inside `engine/`:
+
+| path | what it is |
+|---|---|
+| `engine/league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
+| `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes |
+| `engine/update_ranks.py` | refreshes ESPN/Sleeper/FFC market ranks (also runs twice weekly via GitHub Actions) |
+| `engine/fetch_juicebox.py` | pulls the JuiceBoxOne ranking sheets into `data/juicebox/<year>/` |
+
+`docs/DATA-SOURCES.md` tracks every external data feed and when it was
+last fetched — check it before a draft.
+
+`build_deploy.py` and `public/` are pinned to the repo root: the
+Cloudflare Pages project sets `python3 build_deploy.py` as its build
+command and `public` as its output directory, and those settings live in
+the Pages dashboard rather than in this repo. Moving either one breaks
+the deploy.
 
 ## Generating notes
 
 The note for each player is generated with the scripts in
-`reddit-scraper/` — see its README for the season checklist. The finished
+`engine/reddit-scraper/` — see its README for the season checklist. The finished
 notes land in `data/notes/` and are bundled into the webapp by
 `webapp/build_data.py`.
 

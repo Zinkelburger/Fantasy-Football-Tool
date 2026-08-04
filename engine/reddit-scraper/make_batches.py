@@ -15,7 +15,7 @@ import re
 HERE = pathlib.Path(__file__).resolve().parent
 DOSSIERS = HERE / "corpus" / "dossiers"
 OUT_DIR = HERE / "markdown_data"
-BOARD = HERE.parent / "data" / "ranks" / "std_with_depth.csv"
+BOARD = HERE.parent.parent / "data" / "ranks" / "std_with_depth.csv"
 
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$", re.IGNORECASE)
 

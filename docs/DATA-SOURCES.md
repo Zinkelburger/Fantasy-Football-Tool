@@ -32,7 +32,7 @@ exact fetch date and each sheet's own self-reported update date.
   ADP and a VALUE column. The **`Combined` tab** is the useful one: one row
   per player with team, bye, ESPN/Sleeper/Yahoo ranks and all three
   projections side by side.
-- **Used by:** `league-sim/analysis/compare_juicebox.py` — an outside
+- **Used by:** `engine/league-sim/analysis/compare_juicebox.py` — an outside
   projection to sanity-check our own model against. Not a model input;
   it is a second opinion.
 - **Coverage:** 167 players (30 QB / 57 RB / 60 WR / 20 TE).
@@ -43,7 +43,7 @@ exact fetch date and each sheet's own self-reported update date.
 Both are public, so no auth, no API key, no manual download:
 
 ```bash
-python scripts/fetch_juicebox.py --year 2026
+python engine/fetch_juicebox.py --year 2026
 ```
 
 It pulls every tab of both workbooks via Google's `/export?format=xlsx`
@@ -51,9 +51,9 @@ endpoint, writes them to `data/juicebox/2026/juicebox_*.csv`, and rewrites
 `data/juicebox/2026/SOURCES.json` with the fetch date. Then rebuild the boards:
 
 ```bash
-cd reddit-scraper
-python build_player_csv.py FantasyPros_2026_Overall_ADP_Rankings.csv --juicebox ../data/juicebox/2026
-python ../webapp/build_data.py
+cd engine/reddit-scraper
+python build_player_csv.py FantasyPros_2026_Overall_ADP_Rankings.csv --juicebox ../../data/juicebox/2026
+python ../../webapp/build_data.py
 ```
 
 **Staleness policy:** these sheets are edited through the preseason
@@ -66,34 +66,34 @@ suspect during August; re-fetch the morning of a draft.
   export button; the file lands as `FantasyPros_<year>_Overall_ADP_Rankings.csv`)
 - **Gives us:** the board ordering (`AVG` ADP), team, **bye week**, position,
   and a Sleeper ADP column. Manual download — not scripted.
-- **Used by:** `reddit-scraper/build_player_csv.py`, which produces both
-  `reddit-scraper/combined_with_depth.csv` (scraper input) and the three
+- **Used by:** `engine/reddit-scraper/build_player_csv.py`, which produces both
+  `engine/reddit-scraper/combined_with_depth.csv` (scraper input) and the three
   `data/ranks/*_with_depth.csv` board files.
 - **Caveat:** the 2026 export carries Sleeper / RTSports / Real-Time columns
   but **no ESPN column** — that is why source 1 above is required.
-- **Last downloaded: 2026-08-03** (`reddit-scraper/FantasyPros_2026_Overall_ADP_Rankings.csv`).
+- **Last downloaded: 2026-08-03** (`engine/reddit-scraper/FantasyPros_2026_Overall_ADP_Rankings.csv`).
 
 ## 4. r/fantasyfootball corpus
 
 - **Gives us:** the per-player draft notes in `data/notes/*.md`.
-- **Refresh:** `cd reddit-scraper && python fetch_corpus.py && python match_players.py`
-  (~4 minutes, needs Reddit API creds in `.env`; see `reddit-scraper/README.md`).
+- **Refresh:** `cd engine/reddit-scraper && python fetch_corpus.py && python match_players.py`
+  (~4 minutes, needs Reddit API creds in `.env`; see `engine/reddit-scraper/README.md`).
 - **Not committed** — Reddit's API terms don't allow republishing scraped
   comments, and this repo is public. Only the generated summaries ship.
 - **Last swept: 2026-08-03** — 280 posts, 22,878 comments, 60-day window.
 
-## 5. nflverse / Odds API (league-sim only)
+## 5. nflverse / Odds API (engine/league-sim only)
 
 Historical stats, injuries, depth charts, contracts and betting lines used
-by the simulation and projection work. See `league-sim/findings/METHODS.md`.
+by the simulation and projection work. See `engine/league-sim/findings/METHODS.md`.
 The Odds API key lives in `.env`, never in the repo.
 
 ---
 
 ## How our model and JuiceBoxOne's projections compare
 
-Checked 2026-08-03 via `league-sim/analysis/compare_juicebox.py`, against
-`league-sim/data/market/model_board_2026.csv`:
+Checked 2026-08-03 via `engine/league-sim/analysis/compare_juicebox.py`, against
+`engine/league-sim/data/market/model_board_2026.csv`:
 
 | position | n | rank correlation |
 |---|---|---|

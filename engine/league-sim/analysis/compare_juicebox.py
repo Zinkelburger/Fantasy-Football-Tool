@@ -24,8 +24,9 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="pandas")
 warnings.filterwarnings("ignore", message=".*ChainedAssignment.*")
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+REPO = ROOT.parent.parent  # engine/league-sim -> repo root
 OURS = ROOT / "data" / "market" / "model_board_2026.csv"
-THEIRS = ROOT.parent / "2026" / "data" / "juicebox_cheatsheet_Combined.csv"
+THEIRS = REPO / "data" / "juicebox" / "2026" / "juicebox_cheatsheet_Combined.csv"
 ADP = ROOT / "data" / "market" / "adp_2026.csv"
 
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$", re.IGNORECASE)

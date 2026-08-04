@@ -15,11 +15,11 @@ scripts/analyze.py        correlation study                       -> results/cor
 scripts/mock_drafts.py    2,400-season mock-draft backtest        -> results/mock_draft_output.txt
 ```
 
-All scripts run with `league-sim/venv/bin/python`.
+All scripts run with `engine/league-sim/venv/bin/python`.
 
 ## Step 1 — ground truth (prep_data.py)
 
-- **Actual results**: `league-sim/data/weekly_{year}.parquet` (nflverse),
+- **Actual results**: `engine/league-sim/data/weekly_{year}.parquet` (nflverse),
   weeks 1–17, ESPN standard scoring (0.04/pass yd, 4 pass TD, −2 INT,
   0.1/rush+rec yd, 6 TD, −2 fumble, distance-scored kickers, no PPR) —
   the family league's format. Season total points and positional finish

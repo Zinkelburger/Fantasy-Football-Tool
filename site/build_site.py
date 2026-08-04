@@ -1,10 +1,10 @@
 """Build the static site's data files from repo outputs.
 
 Inputs (all tracked in the repo):
-- league-sim/data/market/model_board_2026.csv  -> board.json
-- league-sim/data/market/implied_2026.csv      -> market.json
-- league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
-- league-sim/findings/NN-*.md                  -> blog.json
+- engine/league-sim/data/market/model_board_2026.csv  -> board.json
+- engine/league-sim/data/market/implied_2026.csv      -> market.json
+- engine/league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
+- engine/league-sim/findings/NN-*.md                  -> blog.json
 
 Run: python3 site/build_site.py   (stdlib only; re-run after any model
 refresh or new finding)
@@ -16,8 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
-MKT = ROOT / "league-sim" / "data" / "market"
-FINDINGS = ROOT / "league-sim" / "findings"
+MKT = ROOT / "engine" / "league-sim" / "data" / "market"
+FINDINGS = ROOT / "engine" / "league-sim" / "findings"
 
 TEAMS = {
     "ARI": "Cardinals", "ATL": "Falcons", "BAL": "Ravens", "BUF": "Bills",
