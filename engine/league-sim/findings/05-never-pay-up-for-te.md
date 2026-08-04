@@ -5,11 +5,13 @@ drafts agree). **Medium** for the trend claim (three recent seasons).
 
 ## TL;DR
 
-Every season, half or more of the rest-of-season top-8 TEs cost a
-round-8+ pick or nothing. But the *free-agent-only* version of the
-punt is decaying: FA TEs in the ROS top-8 went **3, 2, 3** in 2020–22,
-then **0, 1, 0** in 2023–25. Verdict: take your TE in round 10+;
-stream only when he busts; never draft one early.
+Every season, half or more of the year's top-8 tight ends cost a
+round-8-or-later pick — or nothing at all. So never spend an early
+pick on one. One update, though: the extreme version (draft no TE,
+live off free agents) is drying up — undrafted TEs cracking the
+top-8 went **3, 2, 3** in 2020–22, then **0, 1, 0** in 2023–25.
+Verdict: take your TE in round 10+, hit the wire only if he busts,
+and never pay up.
 
 ## The data
 

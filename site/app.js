@@ -38,34 +38,97 @@ function route() {
   if (view !== "post") window.scrollTo(0, 0);
 }
 
-/* ------------------------------------------------------------ weekly */
+/* Hover copy for the weekly tables. Every number here is a measured
+   effect from the K/DST findings, not a rule of thumb — keep them in
+   sync with findings 27 and 28 if either model is refit. */
+const WHY = {
+  oppImp: "Points Vegas expects the opponent to score — lower is better. "
+    + "This one number does about 97% of the work: each point off the "
+    + "opponent's total is worth about +0.38 D/ST points (finding 27).",
+  stream:
+    "Top-3 matchup this week. Picking defenses by opponent total ranks "
+    + "them more than twice as well as going by how good the defense is "
+    + "(.30 vs .13) — so stream the matchup, don't hold a name (finding 27).",
+  ownImp: "Points Vegas expects this kicker's own offense to score — "
+    + "higher is better. Kickers score when their team moves the ball and "
+    + "wins; the kicker's own history predicts almost nothing (finding 28).",
+  dome: "Indoors: no wind, no weather. Worth about +0.7 points to a kicker "
+    + "in our model — small, but it is the second-biggest thing we can see "
+    + "after how much the offense is expected to score. Wind costs about "
+    + "−0.5 (finding 28).",
+};
+
+/* ------------------------------------------------------------ weekly
+   Rows can be marked "taken" (rostered in your league) or "mine"
+   (on your team) by clicking; marks persist in localStorage. */
+const MARKS_KEY = "ffMarks";
+let marks = {};
+try { marks = JSON.parse(localStorage.getItem(MARKS_KEY)) || {}; } catch { /* fresh */ }
+
+function saveMarks() {
+  localStorage.setItem(MARKS_KEY, JSON.stringify(marks));
+}
+
+function cycleMark(key) {
+  const order = [undefined, "taken", "mine"];
+  const next = order[(order.indexOf(marks[key]) + 1) % order.length];
+  if (next) marks[key] = next; else delete marks[key];
+  saveMarks();
+}
+
+function applyWeeklyFilters() {
+  const q = document.getElementById("weekly-search").value.trim().toLowerCase();
+  const hideTaken = document.getElementById("weekly-hide-taken").checked;
+  document.querySelectorAll("#view-weekly tbody tr[data-mark-key]")
+    .forEach(row => {
+      const state = marks[row.dataset.markKey];
+      row.classList.toggle("is-taken", state === "taken");
+      row.classList.toggle("is-mine", state === "mine");
+      row.querySelector(".mark-cell").innerHTML = state
+        ? `<span class="mark-chip ${state}">${state}</span>` : "";
+      row.hidden = (q && !row.dataset.search.includes(q))
+        || (hideTaken && state === "taken");
+    });
+}
+
 let weeklyDone = false;
 async function renderWeekly() {
   const w = await data("weekly");
   document.getElementById("weekly-label").textContent = w.label;
-  if (weeklyDone) return;
+  if (weeklyDone) { applyWeeklyFilters(); return; }
   weeklyDone = true;
+
+  const rowAttrs = (tab, r) =>
+    `data-mark-key="${tab}:${r.team}"
+     data-search="${`${r.team} ${r.opp}`.toLowerCase()}"
+     title="Click to mark: taken → mine → clear"`;
 
   const dst = document.getElementById("dst-table");
   dst.innerHTML =
     `<thead><tr><th class="rank">#</th><th>Defense</th><th>vs</th>
-     <th class="num">Opp implied</th><th></th></tr></thead><tbody>` +
+     <th class="num" title="${WHY.oppImp}">Opp implied</th>
+     <th></th><th class="mark-col"></th></tr></thead><tbody>` +
     w.dst.map((r, i) =>
-      `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b></td>
+      `<tr ${rowAttrs("dst", r)}><td class="rank">${i + 1}</td>
+       <td><b>${r.team}</b></td>
        <td>${r.home ? "" : "@ "}${r.opp}</td>
        <td class="num ${r.imp <= 18.5 ? "up" : ""}">${r.imp.toFixed(1)}</td>
-       <td>${i < 3 ? '<span class="tag up">stream</span>' : ""}</td></tr>`
+       <td>${i < 3 ? `<span class="tag up" title="${WHY.stream}">stream</span>` : ""}</td>
+       <td class="mark-cell"></td></tr>`
     ).join("") + "</tbody>";
 
   const k = document.getElementById("k-table");
   k.innerHTML =
     `<thead><tr><th class="rank">#</th><th>Kicker slot</th><th>vs</th>
-     <th class="num">Own implied</th><th></th></tr></thead><tbody>` +
+     <th class="num" title="${WHY.ownImp}">Own implied</th>
+     <th></th><th class="mark-col"></th></tr></thead><tbody>` +
     w.k.map((r, i) =>
-      `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b> K</td>
+      `<tr ${rowAttrs("k", r)}><td class="rank">${i + 1}</td>
+       <td><b>${r.team}</b> K</td>
        <td>${r.home ? "" : "@ "}${r.opp}</td>
        <td class="num">${r.imp.toFixed(1)}</td>
-       <td>${r.dome ? '<span class="tag dome">dome</span>' : ""}</td></tr>`
+       <td>${r.dome ? `<span class="tag dome" title="${WHY.dome}">dome</span>` : ""}</td>
+       <td class="mark-cell"></td></tr>`
     ).join("") + "</tbody>";
 
   document.getElementById("weekly-tabs").addEventListener("click", e => {
@@ -77,10 +140,55 @@ async function renderWeekly() {
       document.getElementById(`weekly-${pane}`).hidden =
         pane !== b.dataset.tab;
     }
+    // The shared toolbar only applies to table panes.
+    document.getElementById("weekly-tools").hidden = b.dataset.tab === "skill";
   });
+
+  document.getElementById("view-weekly").addEventListener("click", e => {
+    const row = e.target.closest("tr[data-mark-key]");
+    if (!row) return;
+    cycleMark(row.dataset.markKey);
+    applyWeeklyFilters();
+  });
+
+  document.getElementById("weekly-search")
+    .addEventListener("input", applyWeeklyFilters);
+  document.getElementById("weekly-hide-taken")
+    .addEventListener("change", applyWeeklyFilters);
+  document.getElementById("weekly-clear").addEventListener("click", () => {
+    marks = {};
+    saveMarks();
+    applyWeeklyFilters();
+  });
+
+  applyWeeklyFilters();
 }
 
 /* ------------------------------------------------------------- board */
+function applyBoardSearch() {
+  const q = document.getElementById("board-search").value.trim().toLowerCase();
+  document.querySelectorAll("#board-table tbody tr").forEach(row => {
+    row.hidden = q && !row.dataset.search.includes(q);
+  });
+}
+
+/* Scoring formats. The board is a separate model fit per format, and
+   the ADP column is that format's ADP — so the two columns compare
+   like with like.
+
+   `flag` is the points-per-game gap that earns a bounce-back / come-down
+   tag. It rises with the format because PPR inflates every receiver's
+   PPG, and a 2-point move should mean the same thing on all three. */
+const FORMATS = [
+  { key: "std", label: "STD", note: "Standard — no points for catches",
+    flag: 2.0 },
+  { key: "half", label: "0.5 PPR", note: "Half PPR — 0.5 points per catch",
+    flag: 2.5 },
+  { key: "ppr", label: "PPR", note: "Full PPR — 1 point per catch",
+    flag: 3.0 },
+];
+const FMT_KEY = "ffScoring";
+
 let boardDone = false;
 async function renderBoard() {
   if (boardDone) return;
@@ -88,19 +196,32 @@ async function renderBoard() {
   const board = await data("board");
   const market = await data("market");
   const tabs = document.getElementById("board-tabs");
+  const fmtTabs = document.getElementById("board-scoring");
   const order = ["RB", "WR", "QB", "TE"];
-  tabs.innerHTML = order.map((p, i) =>
-    `<button class="tab pos-${p.toLowerCase()}${i === 0 ? " active" : ""}"
+  const avail = FORMATS.filter(f => board[f.key]);
+  if (!avail.length) return;          // board data not built yet
+  let fmt = localStorage.getItem(FMT_KEY);
+  if (!avail.some(f => f.key === fmt)) fmt = avail[0].key;
+  let pos = "RB";
+
+  fmtTabs.innerHTML = avail.map(f =>
+    `<button class="tab fmt${f.key === fmt ? " active" : ""}"
+      data-fmt="${f.key}" title="${f.note}">${f.label}</button>`).join("");
+  tabs.innerHTML = order.map(p =>
+    `<button class="tab pos-${p.toLowerCase()}${p === pos ? " active" : ""}"
       data-pos="${p}">${p}</button>`).join("");
 
-  const draw = pos => {
+  const draw = () => {
+    const { note, flag } = avail.find(f => f.key === fmt);
     const t = document.getElementById("board-table");
     t.innerHTML =
       `<thead><tr><th class="rank">#</th><th>Player</th>
-       <th class="num">Proj PPG</th><th class="num">2025 PPG</th>
-       <th class="num" title="Position rank by current draft market (Sleeper standard ADP)">ADP</th>
-       <th class="num">Age</th><th class="num">Cap %</th></tr></thead><tbody>` +
-      board[pos].map((r, i) => {
+       <th class="num" title="What our model expects him to average per game across the 2026 regular season (${note})">2026 proj PPG</th>
+       <th class="num" title="What he actually averaged per game in 2025 (${note})">2025 PPG</th>
+       <th class="num" title="Position rank by current draft market — Sleeper ADP for this same scoring format (${note})">ADP</th>
+       <th class="num">Age</th>
+       <th class="num" title="Share of the team's salary cap — teams play the players they pay">Cap %</th></tr></thead><tbody>` +
+      board[fmt][pos].map((r, i) => {
         const d = r.pred - r.ppg25;
         // Market delta: how many spots later the market drafts this player
         // than we rank him. +n (green) = the market is sleeping on him.
@@ -112,24 +233,41 @@ async function renderBoard() {
                   : `market drafts him ${-md} spots earlier than our rank`}">(${md > 0 ? "+" : ""}${md})</span>`
               : ""}`
           : "—";
-        return `<tr><td class="rank">${i + 1}</td><td><b>${r.name}</b>
-          ${Math.abs(d) > 2 ? `<span class="tag ${d > 0 ? "up" : "down"}">
-          ${d > 0 ? "▲ buys the bounce" : "▼ fades the spike"}</span>` : ""}</td>
+        return `<tr data-search="${r.name.toLowerCase()}">
+          <td class="rank">${i + 1}</td><td><b>${r.name}</b>
+          ${Math.abs(d) > flag ? `<span class="tag ${d > 0 ? "up" : "down"}"
+          title="${d > 0
+            ? "model projects a jump from last season"
+            : "model projects a drop from last season"}">
+          ${d > 0 ? "▲ bounce back" : "▼ come down"}</span>` : ""}</td>
           <td class="num"><b>${r.pred.toFixed(1)}</b></td>
           <td class="num">${r.ppg25.toFixed(1)}</td>
           <td class="num">${mkt}</td>
           <td class="num">${r.age ?? "—"}</td>
           <td class="num">${r.cap ? r.cap.toFixed(1) : "—"}</td></tr>`;
       }).join("") + "</tbody>";
+    applyBoardSearch();
   };
-  draw("RB");
+  draw();
   tabs.addEventListener("click", e => {
     const b = e.target.closest("button[data-pos]");
     if (!b) return;
     tabs.querySelectorAll(".tab")
       .forEach(t => t.classList.toggle("active", t === b));
-    draw(b.dataset.pos);
+    pos = b.dataset.pos;
+    draw();
   });
+  fmtTabs.addEventListener("click", e => {
+    const b = e.target.closest("button[data-fmt]");
+    if (!b) return;
+    fmtTabs.querySelectorAll(".tab")
+      .forEach(t => t.classList.toggle("active", t === b));
+    fmt = b.dataset.fmt;
+    localStorage.setItem(FMT_KEY, fmt);
+    draw();
+  });
+  document.getElementById("board-search")
+    .addEventListener("input", applyBoardSearch);
 
   document.getElementById("market-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Team</th>

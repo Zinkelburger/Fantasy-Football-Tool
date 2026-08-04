@@ -6,12 +6,13 @@ discipline gap — do not quote them as QB effects.
 
 ## TL;DR
 
-Eight otherwise-identical strategies that differ only in the earliest
-round they'll take a QB: performance peaks at **rounds 4–6**, is
-nearly flat from 2–8, and decays once you wait past round 10. Reaching
-round 2–3 costs ~1 point of all-play vs waiting for 4–6; waiting to 12
-costs ~4. The family's own real-life median (QB1 in round 5) is —
-annoyingly for the presentation — exactly right.
+We ran eight identical draft strategies that differ in one thing
+only: the earliest round they'd take a QB. Result: **rounds 4–6 is
+the sweet spot**, anywhere from 2 to 8 is nearly as good, and waiting
+past round 10 is where it gets expensive (~4 points of all-play,
+vs ~1 point for reaching in rounds 2–3). Annoyingly for the
+presentation: the family's real-life habit — first QB in round 5 —
+is exactly right.
 
 ## The data
 

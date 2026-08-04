@@ -7,14 +7,14 @@ artifact of the v1 opponent model — the correction is the finding.*)
 
 ## TL;DR
 
-A bot that drafts the consensus board *perfectly* (BPA by ADP, sane
-need-filling, zero opinions) scores **.598 all-play against the family
-— a +9.7-point edge** — while the best strategies tested reach .610.
-Translation: simply following a list without human noise captures
-roughly **90% of the available edge**; positional allocation (RB
-early, QB timing, TE punting) competes for the last point. The
-league's biggest inefficiency is not what anyone drafts — it's the
-17–30-pick spread with which they draft it.
+The biggest edge in a family league is not a clever strategy — it is
+simply sticking to a list. A bot that drafts straight off consensus
+rankings, with zero opinions, beat the simulated family by **9.7
+points of all-play (.598)**; the best strategy we tested added only
+~1 point more (.610). Showing up disciplined captures roughly **90%
+of the available edge** — which positions you favor is a fight over
+the last 10%. The league's real inefficiency isn't who people draft,
+it's how far off the list they wander (17–30 picks).
 
 ## The data (environment v5)
 

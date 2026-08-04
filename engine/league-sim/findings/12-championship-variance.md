@@ -4,12 +4,13 @@
 
 ## TL;DR
 
-The Jackels went a combined **24-4** with the #1 seed and #1 points-for
-in both 2024 and 2025 — and lost the championship game both times.
-Meanwhile the champions had the **#3** (2024) and **#7** (2025) draft
-hauls. This is exactly what playoff structure does to the best team:
-titles are decided by 2–3 single-week coin flips that even a dominant
-roster only tilts, never controls.
+Losing two straight championship games doesn't mean the process is
+broken. The Jackels went a combined **24-4** with the #1 seed and the
+most points scored in both 2024 and 2025 — and lost the final both
+times, to teams with the **#3** and **#7** draft hauls. That's what
+playoffs do to the best team: the title comes down to 2–3
+single-week coin flips, and even a dominant roster only tilts those
+flips, never controls them.
 
 ## The data
 

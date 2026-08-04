@@ -1,7 +1,8 @@
 """Build the static site's data files from repo outputs.
 
 Inputs (all tracked in the repo):
-- engine/league-sim/data/market/model_board_2026.csv  -> board.json
+- engine/league-sim/data/market/model_board_2026{,_half,_ppr}.csv
+                                                      -> board.json
 - engine/league-sim/data/market/implied_2026.csv      -> market.json
 - engine/league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
 - engine/league-sim/findings/NN-*.md                  -> blog.json
@@ -126,6 +127,77 @@ def md2html(md):
     return "\n".join(out)
 
 
+# ------------------------------------------------ plain-English tooltips
+# First occurrence of each stat term in a post gets a hover definition
+# (dotted underline). Definitions must not contain double quotes — they
+# land in a title="..." attribute.
+GLOSSARY = [
+    (r"Spearman", "How well two rankings agree, from -1 to 1 "
+     "(1 = identical order). Only the order matters, not the gaps."),
+    (r"Pearson", "How closely two sets of numbers move together, from "
+     "-1 to 1 (1 = perfectly in step). Unlike Spearman, gap sizes matter."),
+    (r"rank correlations?", "How well two rankings agree, from -1 to 1. "
+     "0 = no relationship, 1 = identical order."),
+    (r"all-play", "Your record if you played every team every week - "
+     "team strength with schedule luck stripped out."),
+    (r"LOYO", "Leave-one-year-out: train the model on every season "
+     "except one, test on the held-out season, repeat. The model never "
+     "grades its own homework."),
+    (r"leave-one-(?:year|season)-out", "Train the model on every season "
+     "except one, test on the held-out season, repeat. The model never "
+     "grades its own homework."),
+    (r"MAE", "Mean absolute error: how many points the prediction "
+     "missed by, on average."),
+    (r"implied totals?", "The score Vegas expects a team to put up, "
+     "worked out from the spread and the over/under."),
+    (r"ADP", "Average draft position: where real drafters take a "
+     "player - the market's opinion of him."),
+    (r"OLS", "Ordinary least squares: plain line-fitting - find the "
+     "weights that make predictions miss by the least."),
+    (r"ridge regression", "Line-fitting with a penalty that keeps any "
+     "one stat from being over-trusted."),
+    (r"Elo", "A running strength rating: beat good teams and it rises, "
+     "lose to bad ones and it falls."),
+    (r"quintiles?", "One fifth of the group - the top quintile is the "
+     "top 20%."),
+    (r"expected points", "The fantasy points a player 'should' have "
+     "scored given his usage (targets, carries, red-zone work), before "
+     "luck."),
+    (r"split-half reliability", "Whether a stat agrees with itself "
+     "across two halves of the same data - if it does not, it is noise."),
+]
+GLOSS_PATTERNS = [(re.compile(rf"\b{p}\b"), d) for p, d in GLOSSARY]
+
+# Don't inject tooltips inside these elements (links, code, headings).
+_GLOSS_SKIP = {"a", "code", "pre", "h1", "h2", "h3", "h4"}
+
+
+def glossarize(html):
+    """Wrap the first occurrence of each glossary term in a tooltip span."""
+    parts = re.split(r"(<[^>]+>)", html)
+    skip = 0
+    used = set()
+    for i, part in enumerate(parts):
+        if part.startswith("<"):
+            m = re.match(r"<(/?)([a-zA-Z0-9]+)", part)
+            if m and m.group(2).lower() in _GLOSS_SKIP:
+                skip += -1 if m.group(1) else 1
+            continue
+        if skip > 0 or not part.strip():
+            continue
+        for j, (pat, definition) in enumerate(GLOSS_PATTERNS):
+            if j in used:
+                continue
+            new, n = pat.subn(
+                lambda m: f'<span class="gloss" title="{definition}">'
+                          f"{m.group(0)}</span>", part, count=1)
+            if n:
+                part = new
+                used.add(j)
+        parts[i] = part
+    return "".join(parts)
+
+
 # --------------------------------------------------------------- builders
 def read_csv(path):
     with open(path, newline="") as f:
@@ -140,15 +212,16 @@ def _norm(name):
     return re.sub(r"\s+", " ", _SUFFIX.sub("", n))
 
 
-def _market_pos_ranks():
-    """(pos, normalized name) -> market position rank, from the ADP snapshot
-    written by update_ranks.py (Sleeper STD ADP, FFC standard as fallback)."""
+def _market_pos_ranks(fmt):
+    """(pos, normalized name) -> market position rank for one scoring
+    format, from the ADP snapshot written by update_ranks.py (Sleeper
+    ADP for that format, FFC for the same format as fallback)."""
     path = MKT / "adp_2026.csv"
     if not path.exists():
         return {}
     bypos = {}
     for r in read_csv(path):
-        val = r.get("sleeper_std") or r.get("ffc_std") or ""
+        val = r.get(f"sleeper_{fmt}") or r.get(f"ffc_{fmt}") or ""
         try:
             v = float(val)
         except ValueError:
@@ -162,9 +235,15 @@ def _market_pos_ranks():
     return out
 
 
-def build_board():
-    rows = read_csv(MKT / "model_board_2026.csv")
-    mkt = _market_pos_ranks()
+# site key -> (model board CSV, ADP column suffix)
+FORMATS = {"std": ("model_board_2026.csv", "std"),
+           "half": ("model_board_2026_half.csv", "half"),
+           "ppr": ("model_board_2026_ppr.csv", "ppr")}
+
+
+def _board_for(csv_name, adp_fmt):
+    rows = read_csv(MKT / csv_name)
+    mkt = _market_pos_ranks(adp_fmt)
     board = {}
     for r in rows:
         board.setdefault(r["pos"], []).append(dict(
@@ -177,6 +256,20 @@ def build_board():
         board[pos].sort(key=lambda d: -d["pred"])
         board[pos] = board[pos][:40]
     return board
+
+
+def build_board():
+    """{format: {pos: [rows]}} — one board per scoring format. Each is a
+    separate model fit, not the standard board re-sorted."""
+    out = {}
+    for key, (csv_name, adp_fmt) in FORMATS.items():
+        path = MKT / csv_name
+        if not path.exists():
+            print(f"  (skipping {key}: {csv_name} missing — "
+                  f"run analysis/player_model.py)")
+            continue
+        out[key] = _board_for(csv_name, adp_fmt)
+    return out
 
 
 def build_market():
@@ -206,8 +299,7 @@ def build_weekly():
                              imp=round(imp_own, 1), dome=dome, home=home))
     dst.sort(key=lambda d: d["imp"])
     kick.sort(key=lambda d: (-d["imp"] - (0.7 if d["dome"] else 0)))
-    return dict(label="2026 Week 1 (preseason lines)",
-                dst=dst[:16], k=kick[:16])
+    return dict(label="2026 Week 1 (preseason lines)", dst=dst, k=kick)
 
 
 def build_blog():
@@ -225,9 +317,16 @@ def build_blog():
         tl = re.search(r"## TL;DR\s+(.+?)(\n\n|\n#)", md, re.S)
         if tl:
             hook = re.sub(r"[*`#\[\]]", "", tl.group(1))
-            hook = " ".join(hook.split())[:220] + "…"
+            hook = " ".join(hook.split())
+            if len(hook) > 220:
+                # cut at a sentence boundary when a reasonable one exists
+                cut = hook[:220]
+                m = re.search(r"^.*[.!?](?=\s|$)", cut, re.S)
+                hook = m.group(0) if m and len(m.group(0)) > 80 \
+                    else cut + "…"
         posts.append(dict(id=p.stem, num=num, title=title,
-                          confidence=conf, hook=hook, html=md2html(body)))
+                          confidence=conf, hook=hook,
+                          html=glossarize(md2html(body))))
     posts.sort(key=lambda d: -d["num"])
     return posts
 

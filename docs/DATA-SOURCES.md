@@ -93,7 +93,8 @@ The Odds API key lives in `.env`, never in the repo.
 ## How our model and JuiceBoxOne's projections compare
 
 Checked 2026-08-03 via `engine/league-sim/analysis/compare_juicebox.py`, against
-`engine/league-sim/data/market/model_board_2026.csv`:
+`engine/league-sim/data/market/model_board_2026.csv` (the standard-scoring
+board; `_half.csv` and `_ppr.csv` sit alongside it):
 
 | position | n | rank correlation |
 |---|---|---|

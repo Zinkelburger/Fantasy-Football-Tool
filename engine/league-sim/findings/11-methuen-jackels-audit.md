@@ -4,12 +4,13 @@
 
 ## TL;DR
 
-2024: the **#1 draft haul of all 12 teams**. 2025: #4. Combined 24-4,
-double #1 seeds, double runner-up (see finding 12 for why that isn't a
-process indictment). The repeatable strengths: value patience, elite
-mid-round WR selection, correct QB and kicker timing. The leaks:
-paying premium prices for TEs (twice) and the round-4/5 discounted
-veteran WR (twice).
+We audited our own team's drafts. 2024: the **best draft haul of all
+12 teams**. 2025: #4. Combined 24-4 record, two #1 seeds — and two
+runner-up finishes (finding 12 explains why that's variance, not a
+broken process). The strengths that repeat: patience for value,
+excellent mid-round WR picks, sensible QB and kicker timing. The two
+leaks, each committed twice: paying a premium price for a TE, and
+the round-4/5 "discounted veteran WR."
 
 ## Draft-by-draft
 

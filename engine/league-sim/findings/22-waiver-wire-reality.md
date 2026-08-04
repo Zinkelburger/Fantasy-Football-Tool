@@ -13,14 +13,14 @@ seasons of underlying football.
 
 ## TL;DR
 
-Run the same team through the same season twice, once allowed to use
-the waiver wire and once forbidden, and the wire is worth **+5 to +12
-season points** — about **1% of a season, ~1 point of all-play**. Nearly
-all of it comes from patching **QB and K**, the two slots where you
-start one and roster one. It is **negative at RB**. And the players you
-add reflect that: a waiver **QB scores 11.9 pts/wk while you hold him**,
-a waiver RB/WR/TE scores **~4** and gets cut inside two weeks a third of
-the time. The wire is roster maintenance, not a strategy.
+We ran the same team through the same season twice — once allowed to
+use the waiver wire, once forbidden. The wire was worth **+5 to +12
+points a season**, roughly 1% of a team's total. Nearly all of it
+comes from patching **QB and kicker**, the slots where you roster
+only one player — and it's actually **negative at RB**. The pickups
+tell the story: a waiver QB scores 11.9 points a week while you hold
+him; a waiver RB/WR/TE scores ~4 and gets cut within two weeks a
+third of the time. The wire is roster maintenance, not a strategy.
 
 ## What the wire is worth
 

@@ -31,7 +31,13 @@ with next-season PPG (ranking is what a draft list is for), plus MAE.
 Rookies have no season-t features and are out of scope (v1 limitation
 - the list covers returning players; see finding for the rookie plan).
 
-Usage: player_model.py [--list]   (--list prints the 2026 board only)
+Scoring: the whole panel is rebuilt per format (standard, half PPR,
+full PPR), so both the features (last season's PPG, expected PPG, the
+efficiency gap) and the target are scored the way the reader's league
+scores. A PPR board is not a standard board re-sorted -- the model is
+refit on PPR points, so receiving volume earns its own weight.
+
+Usage: player_model.py [--list]   (--list prints the 2026 boards only)
 """
 import sys
 from pathlib import Path
@@ -49,6 +55,13 @@ MKT = DATA / "market"
 POSITIONS = ("QB", "RB", "WR", "TE")
 SEASONS = list(range(2017, 2026))        # feature seasons
 RNG = np.random.default_rng(11)
+
+# (label, points per reception, output file). Standard keeps the
+# original filename so existing consumers (analysis/compare_juicebox.py,
+# site/build_site.py) don't move.
+SCORINGS = (("standard", 0.0, "model_board_2026.csv"),
+            ("half PPR", 0.5, "model_board_2026_half.csv"),
+            ("full PPR", 1.0, "model_board_2026_ppr.csv"))
 
 FEATURES = [
     "ppg", "games", "ppg_prev", "ep_ppg", "eff_gap", "td_luck_pg",
@@ -76,22 +89,35 @@ def team_rating(season, team):
     return _RATINGS.get((season, team), (0.0, 1505.0))
 
 
-def league_pts(df):
-    """League-exact weekly points (per-category floors, ESPN std)."""
+def league_pts(df, ppr=0.0):
+    """League-exact weekly points (per-category floors, ESPN std).
+
+    `ppr` is points per reception: 0 standard, 0.5 half, 1.0 full."""
     f = np.floor
     return (f(df.passing_yards / 25) + 4 * df.passing_tds
             - 2 * df.passing_interceptions
             + f(df.rushing_yards / 10) + 6 * df.rushing_tds
             + f(df.receiving_yards / 10) + 6 * df.receiving_tds
+            + ppr * df.receptions
             - 2 * df.fumbles_lost_total + 6 * df.special_teams_tds
             + 2 * (df.passing_2pt_conversions + df.rushing_2pt_conversions
                    + df.receiving_2pt_conversions))
 
 
-def season_stats(year):
-    w = pd.read_parquet(DATA / f"weekly_{year}.parquet")
-    w = w[w.position.isin(POSITIONS)].copy()
-    w["pts"] = league_pts(w)
+_WEEKLY = {}
+
+
+def weekly_raw(year):
+    """Raw weekly rows for a season, cached (each format re-reads them)."""
+    if year not in _WEEKLY:
+        w = pd.read_parquet(DATA / f"weekly_{year}.parquet")
+        _WEEKLY[year] = w[w.position.isin(POSITIONS)]
+    return _WEEKLY[year]
+
+
+def season_stats(year, ppr=0.0):
+    w = weekly_raw(year).copy()
+    w["pts"] = league_pts(w, ppr)
     g = w.groupby("player_id").agg(
         pos=("position", "first"), name=("player_display_name", "first"),
         team=("team", "last"), games=("week", "nunique"),
@@ -120,7 +146,7 @@ def usage_stats(year):
     return g
 
 
-def expected_stats(year):
+def expected_stats(year, ppr=0.0):
     global _OPP
     if _OPP is None:
         _OPP = pd.read_parquet(DATA / "ff_opportunity_2017_2025.parquet")
@@ -132,7 +158,8 @@ def expected_stats(year):
           + o.get("rush_yards_gained_exp", 0) / 10
           + o.get("rush_touchdown_exp", 0) * 6
           + o.get("rec_yards_gained_exp", 0) / 10
-          + o.get("rec_touchdown_exp", 0) * 6)
+          + o.get("rec_touchdown_exp", 0) * 6
+          + ppr * o.get("receptions_exp", 0))
     o = o.assign(ep=ep,
                  td_exp=(o.get("pass_touchdown_exp", 0)
                          + o.get("rush_touchdown_exp", 0)
@@ -181,10 +208,11 @@ def draft_table():
     return d.drop_duplicates("gsis_id").set_index("gsis_id")["pick"]
 
 
-def build_rows(t):
+def build_rows(t, ppr=0.0):
     """Feature rows from season t, describing the player entering t+1."""
-    cur, prev = season_stats(t), season_stats(t - 1) if t > 2017 else None
-    use, exp = usage_stats(t), expected_stats(t)
+    cur = season_stats(t, ppr)
+    prev = season_stats(t - 1, ppr) if t > 2017 else None
+    use, exp = usage_stats(t), expected_stats(t, ppr)
     cap = cap_table()
     ros_next = roster(t + 1)
     ros_cur = roster(t)
@@ -243,8 +271,8 @@ def build_rows(t):
     return df
 
 
-def targets_for(t):
-    nxt = season_stats(t + 1)
+def targets_for(t, ppr=0.0):
+    nxt = season_stats(t + 1, ppr)
     return nxt["ppg"], nxt["games"]
 
 
@@ -273,25 +301,24 @@ def spearman(a, b):
     return np.corrcoef(ra, rb)[0, 1]
 
 
-def main():
-    list_only = "--list" in sys.argv
-    panel = pd.concat([build_rows(t) for t in SEASONS[:-1]],
+def build_board(label, ppr, dst, evaluate):
+    panel = pd.concat([build_rows(t, ppr) for t in SEASONS[:-1]],
                       ignore_index=True)
-    tg = {t: targets_for(t) for t in SEASONS[:-1] if t < 2025}
+    tg = {t: targets_for(t, ppr) for t in SEASONS[:-1] if t < 2025}
     panel["y"] = [tg[r.year][0].get(r.pid, np.nan) if r.year in tg else np.nan
                   for r in panel.itertuples()]
     data = panel.dropna(subset=["y"]).copy()
 
-    # ADP benchmark: FFC board for season t+1, joined via the sim pool
-    adp = {}
-    for y in range(2018, 2026):
-        for p in build_pool(y, DEFAULT_SCORING):
-            if p.adp is not None:
-                adp[(p.pid, y)] = p.adp
-    data["adp_next"] = [adp.get((r.pid, r.year + 1), np.nan)
-                        for r in data.itertuples()]
+    if evaluate:
+        # ADP benchmark: FFC board for season t+1, joined via the sim pool
+        adp = {}
+        for y in range(2018, 2026):
+            for p in build_pool(y, DEFAULT_SCORING):
+                if p.adp is not None:
+                    adp[(p.pid, y)] = p.adp
+        data["adp_next"] = [adp.get((r.pid, r.year + 1), np.nan)
+                            for r in data.itertuples()]
 
-    if not list_only:
         print(f"panel: {len(data)} player-seasons with targets, "
               f"{len(panel)-len(data)} feature-only\n")
         print(f"{'pos':4s} {'year':>5s} {'n':>4s}   naive    ADP  model  "
@@ -357,9 +384,9 @@ def main():
                                        for p in POSITIONS))
 
     # ---- the 2026 board --------------------------------------------
-    feat26 = build_rows(2025)
-    print(f"\n=== model board for 2026 (returning players; rookies out "
-          f"of scope) ===")
+    feat26 = build_rows(2025, ppr)
+    print(f"\n=== model board for 2026, {label} scoring (returning "
+          f"players; rookies out of scope) ===")
     out = []
     for pos in POSITIONS:
         d = data[data.pos == pos]
@@ -375,10 +402,19 @@ def main():
         for i, r in enumerate(f26.head(top).itertuples(), 1):
             print(f"  {i:2d}. {r.name:24s} {r.pred_ppg:5.1f} | {r.ppg:5.1f}")
     full = pd.concat(out).sort_values("pred_ppg", ascending=False)
-    dst = MKT / "model_board_2026.csv"
     full[["name", "pos", "pred_ppg", "ppg", "age", "cap_pct",
           "room_share"]].to_csv(dst, index=False)
     print(f"\nfull board -> {dst.relative_to(ROOT)}")
+
+
+def main():
+    list_only = "--list" in sys.argv
+    for label, ppr, fname in SCORINGS:
+        # The leave-one-year-out evaluation is reported for standard
+        # scoring only -- that is the league this study is written for,
+        # and it is the number finding 25 quotes.
+        build_board(label, ppr, MKT / fname,
+                    evaluate=not list_only and ppr == 0.0)
 
 
 if __name__ == "__main__":

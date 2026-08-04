@@ -5,13 +5,13 @@ tight confidence intervals around zero, and a clean placebo test)
 
 ## TL;DR
 
-How a player finished the season tells you **nothing** about next year
-that his full season didn't already tell you. The last 1–5 weeks
-predict next-season PPG strictly *worse* than full-season PPG, add
-zero information once full-season PPG is known (partial r = +0.04,
-95% CI −0.03 to +0.11), and — the kill shot — the last 5 weeks are no
-more predictive than the **first** 5 weeks. "Finished the year hot"
-is a sample-size artifact wearing a narrative.
+"He finished the season hot" tells you **nothing** about next year.
+A player's last few weeks predict next season *worse* than his full
+season does, and add zero information once you know his full-season
+average (partial r = +0.04, indistinguishable from nothing). The
+kill shot: the last 5 weeks are no more predictive than the *first*
+5 weeks of the same season. A hot finish is a small sample wearing
+a story.
 
 ## The data
 

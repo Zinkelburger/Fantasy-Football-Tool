@@ -6,15 +6,16 @@ durations (n=28–111 per type) and the rust effect.
 
 ## TL;DR
 
-A Friday **Out/Doubtful is a zero** (they play 0.1%/1% of the time).
-**Questionable means 69% to play, and when he plays he's ~83% of
-himself** in expectation — but the tag is nearly free for QBs and
-expensive for TEs. Once a fantasy-relevant player actually **sits**
-with an injury, the median absence is 2 weeks, the mean 2.7, and a
-quarter of the time he never plays again that season — and the longer
-he's been out, the *worse* the remaining outlook (mean total absence
-grows 2.7 → 3.6 → 4.7 as misses accumulate). The first game back is
-15–25% below baseline.
+What the Friday injury report actually means, from eight years of
+data: **Out or Doubtful means he is not playing** (0.1% and 1% play
+rates — treat both as zero). **Questionable means 69% to play, and
+about 83% of his usual production when he does** — nearly full
+strength for QBs, a real discount for TEs. Once a player actually
+sits out with an injury, the typical absence is 2 weeks, a quarter
+of the time he never plays again that season, and the longer he has
+been out the worse the outlook gets (average total absence climbs
+2.7 → 3.6 → 4.7 weeks as misses pile up). His first game back runs
+15–25% below normal.
 
 ## 1. P(plays Sunday | Friday report status), 2018–2025
 

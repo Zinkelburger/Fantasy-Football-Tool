@@ -6,22 +6,20 @@ not skill.**
 
 ## TL;DR
 
-Beam-searching the best possible 15-round draft (full knowledge of
-every player's actual weekly scores) against 11 deterministic
-disciplined BPA bots, for all 6 seasons × 12 seats, objective =
-weeks 1–14 points with optimal lineups, no waivers:
+We computed the *perfect* draft: if you knew exactly how every
+player's season would go, what is the best possible 15-round draft?
+(Exact search, all 6 seasons, every draft seat.) Three takeaways:
 
-- **Oracle: 1,894 pts/season, 0.964 all-play.** Even a perfect draft
-  loses ~4% of weekly head-to-heads.
-- **The information ceiling is ~+685 pts/season** over a disciplined
-  drafter (bpa +684, robust_rb +669, pick_value +686). Compare: the
-  spread between the *best and worst disciplined heuristics* is ~17
-  pts by the same yardstick. Draft-order cleverness competes for
-  tens of points; knowing which players hit is worth hundreds. This
-  is why R²(rank→outcome) = 0.2 (finding 23) is the number that runs
-  the game.
-- The search converged (beam 24 → 96 identical solutions), so these
-  are effectively exact optima, not heuristic approximations.
+- **Even a perfect draft loses ~4% of its weekly head-to-heads**
+  (1,894 pts/season, .964 all-play). Nothing removes variance.
+- **Perfect foresight is worth ~+685 points a season** over a
+  disciplined drafter. Compare: the gap between the best and worst
+  disciplined strategies is ~17 points by the same yardstick.
+  Draft-order cleverness fights over tens of points; knowing which
+  players will hit is worth hundreds. Player evaluation, not draft
+  strategy, is the game.
+- The search fully converged (beam 24 → 96 found identical
+  solutions), so these are true ceilings, not estimates.
 
 ## What perfect drafts actually look like (72 solutions)
 

@@ -6,13 +6,14 @@ lesson in method as much as a finding.
 
 ## TL;DR
 
-First pass suggested a tidy story: mid-round WRs aged 29–30 are a
-death zone (17% hit, 61% bust) while 31+ vets bounce back (38% hit).
-Robustness checks kept **half** of it: *29+ WRs underperform younger
-ones as a group, with 29–30 the worst cell in most specifications* —
-but the "31+ rebound" is era noise, and one reasonable specification
-makes even the 29–30 valley fade. Use age as a **tiebreaker, not a
-rule**.
+Our first pass found a tidy story: mid-round WRs aged 29–30 are a
+death zone (17% hit, 61% bust) while 31+ veterans bounce back. Then
+we stress-tested it and only half survived: **WRs 29 and older do
+underperform younger ones as a group**, with 29–30 the worst ages in
+most versions of the test — but the "31+ rebound" turned out to be
+noise, and one reasonable way of slicing the data softens even the
+29–30 dip. Use age as a tiebreaker, not a rule. (This file doubles
+as a lesson in how a too-clean story falls apart when checked.)
 
 ## The first-pass data (the seductive version)
 

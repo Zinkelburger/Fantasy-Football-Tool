@@ -6,14 +6,14 @@ the RB/TE analogues are weaker.
 
 ## TL;DR
 
-Among WRs with the same PPG, the one earning **more targets per game**
-outscores the other next season — partial r = +0.19 beyond PPG
-(p = 0.0004, CI [+0.11, +0.27], n = 438), positive in 7/8 season
-pairs. Meanwhile the *efficiency* stats everyone cites add nothing
-once PPG is known: YAC/reception (+0.06, p = 0.11), catch rate
-(−0.02, p = 0.74), even catch-rate-over-expected (+0.02, p = 0.73).
-Volume is the skill the market underprices; efficiency is how last
-year's points happened.
+Two receivers score the same points per game; next year, bet on the
+one who saw **more passes thrown his way**. Targets predict next
+season's scoring even after accounting for this season's points
+(partial r = +0.19, positive in 7 of 8 season pairs) — while the
+efficiency stats everyone cites add nothing once points are known:
+yards-after-catch, catch rate, even catch-rate-over-expected, all
+zero. Opportunity is a skill the market underprices; efficiency is
+just how last year's points happened to arrive.
 
 ## The data
 

@@ -6,13 +6,14 @@ arm, two independent base drafters agree). **Medium** for the
 
 ## TL;DR
 
-Spending a late pick on a backup QB or TE — the dart throw you can
-start on byes, in matchups, or if he breaks out — is worth
-**nothing, and costs nothing**. Every forced-vs-banned contrast lands
-inside ±0.35 points of all-play. The bench spot is yours to do what
-you like with. Two things *are* real: forcing a QB2 late (rounds
-12–14) is mildly bad, and delaying your TE1 to round 10 without a
-streaming plan is genuinely expensive.
+Should you spend a late pick on a backup QB or TE? It doesn't
+matter. We forced strategies to take one, and banned them from it,
+and every version landed within ±0.35 points of all-play of the
+control — worth nothing, costs nothing. That bench spot is yours to
+play with. Two timing mistakes *are* real, though: waiting until
+rounds 12–14 for a backup QB is mildly bad, and pushing your
+*starting* TE to round 10 without a streaming plan is genuinely
+expensive.
 
 ## The data
 

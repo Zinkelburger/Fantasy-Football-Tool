@@ -4,8 +4,12 @@
 
 ## TL;DR
 
-Weekly kicker projection (ESPN std scoring: FG 3/4/5 by distance,
-PAT 1), leave-one-season-out, within-week Spearman:
+Kickers are the least predictable position in fantasy — and the
+kicker himself is the least important part of the prediction.
+Ranking kickers by their own scoring history barely beats guessing
+(.079); adding Vegas lines, weather and coach tendencies reaches
+.186 — still only half as predictable as defenses. The model ladder
+(within-week Spearman, ESPN scoring, tested on held-out seasons):
 
 | model | Spearman | Pearson | MAE |
 |---|---|---|---|

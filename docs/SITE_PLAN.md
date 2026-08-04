@@ -83,6 +83,37 @@ projection input, because we measured that it isn't one.
   not a model feature (tested null season-long).
 - Weather: priced into totals; skip as a feature, keep for content.
 
+## In-season app roadmap (added 2026-08-04)
+
+Goal: a fantasy player manages their week from our UI instead of
+FantasyPros/ESPN. Ordered by value ÷ build cost, mapped to what
+already exists:
+
+1. **League sync (the enabler).** Extend the chrome extension to
+   scrape ESPN *league rosters* (it already scrapes ESPN draft rooms;
+   same chrome.storage → bridge.js pipe into the site). Site marks
+   every player available/taken/mine automatically. Fallback shipped
+   today: manual click-to-mark on the weekly boards, localStorage.
+   No backend needed — that's the constraint that makes this cheap.
+2. **Waiver central** = weekly boards × sync: available players only,
+   color-coded, ranked by our models. D/ST + K versions shipped
+   today (manual marks); skill positions when the weekly model goes
+   live in September.
+3. **Week in review / "post game."** Actuals vs our projections
+   (residuals already computed), luck read (all-play vs actual
+   record), biggest surprises. Product 5 in the list above — cheap
+   once weekly boards are live.
+4. **Start/sit assistant.** v1 is just the weekly boards + finding-21
+   injury rules surfaced as a compare-two-players widget.
+5. **Are they playing?** Finding 21's status table (Out/Doubtful = 0%,
+   Questionable = 69% at 83% strength) + weekly injury-report feed.
+6. **Matchup tracker / league analyzer** — later; both need live
+   scoring or full-league rosters, so they ride on #1.
+
+Not doing: radar charts, trade calculators, news-article "primers"
+(narrative engine may cover this later — it's product 3's movement
+reasons wearing a different hat).
+
 ## The site itself (built 2026-08-04, `site/`)
 
 Static SPA, same design family as the draft tool (dark, same position

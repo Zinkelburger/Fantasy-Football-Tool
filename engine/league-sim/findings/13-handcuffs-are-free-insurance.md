@@ -6,18 +6,17 @@ maybe)
 
 ## TL;DR
 
-The hypothesis (Andrew's): *rostering your own RB1's handcuff is the
-right play in head-to-head — lower variance beats best-ball upside
-when you expect to be the better team (e.g. Bucky Irving + Rachaad
-White, 2025).*
+The question (Andrew's): should you draft your starting RB's backup —
+his "handcuff" — as injury insurance? Verdict: **the insurance is
+real, but it's fairly priced, so it buys no edge.**
 
-Verdict: **half right, and the half that's right costs nothing.**
 Handcuffs really do deliver starter-level production in exactly the
-weeks your starter is out (9.5 PPG, 48% of them at RB1 level). But a
-wait-cost drafter that pays a premium for its own handcuffs ties the
-plain one — **.598 vs .599 all-play** — because the insurance payout
-is offset point-for-point by the flex value of the best-available
-pick it gave up. Handcuff on ties, never at a price.
+weeks your starter is out (9.5 PPG, and about half those weeks at
+RB1 level). But a drafter that pays a premium to grab its own
+handcuffs ties the one that doesn't — **.598 vs .599 all-play** —
+because the insurance payout is cancelled point-for-point by the
+value of the picks it gave up. Take the handcuff when it's a
+coin-flip pick anyway; never reach for one.
 
 ## The descriptive data (2020–2025, `analysis/rules_tests.py`)
 

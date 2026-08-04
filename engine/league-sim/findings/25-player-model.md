@@ -19,10 +19,12 @@ extensions, data, and league-specific evaluation are ours.
 
 ## TL;DR
 
-Per-position ridge regression predicting **next-season fantasy PPG**
-(league-exact scoring) from 16 features across 2,232 player-seasons
-(2017–2024 → targets 2018–2025). Leave-one-year-out Spearman with next
-season's actual PPG:
+Our season projection model: for each position, a ridge regression
+(line-fitting that resists over-trusting any one stat) predicts
+**next season's fantasy points per game** from 16 features — usage,
+TD luck, age, draft capital, salary — trained on 2,232
+player-seasons. How well does each ranking match what actually
+happened, tested only on seasons the model never saw (Spearman)?
 
 | pos | naive (this yr PPG) | **ADP board** | **model** | ADP+model |
 |---|---|---|---|---|
@@ -71,7 +73,13 @@ rule: *trust the model's WR/TE/QB ranks; at RB, average with ADP.*
 ## The 2026 board
 
 `data/market/model_board_2026.csv` (returning players; run
-`analysis/player_model.py --list` to regenerate). Top of board: Allen;
+`analysis/player_model.py --list` to regenerate). The same run also
+writes `_half.csv` and `_ppr.csv`: the whole panel is re-scored and the
+model refit at 0.5 and 1.0 points per reception, so a PPR board is a
+separate fit rather than the standard board re-sorted (McCaffrey passes
+Taylor, Wan'Dale Robinson gains 12 WR spots, deep-only Alec Pierce loses
+7). Every number quoted below and above is standard scoring, the
+league this study is written for. Top of board: Allen;
 Bijan/Taylor/Gibbs; JSN/Nacua/Chase/ARSB; Bowers-tier TE per model.
 Sanity behaviors: buys the Justin Jefferson bounce-back (pred 9.2 vs
 injured 6.5), fades TD-fueled outliers (Skattebo 12.1 → 8.1).

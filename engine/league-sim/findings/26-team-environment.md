@@ -3,6 +3,17 @@
 **Confidence: High** (24 seasons of games for the ratings; 36,246
 player-weeks LOYO for the weekly model)
 
+## TL;DR
+
+Do team-strength ratings help fantasy? Barely. Season-long: nothing
+beats last year's simple points-per-game, and even that only reaches
+a 0.42 correlation with next year — team quality churns too much to
+project a season on. Week-to-week: knowing the opponent is worth
+about +1 point of accuracy at QB and RB and nothing at WR; wind
+hurts QBs (−1.8) and leaves RBs alone; and the WR-vs-cornerback
+matchup data everyone sells is pure noise — it doesn't even agree
+with itself. The Vegas line already prices nearly all of this.
+
 ## The questions (league-mate's, near-verbatim)
 
 Can we use team Elo (nfelo-style)? How stable is it year to year? Does

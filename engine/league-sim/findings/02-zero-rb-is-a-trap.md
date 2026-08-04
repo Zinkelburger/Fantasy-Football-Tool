@@ -5,14 +5,15 @@ numbers are environment v3 — see finding 13's version table)
 
 ## TL;DR
 
-Zero RB — the most popular "smart" strategy in fantasy content — is
-the worst plan tested: **9.7% titles vs Robust RB's 20.3%**, i.e. it
-forfeits half your championship equity, and its .548 all-play trails
-every other disciplined strategy by 1.5–5 points. Against a noisy
-human field even a bad plan beats baseline — the trap isn't losing to
-the family, it's paying ~5 points of edge for a thesis the format
-doesn't support. WR-heavy fails less badly (.585) for the same reason
-in miniature.
+Zero RB — skipping running backs early to load up on receivers — is
+the most popular "smart" strategy in fantasy content, and in this
+format it was the worst plan we tested: **9.7% championship rate vs
+20.3%** for opening RB-RB-RB. That's half your title odds, gone. The
+strategy was built for PPR leagues, where every catch scores a point;
+in standard scoring with an RB/WR flex, there is no cheap way to make
+up the running back points you passed on. WR-heavy fails the same
+way, just less badly (.548 vs .585 all-play, both behind every other
+disciplined plan).
 
 ## The data
 

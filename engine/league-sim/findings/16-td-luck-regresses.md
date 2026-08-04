@@ -5,15 +5,16 @@ pairs, clustered CI well clear of zero, coherent mechanism)
 
 ## TL;DR
 
-Touchdowns over expectation are luck, and the market keeps paying for
-them. A skill player's TDs-over-expected (actual minus the nflverse
-`ff_opportunity` model's expected TDs) has **zero year-over-year
-persistence** (r = +0.05, CI [−0.02, +0.12]) — yet TDs are ~40% of
-non-PPR scoring. Players in the luckiest TD quintile score **−1.6 PPG
-less** the following year than the unluckiest quintile after matching
-on PPG (CI [−2.2, −1.0]); the gap was negative in **all eight**
-season pairs (sign test p = 0.004). Over a 14-week fantasy season
-that's ~23 points of hidden movement per flagged player.
+Touchdowns are the luckiest stat in football, and the market keeps
+paying full price for them. Whether a player scored more or fewer
+TDs than his chances deserved does **not** carry over from year to
+year (r = +0.05, statistically zero) — yet TDs are ~40% of standard
+scoring. The consequence is predictable: the players who got
+luckiest on TDs score about **1.6 PPG less** the next season than
+equally-productive players who got unlucky, a gap that showed up in
+**all eight** season pairs we checked. Over a 14-week season that's
+~23 hidden points per flagged player: fade last year's TD-lucky,
+buy the TD-unlucky.
 
 ## The data
 

@@ -4,13 +4,14 @@
 
 ## TL;DR
 
-Mid-round WRs who were top-20 two seasons ago but collapsed below
-WR35 last season — the "he'll bounce back" discount buy — busted
-**53%** of the time vs 42% for other mid-rounders, and their average
-return ran 9 spots further below cost. The discount you're buying is
-usually information, not opportunity. Distinguish this from the *age*
-discount (finding 10) and the *team-narrative* discount (finding 08),
-which behave differently.
+The "he was great two years ago, he'll bounce back" discount buy is
+usually a trap. Mid-round WRs who were top-20 two seasons ago but
+collapsed last season busted **53%** of the time vs 42% for other
+mid-rounders, and finished 9 more spots below their cost on average.
+A cheap price on a former star usually means the market knows
+something, not that it missed something. (Different from the age
+discount — finding 10 — and the bad-team discount — finding 08 —
+which behave differently.)
 
 ## The data
 

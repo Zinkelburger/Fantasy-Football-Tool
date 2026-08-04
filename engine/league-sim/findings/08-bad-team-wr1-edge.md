@@ -4,11 +4,11 @@
 
 ## TL;DR
 
-Among mid-round WRs (overall ADP 36–120), the ones who were **their
-team's WR1** on a team coming off a **losing season** finished top-24
-at a **43%** rate vs **25%** for mid-rounders with neither trait. This
-is the statistical version of the Jackels' own WR instinct, and it's
-real in this window.
+In the middle rounds, target a team's clear #1 receiver on a team
+coming off a losing season. Those WRs finished top-24 **43%** of the
+time vs **25%** for mid-round WRs with neither trait — nearly double
+the hit rate. Bad teams still throw to somebody: the market discounts
+the whole roster, and the alpha receiver is the mispriced part.
 
 ## The data
 

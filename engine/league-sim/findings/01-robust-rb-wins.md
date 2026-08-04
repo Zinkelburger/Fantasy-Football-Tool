@@ -5,12 +5,13 @@ numbers are environment v3 — see finding 13's version table)
 
 ## TL;DR
 
-Opening the draft with three straight running backs produced **.598
-all-play** and a **20.3% championship rate** — 2.4× the 8.3% seat
-baseline and 3+ points of title rate clear of every other plan tested.
-On all-play it ties the wait-cost drafter (`pick_value`, finding 13's
-sibling); on titles nothing touches it. RB-early remains the best way
-to convert a weekly edge into rings.
+Open your draft with three straight running backs. Across 1,440
+simulated seasons of this league, that plan won the title **20.3% of
+the time** — 2.4× the 8.3% an average team gets, and at least 3 points
+clear of every other plan tested. On week-to-week strength (**.598
+all-play**) it ties the best alternative; on championships, nothing
+touches it. Three early RBs is a boom-style roster, and booms win
+titles.
 
 ## The data
 

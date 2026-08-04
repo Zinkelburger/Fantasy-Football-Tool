@@ -6,14 +6,14 @@ RB effect wouldn't survive a multiple-comparisons correction.
 
 ## TL;DR
 
-Being hurt this year barely predicts being hurt next year. Weeks
-listed Out/Doubtful correlate year-over-year at r = +0.07 (n = 1,212)
-— statistically detectable (p = 0.015) but explaining **half a
-percent** of the variance. At QB and WR the persistence is exactly
-zero. The exceptions: **TEs** who missed 2+ weeks repeat at 38% vs a
-19% baseline (r = +0.20, p = 0.008), and RBs at 30% vs 18% —
-suggestive but weaker. Injury history adds *nothing* to next-year
-PPG prediction once you know PPG (partial r = −0.01, p = 0.63).
+Being hurt this year barely predicts being hurt next year. Across
+1,200+ player-seasons, injury history explains **half a percent** of
+who misses time next season — and at QB and WR the carryover is
+exactly zero. The exceptions: **TEs** who missed 2+ weeks miss
+significant time again 38% of the time (vs 19% for healthy TEs),
+with a weaker echo at RB (30% vs 18%). Injury history also adds
+*nothing* to predicting next year's points once you know this
+year's points. Don't discount a QB or WR for last season's bad luck.
 
 ## The data
 

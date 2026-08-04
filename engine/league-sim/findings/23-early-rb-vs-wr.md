@@ -5,9 +5,10 @@ causal swap test in sim v5, n=432 paired leagues per cell)
 
 ## TL;DR
 
-In this league's STD scoring, both value curves are log-linear in the
-market's positional rank *k* (rank by ADP within position — "the
-market's RB3" — which sidesteps cross-position ADP arbitrariness):
+Why take a running back before a receiver? We fit the value curves —
+how many points the market's #k-ranked RB or WR actually returns
+over a season. Both decline smoothly as you move down the board, but
+RB value falls **45% faster** than WR value:
 
 ```
 RB: E[pts, wks 1-14] = 191 − 31·ln k      (b 95% CI [−36, −27])

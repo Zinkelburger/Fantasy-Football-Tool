@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Film-Free Football Lab</title>
+  <title>FOSS Football</title>
+  <meta name="description" content="Free, open-source fantasy football rankings and draft tools. Every ranking comes from a model tested on eight seasons of history — methods, code and misses all published.">
+  <meta property="og:title" content="FOSS Football">
+  <meta property="og:description" content="Free, open-source fantasy football rankings and draft tools, tested on eight seasons of history.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header id="site-header">
     <a class="brand" href="#/">
-      <span class="brand-dot"></span> The Film-Free Football Lab
+      <span class="brand-dot"></span> FOSS Football
     </a>
     <nav id="site-nav">
       <a href="#/" data-route="home">Home</a>
@@ -25,53 +30,54 @@
     <!-- ============================================= HOME -->
     <section id="view-home" class="view">
       <div class="hero">
-        <h1>Projections with receipts.</h1>
-        <p class="tagline">Every ranking on this site comes from a model
-        that was backtested before it was believed — and every method is
-        published in full. No film takes, no vibes, no hedging.</p>
+        <h1>Fantasy football rankings you can check.</h1>
+        <p class="tagline">Every ranking here comes from a model tested
+        on eight seasons of history before we trusted it. The code, the
+        data and the methods are public — including the ideas that
+        didn't work.</p>
         <div class="hero-actions">
           <a class="btn primary" href="#/weekly">This week's boards</a>
-          <a class="btn" href="#/blog">Read the research</a>
+          <a class="btn" href="#/blog">Read the findings</a>
         </div>
       </div>
 
       <div class="cards">
         <a class="card" href="#/board">
-          <h3><span class="pill pill-board">Draft</span> 2026 season board</h3>
-          <p>A ridge-regression projection over 8 seasons of data —
-          usage, TD luck, age, draft capital, salary structure. It
-          out-ranks the ADP consensus at QB, WR and TE, and says so
-          with confidence intervals.</p>
-          <span class="card-stat">+.08 Spearman vs ADP</span>
+          <h3><span class="pill pill-board">Draft</span> 2026 draft board</h3>
+          <p>Season projections built from eight years of stats — usage,
+          touchdown luck, age, draft capital, contracts. Tested against
+          the draft market: it out-ranks ADP at QB, WR and TE.</p>
+          <span class="card-stat">beats ADP at 3 of 4 positions</span>
         </a>
         <a class="card" href="#/weekly">
-          <h3><span class="pill pill-weekly">Weekly</span> Full-position boards</h3>
-          <p>Skill positions from a validated weekly model; D/ST and
-          kicker streaming straight from the one number that matters —
-          the Vegas line — plus the few tiebreaks that survived testing.</p>
-          <span class="card-stat">QB .43 · RB .63 · D/ST .30 rank corr</span>
+          <h3><span class="pill pill-weekly">Weekly</span> Weekly boards</h3>
+          <p>Who to stream at defense and kicker, ranked by the Vegas
+          lines — the one signal that actually predicts those positions.
+          Skill-position boards join in September.</p>
+          <span class="card-stat">D/ST &amp; K live now</span>
         </a>
         <a class="card" href="#/blog">
           <h3><span class="pill pill-research">Research</span> The findings</h3>
-          <p>28 numbered findings with methodology and honest caveats:
-          what actually wins drafts, which folklore survives testing,
-          and which popular stats are noise.</p>
-          <span class="card-stat">28 findings · 6 simulated seasons</span>
+          <p>28 short write-ups on what wins fantasy leagues: what works,
+          what's a myth, and which popular stats are noise. Each one
+          shows its data and says how confident to be.</p>
+          <span class="card-stat">28 findings</span>
         </a>
         <a class="card" href="#/draft">
           <h3><span class="pill pill-draft">Live</span> Draft assistant</h3>
-          <p>The full-screen draft-day tool: live board, value alerts,
-          pick sync. Opens in distraction-free mode — you'll want the
-          whole screen.</p>
+          <p>The draft-day tool: a live board that syncs picks straight
+          from your ESPN or Sleeper draft room, flags value, and
+          suggests who to take.</p>
           <span class="card-stat">launches full screen →</span>
         </a>
       </div>
 
       <div class="strip">
-        <div><b>Honesty policy</b> — a model that fails a backtest gets
-        published anyway, labeled as a null. Roughly a third of our
-        findings are things that <i>don't</i> work: WR/CB matchup data,
-        team Elo for season projections, "injury-prone" labels.</div>
+        <div><b>We publish our misses.</b> When an idea fails the test,
+        the write-up still goes up — about a third of the findings are
+        "this doesn't work" results (WR-vs-cornerback matchups,
+        "injury-prone" labels, team ratings). That's how you know the
+        wins are real.</div>
       </div>
     </section>
 
@@ -86,26 +92,56 @@
         <button data-tab="k" class="tab pos-k">K</button>
         <button data-tab="skill" class="tab">QB / RB / WR / TE</button>
       </div>
+
+      <div class="board-tools" id="weekly-tools">
+        <input id="weekly-search" type="search" placeholder="Filter teams…"
+               aria-label="Filter teams">
+        <label class="check"><input type="checkbox" id="weekly-hide-taken">
+          hide taken</label>
+        <button id="weekly-clear" class="mini-btn"
+                title="Clear all taken/mine marks">clear marks</button>
+        <span class="legend dim">click a row:
+          <span class="mark-chip taken">taken</span> →
+          <span class="mark-chip mine">mine</span> → clear</span>
+      </div>
+
       <div id="weekly-dst" class="tab-pane">
-        <p class="blurb">Ranked by <b>opponent implied total</b> — worth
-        .304 within-week rank correlation on its own; everything else
-        anyone tells you about D/ST streaming adds ≤.005
-        (<a href="#/blog/27-dst-model">finding 27</a>).</p>
+        <p class="blurb">Defenses ranked by their <b>opponent's implied
+        total</b> — the score Vegas expects the other team to put up.
+        Low number = good matchup. Across eight seasons, that one number
+        predicted defense scoring better than every other stat we tested
+        combined (<a href="#/blog/27-dst-model">finding 27</a>).</p>
+        <details class="note">
+          <summary>Same list for ESPN and Yahoo — here's why</summary>
+          <p>ESPN and Yahoo score defenses differently. Yahoo pays more
+          at the extremes: a shutout is worth +10 there vs +5 on ESPN,
+          and getting blown out costs as much as −10 vs −6. But both
+          systems reward the same thing — facing a bad offense — so
+          when we re-ran our model under each system, the order barely
+          moved. Your point totals will differ by platform; the ranking
+          won't.</p>
+        </details>
         <div class="tbl"><table id="dst-table"></table></div>
       </div>
+
       <div id="weekly-k" class="tab-pane" hidden>
-        <p class="blurb">Ranked by <b>own-team implied total</b> with a
-        dome bump. The kicker himself barely matters — stream the
-        situation (<a href="#/blog/28-kicker-model">finding 28</a>).</p>
+        <p class="blurb">Kickers ranked by their <b>own team's implied
+        total</b> — the score Vegas expects that offense to put up —
+        plus a bump for domes (no wind). The kicker himself barely
+        matters; pick the offense and the venue
+        (<a href="#/blog/28-kicker-model">finding 28</a>).</p>
         <div class="tbl"><table id="k-table"></table></div>
       </div>
+
       <div id="weekly-skill" class="tab-pane" hidden>
         <div class="empty-state">
-          <h3>Skill-position boards go live with the season</h3>
-          <p>The weekly model needs two weeks of current-season form
-          (it blends trailing production with usage-based expected
-          points, opponent strength and the Vegas total). First boards
-          post September 2026 — with movement reasons.</p>
+          <h3>Live in September</h3>
+          <p>The weekly model needs a couple weeks of the current season
+          — who is actually getting the ball — before its rankings mean
+          anything. Until then, use the
+          <a href="#/board">2026 draft board</a>. When these boards go
+          live they'll work like the others: searchable, filterable,
+          with taken/mine marking for your league.</p>
         </div>
       </div>
     </section>
@@ -114,25 +150,71 @@
     <section id="view-board" class="view" hidden>
       <div class="view-head">
         <h2>2026 season board</h2>
-        <span class="dim">returning players · model v1 · rookies via ADP
-        until the rookie model ships</span>
+        <span class="dim">veterans only — for rookies, follow ADP until
+        our rookie model ships</span>
+      </div>
+      <p class="blurb">The <b>2026 proj PPG</b> column is what this model
+      expects each player to average <b>per game over the 2026 regular
+      season</b>. It reads last season's usage, age, contract and team,
+      and it was graded on seasons it was never trained on.
+      <a href="#/post/25-player-model">How it works, and how often it
+      beats the draft market →</a></p>
+      <div class="scoring">
+        <span class="scoring-label">Scoring</span>
+        <div class="tabs" id="board-scoring"
+             role="group" aria-label="Scoring format"></div>
       </div>
       <div class="tabs" id="board-tabs"></div>
+      <div class="board-tools">
+        <input id="board-search" type="search" placeholder="Find a player…"
+               aria-label="Find a player">
+      </div>
       <div class="tbl"><table id="board-table"></table></div>
-      <h3 class="sub-head">Market environment — what Vegas already thinks
-        of every 2026 offense</h3>
-      <p class="blurb">Implied points per game across all 272 games of
-      the 2026 schedule (consensus of ~9 books, snapshot Aug 2026).
-      Use it as draft-day context: a top-5 environment lifts every
-      pass-catcher in it.</p>
+      <h3 class="sub-head">What Vegas expects from every 2026 offense</h3>
+      <p class="blurb">Add up the betting lines for all 272 games on the
+      2026 schedule and you get an expected points-per-game for every
+      offense (snapshot: Aug 2026). More team points = more fantasy
+      points to go around. Use it as a tiebreak — when two players are
+      close, take the one in the better offense.</p>
       <div class="tbl half"><table id="market-table"></table></div>
     </section>
 
     <!-- ============================================= BLOG -->
     <section id="view-blog" class="view" hidden>
       <div class="view-head"><h2>Research</h2>
-        <span class="dim">newest first · confidence labels are earned,
-        not vibes</span></div>
+        <span class="dim">newest first · every finding shows its work</span></div>
+      <details id="glossary" class="note">
+        <summary>The stats we use, in plain English</summary>
+        <dl>
+          <dt>Spearman / rank correlation</dt>
+          <dd>How well two rankings agree, from −1 to 1. 1 = identical
+          order, 0 = no relationship. Our usual yardstick, since fantasy
+          is about who finishes ahead of whom.</dd>
+          <dt>Pearson correlation</dt>
+          <dd>How closely two sets of numbers move together, −1 to 1.
+          Like Spearman, but it also cares how big the gaps are, not
+          just the order.</dd>
+          <dt>Implied total</dt>
+          <dd>The score Vegas expects a team to put up, worked out from
+          that game's point spread and over/under.</dd>
+          <dt>ADP</dt>
+          <dd>Average draft position — where real drafters are taking a
+          player. The market's opinion of him.</dd>
+          <dt>All-play</dt>
+          <dd>Your record if you played every team in the league every
+          week. Measures team strength with schedule luck stripped out.</dd>
+          <dt>Backtest / LOYO</dt>
+          <dd>Testing a model on past seasons it never saw while being
+          built ("leave one year out"), so it can't grade its own
+          homework.</dd>
+          <dt>MAE</dt>
+          <dd>Mean absolute error — how many points a prediction missed
+          by, on average.</dd>
+          <dt>95% CI</dt>
+          <dd>The margin of error: the range the true number sits in, 19
+          times out of 20.</dd>
+        </dl>
+      </details>
       <div id="blog-list"></div>
     </section>
 
@@ -153,10 +235,11 @@
   </main>
 
   <footer id="site-footer">
-    <span>Built on public data — nflverse, OverTheCap, FFC ADP, Vegas
-    lines. Methods credited: Kapania (2012), subvertadown, nfelo,
-    MockoScience.</span>
-    <span class="dim">No accounts. No ads. No film.</span>
+    <span>FOSS Football — free and open source.
+      <a href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
+         target="_blank" rel="noopener">Code &amp; data on GitHub</a></span>
+    <span class="dim">Built on public data; each article credits its
+      sources.</span>
   </footer>
 
   <script src="app.js"></script>

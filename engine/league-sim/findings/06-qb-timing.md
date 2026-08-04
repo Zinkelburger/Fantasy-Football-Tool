@@ -5,13 +5,15 @@ moderate; numbers are environment v3 — see finding 13's version table)
 
 ## TL;DR
 
-Even at 4-pt passing TDs, expensive QBs return real points — the cost
-curve is *not* flat — and the sim says the market prices that roughly
-fairly: taking a QB early is fine (.592, dead even with disciplined
-no-conviction drafting at .591), while deliberately waiting past
-round 10 and leaning on waivers measurably costs (.563, −2.9 points).
-Take your QB when a top-6 one is available in rounds ~3–6 (finding 14
-sweeps every round: 4–6 is the peak).
+Expensive quarterbacks are worth it — they're just not a bargain.
+Early QBs really do score more (roughly 8 more PPG at the top of the
+market than the bottom), and the sim says drafts price that about
+right: taking one early neither helps nor hurts (.592 all-play, even
+with .591 for drafting with no QB opinion at all). What *does* hurt
+is waiting past round 10 and planning to stream off waivers: −2.9
+points, because most years the wire holds no good QBs. Sweet spot:
+take a top-6 QB in rounds ~3–6 (finding 14 sweeps every round: 4–6
+is the peak).
 
 ## The data
 

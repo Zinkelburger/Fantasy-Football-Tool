@@ -4,10 +4,11 @@
 
 ## TL;DR
 
-Average PPG by end-of-season positional rank, 2020–2025, league
-scoring. Every strategic conclusion in this directory is downstream of
-this table's shape: RB falls off a cliff, WR is flat, TE is
-elite-or-nothing, K is a rounding error, QB is high but replaceable.
+How much better is the #1 player at each position than the #10, in
+points per game? This table (2020–2025, league scoring) is the spine
+of every draft rule here: RB value falls off a cliff, WR stays nearly
+flat for 20+ ranks, TE is elite-or-nothing, QB scores the most but is
+replaceable, and kickers are a rounding error.
 
 ## The data
 

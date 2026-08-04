@@ -23,6 +23,10 @@
 
 * { box-sizing: border-box; }
 
+/* Default browser link blue is unreadable on this background. Components
+   that set their own colour (#site-nav a, .card) still win on specificity. */
+a { color: var(--accent); }
+
 html, body {
   margin: 0;
   min-height: 100%;
@@ -180,6 +184,17 @@ html, body {
 .tab.pos-k.active   { background: var(--pos-k); }
 .tab.pos-dst.active { background: var(--pos-dst); }
 
+/* scoring-format switch above the position tabs */
+.scoring { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; }
+.scoring .tabs { margin: 0; }
+.scoring .tab { padding: 0.24rem 0.8rem; font-size: 0.85rem; }
+.scoring-label {
+  color: var(--fg-dim);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* ------------------------------------------------------------ tables */
 .tbl { overflow-x: auto; }
 .tbl.half { max-width: 34rem; }
@@ -209,6 +224,97 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   margin-left: 0.4rem;
 }
 .tag.dome { color: var(--pos-k); border-color: var(--pos-k); }
+
+/* ------------------------------------------------- table toolbars */
+.board-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin: 0.2rem 0 0.9rem;
+}
+.board-tools input[type="search"] {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 8px;
+  padding: 0.38rem 0.75rem;
+  min-width: 13rem;
+  font: inherit;
+  font-size: 0.92rem;
+}
+.board-tools input[type="search"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.check {
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  user-select: none;
+}
+.check:hover { color: var(--fg); }
+.mini-btn {
+  background: var(--bg-panel);
+  color: var(--fg-dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.26rem 0.6rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+}
+.mini-btn:hover { color: var(--fg); background: var(--bg-hover); }
+.legend { font-size: 0.84rem; }
+
+/* ------------------------------------------- taken / mine row marks */
+tr[data-mark-key] { cursor: pointer; }
+tr.is-taken td { opacity: 0.45; }
+tr.is-taken td:nth-child(2) { text-decoration: line-through; }
+tr.is-mine td { background: rgba(79, 142, 247, 0.12); }
+tr.is-mine td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.mark-col { width: 3.6rem; }
+.mark-chip {
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 0.35rem;
+  color: var(--fg-dim);
+}
+.mark-chip.taken { color: var(--red); border-color: var(--red); }
+.mark-chip.mine  { color: var(--accent); border-color: var(--accent); }
+/* the marks are useful even inside a dimmed row */
+tr.is-taken td.mark-cell { opacity: 1; }
+
+/* ------------------------------------------------ notes & glossary */
+details.note {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  margin: 0.6rem 0 1rem;
+  max-width: 44rem;
+  font-size: 0.92rem;
+}
+details.note summary {
+  cursor: pointer;
+  color: var(--fg-dim);
+  user-select: none;
+}
+details.note summary:hover { color: var(--fg); }
+details.note p { color: var(--fg-dim); margin: 0.6rem 0 0.2rem; }
+details.note dl { margin: 0.6rem 0 0.2rem; }
+details.note dt { color: var(--fg); font-weight: 600; margin-top: 0.6rem; }
+details.note dd { color: var(--fg-dim); margin: 0.1rem 0 0 0; }
+
+/* dotted-underline terms with a hover definition */
+.gloss {
+  border-bottom: 1px dotted var(--fg-dim);
+  cursor: help;
+}
 
 .empty-state {
   background: var(--bg-panel);

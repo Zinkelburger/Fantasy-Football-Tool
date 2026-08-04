@@ -5,13 +5,13 @@ the descriptive spike asymmetry is solid.
 
 ## TL;DR
 
-The theory ("bench RBs become starters overnight; bench WRs are dead
-weight") is *descriptively true and strategically nearly worthless*.
-Late-round RBs do spike into startable runs far more often than WRs —
-but tilting your bench toward RBs moved all-play by **+0.5 points and
-titles by +1.1** over an untilted drafter, inside the noise band.
-Verdict: use RB as the tiebreak for your last bench spots; do not
-burn mid-round picks on the theory.
+The theory says bench RBs can become starters overnight while bench
+WRs are dead weight. That's true — and it's nearly worthless.
+Late-round RBs really do turn into multi-week starters more often
+than WRs (21% vs 13%), but a drafter who tilted its bench toward RBs
+gained only **+0.5 points of all-play and +1.1% titles** — inside
+the noise. Verdict: let RB break ties for your last bench spots;
+don't burn mid-round picks on the theory.
 
 ## The data
 

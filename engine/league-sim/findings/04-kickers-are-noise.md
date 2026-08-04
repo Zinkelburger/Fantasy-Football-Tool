@@ -4,10 +4,12 @@
 
 ## TL;DR
 
-The top-scoring kicker after week 1 finished the rest of the season at
-median rank **~#19 of ~34** kickers. Even the top kicker through four
-weeks shows almost no persistence. Draft any kicker with your last
-pick; swap only for byes; never spend waiver priority chasing one.
+A hot start tells you nothing about a kicker. The top scorer after
+week 1 finished the rest of the season around **#19 of ~34 kickers**
+— the middle of the pack — and even the best kicker through four
+weeks rarely stays on top. Draft any kicker with your last pick, swap
+for bye weeks, and never spend waiver priority chasing last week's
+hero.
 
 ## The data
 
