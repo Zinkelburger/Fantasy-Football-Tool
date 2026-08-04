@@ -10,7 +10,19 @@
 </head>
 <body>
   <header>
-    <h1>FOSS Football Draft Tool</h1>
+    <div class="header-left">
+      <a id="home-link" href="../" target="_top"
+         title="Leave the draft tool — back to foss.football">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5"/>
+          <path d="M5 9.5V21h14V9.5"/>
+          <path d="M10 21v-6h4v6"/>
+        </svg>
+      </a>
+      <h1>FOSS Football Draft Tool</h1>
+    </div>
     <div class="header-controls">
       <label class="fmt-label">Scoring
         <select id="scoring-format">
@@ -115,9 +127,9 @@
               </span>
             </span>
             <button id="btn-predict"
-              title="Answers who to take right now. Simulates every pick between now and your next turn — opponents draft by the 'Bots follow' ranking, using the 'Bot style' rule (no AI) — then names the position that thins out worst before you pick again. Stays on and re-answers automatically as real picks come in.">Who should I take?</button>
+              title="Names your best pick, by simulating the picks before your next turn. Stays on and re-answers as picks land.">Who should I take?</button>
             <button id="btn-clear-predict" hidden
-              title="Remove the simulated picks and just follow the draft — real picks always show live either way">Return to live</button>
+              title="Drop the simulation and just follow the live draft">Return to live</button>
           </div>
           <div id="board-outlook"></div>
           <div id="board-grid-wrap"><div id="board-grid"></div></div>
@@ -214,10 +226,16 @@
           than the board, so they'll go earlier there; <b>(−n)</b> = n spots lower — they may
           fall to you.</dd>
         <dt>Bye</dt><dd>The week the player's team doesn't play. Don't stack your starters on one bye.</dd>
-        <dt>✅ / ❌</dt><dd>Your target / avoid markers.</dd>
+        <dt>Target (last column)</dt><dd>Your shortlist marker — click it (or press <b>D</b>) to
+          cycle <b>○</b> no opinion → <b>✅</b> want him → <b>❌</b> avoid him. It's only a note to
+          yourself; it doesn't draft anyone.</dd>
         <dt>★</dt><dd>On your team. &nbsp; <b>✎</b> — a note you edited.</dd>
         <dt>Orange rows</dt><dd>After "Who should I take?" on the Draft Board: players the simulation
           expects to be gone before your next turn.</dd>
+        <dt>Cost of waiting</dt><dd>On the Draft Board outlook: what passing on a position now costs
+          you, in projected season points, if you wait until your following pick. Points rather than
+          rank spots, because a 30-spot slide at tight end is worth far less than a 16-spot slide at
+          running back.</dd>
       </dl>
       <p class="hint">Picked / +Team buttons are hidden by default — during a live draft the
         extension handles picks automatically. Turn on <b>Manual mode</b> in Settings (&#9881;)

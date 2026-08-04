@@ -63,26 +63,39 @@ evidence instead of vibes.
   table, players predicted gone before my next pick get an orange tint.
 - An outlook answers the meta-game question per position: best available
   **now** vs **Yours at <pick>**, how many are **taken before you**, who
-  I get **if I pass** until my *following* pick, and how far the position
-  **falls** — the board spots lost by waiting, which is exactly the row's
-  "if you pass" rank minus its "yours at" rank. A cost of 0 renders as
-  "same" rather than a bare 0.
+  I get **if I pass** until my *following* pick, and the **cost of
+  waiting** — what passing costs in projected season points, with the board
+  spots lost shown underneath as the familiar sanity check. Under a point
+  the cell reads "nothing" rather than a bare 0; a position that empties
+  out entirely reads "runs out".
+- **The cost is priced in points, not rank spots.** Each position has a
+  fitted points-per-draft-slot curve, `E[season pts] = a + b·ln(slot)`
+  (`PICK_VALUE_FITS`, the pooled 2020–2025 standard-scoring rows of
+  `engine/league-sim/data/pick_value_fits.json` — the same curves the
+  league-sim's `pick_value` drafter wins with). Waiting costs
+  `E(pos, rank now) − E(pos, rank if I pass)`. Rank spots are not
+  comparable across positions and counting them inverts the answer: from
+  1.01 a 30-spot TE slide is ~29 points while a 16-spot RB slide is ~107,
+  so a spot-counting board recommends the tight end.
 - Every name in the outlook carries **two** numbers: my board rank (what
-  "falls" is measured in) and the ranking the bots sort on (what decides
-  who actually disappears), with a legend naming both. Showing only the
-  first makes any player my board rates well above the site's look like a
-  broken simulation — the ESPN-36 / board-18 gap is the explanation.
+  the cost is priced off) and the ranking the bots sort on (what decides
+  who actually disappears), with a legend naming both, plus what the points
+  are and where the curve comes from. Showing only the first makes any
+  player my board rates well above the site's look like a broken
+  simulation — the ESPN-36 / board-18 gap is the explanation.
 - The headline answers first and justifies second, in two lines: "Your pick
-  now — **Brock Bowers** TE · your #25" over "TE falls 24 spots by pick 28
-  — pass and it's Colston Loveland 49". Off the clock the first line reads
+  now — **Jahmyr Gibbs** RB · your #1" over "Waiting until pick 24 costs
+  about 107 points at RB: pass and the best one left is Chase Brown 17 —
+  16 spots further down your board". Off the clock the first line reads
   "At your pick 21" instead. It names the single best pick for MY roster:
-  among positions I'd reasonably draft (same wouldDraft rules), the one
-  with the steepest wait cost — i.e. naive two-pick-lookahead pick value
-  with ranks as the value scale. Naming the fallback is required — the cost
-  is stated as a concrete choice between two players, never a bare number,
-  because a rank delta with no name attached is unreadable mid-draft. The
-  extended simulation past my pick is internal only; the grid still shows
-  nothing beyond my next pick.
+  among positions I'd reasonably draft (same wouldDraft rules), the most
+  expensive wait, with a position whose starting slots (including one
+  RB/WR flex) I have already filled discounted to `BENCH_WEIGHT` — bench
+  points aren't lineup points, and undiscounted wait-cost drafts a fifth
+  RB. Naming the fallback is required — the cost is stated as a concrete
+  choice between two players, never a bare number, because a number with
+  no name attached is unreadable mid-draft. The extended simulation past my
+  pick is internal only; the grid still shows nothing beyond my next pick.
 - **Predict and live coexist**: predict mode persists, and every new real
   pick (or slot / league-shape change) re-simulates the window instead of
   leaving a stale overlay — the outlook is marked "live". While the mode is
@@ -96,5 +109,6 @@ evidence instead of vibes.
 - `webapp/app.js` — `renderBoard()`, `renderOutlook()`, `computePrediction()`,
   `runPrediction()`, `predictDraft()`, `wouldDraft()`, `snakeTeamForPick()`,
   `nextPickForTeam()`, `pickLogEntries()`, `effectiveSlot()`, `yourNextPick()`,
-  `renderAll()` (auto re-simulation), `BADLY_NEEDED_BY_ROUND`
+  `renderAll()` (auto re-simulation), `expectedPoints()`, `waitCost()`,
+  `PICK_VALUE_FITS`, `BENCH_WEIGHT`, `FLEX_POSITIONS`, `BADLY_NEEDED_BY_ROUND`
 - `webapp/index.html` — `#board-view`

@@ -21,6 +21,10 @@
   --pos-k:  #9a7bd0;
   --pos-dst: #8a9a5b;
   font-size: 15px;
+  /* Native scrollbars in dark tone. A white scrollbar down the middle of the
+     page is a brighter vertical line than the panel divider next to it, which
+     is exactly the line you don't want the eye to read as the split. */
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -47,6 +51,16 @@ header {
 }
 
 header h1 { font-size: 1.05rem; margin: 0; font-weight: 600; }
+
+.header-left { display: flex; align-items: center; gap: 0.55rem; }
+#home-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--fg-dim);
+  padding: 0.3rem;
+  border-radius: 4px;
+}
+#home-link:hover { color: var(--accent); background: var(--bg-hover); }
 
 .header-controls { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
 
@@ -96,14 +110,35 @@ main {
   min-width: 0;
 }
 
+/* Two unrelated things live either side of this line — the player list and
+   the AI/draft-board panel — so it's a real rail with edges and a grip, not a
+   hairline. Anything thinner reads as a table border and the two halves blur
+   into one page. */
 #panel-divider {
-  flex: 0 0 6px;
+  flex: 0 0 11px;
   cursor: col-resize;
-  background: var(--border);
-  background-clip: content-box;
-  padding: 0 2px; /* 2px visible line, 6px grab area */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Darker than either panel: a recessed channel reads as a seam between two
+     surfaces, where a same-tone strip just reads as more panel. */
+  background: #121216;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
-#panel-divider:hover, body.dragging #panel-divider { background-color: var(--accent); }
+/* Grip: says "drag me" without a tooltip */
+#panel-divider::after {
+  content: '';
+  width: 3px;
+  height: 60px;
+  border-radius: 3px;
+  background: var(--fg-dim);
+  opacity: 0.6;
+}
+#panel-divider:hover::after, body.dragging #panel-divider::after {
+  background: var(--accent);
+  opacity: 1;
+}
 body.dragging { cursor: col-resize; user-select: none; }
 
 #right-panel {
@@ -143,9 +178,11 @@ body.dragging { cursor: col-resize; user-select: none; }
   z-index: 1;
 }
 #player-table th.sortable { cursor: pointer; }
-#player-table th.sortable:hover { color: var(--accent); }
-#player-table th.sorted::after { content: ' ↓'; color: var(--accent); }
-/* Reads as a label for the empty action column, not as a column of data */
+#player-table th.sortable:hover { color: var(--fg); }
+/* Which column the board is sorted by. It sits on the Rank header all draft
+   long, so it's a quiet gray tick — a colored arrow reads as an alert. */
+#player-table th.sorted::after { content: ' ↓'; color: var(--fg-dim); opacity: 0.8; }
+/* Reads as a label for the marker column, not as a column of data */
 #player-table th.actions-col {
   font-weight: 400;
   font-size: 0.78rem;
@@ -184,15 +221,35 @@ td.player-name { font-weight: 500; }
 .flag-star { color: var(--yellow); }
 td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
 
+td.row-actions { text-align: right; }
 .row-actions button {
   padding: 0.05rem 0.4rem;
   font-size: 0.8rem;
   margin-left: 0.2rem;
 }
-/* Fixed button widths: '–' vs '✅', 'Picked' vs 'Undo' must not resize columns */
+/* Fixed button widths: '○' vs '✅', 'Picked' vs 'Undo' must not resize columns */
 .row-actions .act-mark { width: 2.4em; padding-left: 0; padding-right: 0; text-align: center; }
 .row-actions .act-pick { min-width: 4.8em; }
 .row-actions .act-team { min-width: 4.6em; }
+/* The marker is on every single row, so an unset one is a faint glyph, not a
+   raised gray chip: 600 buttons shouting for attention is 600 things to
+   ignore. It grows a button's edges under the cursor, where it's clickable. */
+.row-actions .act-mark {
+  background: none;
+  border-color: transparent;
+  color: var(--fg-dim);
+  opacity: 0.7;
+  font-size: 0.95rem;   /* the ring is a small glyph; it has to stay legible */
+  line-height: 1;
+}
+.row-actions .act-mark:hover {
+  background: var(--bg-hover);
+  border-color: var(--border);
+  color: var(--fg);
+  opacity: 1;
+}
+/* A marker you actually set stays fully lit — that's the point of setting it */
+.row-actions .todraft-yes, .row-actions .todraft-no { opacity: 1; }
 .row-actions .todraft-yes { color: var(--green); }
 .row-actions .todraft-no { color: var(--red); }
 
@@ -564,7 +621,18 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
   font-variant-numeric: tabular-nums;
 }
 #board-outlook .ol-cost { font-weight: 700; text-align: right; }
+/* Points are the decision; the spot count under them is the sanity check */
+#board-outlook .ol-spots {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8em;
+  color: var(--fg-dim);
+  opacity: 0.8;
+}
 #board-outlook .ol-free { font-weight: 400; color: var(--fg-dim); }
+/* "Your starters at this position are done" — the reason a bigger number on
+   this row still lost to the suggested pick */
+#board-outlook .ol-bench { color: var(--orange); opacity: 0.9; }
 #board-outlook .ol-status { padding-bottom: 0.5rem; }
 #board-outlook .ol-legend {
   margin-top: 0.55rem;

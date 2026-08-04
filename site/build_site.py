@@ -5,7 +5,12 @@ Inputs (all tracked in the repo):
                                                       -> board.json
 - engine/league-sim/data/market/implied_2026.csv      -> market.json
 - engine/league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
-- engine/league-sim/findings/NN-*.md                  -> blog.json
+- site/posts/NN-*.md                                  -> blog.json
+
+site/posts/ holds the reader-facing rewrites of the research findings in
+engine/league-sim/findings/ (same filenames; the research docs are the
+record, the posts are the articles). A finding without a post is skipped
+with a warning.
 
 Run: python3 site/build_site.py   (stdlib only; re-run after any model
 refresh or new finding)
@@ -19,6 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 MKT = ROOT / "engine" / "league-sim" / "data" / "market"
 FINDINGS = ROOT / "engine" / "league-sim" / "findings"
+POSTS = SITE / "posts"
 
 TEAMS = {
     "ARI": "Cardinals", "ATL": "Falcons", "BAL": "Ravens", "BUF": "Bills",
@@ -344,8 +350,13 @@ def build_weekly():
 
 
 def build_blog():
+    published = {p.stem for p in POSTS.glob("[0-9][0-9]-*.md")}
+    missing = {p.stem for p in FINDINGS.glob("[0-9][0-9]-*.md")} - published
+    for stem in sorted(missing):
+        print(f"WARNING: no site/posts/ rewrite for finding {stem} — "
+              "it will not appear on the site")
     posts = []
-    for p in sorted(FINDINGS.glob("[0-9][0-9]-*.md")):
+    for p in sorted(POSTS.glob("[0-9][0-9]-*.md")):
         md = p.read_text()
         lines = md.splitlines()
         title = re.sub(r"^#\s*\d+\s*—?\s*", "", lines[0]).strip()

@@ -213,6 +213,54 @@ const BADLY_NEEDED_BY_ROUND = { QB: 10, RB: 4, WR: 4, TE: 12 };
 // the bundled board but can arrive from the extension's pick feed.
 const BOARD_POS_ORDER = ['RB', 'WR', 'QB', 'TE', 'DST', 'K'];
 
+/* ---------- pick value: what a draft slot is worth, in points ---------- */
+// E[season points] = a + b * ln(draft slot), fit per position on 2020-2025
+// ADP vs actual standard-scoring season points. These are the "pooled" rows of
+// engine/league-sim/data/pick_value_fits.json (built by
+// engine/league-sim/analysis/fit_pick_value.py) — the same curves the
+// league-sim's pick_value drafter wins with.
+//
+// This curve is the whole reason the suggestion can't be made on rank spots:
+// spots are not a unit of football. From pick 1, dropping 30 spots at TE costs
+// ~29 points; dropping 16 spots at RB costs ~107. Counting spots says take the
+// tight end, which is how the old version arrived at Trey McBride at 1.01.
+//
+// Standard scoring. In a PPR league the WR and TE curves sit higher than this,
+// so treat the RB lean as, if anything, slightly overstated there.
+const PICK_VALUE_FITS = {
+  QB: [539.94, -72.38],
+  RB: [250.48, -37.89],
+  WR: [230.61, -32.35],
+  TE: [214.20, -30.58],
+  K: [336.93, -42.55],
+};
+// Slot at which a position counts as picked clean (nobody left worth having),
+// and the floor the curve is evaluated at for unranked players.
+const PICK_VALUE_EXHAUSTED = 250;
+// A player who doesn't fill a starting slot only scores through the flex or an
+// injury, so his wait cost is worth less than the same points at a slot you
+// have to fill. Ported from simfl PickValue.BENCH_WEIGHT.
+const BENCH_WEIGHT = 0.45;
+// One flex on top of the fixed starters, RB/WR in this league (simfl config).
+const FLEX_POSITIONS = ['RB', 'WR'];
+
+// What a position is worth to a roster if you take it at board slot `slot`.
+function expectedPoints(pos, slot) {
+  const fit = PICK_VALUE_FITS[pos];
+  if (!fit) return 0;
+  const x = Math.min(Math.max(slot || PICK_VALUE_EXHAUSTED, 1), PICK_VALUE_EXHAUSTED);
+  return fit[0] + fit[1] * Math.log(x);
+}
+
+// The cost of waiting one turn at a position: the best player there now (board
+// slot `nowSlot`) minus the best one still there at your following pick
+// (`laterSlot`, null when the position empties out). Both run through the same
+// curve, so the answer is in projected season points — which is what makes QB,
+// RB, WR and TE comparable at all.
+function waitCost(pos, nowSlot, laterSlot) {
+  return Math.max(0, expectedPoints(pos, nowSlot) - expectedPoints(pos, laterSlot));
+}
+
 /* ---------- snake draft math (1-based picks, teams 1..T) ---------- */
 function snakeTeamForPick(pick, teams) {
   const round = Math.ceil(pick / teams);
@@ -374,7 +422,9 @@ if (typeof module !== 'undefined' && module.exports) {
     computePickedFromAvailable, groupByPosition, renderMarkdown, escapeHtml,
     splitCsvLine, csvCell, parseRankingsText, buildRankingsCsv,
     normPos, snakeTeamForPick, nextPickForTeam, predictDraft, wouldDraft,
+    expectedPoints, waitCost,
     STARTER_SLOTS, ROSTER_CAPS, BADLY_NEEDED_BY_ROUND,
+    PICK_VALUE_FITS, PICK_VALUE_EXHAUSTED, BENCH_WEIGHT, FLEX_POSITIONS,
     DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS,
   };
 } else {
@@ -782,7 +832,9 @@ function initApp() {
       }
 
       const mark = toDraft[p.name];
-      const markLabel = mark === 'yes' ? '✅' : mark === 'no' ? '❌' : '–';
+      // Empty state is a hollow ring, not a dash: it reads as "slot waiting to
+      // be filled" and lines up with the two filled states above it.
+      const markLabel = mark === 'yes' ? '✅' : mark === 'no' ? '❌' : '○';
       const markClass = mark === 'yes' ? 'todraft-yes' : mark === 'no' ? 'todraft-no' : '';
       const fromExt = extPicked.has(p.name);
       const ovRank = rankOverrideFor(p);
@@ -837,7 +889,10 @@ function initApp() {
         `${noteEditedFor(p) ? '✎ ' : ''}${escapeHtml(truncateNote(noteFor(p)))}</td>` +
         `<td class="row-actions">` +
         pickBtn +
-        `<button class="act-mark ${markClass}" title="Cycle target/avoid marker (D or Space)">${markLabel}</button>` +
+        `<button class="act-mark ${markClass}" title="${mark === 'yes'
+          ? 'Targeting him — click for ❌ avoid'
+          : mark === 'no' ? 'Avoiding him — click to clear'
+          : 'Not marked — click for ✅ target'} (D or Space)">${markLabel}</button>` +
         teamBtn +
         `</td>`;
 
@@ -860,18 +915,19 @@ function initApp() {
     $('player-count').textContent =
       `${shown} shown · ${available} available · ${picked.size} picked`;
 
-    // Where a "Picked" button would be if this tool drafted for you. It
-    // doesn't — you pick on your league site and the extension mirrors it —
-    // and the blank column is exactly where someone goes looking for that
-    // button, so the answer belongs here rather than buried in Settings.
+    // Name the column after what the button in it does. In normal (extension-
+    // driven) mode the only control there is the target marker, so the header
+    // says Target; the "we never draft for you" explanation moves into the
+    // tooltip, where it answers the question it was really there to answer.
     const thActions = $('th-actions');
     if (thActions) {
-      thActions.textContent = manual ? '' : 'pick on site';
+      thActions.textContent = manual ? 'Actions' : 'Target';
       thActions.title = manual
-        ? 'Manual mode: draft by hand with these buttons'
-        : 'This tool never drafts for you — make picks in your ESPN/Sleeper ' +
-          'draft room and they appear here automatically. Settings → Manual ' +
-          'mode lets you draft by hand instead.';
+        ? 'Manual mode: mark picks and build your roster by hand with these buttons. ' +
+          '○ ✅ ❌ is still your target marker.'
+        : 'Your shortlist — ✅ want him, ❌ avoid him, ○ no opinion. Click to cycle (or press D). ' +
+          'Drafting itself happens in your ESPN/Sleeper draft room; picks show up here ' +
+          'automatically. Settings → Manual mode adds by-hand Picked / +Team buttons.';
     }
     // Whose turn it is, not just how many picks have gone. In a manual
     // (debug) draft you pick for all 12 teams in turn — the snake decides who
@@ -1305,32 +1361,8 @@ function initApp() {
     const onClock = info.until <= 0;
     const follow = meta ? meta.followNext : null;
 
-    let suggest = '';
-    if (meta && meta.suggestion) {
-      const s = meta.suggestion;
-      // Answer first, reasoning second. This panel is read while a clock runs,
-      // so the name leads and the arithmetic justifies it underneath — the
-      // question is "who do I take", not "what does the simulation forecast".
-      // Cost 0 means nothing drops off before your following turn — usually
-      // back-to-back at the snake turn. A bare "0" invites the obvious "then
-      // why this player?"; the honest answer is that no position is scarce.
-      const why = !s.B
-        ? `${s.pos} runs out entirely before pick ${meta.followNext} — last chance at the position`
-        : s.cost > 0
-          ? `${s.pos} falls ${s.cost} spot${s.cost === 1 ? '' : 's'} by pick ${meta.followNext} — ` +
-            `pass and it's <b>${escapeHtml(s.B.name)}</b> ${escapeHtml(s.B.rank)}`
-          : `nothing drops off before pick ${meta.followNext} — no position is scarce, ` +
-            'so this is simply best available';
-      suggest = '<div class="ol-suggest" title="For each position you\'d draft now, ' +
-        'this compares the best player there against the best one still left at your ' +
-        'following turn. The position that falls furthest is the pick.">' +
-        `<div class="ol-suggest-head">${onClock ? 'Your pick now' : `At your pick ${info.next}`} — ` +
-        `<b>${escapeHtml(s.A.name)}</b> <span class="ol-suggest-meta">${s.pos} · your #${escapeHtml(s.A.rank)}</span></div>` +
-        `<div class="ol-suggest-why">${why}</div></div>`;
-    }
-
     // Two numbers per name, because two different rankings drive this table:
-    // your board rank (what the cost is measured in) and the ranking the bots
+    // your board rank (what the cost is priced off) and the ranking the bots
     // sort on (what decides who's actually gone). Showing only the first is
     // what makes a faller look impossible — "my #18 is still here at pick 28?"
     // reads as a broken sim until you can see ESPN has him 36th.
@@ -1346,13 +1378,43 @@ function initApp() {
         (bot ? ` <span class="ol-adp">${srcLabel}&nbsp;${escapeHtml(bot)}</span>` : '');
     };
 
+    let suggest = '';
+    if (meta && meta.suggestion) {
+      const s = meta.suggestion;
+      // Answer first, reasoning second. This panel is read while a clock runs,
+      // so the name leads and the arithmetic justifies it underneath — the
+      // question is "who do I take", not "what does the simulation forecast".
+      // Cost ~0 means nothing drops off before your following turn — usually
+      // back-to-back at the snake turn. A bare "0" invites the obvious "then
+      // why this player?"; the honest answer is that no position is scarce.
+      const pts = Math.round(s.cost);
+      const spots = s.spots
+        ? ` — ${s.spots} spot${s.spots === 1 ? '' : 's'} further down your board`
+        : '';
+      const why = !s.B
+        ? `${s.pos} runs out entirely before pick ${meta.followNext} — last chance at the position`
+        : pts >= 1
+          ? `Waiting until pick ${meta.followNext} costs about <b>${pts} points</b> at ${s.pos}: ` +
+            `pass and the best one left is <b>${escapeHtml(s.B.name)}</b> ` +
+            `${escapeHtml(myRank(s.B))}${spots}`
+          : `nothing worth having goes before pick ${meta.followNext} — no position is scarce, ` +
+            'so this is simply best available';
+      suggest = '<div class="ol-suggest" title="Among the positions you\'d draft now, the one ' +
+        'where waiting until your following turn costs the most projected points.">' +
+        `<div class="ol-suggest-head">${onClock ? 'Your pick now' : `At your pick ${info.next}`} — ` +
+        `<b>${escapeHtml(s.A.name)}</b> <span class="ol-suggest-meta">${s.pos} · your #${escapeHtml(myRank(s.A))}</span></div>` +
+        `<div class="ol-suggest-why">${why}</div></div>`;
+    }
+
     const head = '<tr><th></th>' +
       (onClock ? '' : '<th>Best now</th>' +
         '<th title="How many at this position the simulation expects to come off the board before your turn">Taken before you</th>') +
       `<th>${onClock ? 'Best available' : `Yours at ${info.next}`}</th>` +
       `<th title="The best one at this position the simulation still leaves you at your following turn">If you pass${follow ? ` — pick ${follow}` : ''}</th>` +
-      '<th title="How much further down YOUR board the best one at this position sits if you pass now and come back next turn. 0 means waiting costs you nothing there.">' +
-      'Falls</th></tr>';
+      '<th title="What passing here costs, in projected season points: the two names on this row ' +
+      'priced off this position\'s points-per-draft-slot curve. Points rather than rank spots, ' +
+      'because 30 spots of TE and 16 spots of RB are nothing like the same amount of football.">' +
+      'Cost of waiting</th></tr>';
 
     const rows = [];
     for (const pos of ['QB', 'RB', 'WR', 'TE']) {
@@ -1361,27 +1423,42 @@ function initApp() {
       const atPick = avail.find(p => p.pos === pos && !goneByThen.has(p.name));
       const gone = avail.filter(p => p.pos === pos && goneByThen.has(p.name)).length;
       const pv = meta && meta.byPos[pos];
+      // Points decide; the spot count rides along because "16 spots" is how
+      // the drop actually looks when you scroll the board next to this panel.
+      // A "bench" tag explains the one thing that otherwise looks broken here:
+      // why a row with a bigger number than the suggested pick didn't win.
+      const under = pv && pv.bench
+        ? `${pv.spots} spot${pv.spots === 1 ? '' : 's'} · <span class="ol-bench">bench</span>`
+        : pv ? `${pv.spots} spot${pv.spots === 1 ? '' : 's'}` : '';
       const waitCells = !pv
         ? '<td>—</td><td>—</td>'
-        : pv.cost >= 999
-          ? `<td class="ol-gone">none left</td><td class="ol-gone">runs out</td>`
+        : !pv.B
+          ? '<td class="ol-gone">none left</td><td class="ol-gone">runs out</td>'
           : `<td>${cell(pv.B)}</td>` +
-            `<td class="ol-cost">${pv.cost === 0 ? '<span class="ol-free">same</span>'
-              : `${pv.cost} spot${pv.cost === 1 ? '' : 's'}`}</td>`;
+            `<td class="ol-cost">${Math.round(pv.cost) < 1 ? '<span class="ol-free">nothing</span>'
+              : `${Math.round(pv.cost)} pts<span class="ol-spots">${under}</span>`}</td>`;
       rows.push('<tr>' +
         `<td><span class="pos-chip pos-${pos}">${pos}</span></td>` +
         (onClock ? '' : `<td>${cell(now)}</td><td class="ol-gone">${gone}</td>`) +
         `<td>${cell(atPick)}</td>` + waitCells + '</tr>');
     }
 
-    // Spell out whose ranking is whose under the table. The numbers are only
-    // interpretable as a pair, and the bots' source is the assumption most
-    // worth doubting — so it's named here, next to the button that changes it.
+    // Spell out whose ranking is whose under the table, and what the points
+    // are. The two rank numbers are only interpretable as a pair, and the
+    // bots' source is the assumption most worth doubting — so it's named here,
+    // next to the button that changes it.
     const legend = '<div class="ol-legend muted">' +
       '<span class="ol-rank">18</span> your board rank' +
-      (srcLabel ? ` · <span class="ol-adp">${srcLabel}&nbsp;36</span> what the bots draft from` +
-        ' — <b>Falls</b> is measured on your board, but who disappears is decided by ' +
-        `${srcLabel}` : '') +
+      (srcLabel ? ` · <span class="ol-adp">${srcLabel}&nbsp;36</span> what the bots draft from — ` +
+        `who disappears is decided by ${srcLabel}, not by your board.` : '') +
+      '<br><b>Cost of waiting</b> is projected season points (standard scoring), from the ' +
+      'points-per-draft-slot curve each position was fitted to over the 2020–2025 drafts. ' +
+      'That conversion is the point: rank spots are not comparable across positions, points are.' +
+      (Object.values(meta ? meta.byPos : {}).some(v => v.bench)
+        ? ' A row marked <span class="ol-bench">bench</span> has its starting spots filled ' +
+          'already, so its cost counts for less toward the suggested pick — points on your ' +
+          'bench are not points in your lineup.'
+        : '') +
       '</div>';
 
     el.innerHTML = suggest +
@@ -1579,12 +1656,12 @@ function initApp() {
     predicted = predictDraft(avail, rosterCountsByTeam(entries, teams),
       made + 1, info.next - 1, teams, rounds, algo);
 
-    // Naive pick value for YOUR turn: for each position, compare the best
-    // player there at your pick (A) vs the best left at your FOLLOWING pick
-    // (B), with opponents simulated in between. rank(B) − rank(A) is the
-    // cost of waiting one turn; among positions you'd reasonably draft, the
-    // steepest drop is the suggested pick. (With ranks as the value scale,
-    // max wait-cost is exactly the two-pick-lookahead optimum.) The extended
+    // Pick value for YOUR turn: for each position, compare the best player
+    // there at your pick (A) vs the best left at your FOLLOWING pick (B), with
+    // opponents simulated in between, and price both off that position's
+    // points-per-slot curve. E(pos, rank A) − E(pos, rank B) is the cost of
+    // waiting one turn in projected season points; among positions you'd
+    // reasonably draft, the most expensive wait is the pick. The extended
     // simulation is internal — the grid still only shows up to your pick.
     const goneNames = new Set(predicted.map(pr => pr.name));
     const followNext = nextPickForTeam(info.slot, teams, info.next);
@@ -1612,6 +1689,11 @@ function initApp() {
       if (gap > 0) { myGaps.add(pos); myGapCount += gap; }
     }
     const myMustFill = myGapCount > rounds - round ? myGaps : null;
+    // One flex on top of the fixed starters, so a third RB/WR is still lineup
+    // value rather than bench depth.
+    const flexBodies = FLEX_POSITIONS.reduce((n, pos) => n + (myCounts[pos] || 0), 0);
+    const flexSlots = FLEX_POSITIONS.reduce((n, pos) => n + STARTER_SLOTS[pos], 0) + 1;
+    const flexOpen = flexBodies < flexSlots;
 
     const byPos = {};
     let suggestion = null;
@@ -1619,12 +1701,19 @@ function initApp() {
       const A = boardAvail.find(p => p.pos === pos && !goneNames.has(p.name));
       if (!A) continue;
       const B = boardAvail.find(p => p.pos === pos && !goneByFollowing.has(p.name));
-      const cost = B ? effRank(B) - effRank(A) : 999;
-      byPos[pos] = { A, B, cost };
+      const spots = B ? effRank(B) - effRank(A) : null;
+      const cost = waitCost(pos, effRank(A), B ? effRank(B) : null);
+      // Points on the bench aren't points in the lineup: a position whose
+      // starting slots you've already filled is worth a fraction of the same
+      // wait cost. Without this the math cheerfully drafts a fifth running
+      // back because the RB curve is the steepest one on the board.
+      const bench = !(myGaps.has(pos) || (flexOpen && FLEX_POSITIONS.includes(pos)));
+      const weighted = bench ? cost * BENCH_WEIGHT : cost;
+      byPos[pos] = { A, B, cost, spots, bench };
       if (!wouldDraft(pos, myCounts[pos] || 0, round, rounds, myMustFill)) continue;
-      if (!suggestion || cost > suggestion.cost ||
-          (cost === suggestion.cost && effRank(A) < effRank(suggestion.A))) {
-        suggestion = { pos, A, B, cost };
+      if (!suggestion || weighted > suggestion.weighted ||
+          (weighted === suggestion.weighted && effRank(A) < effRank(suggestion.A))) {
+        suggestion = { pos, A, B, cost, spots, weighted, bench };
       }
     }
     // botSrc rides along so the outlook can show the number the bots actually
@@ -2047,11 +2136,11 @@ function initApp() {
     { target: '#player-tbody tr', title: 'Player notes',
       text: 'Click any row to open that player\'s full analysis note in a tab on the right — Ctrl+click opens it in an extra tab (like Obsidian). Press E to edit the note and make it yours.' },
     { target: '#player-tbody tr .row-actions', title: 'Target markers',
-      text: 'The ✅/❌ button (or D / Space) cycles your target-or-avoid marker. Manual Picked/+Team buttons are hidden by default — the extension tracks the draft for you. Turn on Manual mode in Settings to run a draft by hand.' },
+      text: 'The Target button (or D / Space) cycles ○ no opinion → ✅ want him → ❌ avoid him. It is a note to yourself, nothing more. Manual Picked/+Team buttons are hidden by default — the extension tracks the draft for you. Turn on Manual mode in Settings to run a draft by hand.' },
     { target: '#tab-bar', title: 'Tabs',
       text: 'AI Output and Draft Board live here permanently; player notes open as tabs next to them. A normal click on a player replaces the current note tab, Ctrl+click adds another, × (or the X key) closes one.' },
     { target: '#tab-strip .tab:nth-child(2)', title: 'The draft board',
-      text: 'A snake-draft grid: every pick colored by position, your next pick pink. Team headers count what each team has drafted by position — read across a row to spot a run forming; a red 0 means they are badly short there. Hover a header for what they still need. "Who should I take?" simulates every pick between now and your turn (no AI) and keeps re-simulating as real picks land; "Return to live" clears it.' },
+      text: 'A snake-draft grid: every pick colored by position, your next pick pink. Team headers count what each team has drafted by position — read across a row to spot a run forming; a red 0 means they are badly short there. Hover a header for what they still need. "Who should I take?" simulates every pick between now and your turn (no AI), then names the position where waiting costs the most projected points; it keeps re-simulating as real picks land, and "Return to live" clears it.' },
     { target: '#btn-ask', title: 'Ask AI',
       text: 'Sends the draft state — pick number, who\'s gone, your roster, and the notes of the top 15 available — to the AI and streams back advice. Press Q anytime.' },
     { target: '#team-panel .panel-head', title: 'Your team',
