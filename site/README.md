@@ -57,9 +57,12 @@ python3 site/build_site.py      # rebuild this site's JSON from tracked files
 
 Reads (all tracked in-repo): `engine/league-sim/data/market/
 model_board_2026{,_half,_ppr}.csv` (one board per scoring format,
-all three written by `analysis/player_model.py`), `implied_2026.csv`,
-`games.csv` (week-1 lines), and `engine/league-sim/findings/NN-*.md`.
-Re-run after a model refresh or a new finding. In-season, the weekly builder extends to skill positions
+all three written by `analysis/player_model.py`), `implied_2026.csv`
+(full-season implied points, both scored and allowed — feeds the
+draft-day K/D/ST boards), `games.csv` (week-1 lines, plus the full
+schedule's roofs for dome counts), and
+`engine/league-sim/findings/NN-*.md`. Re-run after a model refresh or a
+new finding. In-season, the weekly builder extends to skill positions
 (SITE_PLAN items 2–3).
 
 Note: nflverse `spread_line` is the HOME margin (positive = home

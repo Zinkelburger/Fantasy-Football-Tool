@@ -94,23 +94,18 @@
       </div>
 
       <div class="board-tools" id="weekly-tools">
-        <input id="weekly-search" type="search" placeholder="Filter teams…"
-               aria-label="Filter teams">
-        <label class="check"><input type="checkbox" id="weekly-hide-taken">
-          hide taken</label>
+        <input id="weekly-search" type="search" placeholder="Search…"
+               aria-label="Search teams">
+        <button id="weekly-hide-taken" class="mini-btn" aria-pressed="false"
+                title="Hide rows marked taken">Hide taken</button>
         <button id="weekly-clear" class="mini-btn"
-                title="Clear all taken/mine marks">clear marks</button>
-        <span class="legend dim">click a row:
-          <span class="mark-chip taken">taken</span> →
-          <span class="mark-chip mine">mine</span> → clear</span>
+                title="Clear all marks">Clear</button>
       </div>
 
       <div id="weekly-dst" class="tab-pane">
-        <p class="blurb">Defenses ranked by their <b>opponent's implied
-        total</b> — the score Vegas expects the other team to put up.
-        Low number = good matchup. Across eight seasons, that one number
-        predicted defense scoring better than every other stat we tested
-        combined (<a href="#/blog/27-dst-model">finding 27</a>).</p>
+        <p class="blurb">Ranked by <b>opponent's implied total</b> — the
+        score Vegas expects the other team to put up. Lower is better.
+        <a href="#/blog/27-dst-model">Why this works →</a></p>
         <details class="note">
           <summary>Same list for ESPN and Yahoo — here's why</summary>
           <p>ESPN and Yahoo score defenses differently. Yahoo pays more
@@ -125,23 +120,19 @@
       </div>
 
       <div id="weekly-k" class="tab-pane" hidden>
-        <p class="blurb">Kickers ranked by their <b>own team's implied
-        total</b> — the score Vegas expects that offense to put up —
-        plus a bump for domes (no wind). The kicker himself barely
-        matters; pick the offense and the venue
-        (<a href="#/blog/28-kicker-model">finding 28</a>).</p>
+        <p class="blurb">Ranked by <b>own team's implied total</b> — the
+        score Vegas expects that offense to put up — plus a bump for
+        domes. Pick the offense and the venue, not the kicker.
+        <a href="#/blog/28-kicker-model">Why this works →</a></p>
         <div class="tbl"><table id="k-table"></table></div>
       </div>
 
       <div id="weekly-skill" class="tab-pane" hidden>
         <div class="empty-state">
           <h3>Live in September</h3>
-          <p>The weekly model needs a couple weeks of the current season
-          — who is actually getting the ball — before its rankings mean
-          anything. Until then, use the
-          <a href="#/board">2026 draft board</a>. When these boards go
-          live they'll work like the others: searchable, filterable,
-          with taken/mine marking for your league.</p>
+          <p>Weekly QB/RB/WR/TE rankings need a few weeks of real-season
+          data. Until then, use the
+          <a href="#/board">2026 draft board</a>.</p>
         </div>
       </div>
     </section>
@@ -170,6 +161,28 @@
                aria-label="Find a player">
       </div>
       <div class="tbl"><table id="board-table"></table></div>
+      <h3 class="sub-head">Kickers and defenses, on draft day</h3>
+      <p class="blurb"><b>Take them last, and don't think hard about
+      it.</b> Ranking kickers by how well they kicked last year predicts
+      almost nothing — a rank correlation of .08, where 0 is a coin flip
+      — and telling our model who the kicker is actually makes it
+      slightly worse. Kicker points belong to the offense, not the guy.
+      Defenses are a little more predictable, but the only thing that
+      matters there is who they play. So use these two lists to break a
+      tie at the end of your draft, then move on.
+      <a href="#/post/28-kicker-model">Kicker model →</a>
+      <a href="#/post/27-dst-model">D/ST model →</a></p>
+      <div class="pair">
+        <div>
+          <h4 class="mini-head">Kickers — best offenses to own</h4>
+          <div class="tbl"><table id="pre-k-table"></table></div>
+        </div>
+        <div>
+          <h4 class="mini-head">Defenses — easiest schedules</h4>
+          <div class="tbl"><table id="pre-dst-table"></table></div>
+        </div>
+      </div>
+
       <h3 class="sub-head">What Vegas expects from every 2026 offense</h3>
       <p class="blurb">Add up the betting lines for all 272 games on the
       2026 schedule and you get an expected points-per-game for every

@@ -280,6 +280,47 @@ def build_market():
     return sorted(out, key=lambda d: -d["ppg"])
 
 
+NICK = {nick: ab for ab, nick in TEAMS.items()}   # "Rams" -> "LA"
+
+
+def build_preseason():
+    """Draft-day K and D/ST boards: the weekly models (findings 27, 28)
+    aggregated over the whole 2026 schedule instead of one week.
+
+    D/ST ranks on the points its opponents are expected to score all
+    season — the season-long form of the one number finding 27 says is
+    ~97% of the position. K ranks on its own offense's expected points,
+    with dome games shown separately: the model's dome effect is +0.7
+    kicker points per indoor game, which is not in the same units as a
+    team's implied points, so it stays its own column rather than being
+    baked into a composite."""
+    domes, games = {}, {}
+    for r in read_csv(MKT / "games.csv"):
+        if r["season"] != "2026" or r["game_type"] != "REG":
+            continue
+        for ab in (r["home_team"], r["away_team"]):
+            games[ab] = games.get(ab, 0) + 1
+            if r["roof"] in ("dome", "closed"):
+                domes[ab] = domes.get(ab, 0) + 1
+
+    k, dst = [], []
+    for r in read_csv(MKT / "implied_2026.csv"):
+        nick = r["team"].split()[-1]
+        ab = NICK.get(nick)
+        if ab is None:
+            continue
+        g, d = games.get(ab, 17), domes.get(ab, 0)
+        k.append(dict(team=nick, own=round(float(r["imp_ppg"]), 1),
+                      dome=d, games=g,
+                      # season-average kicker-point edge from the dome
+                      # share, in kicker points: 0.7 per indoor game
+                      domeEdge=round(0.7 * d / g, 2)))
+        dst.append(dict(team=nick, opp=round(float(r["imp_opp_ppg"]), 1)))
+    k.sort(key=lambda d: -d["own"])
+    dst.sort(key=lambda d: d["opp"])
+    return dict(k=k, dst=dst)
+
+
 def build_weekly():
     rows = [r for r in read_csv(MKT / "games.csv")
             if r["season"] == "2026" and r["week"] == "1"
@@ -335,6 +376,7 @@ def main():
     out = SITE / "data"
     out.mkdir(exist_ok=True)
     for name, data in (("board", build_board()), ("market", build_market()),
+                       ("preseason", build_preseason()),
                        ("weekly", build_weekly()), ("blog", build_blog())):
         (out / f"{name}.json").write_text(json.dumps(data))
         print(f"data/{name}.json written")

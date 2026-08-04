@@ -56,6 +56,15 @@ const WHY = {
     + "in our model — small, but it is the second-biggest thing we can see "
     + "after how much the offense is expected to score. Wind costs about "
     + "−0.5 (finding 28).",
+  domeSched: "Indoor games on this team's 2026 schedule, home and away. "
+    + "Each one is worth about +0.7 kicker points, so a 10-dome schedule "
+    + "beats a 0-dome schedule by roughly 0.4 points a game (finding 28). "
+    + "A tiebreak, not a reason to reach.",
+  oppSeason: "Points this defense's opponents are expected to score, "
+    + "averaged over the whole 2026 season. Each point lower is worth about "
+    + "+0.38 D/ST points a week (finding 27). Preseason win totals are the "
+    + "best season-long signal we have — better than any stat-based one "
+    + "(finding 26).",
 };
 
 /* ------------------------------------------------------------ weekly
@@ -78,7 +87,8 @@ function cycleMark(key) {
 
 function applyWeeklyFilters() {
   const q = document.getElementById("weekly-search").value.trim().toLowerCase();
-  const hideTaken = document.getElementById("weekly-hide-taken").checked;
+  const hideTaken = document.getElementById("weekly-hide-taken")
+    .getAttribute("aria-pressed") === "true";
   document.querySelectorAll("#view-weekly tbody tr[data-mark-key]")
     .forEach(row => {
       const state = marks[row.dataset.markKey];
@@ -101,7 +111,7 @@ async function renderWeekly() {
   const rowAttrs = (tab, r) =>
     `data-mark-key="${tab}:${r.team}"
      data-search="${`${r.team} ${r.opp}`.toLowerCase()}"
-     title="Click to mark: taken → mine → clear"`;
+     title="Click: taken → mine → clear"`;
 
   const dst = document.getElementById("dst-table");
   dst.innerHTML =
@@ -153,8 +163,11 @@ async function renderWeekly() {
 
   document.getElementById("weekly-search")
     .addEventListener("input", applyWeeklyFilters);
-  document.getElementById("weekly-hide-taken")
-    .addEventListener("change", applyWeeklyFilters);
+  document.getElementById("weekly-hide-taken").addEventListener("click", e => {
+    const b = e.currentTarget;
+    b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true");
+    applyWeeklyFilters();
+  });
   document.getElementById("weekly-clear").addEventListener("click", () => {
     marks = {};
     saveMarks();
@@ -268,6 +281,29 @@ async function renderBoard() {
   });
   document.getElementById("board-search")
     .addEventListener("input", applyBoardSearch);
+
+  const pre = await data("preseason");
+  document.getElementById("pre-k-table").innerHTML =
+    `<thead><tr><th class="rank">#</th><th>Kicker slot</th>
+     <th class="num" title="Points Vegas expects this offense to score per game across the whole 2026 season. Kicker scoring follows the offense, not the kicker.">Own PPG</th>
+     <th class="num" title="${WHY.domeSched}">Dome games</th>
+     </tr></thead><tbody>` +
+    pre.k.map((r, i) =>
+      `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b> K</td>
+       <td class="num">${r.own.toFixed(1)}</td>
+       <td class="num ${r.dome >= 8 ? "up" : ""}"
+           title="${r.dome} of ${r.games} games indoors — worth about
+           ${r.domeEdge.toFixed(2)} kicker points a game over the season">
+         ${r.dome}</td></tr>`).join("") + "</tbody>";
+
+  document.getElementById("pre-dst-table").innerHTML =
+    `<thead><tr><th class="rank">#</th><th>Defense</th>
+     <th class="num" title="${WHY.oppSeason}">Opp PPG faced</th>
+     </tr></thead><tbody>` +
+    pre.dst.map((r, i) =>
+      `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b></td>
+       <td class="num ${r.opp <= 21.5 ? "up" : ""}">${r.opp.toFixed(1)}</td>
+       </tr>`).join("") + "</tbody>";
 
   document.getElementById("market-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Team</th>

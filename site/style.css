@@ -92,6 +92,22 @@ html, body {
 .view-head h2 { margin: 0.2rem 0 0.6rem; }
 .dim { color: var(--fg-dim); font-size: 0.88rem; }
 .sub-head { margin-top: 2.2rem; }
+.mini-head {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  font-weight: 600;
+}
+/* two side-by-side tables that stack on narrow screens */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.4rem;
+  align-items: start;
+  margin-top: 1rem;
+  max-width: 56rem;
+}
+.blurb a + a { margin-left: 0.9rem; }
 .blurb { color: var(--fg-dim); max-width: 44rem; margin-top: 0.2rem; }
 .blurb b { color: var(--fg); }
 
@@ -177,12 +193,6 @@ html, body {
 }
 .tab:hover { color: var(--fg); background: var(--bg-hover); }
 .tab.active { color: #fff; border-color: transparent; background: var(--accent); }
-.tab.pos-qb.active  { background: var(--pos-qb); }
-.tab.pos-rb.active  { background: var(--pos-rb); }
-.tab.pos-wr.active  { background: var(--pos-wr); }
-.tab.pos-te.active  { background: var(--pos-te); }
-.tab.pos-k.active   { background: var(--pos-k); }
-.tab.pos-dst.active { background: var(--pos-dst); }
 
 /* scoring-format switch above the position tabs */
 .scoring { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; }
@@ -247,28 +257,22 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   outline: none;
   border-color: var(--accent);
 }
-.check {
-  color: var(--fg-dim);
-  font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  user-select: none;
-}
-.check:hover { color: var(--fg); }
 .mini-btn {
   background: var(--bg-panel);
   color: var(--fg-dim);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.26rem 0.6rem;
+  border-radius: 8px;
+  padding: 0.38rem 0.8rem;
   cursor: pointer;
   font: inherit;
-  font-size: 0.84rem;
+  font-size: 0.9rem;
 }
 .mini-btn:hover { color: var(--fg); background: var(--bg-hover); }
-.legend { font-size: 0.84rem; }
+.mini-btn[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(79, 142, 247, 0.12);
+}
 
 /* ------------------------------------------- taken / mine row marks */
 tr[data-mark-key] { cursor: pointer; }
