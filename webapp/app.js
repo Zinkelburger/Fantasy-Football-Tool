@@ -68,6 +68,9 @@ function truncateNote(content) {
   if (!text) return 'No content';
 
   text = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/- /g, '').trim();
+  // Every bundled note ends on a "Draft take:" line — the label would eat
+  // the whole preview, so show only what the take actually says.
+  text = text.replace(/^Draft take:\s*/i, '');
   if (text.length <= 40) return text;
 
   const words = text.split(/\s+/);
@@ -1355,8 +1358,10 @@ function initApp() {
     const fm = fmarksFor(p);
     $('note-findings').hidden = !fm;
     $('note-findings').innerHTML = !fm ? '' : fm.map(m =>
-      `<p class="fm-row fm-${m.dir}"><b class="fm-chip">${FM_LABEL[m.dir]}` +
-      ` · finding ${m.f}</b> ${escapeHtml(m.note)}</p>`).join('');
+      `<p class="fm-row fm-${m.dir}"><a class="fm-chip" target="_blank" ` +
+      `rel="noopener" href="https://foss.football/#/blog/${escapeHtml(m.slug)}" ` +
+      `title="Open finding ${m.f} in a new tab">${FM_LABEL[m.dir]}` +
+      ` · finding ${m.f} ↗</a> ${escapeHtml(m.note)}</p>`).join('');
     $('note-editor').hidden = !editing;
     $('note-body').hidden = editing;
     $('btn-edit-note').hidden = editing;

@@ -50,9 +50,21 @@ def norm(name):
     return re.sub(r"\s+", " ", _SUFFIX.sub("", n))
 
 
+_SLUGS = {}
+
+
+def slug(finding):
+    """Site post id for a finding (e.g. 16 -> 16-td-luck-regresses), so
+    the draft tool can link each mark to its write-up."""
+    if finding not in _SLUGS:
+        p = next(iter((ROOT / "findings").glob(f"{finding:02d}-*.md")), None)
+        _SLUGS[finding] = p.stem if p else f"{finding:02d}"
+    return _SLUGS[finding]
+
+
 def mark(name, pos, team, finding, direction, note, pid=None):
     return dict(name=name, pos=pos, team=team or "", finding=finding,
-                dir=direction, note=note, pid=pid)
+                slug=slug(finding), dir=direction, note=note, pid=pid)
 
 
 # ---------------------------------------------------------- aux tables
@@ -127,32 +139,28 @@ def f16_td_luck(m, season, team):
         if r.tdoe >= hi:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 16, "fade",
-                f"Scored {r.td:.0f} touchdowns on chances worth {r.xtd:.0f} "
-                f"in {season}. That extra scoring is luck, and it doesn't "
-                f"carry over — don't pay the TD-inflated price (finding 16).",
-                r.player_id))
+                f"{r.td:.0f} TDs on chances worth {r.xtd:.0f} — TD luck "
+                f"doesn't carry over.", r.player_id))
         elif r.tdoe <= lo:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 16, "buy",
-                f"Scored only {r.td:.0f} touchdowns on chances worth "
-                f"{r.xtd:.0f} in {season}. The missing scores usually come "
-                f"back the next year (finding 16).", r.player_id))
+                f"Only {r.td:.0f} TDs on chances worth {r.xtd:.0f} — the "
+                f"missing scores usually come back.", r.player_id))
     q = m[m.relevant & (m.season == season) & (m.gp >= 8)
           & (m.position == "QB")].dropna(subset=["a_pass_td"]).copy()
     q["ptdoe"] = q.a_pass_td - q.x_pass_td
     for r in q.nlargest(5, "ptdoe").itertuples():
         out.append(mark(
             r.name, "QB", team.get(r.player_id), 16, "fade",
-            f"Threw {r.a_pass_td:.0f} touchdowns on chances worth "
-            f"{r.x_pass_td:.0f} in {season}. Passing-TD luck regresses "
-            f"the same way, on a smaller sample (finding 16).",
+            f"{r.a_pass_td:.0f} pass TDs on chances worth "
+            f"{r.x_pass_td:.0f} — regresses too (smaller QB sample).",
             r.player_id))
     for r in q.nsmallest(5, "ptdoe").itertuples():
         out.append(mark(
             r.name, "QB", team.get(r.player_id), 16, "buy",
-            f"Threw {r.a_pass_td:.0f} touchdowns on chances worth "
-            f"{r.x_pass_td:.0f} in {season} — the short end of passing-TD "
-            f"luck, which tends to bounce back (finding 16).", r.player_id))
+            f"{r.a_pass_td:.0f} pass TDs on chances worth "
+            f"{r.x_pass_td:.0f} — the short end of TD luck.",
+            r.player_id))
     return out
 
 
@@ -167,16 +175,14 @@ def f17_targets(m, season, team):
         if r.excess >= hi:
             out.append(mark(
                 r.name, "WR", team.get(r.player_id), 17, "buy",
-                f"Saw {r.tpg:.1f} passes a game thrown his way but scored "
-                f"only {r.ppg:.1f} PPG in {season}. Targets predict next "
-                f"season better than points do — volume like that usually "
-                f"pays off (finding 17).", r.player_id))
+                f"{r.tpg:.1f} targets a game, only {r.ppg:.1f} PPG — "
+                f"targets predict next season, points don't.",
+                r.player_id))
         elif r.excess <= lo:
             out.append(mark(
                 r.name, "WR", team.get(r.player_id), 17, "fade",
-                f"His {r.ppg:.1f} PPG in {season} came on just {r.tpg:.1f} "
-                f"targets a game. Points built on efficiency instead of "
-                f"volume tend not to repeat (finding 17).", r.player_id))
+                f"{r.ppg:.1f} PPG on just {r.tpg:.1f} targets a game — "
+                f"efficiency-driven points don't repeat.", r.player_id))
     return out
 
 
@@ -189,17 +195,14 @@ def f15_momentum(ps, season, team):
         if r.surge >= SURGE:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 15, "watch",
-                f"Finished {season} on fire — {r.ppg_last3:.1f} PPG over "
-                f"his last three games against {r.ppg:.1f} for the season. "
-                f"A hot finish predicts nothing about next year; price the "
-                f"full season, not the streak (finding 15).", r.player_id))
+                f"Hot finish ({r.ppg_last3:.1f} PPG last 3, {r.ppg:.1f} "
+                f"season) — predicts nothing; price the season.",
+                r.player_id))
         elif r.surge <= -SURGE:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 15, "watch",
-                f"Limped to the finish — {r.ppg_last3:.1f} PPG over his "
-                f"last three games against {r.ppg:.1f} for the season. A "
-                f"cold finish predicts nothing either, so don't discount "
-                f"him for it (finding 15).", r.player_id))
+                f"Cold finish ({r.ppg_last3:.1f} PPG last 3, {r.ppg:.1f} "
+                f"season) — predicts nothing either.", r.player_id))
     return out
 
 
@@ -212,23 +215,19 @@ def f18_injury_label(im, season, team):
         if r.position in ("QB", "WR"):
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 18, "buy",
-                f"Listed Out or Doubtful {wk} weeks in {season}. At "
-                f"{'quarterback' if r.position == 'QB' else 'receiver'} "
-                f"injury history doesn't carry over at all — if his price "
-                f"bakes in an injury-prone discount, take the discount "
-                f"(finding 18).", r.player_id))
+                f"Out {wk} weeks in {season} — doesn't carry over at "
+                f"{r.position}; take the injury-prone discount.",
+                r.player_id))
         elif r.position == "TE":
             out.append(mark(
                 r.name, "TE", team.get(r.player_id), 18, "watch",
-                f"Listed Out or Doubtful {wk} weeks in {season}, and tight "
-                f"end is the one position where missed time does tend to "
-                f"repeat (finding 18).", r.player_id))
+                f"Out {wk} weeks in {season} — TE is where missed time "
+                f"does repeat.", r.player_id))
         else:
             out.append(mark(
                 r.name, "RB", team.get(r.player_id), 18, "watch",
-                f"Listed Out or Doubtful {wk} weeks in {season}. At "
-                f"running back the carryover is real but weak — a small "
-                f"caution, not a veto (finding 18).", r.player_id))
+                f"Out {wk} weeks in {season} — RB carryover is real but "
+                f"weak.", r.player_id))
     return out
 
 
@@ -254,28 +253,23 @@ def wr_cohort_marks(ps, adv, draft_year):
             w, l, d = rec[team]
             out.append(mark(
                 c["name"], "WR", c["team"], 8, "buy",
-                f"The clear top receiver on a team that went {w}-{l}"
-                f"{f'-{d}' if d else ''} — mid-round receivers with that "
-                f"profile hit top-24 at 43%, against 25% for the rest. Bad "
-                f"teams still throw to somebody (finding 08)."))
+                f"Clear WR1 on a {w}-{l}{f'-{d}' if d else ''} team — "
+                f"this profile hits top-24 43% vs 25%."))
         two, last = fin2.get(n), fin1.get(n)
         if two is not None and two <= 20 and (last is None or last > 35):
             tell = shares.get(n, 0) or 0
             out.append(mark(
                 c["name"], "WR", c["team"], 9, "fade",
-                f"A top-20 receiver in {draft_year - 2} who collapsed "
-                f"{'to WR' + str(last) if last else 'off the map'} in "
-                f"{draft_year - 1}. The bounce-back-discount profile busted "
-                f"53% of the time, and youth didn't save it (finding 09)."
-                + (f" The one hopeful tell: he kept {tell:.0%} of his "
-                   f"team's targets through the down year, which the rare "
-                   f"bounce-backs shared." if tell >= .20 else "")))
+                f"Top-20 in {draft_year - 2}, "
+                f"{'WR' + str(last) if last else 'off the map'} in "
+                f"{draft_year - 1} — this discount profile busts 53%."
+                + (f" (Kept {tell:.0%} of team targets — the rare "
+                   f"bounce-back tell.)" if tell >= .20 else "")))
         if ages.get(n) in (29, 30):
             out.append(mark(
                 c["name"], "WR", c["team"], 10, "watch",
-                f"A {ages[n]}-year-old receiver at a mid-round price — the "
-                f"29-30 cell busted most often in our six-year test, though "
-                f"the sample is thin (finding 10)."))
+                f"{ages[n]}-year-old WR at a mid-round price — the age "
+                f"band that busted most (thin sample)."))
     return out
 
 
@@ -312,7 +306,7 @@ def grade(ps, m, im, adv):
             sel = [mk for mk in marks
                    if mk["finding"] == f and mk["dir"] == direction
                    and (half is None
-                        or (half == "hot") == ("on fire" in mk["note"]))]
+                        or (half == "hot") == ("Hot finish" in mk["note"]))]
             if not sel:
                 continue
             print(f"-- {direction}{f' ({half} finish)' if half else ''} "

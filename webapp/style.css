@@ -240,7 +240,9 @@ td.player-name { font-weight: 500; }
   border-radius: 4px; }
 #note-findings .fm-row { margin: 0.3em 0; color: var(--fg-dim);
   font-size: 0.92em; }
-#note-findings .fm-chip { color: var(--fg); white-space: nowrap; }
+#note-findings .fm-chip { color: var(--fg); white-space: nowrap;
+  font-weight: 600; text-decoration: none; }
+#note-findings .fm-chip:hover { text-decoration: underline; }
 #note-findings .fm-buy .fm-chip { color: var(--green); }
 #note-findings .fm-fade .fm-chip { color: var(--red); }
 td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-overflow: ellipsis; }

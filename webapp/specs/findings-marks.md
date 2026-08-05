@@ -23,10 +23,13 @@ posts.
 - The ◆ tooltip reads like: `Findings that apply: buy (finding 16, 18) ·
   watch (finding 10) — open the note for the why.`
 - The note pane shows a findings box between the toolbar and the note
-  body: one row per mark, `Buy · finding 16` / `Fade · finding 9` /
-  `Context · finding 15` in front of a plain-English sentence carrying
-  the player's own numbers (e.g. touchdowns vs expected, targets per
-  game, weeks listed Out).
+  body: one row per mark. The row starts with a chip that is a link —
+  `Buy · finding 16 ↗` — opening that finding's write-up on
+  foss.football in a new tab (`target="_blank" rel="noopener"`), so
+  draft state is never navigated away from.
+- After the chip comes one concise reason with the player's own
+  numbers — "18 TDs on chances worth 11 — TD luck doesn't carry
+  over." — not a paragraph; the why lives in the linked finding.
 - Rows are ordered buys, then fades, then context.
 - The marks come from the rules the findings actually tested — mid-round
   WR archetypes (findings 08/09/10), hot/cold finishes (15), TD luck

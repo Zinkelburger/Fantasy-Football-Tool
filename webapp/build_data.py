@@ -74,7 +74,8 @@ def load_findings_marks():
     with open(FM_CSV, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             out.setdefault((norm_name(r["name"]), r["pos"]), []).append(
-                {"f": int(r["finding"]), "dir": r["dir"], "note": r["note"]})
+                {"f": int(r["finding"]), "slug": r["slug"],
+                 "dir": r["dir"], "note": r["note"]})
     for v in out.values():
         v.sort(key=lambda m: (FM_DIR_ORDER.get(m["dir"], 3), m["f"]))
     return out
