@@ -51,6 +51,11 @@
         <label class="chk" title="The ◆ marks and expected-points reads our models add. Uncheck for a clean board — your own marks and notes stay."><input type="checkbox" id="show-model-marks" checked> Model marks</label>
         <span id="player-count"></span>
       </div>
+      <div id="round-guide" hidden>
+        <span id="round-guide-text"></span>
+        <button id="btn-round-guide"
+          title="The whole draft, round by round — every claim links to its finding">all rounds</button>
+      </div>
       <div id="table-wrap">
         <table id="player-table">
           <thead>
@@ -244,6 +249,19 @@
         → Debug to draft by hand. You can also drag the divider between the board and this
         panel to resize them (double-click it to reset).</p>
       <p id="help-data-stamp" class="muted"></p>
+    </div>
+  </dialog>
+
+  <dialog id="guide-dialog">
+    <div class="dialog-head">
+      <span>The draft, round by round</span>
+      <button class="dialog-close" data-close="guide-dialog">&times;</button>
+    </div>
+    <div id="guide-scroll">
+      <p class="muted">Every claim comes from a tested finding — the
+        links open the write-ups in a new tab. The structure is the
+        same in standard, 0.5PPR and full PPR (finding 29).</p>
+      <div id="guide-body"></div>
     </div>
   </dialog>
 

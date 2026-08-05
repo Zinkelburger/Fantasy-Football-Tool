@@ -10,7 +10,8 @@ buy suppressed usage without leaving the draft tool.
 
 ## Steps
 1. Hover any veteran's name on the player board.
-2. Look for a small ▾ (red) or ▴ (green) after the name flags.
+2. Look for the ◆ model glyph after the name flags (red = net fade,
+   green = net buy, gray = context).
 3. Open the player's note and read the line under the tab bar.
 
 ## Expected
@@ -45,5 +46,5 @@ buy suppressed usage without leaving the draft tool.
   `renderTable()`, `renderNotePane()`
 - `webapp/build_data.py` — `load_opportunity()`, `xfp/ppg25/gapc/tdl/g25`
   fields
-- `webapp/style.css` — `.opp-flag`
+- `webapp/style.css` — `.fm-flag`
 - `engine/league-sim/analysis/export_opportunity.py` — the numbers' source

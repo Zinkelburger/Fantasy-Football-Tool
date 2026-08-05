@@ -776,6 +776,54 @@ function initApp() {
     return { cls, tip };
   }
 
+  /* Round-by-round guide: the findings condensed to one line per band
+     (analysis/round_profile.py numbers; finding 29 checked the whole
+     structure holds in 0.5PPR and full PPR). */
+  const GUIDE = [
+    { lo: 1, hi: 2, text: 'Lean RB early — RB value drains off the ' +
+      'board ~45% faster than WR, so the receiver keeps. Skipping RBs ' +
+      'on purpose (zero-RB) lost in our sims.',
+      links: [['23-early-rb-vs-wr', 'why RB first'],
+              ['02-zero-rb-is-a-trap', 'zero-RB']] },
+    { lo: 3, hi: 5, text: 'The tested QB sweet spot is rounds 4-6. WR ' +
+      'value stays nearly flat for twenty ranks — never reach for one.',
+      links: [['14-qb-round-sweep', 'QB timing'],
+              ['07-what-a-starter-is-worth', 'value curves']] },
+    { lo: 6, hi: 8, text: 'Have your QB by round 6 — waiting past 10 ' +
+      'is what hurts. Mid TEs still hit ~50%. At WR: the clear #1 on a ' +
+      'bad team hits 43% vs 25%; skip bounce-back discounts and ' +
+      '29-30-year-olds.',
+      links: [['06-qb-timing', 'QB'], ['08-bad-team-wr1-edge', 'WR1 edge'],
+              ['09-decline-discount-trap', 'the trap']] },
+    { lo: 9, hi: 11, text: 'QB/TE starters are still here (41% and 43% ' +
+      'hit) — RB/WR are lotteries now (12% / 17%). Go young at WR/TE; ' +
+      'the slid veteran is the trap. Handcuff your RB1 — it pays ' +
+      'exactly when he sits.',
+      links: [['29-round-profile', 'the numbers'],
+              ['13-handcuffs-are-free-insurance', 'handcuffs']] },
+    { lo: 12, hi: 15, text: 'Lottery rounds (5-8% hit): young ' +
+      'receivers with a path, your RB\'s handcuff, and K/D-ST dead ' +
+      'last — any kicker, the defense facing the lowest opponent total.',
+      links: [['29-round-profile', 'the numbers'],
+              ['04-kickers-are-noise', 'kickers'],
+              ['27-dst-model', 'D/ST']] },
+  ];
+  const guideLinks = g => g.links.map(([slug, label]) =>
+    `<a href="https://foss.football/#/blog/${slug}" target="_blank" ` +
+    `rel="noopener">${label} ↗</a>`).join(' · ');
+
+  function renderRoundGuide() {
+    const el = $('round-guide');
+    if (!showModelMarks) { el.hidden = true; return; }
+    const rnd = Math.min(15, Math.floor(
+      pickLogEntries().length / settings.numTeams) + 1);
+    const g = GUIDE.find(x => rnd >= x.lo && rnd <= x.hi)
+      || GUIDE[GUIDE.length - 1];
+    el.hidden = false;
+    $('round-guide-text').innerHTML =
+      `<b>R${rnd}</b> · ${g.text} ${guideLinks(g)}`;
+  }
+
   function renderTable() {
     const picked = pickedSet();
     const extPicked = extPickedCanonical();
@@ -1172,6 +1220,7 @@ function initApp() {
     $('btn-reset-top').hidden = !settings.manualMode;
     renderPosFilters();
     renderTable();
+    renderRoundGuide();
     renderTeam();
     renderExtStatus();
     renderTabs();
@@ -2340,8 +2389,20 @@ function initApp() {
     showModelMarks = e.target.checked;
     store.save('showModelMarks', showModelMarks);
     renderTable();
+    renderRoundGuide();
     renderTabs();
   });
+  $('guide-body').innerHTML = GUIDE.map(g =>
+    `<h3>Rounds ${g.lo}–${g.hi}</h3><p>${g.text} ${guideLinks(g)}</p>`
+  ).join('') +
+    '<h3>Bench, all rounds</h3><p>Don\'t tilt the bench toward RBs on ' +
+    'purpose — it bought ~1% of championships. A backup QB or TE is ' +
+    'optional; the waiver wire patches QB and K in-season. ' +
+    guideLinks({ links: [['19-bench-composition', 'bench'],
+      ['20-second-qb-te', 'backups'],
+      ['22-waiver-wire-reality', 'the wire']] }) + '</p>';
+  $('btn-round-guide').addEventListener('click',
+    () => $('guide-dialog').showModal());
   const setSort = (s) => { sortBy = s; renderTable(); };
   $('th-rank').addEventListener('click', () => setSort('board'));
   $('th-espn').addEventListener('click', () => setSort('espn'));
