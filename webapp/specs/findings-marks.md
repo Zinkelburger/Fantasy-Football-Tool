@@ -20,8 +20,11 @@ posts.
   (bundled from `engine/league-sim/data/market/findings_marks_2026.csv`).
   It is **green** when every directional mark is buy, **red** when every
   one is fade, and **gray** when they mix or are context-only.
-- The ◆ tooltip reads like: `Findings that apply: buy (finding 16, 18) ·
-  watch (finding 10) — open the note for the why.`
+- The ◆ tooltip shows the marks themselves, one per line — `Buy
+  (finding 16): 18 TDs on chances worth 11 — TD luck doesn't carry
+  over.` — no click needed. The name-cell tooltip shows the 2025
+  opportunity read and the marks together, so hovering anywhere on the
+  name works.
 - The note pane shows a findings box between the toolbar and the note
   body: one row per mark. The row starts with a chip that is a link —
   `Buy · finding 16 ↗` — opening that finding's write-up on

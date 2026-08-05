@@ -768,12 +768,10 @@ function initApp() {
     const dirs = new Set(fm.map(m => m.dir));
     const cls = dirs.has('buy') && !dirs.has('fade') ? 'buy'
       : dirs.has('fade') && !dirs.has('buy') ? 'fade' : 'mix';
-    const by = {};
-    for (const m of fm) (by[m.dir] = by[m.dir] || []).push(m.f);
-    const tip = 'Findings that apply: ' + ['buy', 'fade', 'watch']
-      .filter(d => by[d])
-      .map(d => `${FM_LABEL[d].toLowerCase()} (finding ${by[d].join(', ')})`)
-      .join(' · ') + ' — open the note for the why.';
+    // The hover carries the marks themselves — nobody should have to
+    // open the note just to learn what the diamond means.
+    const tip = fm.map(m =>
+      `${FM_LABEL[m.dir]} (finding ${m.f}): ${m.note}`).join('\n');
     return { cls, tip };
   }
 
@@ -929,11 +927,13 @@ function initApp() {
       const opp = oppRead(p);
       const fm = fmarksFor(p);
       const fmG = fm ? fmGlyph(fm) : null;
+      const nameTip = [opp && opp.tip, fmG && fmG.tip]
+        .filter(Boolean).join('\n\n');
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
           : `<td>${escapeHtml(p.rank)}</td>`) +
-        `<td class="player-name"${opp ? ` title="${escapeHtml(opp.tip)}"` : ''}>` +
+        `<td class="player-name"${nameTip ? ` title="${escapeHtml(nameTip)}"` : ''}>` +
         `${escapeHtml(p.name)}<span class="name-flags">` +
         `${mark === 'yes' ? '✅' : mark === 'no' ? '❌' : ''}` +
         `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
