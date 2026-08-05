@@ -7,9 +7,24 @@ const cache = {};
 async function data(name) {
   if (!cache[name]) {
     const r = await fetch(`data/${name}.json`);
+    if (!r.ok) throw new Error(`data/${name}.json: HTTP ${r.status}`);
     cache[name] = await r.json();
   }
   return cache[name];
+}
+
+/* One banner per view: shown when that view's data fetch fails, cleared
+   on the next visit so navigation back retries the load. */
+function loadError(viewId, on) {
+  const view = document.getElementById(viewId);
+  const old = view.querySelector(".load-error");
+  if (!on) { if (old) old.remove(); return; }
+  if (old) return;
+  const p = document.createElement("p");
+  p.className = "load-error";
+  p.textContent = "This page didn't load — check your connection, "
+    + "then try again.";
+  view.prepend(p);
 }
 
 /* ------------------------------------------------------------ router */
@@ -28,10 +43,15 @@ function route() {
       || (view === "post" && a.dataset.route === "blog"));
   });
 
-  if (view === "weekly") renderWeekly();
-  if (view === "board") renderBoard();
-  if (view === "blog") renderBlogList();
-  if (view === "post" && arg) renderPost(arg);
+  loadError(`view-${view}`, false);
+  const guard = p => p.catch(err => {
+    console.error(err);
+    loadError(`view-${view}`, true);
+  });
+  if (view === "weekly") guard(renderWeekly());
+  if (view === "board") guard(renderBoard());
+  if (view === "blog") guard(renderBlogList());
+  if (view === "post" && arg) guard(renderPost(arg));
   if (view === "draft") {
     const f = document.getElementById("draft-frame");
     if (!f.src) f.src = "../webapp/index.html";
@@ -107,7 +127,7 @@ async function renderWeekly() {
   const w = await data("weekly");
   document.getElementById("weekly-label").textContent = w.label;
   if (weeklyDone) { applyWeeklyFilters(); return; }
-  weeklyDone = true;
+  weeklyDone = true;   /* only after the fetch — a failure must retry */
 
   const rowAttrs = (tab, r) =>
     `data-mark-key="${tab}:${r.team}"
@@ -210,9 +230,9 @@ const FMT_KEY = "ffScoring";
 let boardDone = false;
 async function renderBoard() {
   if (boardDone) return;
-  boardDone = true;
   const board = await data("board");
   const market = await data("market");
+  boardDone = true;   /* only after the fetches — a failure must retry */
   const tabs = document.getElementById("board-tabs");
   const fmtTabs = document.getElementById("board-scoring");
   const order = ["RB", "WR", "QB", "TE"];
@@ -374,8 +394,8 @@ function confClass(c) {
 let blogDone = false;
 async function renderBlogList() {
   if (blogDone) return;
-  blogDone = true;
   const posts = await data("blog");
+  blogDone = true;   /* only after the fetch — a failure must retry */
   document.getElementById("blog-list").innerHTML = posts.map(p =>
     `<a class="post-row" href="#/blog/${p.id}">
        <h3><span class="post-num">#${String(p.num).padStart(2, "0")}</span>

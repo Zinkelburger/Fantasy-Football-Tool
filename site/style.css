@@ -293,6 +293,15 @@ tr.is-mine td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 /* the marks are useful even inside a dimmed row */
 tr.is-taken td.mark-cell { opacity: 1; }
 
+.load-error {
+  background: var(--bg-panel);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  margin: 0.6rem 0 1rem;
+  max-width: 44rem;
+}
+
 /* ------------------------------------------------ notes & glossary */
 details.note {
   background: var(--bg-panel);
