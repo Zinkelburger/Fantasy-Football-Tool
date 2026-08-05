@@ -1,6 +1,6 @@
 **Jonathan Taylor** (IND, RB, bye 13) — board rank 5
 
-**Room sentiment:** Divided and, for a top-5 pick, short on advocates — 33 mentions, mostly risk-flagging rather than case-making.
+**Room sentiment:** For a top-5 pick, short on advocates — 33 mentions, mostly risk-flagging rather than case-making.
 
 - Priced as a first-round RB (ADP 5.0; "Ultimate Top 350" average rank 6.67). One thread asks outright whether "the Colts second half of last season make Jonathan Taylor less appealing?"
 - Bear case is louder: Daniel Jones is coming off an Achilles tear and posters don't expect this offense to be as efficient. Age and mileage get flagged too — one notes he's now older than Todd Gurley was in Gurley's final season, another lists him as "2 years out from an ankle surgery," a third argues he was "never the same" after the 2022 injury.

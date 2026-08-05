@@ -1,6 +1,6 @@
 **Bijan Robinson** (ATL, RB, bye 11) — board rank 2
 
-**Room sentiment:** Bullish on the player, nervous about the team — the most-discussed name in the corpus (268 mentions), with the Bijan-vs-Gibbs 1.01 argument running through a dozen threads.
+**Room sentiment:** Bullish on the player, nervous about the team — 268 mentions, with the Bijan-vs-Gibbs 1.01 argument running through a dozen threads.
 
 - Usage: reported 366 touches last season, 79 catches for 820 yards, an RB3 finish. Tyler Allgeier, who took red-zone and goal-line work off him, is now in Arizona; Brian Robinson Jr. is the listed backup.
 - Bull case: the room treats him as the best pure RB in football — better than Gibbs against stacked boxes, as a receiver, and breaking tackles — and expects Atlanta to funnel the offense through him. Several want the checkdown volume Tua gave Achane.

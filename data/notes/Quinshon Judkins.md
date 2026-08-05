@@ -1,6 +1,6 @@
 **Quinshon Judkins** (CLE, RB, bye 11) — board rank 42
 
-**Room sentiment:** Genuinely divided, and heavily discussed (154 mentions). Almost nobody disputes the talent or the volume; the argument is entirely about the Browns and the leg.
+**Room sentiment:** Almost nobody disputes the talent or the volume; the argument, across 154 mentions, is entirely about the Browns and the leg.
 
 - **Rookie usage is the bull case:** 18.3 touches per game (11th-most among all players) and 16.4 carries per game (8th-most), which posters extrapolate to 300+ touches over 17 games. He was RB13 from Weeks 2-7 with no training camp. The dead-zone thread calls him "the clearest workhorse of the group" at RB23.
 - **Concrete camp news:** full go after the season-ending leg injury, "off to a fast start," and RB coach Deuce Staley says he "can play all three downs." That matters because he played only 18% of third-down snaps last year — though he still ran 135 routes and caught 26 balls.

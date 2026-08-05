@@ -1,6 +1,6 @@
 **Brian Thomas** (JAC, WR, bye 7) — board rank 75
 
-**Room sentiment:** Bearish-to-divided after a bad season (28 mentions), and the most detailed analysis in the corpus argues against him.
+**Room sentiment:** Mostly bearish after a bad season (28 mentions), and the most detailed take in the room argues against him.
 
 - Coming off what the room calls a "lost season" (WR45); Hartitz Tier 6 — "would WR2 numbers really surprise us?"
 - Sharpest bear case comes from the analyst who was the "BTJ potentially WR1 guy last year": Coen wanted Thomas as the focal point deep and over the middle "and Thomas just disappointed massively in that role from the start." He now says BTJ doesn't fit Lawrence or Coen's scheme; another adds "the chemistry has never been there."

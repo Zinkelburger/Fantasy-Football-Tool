@@ -1,6 +1,6 @@
 **Malik Nabers** (NYG, WR, bye 8) — board rank 35
 
-**Room sentiment:** Deeply divided and by far the most-discussed player in this group (193 mentions). Every camp update moves his price, and the split is entirely about the knee, not the talent.
+**Room sentiment:** The split is entirely about the knee, not the talent — 193 mentions, and every camp update moves his price.
 
 - Injury facts as reported: torn ACL **and a full lateral meniscus repair** in the right knee in Week 4 last season, surgery in late October plus a clean-up procedure this spring — two surgeries. He **avoided the camp PUP list** and has been running, cutting, running routes and doing individual drills. Harbaugh said he's on schedule but gave no guarantee.
 - Timeline is contested. The Athletic's Dan Duggan calls it "fair to be optimistic" for Week 1 on a reduced early-camp workload; Raanan speculated he could miss the first 4-5 games. A well-upvoted skeptic notes this injury usually needs 6-8 weeks of NFL ramp-up.

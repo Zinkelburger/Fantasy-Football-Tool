@@ -1,6 +1,6 @@
 **Jalen McMillan** (TB, WR, bye 10) — board rank 175
 
-**Room sentiment:** Split and low-volume — 10 mentions, divided roughly evenly between "late-round value pick" and "one of the guys who won't work out."
+**Room sentiment:** The 10 mentions divide roughly evenly between "late-round value pick" and "one of the guys who won't work out."
 
 - Bull case: a late-round WR article argues he "has a huge opportunity to be the primary X receiver for the Buccaneers this year." Two separate posters name him a value pick, one calling him "my late round sleeper target… dude seems poised for a breakthrough."
 - Bear case is blunt. Hartitz's WR Tier 9 is literally "won't work out, but you could imagine what it'd be like if they did," and McMillan is on that list. Another poster argues you're unlikely to get even WR30-level output (about 9.7 half-PPR ppg) from "guys like Jalen McMillan, Tre Harris, Ryan Flournoy."

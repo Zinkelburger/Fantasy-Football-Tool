@@ -1,6 +1,6 @@
 **Josh Jacobs** (GB, RB, bye 11) — board rank 24
 
-**Room sentiment:** Divided, and the disagreement is about off-field risk rather than talent — 59 mentions, the loudest being a joke defense ("I'm going to draft Josh Jacobs even harder," 455) aimed at a do-not-draft list.
+**Room sentiment:** The disagreement is about off-field risk rather than talent — 59 mentions, the loudest being a joke defense ("I'm going to draft Josh Jacobs even harder," 455) aimed at a do-not-draft list.
 
 - **The legal overhang is the story.** Camp notes report he "is still under investigation following an early-June domestic violence incident," with a later update listing his case as "still open (more likely just nothing)." The room does not agree what that means: one poster says "I don't see any scenario where Josh Jacobs is suspended this season," others say the situation alone scares them off, and several qualify their rankings with "assuming no suspension."
 - **Bull case:** role security. "No competition in the backfield," a projected 57% rush share and 10.6 rushing TDs, and standalone upside if Jordan Love misses time. Consensus average rank 26.00; Underdog ADP 40.7.

@@ -1,6 +1,6 @@
 **Rome Odunze** (CHI, WR, bye 10) — board rank 66
 
-**Room sentiment:** Loud and divided — 140 mentions across two dedicated posts plus constant argument in every Luther Burden thread. Health versus price.
+**Room sentiment:** Health versus price — 140 mentions across two dedicated posts plus constant argument in every Luther Burden thread.
 
 - **The foot is the whole bear case.** He called rehabbing a broken foot a "new normal," then clarified "My foot feels amazing." Posters report he opted out of surgery for a foot fracture plus plantar fasciitis, and cite a December note that he "won't be over his foot stress fracture issues until surgery and offseason." Some call it overblown; others won't touch him.
 - **Bull case (positive regression):** the top comment is "odunze got no help from his qb last year man" — Caleb Williams led the league with 109 bad throws. Odunze led the team in targets in five fewer games than DJ Moore, whose exit vacates ~85.

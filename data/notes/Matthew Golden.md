@@ -1,6 +1,6 @@
 **Matthew Golden** (GB, WR, bye 11) — board rank 157
 
-**Room sentiment:** Divided and thinly discussed — only 13 mentions. The one piece of real news is positive; the opinions attached to him are mostly negative.
+**Room sentiment:** Thinly discussed — only 13 mentions. The one piece of real news is positive; the opinions attached to him are mostly negative.
 
 - Camp news (178 upvotes): in an NFL Network interview Jordan Love said "MG (Golden) locked in now over there at X." That's the only reported role update in the corpus, and one reply immediately questions whether the X spot in this offense is worth much — "it more depends on how good Matthew Golden is at playing the X."
 - The structural problem is target competition. A rankings post breaks Green Bay's passing game down as a true committee: Christian Watson 21% target share, Tucker Kraft 19%, Jayden Reed 18%, with Golden at 16% as a rookie.

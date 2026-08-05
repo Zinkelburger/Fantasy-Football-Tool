@@ -1,6 +1,6 @@
 **Jakobi Meyers** (JAC, WR, bye 7) — board rank 91
 
-**Room sentiment:** Divided, and the real argument is about Jacksonville's pecking order — 51 mentions, most inside a dedicated "BTJ vs. Washington vs. Meyers" thread where he generally lands third.
+**Room sentiment:** The real argument is about Jacksonville's pecking order — 51 mentions, most inside a dedicated "BTJ vs. Washington vs. Meyers" thread where he generally lands third.
 
 - Top-voted ordering runs "Washington > BTJ > Jakobi," with one high-scoring line: "anyone who watched the Jaguars last year knows Washington is their best receiver, followed by Jakobi." Even after Meyers arrived, Parker Washington posted a target share over 25%, and over 30% from Week 16 on.
 - Concrete facts cited: he **signed a $60M extension**, read as the team valuing him, and his projected target share is 17% in one of the more distributed passing games in the league (699.5 projected yards). Travis Hunter also siphons snaps.

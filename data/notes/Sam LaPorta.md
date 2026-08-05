@@ -1,6 +1,6 @@
 **Sam LaPorta** (DET, TE, bye 6) — board rank 86
 
-**Room sentiment:** Divided but tilting bullish — a 400-upvote thread argues he's "heavily slept on" relative to McBride, and 101 mentions make him the most-argued mid-round TE here.
+**Room sentiment:** Tilting bullish but far from settled — a 400-upvote thread argues he's "heavily slept on" relative to McBride, with argument on both sides across 101 mentions.
 
 - Health: fully cleared for training camp after the back surgery that ended his 2025 season. That surgery is the biggest bear point — several posters aren't confident he returns to form; others say physicians aren't concerned.
 - Bull case: top-8 TE in 2023 and 2024, attached to Goff in a high-scoring offense, an easy schedule, new OC Drew Petzing, and a red-zone role (~0.5 TDs/game). He's cheaper than either of the last two years, going around TE7 at the 7/8 turn.

@@ -1,6 +1,6 @@
 **Luther Burden** (CHI, WR, bye 10) — board rank 39
 
-**Room sentiment:** Sharply divided, and one of the most-argued names in the corpus (63 mentions, plus dedicated "Trust or Bust" and "which hype train derails" threads). The single highest-scoring line about him is a fade.
+**Room sentiment:** 63 mentions, plus dedicated "Trust or Bust" and "which hype train derails" threads — and the single highest-scoring line about him is a fade.
 
 - **The bear case leads on votes.** Top comment (score 376): "Luther Burden is at best a fantasy WR2 and the 3rd option on his team." The "Trust or Bust" author (105) is "out on Luther Burden at his current cost." Others push the Odunze comparison — "we're supposed to take Luther Burden a round and a half in front of him?" — and dismiss the hype as "some coach speak." He appears by name in the do-not-draft thread as "Luther Burden at adp."
 - **The bull case is camp-driven and real.** GM Ryan Poles: "If there's a guy that I'm really excited about, it's Luther Burden" and can "feel the fire" (scores 245/97). HC Ben Johnson said he's buying "Luther Burden stock"; a separate thread covers Johnson comparing him to Amon-Ra St. Brown. Data point: he "led all WRs in catchable target rate" (160).

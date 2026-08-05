@@ -1,6 +1,6 @@
 **Kenneth Walker** (KC, RB, bye 5) — board rank 22
 
-**Room sentiment:** Divided, and one of the busier RB debates here (49 mentions). A dedicated "Why I changed my mind about Kenneth Walker on the Chiefs" thread scored 204; he lands on target lists and do-not-draft lists in equal measure.
+**Room sentiment:** He lands on target lists and do-not-draft lists in equal measure — 49 mentions, including a dedicated "Why I changed my mind about Kenneth Walker on the Chiefs" thread that scored 204.
 
 - The move to Kansas City is the whole story: Andy Reid, no Charbonnet vulturing goal-line work, and camp buzz about "catching passes in the screen game... something he didn't always get to showcase in Seattle."
 - Price is the sticking point even for converts — the pro-Walker author still says "I don't know if I want to pay the RB6 price tag he currently has on Sleeper." A "Do NOT draft these players" thread lists him at RB8-10.

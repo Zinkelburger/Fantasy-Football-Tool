@@ -1,6 +1,6 @@
 **Rashid Shaheed** (SEA, WR, bye 11) — board rank 156
 
-**Room sentiment:** Divided and skeptical — 29 mentions, mostly as a background variable in JSN threads rather than as a target in his own right.
+**Room sentiment:** Skeptical on balance — 29 mentions, mostly as a background variable in JSN threads rather than as a target in his own right.
 
 - Role: the Seahawks WR room is described as JSN, Cooper Kupp, Shaheed and Tory Horton. He re-signed and has a full offseason to acclimate. The consistent characterization is deep threat — "a burner who will get a couple deep bombs and gadget plays."
 - Bull case: one poster notes that after being traded last season he was a top-3 WR in PPG down the stretch, arguing his target share is elite when he's on the field. He appears on Hartitz's late-round sleepers list.

@@ -1,6 +1,6 @@
 **David Montgomery** (HOU, RB, bye 8) — board rank 48
 
-**Room sentiment:** Divided along a clean line — he is either the safest cheap RB1 on the board or the textbook dead-zone trap. 30 mentions, and both camps show up with real upvotes.
+**Room sentiment:** He is either the safest cheap RB1 on the board or the textbook dead-zone trap — the line is that clean. 30 mentions, and both camps show up with real upvotes.
 
 - The bull case is floor and price. He was the top answer (263) to "lowest-ranked RB you'd go into the season with as your RB1." A heavily upvoted ranker (202) names him one of "my guys" — "a far more straightforward situation, especially given how cheap he is on ESPN."
 - The bear case is structural. Hartitz's RB tiers (175): "gives me dead zone RB vibes." A dead-zone data post lists him at RB24, and the top reply (57) calls him "the most blatant dead zone RB in a while."

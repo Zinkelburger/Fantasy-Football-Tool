@@ -1,6 +1,6 @@
 **Isaiah Davis** (NYJ, RB, bye 13) — board rank 280
 
-**Room sentiment:** Divided in an unusual way — the room agrees he's been used and disagrees about whether that means anything. 12 mentions, almost all inside Breece Hall and Braelon Allen threads.
+**Room sentiment:** The room agrees he's been used and disagrees about whether that means anything — 12 mentions, almost all inside Breece Hall and Braelon Allen threads.
 
 - **The usage is real and reported.** The Jets went to him "extremely often" late last season, and a Hall analysis notes Hall "fell to a career-low 2.3 catches/game in 2025 as Isaiah Davis ate into third-down work." One poster cites reports that "Isaiah Davis is going to be featured more than braelon Allen."
 - **Bull case versus Allen:** "Isaiah Davis has looked better whenever they called his number," and he's "a better complimentary back to Breece Hall" — though that same comment adds "and he sucks too."

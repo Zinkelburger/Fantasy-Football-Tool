@@ -1,6 +1,6 @@
 **Bhayshul Tuten** (JAC, RB, bye 7) — board rank 47
 
-**Room sentiment:** Most-discussed player in the corpus (340 mentions) and violently divided — a hype train with an equally loud, well-argued fade.
+**Room sentiment:** The most-mentioned player in the corpus (340 mentions) — a hype train with an equally loud, well-argued fade.
 
 - Camp reporting is good: "Bulk of first team carries with Rodriguez sidelined / one reporter noted 'most impressive offensive player today'" (245), plus a later note repeating the first-team carries. Etienne is gone to New Orleans.
 - Bull case: the explosive back in the room, trusted at the goal line as a rookie, with 14 targets / 10 catches / 79 yards / 2 TDs in a limited role. One projection gives him a 47% rush share and 5.5 rushing TDs.

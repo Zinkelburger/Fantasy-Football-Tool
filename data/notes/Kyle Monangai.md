@@ -1,6 +1,6 @@
 **Kyle Monangai** (CHI, RB, bye 10) — board rank 71
 
-**Room sentiment:** Divided and moving — 30 mentions with a live news cycle. He was a popular sleeper until a camp absence turned into a reported injury.
+**Room sentiment:** A popular sleeper until a camp absence turned into a reported injury — 30 mentions with a live news cycle, and opinion is still moving.
 
 - **The news, in order:** three daily camp roundups flag him absent with "reason still unknown." Then Bears HC Ben Johnson said Monangai "is dealing with a soft tissue injury and his timeline should be on the 'shorter side.'" Immediate reaction: "Well, there goes Monangai off my draft board."
 - **Bull case:** Hartitz handcuff Tier 1 ("FLEX with benefits"), and an undervalued-RBs post calls him "slept on slightly right now." One commenter sees a growing receiving role: "Monangai got more targets/game as the year went on."

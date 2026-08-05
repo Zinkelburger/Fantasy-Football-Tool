@@ -1,6 +1,6 @@
 **Jeremiyah Love** (ARI, RB, bye 14) — board rank 21
 
-**Room sentiment:** Bearish, and unusually loudly so — across 46 mentions the highest-scoring lines all argue against his price. He is one of the most-faded players in the corpus.
+**Room sentiment:** Bearish, and unusually loudly so — across 46 mentions the highest-scoring lines all argue against his price.
 
 - The camp report is the core problem: **Tyler Allgeier has been receiving the majority of first-team reps** over the third overall pick (97-point camp roundup), and a separate thread was titled around Allgeier "getting the majority of the carries with the first team." Allgeier is on a new two-year deal.
 - Team context is the second knock. A 350-upvote post on RBs failing on bad teams lists Arizona at **4.5 projected wins**; others cite a brutal schedule, QB uncertainty, and skepticism of a Nathaniel Hackett / Mike LaFleur staff. One ranker, asked if he still liked his Love ranking "after Hackett's comments," answered "I was never as bullish on Jeremiyah Love."

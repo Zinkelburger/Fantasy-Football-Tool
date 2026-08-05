@@ -1,6 +1,6 @@
 **Bucky Irving** (TB, RB, bye 10) — board rank 36
 
-**Room sentiment:** Divided, leaning negative. A study of 2,269 podcast hours had him 45% positive / 55% negative — one of the most split players tracked — and he recurs in fade and "do not draft" threads.
+**Room sentiment:** Leaning negative — a study of 2,269 podcast hours had him 45% positive / 55% negative, and he recurs in fade and "do not draft" threads.
 
 - Health is the pivot: offseason shoulder surgery, but he is participating in camp and HC Todd Bowles said "He's full-go right now." A July 31 report has Irving taking the most carries that morning, with Kenny Gainwell used primarily as the receiving back.
 - Bull case is simple — "A healthy Bucky Irving will look like he did his rookie year." A "Top 8 RB everyone is sleeping on" post exists and got mocked in its own comments.

@@ -1,6 +1,6 @@
 **Marvin Harrison** (ARI, WR, bye 14) — board rank 81
 
-**Room sentiment:** The most argued-over name in this batch (102 mentions) and genuinely divided — but the loudest single line is a fade: "Marvin Harrison, and my god does it tempt me every year" (score 163, do-not-draft thread).
+**Room sentiment:** Both sides show up across 102 mentions, but the loudest single line is a fade: "Marvin Harrison, and my god does it tempt me every year" (score 163, do-not-draft thread).
 
 - **Camp is mixed, not good.** The Week 1 camp roundup (97): "touch-and-go at camp thus far with drops, but has made some big plays, as well." Drops are a recurring complaint ("all I've heard about is constant MHJ drops"). A counterpoint from someone watching practice: "how many crossing routes MHJ is on where he is open."
 - **Role news exists.** A Theo Mackie report has him "treated as the main WR1, not Michael Wilson," and the coaching change to Mike LaFleur is read as the staff trying to make him work. The thread's top replies mock it — "Gretchen, stop trying to make MHJ happen" — so treat the beat report as contested.

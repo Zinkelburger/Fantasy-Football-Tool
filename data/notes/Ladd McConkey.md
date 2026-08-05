@@ -1,6 +1,6 @@
 **Ladd McConkey** (LAC, WR, bye 7) — board rank 50
 
-**Room sentiment:** Loudly divided — 91 mentions across two dedicated threads ("Have we overcorrected on Ladd McConkey?" 271; "Popper: McConkey 'the No. 1 option' in Chargers O" 313). Both "a MUST grab at his ADP" (224) and "McConkey is a bad pick" appear.
+**Room sentiment:** 91 mentions across two dedicated threads ("Have we overcorrected on Ladd McConkey?" 271; "Popper: McConkey 'the No. 1 option' in Chargers O" 313). Both "a MUST grab at his ADP" (224) and "McConkey is a bad pick" appear.
 
 - Situation change is the argument: Keenan Allen, who out-targeted him last year, is gone, and new play-caller Mike McDaniel's 2023 Miami offense supported two 1,000-yard receivers. He missed offseason time with a hamstring strain but is now "a full-go at Chargers training camp."
 - Bull case: FantasyPros has him around WR23, and "if McConkey gets back near 80 catches, he does not need a massive statistical explosion to outperform WR23." His 9.8 aDOT fits a historically bottom-5-aDOT scheme.

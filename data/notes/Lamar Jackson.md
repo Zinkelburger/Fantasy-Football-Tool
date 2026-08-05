@@ -1,6 +1,6 @@
 **Lamar Jackson** (BAL, QB, bye 13) — board rank 33
 
-**Room sentiment:** Divided across 25 mentions, and most of it is a proxy fight about early-QB strategy rather than analysis of him.
+**Room sentiment:** Most of the 25 mentions are a proxy fight about early-QB strategy rather than analysis of him, and the room splits both ways.
 
 - Price is the complaint: he lands on a well-upvoted "Do not draft" list next to Josh Allen and Jayden Daniels — that's the anti-early-QB crowd, not a player-specific critique. A Ravens preview makes the point directly: he "isn't coming at a discount in 2026 despite his injury marred 2025 season."
 - The one concrete camp report is negative: Baltimore has him "adjusting to taking more snaps under center which is not exactly the thing you want to read about when considering a top tier QB option." His valuation rests on rushing volume, so that matters.

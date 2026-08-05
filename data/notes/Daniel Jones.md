@@ -1,6 +1,6 @@
 **Daniel Jones** (IND, QB, bye 13) — board rank 196
 
-**Room sentiment:** Genuinely divided, and discussed far more as a variable in other players' outlooks than as a QB to draft. A podcast-scraping post lists him among the ten players analysts are most split on — 46.3% positive vs 53.7% negative across 123 mentions.
+**Room sentiment:** Discussed far more as a variable in other players' outlooks than as a QB to draft. A podcast-scraping post lists him among the ten players analysts are most split on — 46.3% positive vs 53.7% negative across 123 mentions.
 
 - **What happened last year:** he was "surprisingly amazing" before the injury — the overall QB2 through roughly nine weeks — with the room specifically praising the deep ball to Alec Pierce. He then tore his Achilles and broke his fibula.
 - **Health status (concrete):** fully cleared from the torn Achilles and on the field for the start of training camp. The Colts also gave him a two-year, $88M extension, and Anthony Richardson has requested a trade in response.

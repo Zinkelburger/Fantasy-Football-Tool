@@ -1,6 +1,6 @@
 **Romeo Doubs** (NE, WR, bye 11) — board rank 124
 
-**Room sentiment:** Divided, and the louder, higher-scoring side is negative — 19 mentions, with his most-upvoted appearances coming in a "do NOT draft these players" thread.
+**Room sentiment:** The louder, higher-scoring side is negative — 19 mentions, with his most-upvoted appearances coming in a "do NOT draft these players" thread.
 
 - The fade is blunt: "I say this every year but Romeo Doubs," and he's "one of like a dozen guys this sub doesn't understand has effectively no value and is a roster clogger." Also: "In late rounds, I'm not drafting JAGs like Romeo Doubs or Jakobi Meyers."
 - The bull case is modest and explicitly boring: "I prefer Romeo Doubs as the boring value play... in a better offense, with an OC with quite a strong history." Hartitz lists him in tier 8, "favorite late-round sleepers." He's also named among post-round-8 WRs with touchdown upside (ECR 129).

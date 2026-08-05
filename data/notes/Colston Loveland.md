@@ -1,6 +1,6 @@
 **Colston Loveland** (CHI, TE, bye 10) — board rank 49
 
-**Room sentiment:** Divided and sharply so — 36 mentions split between "Tier 2, overall TE1 upside" and "being drafted practically at ceiling."
+**Room sentiment:** The 36 mentions split between "Tier 2, overall TE1 upside" and "being drafted practically at ceiling."
 
 - Bull case is volume. He's called "the alpha target in Chicago" with "ARSB type volume and usage," projected for 824.5 receiving yards, and a July 31 camp roundup reports "an impressive day according to many reports / saw lots of targets his way." Hartitz has him Tier 2 with McBride and Warren.
 - Bear case is competition and price. Chicago's target tree also holds Rome Odunze, Luther Burden and DJ Moore — "there are four other names of equal or near equal talent on that offense." Multiple posters say he "won't return his value at his current ADP," that he's "being drafted practically at ceiling," and that the sub has "reddit syndrome" about him.

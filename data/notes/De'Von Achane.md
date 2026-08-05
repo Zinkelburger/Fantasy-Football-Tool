@@ -1,6 +1,6 @@
 **De'Von Achane** (MIA, RB, bye 6) — board rank 10
 
-**Room sentiment:** The most argued-about player in the corpus (267 mentions) and genuinely split — dedicated fade and "getting slept on" posts, plus repeat appearances on "do not draft" and "hill I'll die on" lists.
+**Room sentiment:** Dedicated fade and "getting slept on" posts, plus repeat appearances on "do not draft" and "hill I'll die on" lists — 267 mentions, genuinely split.
 
 - **Bear case (highest-scoring cluster):** Miami is set at 4.5 projected wins. "Achane will get a lot of work, but this team just won't move the ball" (102). Tua "was a checkdown merchant, which greatly increased his value," and Malik Willis is a running QB — read as fewer RB targets and stolen TDs. Owners note he "ceded most of the goal line work" and "was getting pulled out of the game inside the 10."
 - **Bull case:** "Achane is bad offense proof" (148). He finished overall #9 last season at a current ADP of 10-14, was top-3 among backs in routes run, and Hill/Waddle leaving removes target competition.

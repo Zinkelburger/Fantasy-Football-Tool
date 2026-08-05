@@ -1,6 +1,6 @@
 **Michael Wilson** (ARI, WR, bye 14) — board rank 74
 
-**Room sentiment:** genuinely divided — one of the most polarizing names in the corpus, appearing on both "hill I'll die on" and "do not draft" lists.
+**Room sentiment:** He appears on both "hill I'll die on" and "do not draft" lists — the room genuinely can't agree on him.
 
 - The catalyst is a beat report that Marvin Harrison Jr. is "being treated as the main WR1, not Michael Wilson." That thread is where most of the argument lives.
 - Bull case: he had an extended burner stretch last season, and supporters cite 8.0 yards per target versus McBride's 7.3, plus a claim he's playing the Z role. Several predict he's Arizona's true WR1.

@@ -1,6 +1,6 @@
 **Ashton Jeanty** (LV, RB, bye 13) — board rank 9
 
-**Room sentiment:** Deeply divided and one of the loudest debates in the corpus — 231 mentions, appearing in both "do not draft no matter what" and "hill I'll die on" threads with high-scoring comments on each side.
+**Room sentiment:** He appears in both "do not draft no matter what" and "hill I'll die on" threads — 231 mentions, with high-scoring comments on each side.
 
 - **The fact both sides argue over:** as a rookie he finished RB11-RB15 (cited variously) at ~14.3 PPG with 55 receptions, behind what the room calls a historically bad line — "second to last over the past fifteen years." Bulls call that a proven floor in a disaster; bears call it "the worst season in 15 years for a rookie RB taken inside the top 10."
 - **The bull case is volume plus environment:** no competition "aside from Mike Washington Jr., a fourth round pick," with one claim of 75/80% of touches. Adds Linderbaum at center, Klint Kubiak, Cousins over Geno. "3 Down volume is King and Jeanty will get it."

@@ -1,6 +1,6 @@
 **Josh Allen** (BUF, QB, bye 7) — board rank 18
 
-**Room sentiment:** the most-discussed player in the corpus (145 mentions) and sharply divided — not on whether he's the best fantasy QB, which nobody disputes, but on the price.
+**Room sentiment:** The argument is not whether he's the best fantasy QB, which nobody disputes, but the price — 145 mentions.
 
 - The pro case is consistency, not upside. Top-voted line: "nobody tends to regret drafting Josh Allen." Others call him "an easy 2-3 ppg above ANYONE else" and note 39% of ESPN teams reaching last year's finals rostered him.
 - The fade case is opportunity cost, argued just as well. A "do not draft" post listing him at QB1 drew 95 upvotes. The sharpest version: Baker Mayfield scored ~80% of Allen's points last year and goes roughly ten rounds later. A counter-stat: the ppg gap between Allen and the next four QBs is about two points.

@@ -1,6 +1,6 @@
 **Cam Skattebo** (NYG, RB, bye 8) — board rank 37
 
-**Room sentiment:** Genuinely divided, and it's an injury argument rather than a talent argument — 100 mentions including a dedicated "Player Analysis: Cam Skattebo" thread with high-scoring comments on both sides.
+**Room sentiment:** The argument is about the injury, not the talent — 100 mentions including a dedicated "Player Analysis: Cam Skattebo" thread with high-scoring comments on both sides.
 
 - **Role is not in question.** Camp report: Connor Hughes said it's "clear Cam Skattebo is the top back" for the Giants, and he's reported full-go after a season-ending leg injury. The room notes he "has the goal-line role completely locked down," is "a fantastic receiver out of the backfield," and "was starting to take over snap share in that backfield before getting injured." Giants rebuilt the line; Dart is publicly calling him the focal point.
 - **The injury case** (score 40, the most specific post): "Skattebo had the same ankle surgery that made Pollard, Andrews, Michael Thomas, and Pacheco tank their fantasy seasons the following year." The concern is narrower than it sounds — not Week 1 availability, but whether he's the same player, with Godwin's reduced explosiveness as the comp.

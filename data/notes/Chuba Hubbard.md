@@ -1,6 +1,6 @@
 **Chuba Hubbard** (CAR, RB, bye 5) — board rank 78
 
-**Room sentiment:** One of the most argued players in the corpus (109 mentions) and genuinely split — a podcast study had analysts 42.2% positive / 57.8% negative. Every thread becomes Hubbard vs. Brooks.
+**Room sentiment:** Every thread becomes Hubbard vs. Brooks — 109 mentions, and a podcast study had analysts 42.2% positive / 57.8% negative.
 
 - Depth chart: Hubbard sits atop the Panthers' chart and Rico Dowdle left in free agency, but Brooks is taking first-team reps in camp. The quoted team plan: a "one-two punch... before [Brooks] taking over as the starter at some point."
 - Bull case: he played through a grade 2 calf strain last year, the staff values him, and he's on a $33M/4-year deal. "Chuba starts the year as the lead back, and there's a chance he keeps his job."

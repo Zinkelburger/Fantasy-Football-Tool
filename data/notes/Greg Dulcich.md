@@ -1,6 +1,6 @@
 **Greg Dulcich** (MIA, TE, bye 6) — board rank 187
 
-**Room sentiment:** Divided but low-conviction on both sides (19 mentions) — a popular free dart in punt-TE threads with a pointed counterargument.
+**Room sentiment:** A popular free dart in punt-TE threads with a pointed counterargument — low conviction on both sides (19 mentions).
 
 - The bull case is entirely price: "he's basically free," "Get some Greg dulcich cheap," and "If I'm taking shots on anyone in Miami, it's either Achane or Greg Dulcich very late." He's among one analyst's most-drafted Underdog TEs. Hartitz Tier 6.
 - Bear case comes in two flavors. Team: he lands on fade-Miami and do-not-draft lists purely because of the offense, and one poster dismisses him as "career back up Greg Dulcich." Archetype, and this is the sharper one: "I try with guys like Chig & Dulcich every year and I swear the hit rate is even lower — remarkably low — on flyer TEs like that than conventional wisdom would suggest."

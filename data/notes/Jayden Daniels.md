@@ -1,6 +1,6 @@
 **Jayden Daniels** (WAS, QB, bye 7) — board rank 64
 
-**Room sentiment:** Divided but low-volume — 24 mentions, no dedicated thread. He appears on both "do not draft" and "solid mid-round bet" lists, and the sharpest line in the file is skeptical.
+**Room sentiment:** Low volume — 24 mentions, no dedicated thread. He appears on both "do not draft" and "solid mid-round bet" lists, and the sharpest line in the file is skeptical.
 
 - Bear case is last season, stated plainly in the Hartitz QB tiers thread: "Man Jayden daniels sure is high for someone that finished QB33 last year." Others echo the burn — "Invested in Jayden Daniels last year and it cost me," "I'm really not high on Jayden Daniels."
 - Bull case is structural, not analytical: a draft-path study groups him with Lamar, Burrow and Drake Maye as "solid bets in those mid rounds, even if you aren't able to grab a Josh Allen in round 3." One poster's hill: "Jayden Daniels finishes QB1."

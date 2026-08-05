@@ -1,6 +1,6 @@
 **CeeDee Lamb** (DAL, WR, bye 14) — board rank 15
 
-**Room sentiment:** Genuinely divided and loudly so — 57 mentions, a dedicated "CeeDee Lamb being overhyped?" thread, and repeat appearances in fade threads. High-scoring comments land on both sides.
+**Room sentiment:** High-scoring comments land on both sides — 57 mentions, a dedicated "CeeDee Lamb being overhyped?" thread, and repeat appearances in fade threads.
 
 - **The fade case** (top-scored take, 270): "much rather just wait and grab Pickens in the second/third." The core objection is target competition — "No other receiver in the first round has target competition from his WR2 like CeeDee does" — plus "the lack of TDs for CeeDee was very frustrating last year."
 - **The defense:** "CeeDee Lamb is not a fade this year IMO." Supporters point to injury: he "battled thru a high ankle sprain," had "3 games where he didn't play in the second half," and still finished WR12 in PPG. One ranker expects a healthy Lamb "returns as the clear WR1."

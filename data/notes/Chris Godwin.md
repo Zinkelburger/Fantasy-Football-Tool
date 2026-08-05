@@ -1,6 +1,6 @@
 **Chris Godwin** (TB, WR, bye 10) — board rank 87
 
-**Room sentiment:** Divided but with one concrete, actionable edge — 26 mentions. Hartitz files him in tier 6 ("would WR2 numbers really surprise us?"), while a widely-upvoted rankings-arbitrage post flags him as a specific ADP exploit.
+**Room sentiment:** One concrete, actionable edge amid the disagreement — 26 mentions. Hartitz files him in tier 6 ("would WR2 numbers really surprise us?"), while a widely-upvoted rankings-arbitrage post flags him as a specific ADP exploit.
 
 - The exploit: Godwin is ranked 72nd overall on FantasyPros but ESPN has his draft rank at 127. As that post puts it, "Chris Godwin won't be on my competitor's screens for over 4 rounds in comparison to his rank, so I can wait or steal him." Elsewhere he's listed at ADP 141.5 with a 699.5-yard projection.
 - Bull case is pedigree plus a rebounding offense: he was the WR2 in all of fantasy behind only Ja'Marr Chase when he got hurt in 2024, and one Bucs-offense post argues Baker's outlook improves with "the return of a healthy Chris Godwin" alongside year-2 steps from Egbuka and McMillan. One poster is "targeting him aggressively."

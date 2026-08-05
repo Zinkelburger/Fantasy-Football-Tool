@@ -1,6 +1,6 @@
 **Travis Hunter** (JAC, WR, bye 7) — board rank 197
 
-**Room sentiment:** Loudly divided — 46 mentions, one of the most contentious names in the corpus. The two-way role makes him either a late-round steal or untouchable.
+**Room sentiment:** The two-way role makes him either a late-round steal or untouchable — 46 mentions, argued loudly on both sides.
 
 - **Camp reporting:** two roundups had him "playing more snaps on defense than offense in Jaguars camp." Then Friday: "More snaps on offense today than the first couple of days; per multiple reports, he was working as an outside WR."
 - **What the coach said:** Liam Coen answered "He will do it" when asked whether Hunter would play offense and defense in 2026.

@@ -1,6 +1,6 @@
 **Tre Tucker** (LV, WR, bye 13) — board rank 210
 
-**Room sentiment:** Divided but unusually engaged for a player this cheap — 22 mentions, most inside one thread asking which "terrible" WR room has fantasy upside. Opinion there runs from "best sleeper out of all those" to "not close to a leading receiver."
+**Room sentiment:** Unusually engaged for a player this cheap — 22 mentions, most inside one thread asking which "terrible" WR room has fantasy upside. Opinion there runs from "best sleeper out of all those" to "not close to a leading receiver."
 
 - **Facts on the table:** 57 receptions, 696 yards, 5 TDs last season, which led the Raiders. One projection set has him at 574.5 yards; quoted ADPs range from 162 to 168.2, with Sleeper superflex at 188.9.
 - **Bull case:** "quite a few reports last year that Tre Tucker was the 'alpha/leader' in the WR room even when Meyers was there." One argument: if Michael Wilson could get WR2 targets with Brissett throwing and McBride at TE, Tucker can with Cousins/Mendoza and Brock Bowers. One poster is "buying Tre Tucker everywhere."

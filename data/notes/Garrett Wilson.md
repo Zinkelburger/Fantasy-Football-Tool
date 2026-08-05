@@ -1,6 +1,6 @@
 **Garrett Wilson** (NYJ, WR, bye 13) — board rank 40
 
-**Room sentiment:** Sharply divided and one of the noisiest names in the corpus (48 mentions). The top comment in the "do not draft no matter what" thread is just "Garrett Wilson" — while other posters call him their flag plant of the year.
+**Room sentiment:** 48 mentions and no middle ground — the top comment in the "do not draft no matter what" thread is just "Garrett Wilson," while other posters call him their flag plant of the year.
 
 - The fade is about the Jets, not the player. The sharpest specific objection is coaching — an OC "who was fired in each of his last two seasons because he couldn't keep up with the modern NFL," and who may also "see his attention split after becoming interim head coach halfway through the season."
 - The bull case is per-game production: he "averaged 19.1 FPG (WR5) through his 5 healthy games last season," and even in a lost year led the Jets in receiving with ~395 yards in 7 games. Hartitz has him tier 4, "clear upside but we have questions."

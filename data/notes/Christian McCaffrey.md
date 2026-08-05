@@ -1,6 +1,6 @@
 **Christian McCaffrey** (SF, RB, bye 8) — board rank 4
 
-**Room sentiment:** divided, and lower-volume than you'd expect for a top-5 pick — a dedicated "case for CMC repeating as the RB1" thread ran alongside multiple "never drafting him again" posts.
+**Room sentiment:** A dedicated "case for CMC repeating as the RB1" thread ran alongside multiple "never drafting him again" posts — lower-volume than you'd expect for a top-5 pick.
 
 - Role is the cleanest argument for him. One well-upvoted reply calls San Francisco "as unambiguous a backfield as you could possibly find in the NFL," and the receiving work is treated as the reason he scores. Backup Jordan James, described in camp reports as the clear No. 2, suffered broken ribs early in 49ers camp.
 - Market: consensus average rank 6.00, ADP cited around 4.5-6.3, and one projection puts him at 574.5 receiving yards.

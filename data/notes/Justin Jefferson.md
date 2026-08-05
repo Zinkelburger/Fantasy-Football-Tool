@@ -1,6 +1,6 @@
 **Justin Jefferson** (MIN, WR, bye 6) — board rank 16
 
-**Room sentiment:** Divided and unusually sour for a player this good — 41 mentions put him near the top of the "WR1 upside" tier and simultaneously in the "do not draft no matter what" and "early-round fades" threads.
+**Room sentiment:** Unusually sour for a player this good — 41 mentions put him near the top of the "WR1 upside" tier and simultaneously in the "do not draft no matter what" and "early-round fades" threads.
 
 - The bear case is entirely QB. He finished WR34 last season behind what posters call historically bad quarterback play, and Minnesota is running a Kyler Murray / JJ McCarthy competition. A camp roundup has Murray pulling away with "few, if any, incompletions" and connecting with Jefferson.
 - A well-upvoted line frames the upgrade honestly: he's going "from the worst passing QB in the league to like, a bottom 5 one" — better, but not good.
