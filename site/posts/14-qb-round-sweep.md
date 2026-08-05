@@ -60,7 +60,3 @@ regardless of QB plan — but that gap is about disciplined drafting in
 general ([finding 03](#/blog/03-adp-discipline-is-not-an-edge)), not
 about quarterbacks. Don't read it as a QB effect.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/14-qb-round-sweep.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/14-qb-round-sweep.md)*

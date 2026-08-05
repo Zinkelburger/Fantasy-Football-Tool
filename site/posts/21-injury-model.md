@@ -32,6 +32,3 @@ Hamstrings come back — hold. Feet are the stealth season-enders. Concussions a
 
 Injury labels are coarse. "Knee" blends a sprain and a torn ACL, so the table understates the bad tail once real news says ligament. And "never returns" counts every reason a player stayed out — including benchings and cuts — which makes it the right number for roster planning but not a medical prognosis.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/21-injury-model.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/21-injury-model.md)*

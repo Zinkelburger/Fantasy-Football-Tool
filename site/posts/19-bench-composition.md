@@ -22,6 +22,3 @@ We checked the simulator against our six real drafts and found one mismatch: our
 
 Verdict: let RB break ties for your last bench spots. Don't spend mid-round picks on the theory.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/19-bench-composition.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/19-bench-composition.md)*

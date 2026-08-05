@@ -379,6 +379,29 @@ def build_weekly():
     return dict(label="2026 Week 1 (preseason lines)", dst=dst, k=kick)
 
 
+def _full_writeup(stem):
+    """The engine write-up (findings/NN-*.md), prepped to sit under the
+    reader-facing post: H1 dropped, TL;DR section dropped (the post
+    above IS the synopsis), H2s demoted (H2->H3, H3->H4) so the page
+    keeps one outline, cross-links pointed at the site's own posts."""
+    src = FINDINGS / f"{stem}.md"
+    if not src.exists():
+        return ""
+    out, section = [], None
+    for ln in src.read_text().splitlines()[1:]:
+        m = re.match(r"^(#{2,3})\s", ln)
+        if m:
+            if len(m.group(1)) == 2:
+                section = ln[3:].strip()
+            if section != "TL;DR":
+                out.append("#" + ln)
+            continue
+        if section != "TL;DR":
+            out.append(ln)
+    md = "\n".join(out).strip()
+    return re.sub(r"\]\((\d\d-[a-z0-9-]+)\.md\)", r"](#/blog/\1)", md)
+
+
 def build_blog():
     published = {p.stem for p in POSTS.glob("[0-9][0-9]-*.md")}
     missing = {p.stem for p in FINDINGS.glob("[0-9][0-9]-*.md")} - published
@@ -395,6 +418,13 @@ def build_blog():
                      for ln in lines if "Confidence:" in ln), "")
         conf = conf.split("(")[0].strip().rstrip("*").strip()
         body = "\n".join(lines[1:])
+        # The posts used to end with a "full write-up on GitHub" pointer;
+        # now the full write-up ships on the page itself, synopsis first.
+        body = re.sub(r"\n---\s*\n+\*The full write-up.*$", "", body,
+                      flags=re.S)
+        full = _full_writeup(p.stem)
+        if full:
+            body += "\n\n---\n\n## The full write-up\n\n" + full
         hook = ""
         tl = re.search(r"## TL;DR\s+(.+?)(\n\n|\n#)", md, re.S)
         if tl:

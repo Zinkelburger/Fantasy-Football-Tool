@@ -26,6 +26,12 @@ Volume buys — receivers whose 2025 targets outran their points: Ja'Marr Chase,
 
 One caveat: efficiency still matters when you're judging whether a player *keeps* his targets. It just deserves no extra weight on draft day when production is equal.
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it: [findings/17-buy-targets-not-efficiency.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/17-buy-targets-not-efficiency.md)*
+Applied to 2024 stats, the fades — receivers whose scoring outran
+their targets — lost 2.8 points a game in 2025: Rashod Bateman
+7.8 → 2.5, Nick Westbrook-Ikhine 6.9 → 0.4, Terry McLaurin 10.6 → 7.1.
+The buys as a group were flat (−0.2), carried by Puka Nacua
+(10.8 → 14.8) and dragged by Jerry Jeudy (8.4 → 3.6) — still 2.6
+points ahead of the fades. This year the finding earned its keep on
+the fade side. The 2026 marks are on the [draft tool](#/draft) board.

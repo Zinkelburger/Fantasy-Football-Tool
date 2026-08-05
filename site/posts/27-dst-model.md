@@ -18,6 +18,3 @@ A fair objection: surely some defenses just make more plays than others. Two ans
 
 Rank defenses by opponent implied total, full stop — each Vegas point off the opponent's total is worth roughly +0.4 defense points. Don't pay for a name-brand defense on draft day; stream the slot all season. And keep expectations honest: defenses average about 5 points with a weekly swing of about 6, the noisiest slot in fantasy, so the model is a tilt, not a prophecy. The design follows subvertadown's published work, and for 2026 week 1 his two free picks and ours were identical. This model powers the weekly defense board on this site; [the kicker model](#/blog/28-kicker-model) is its noisier sibling.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/27-dst-model.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/27-dst-model.md)*

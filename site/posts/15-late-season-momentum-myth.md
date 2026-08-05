@@ -53,7 +53,10 @@ noise. This pairs with
 [touchdown luck regressing](#/blog/16-td-luck-regresses): recent,
 vivid, story-shaped stats are exactly the ones to distrust.
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it:
-[findings/15-late-season-momentum-myth.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/15-late-season-momentum-myth.md)*
+2024's 25 hottest finishers scored 0.8 points a game *less* in 2025;
+the 13 coldest finishers lost only 0.3. Baker Mayfield closed 2024 on
+fire and fell 20.7 → 15.1. Matthew Stafford limped to the finish and
+jumped 12.5 → 19.8. That's what "the finish predicts nothing" looks
+like when you bet it for a season — both streaks just washed out.

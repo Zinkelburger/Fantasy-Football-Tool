@@ -48,7 +48,12 @@ working in future seasons. And this is about who to pick *within*
 rounds 5 through 9. It is not a reason to spend more early picks on
 receivers — [that still loses](#/blog/02-zero-rb-is-a-trap).
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it:
-[findings/08-bad-team-wr1-edge.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/08-bad-team-wr1-edge.md)*
+Nine receivers drafted in 2025's mid rounds fit the profile. Three hit
+top-24 — Chris Olave (drafted WR34, finished WR6), rookie Tetairoa
+McMillan (WR23 → WR15), Stefon Diggs (WR40 → WR24) — and four busted,
+led by Garrett Wilson (WR16 → WR58) and Calvin Ridley (WR30 → WR109).
+A 33% hit rate: under the 43% history, over the 25% baseline, and
+exactly the kind of wobble a 47-player sample hands you. A lean, not a
+law — this year it leaned the right way and still stung twice.

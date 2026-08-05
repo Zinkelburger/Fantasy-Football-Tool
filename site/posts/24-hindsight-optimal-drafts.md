@@ -20,6 +20,3 @@ The season, though, is won in rounds 4 through 8. That's where the oracle loads 
 
 The 685 points are foresight, not achievable skill — no one knows which undrafted receiver breaks out. What transfers is the structure: back first, QB timing, cheap tight end, and the middle rounds as the place player judgment pays. The 17-point spread among realistic strategies restates [an earlier finding](#/blog/03-adp-discipline-is-not-an-edge): once you draft with basic discipline, sequencing cleverness is nearly used up. Any further edge has to come from evaluating players better, not ordering picks better.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/24-hindsight-optimal-drafts.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/24-hindsight-optimal-drafts.md)*

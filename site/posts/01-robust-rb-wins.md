@@ -49,7 +49,3 @@ because the backs are gone before you can corner them. That second
 point is measured, not a guess — see [how we test drafting skill
 itself](#/blog/03-adp-discipline-is-not-an-edge).
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/01-robust-rb-wins.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/01-robust-rb-wins.md)*

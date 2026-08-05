@@ -47,7 +47,3 @@ drafter with a genuinely great eye for receivers could beat these
 numbers. But the plan itself starts you in a hole, and it needs an
 RB-bust year just to climb back to even.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/02-zero-rb-is-a-trap.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/02-zero-rb-is-a-trap.md)*

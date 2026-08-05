@@ -35,6 +35,24 @@ The biggest gaps between actual and expected touchdowns in 2025:
 
 Expected touchdowns come from a model, and a model can be wrong about specific players — a true goal-line hammer might beat his number year after year. Zero carryover means such players are rare, but check the usage before fading a repeat offender. And Jefferson's quiet 2025 had other causes too; still, he's the top buy here *and* in [our targets finding](#/blog/17-buy-targets-not-efficiency), which is exactly why we like him.
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it: [findings/16-td-luck-regresses.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/16-td-luck-regresses.md)*
+We froze this rule after 2024 and let the 2025 season grade it. The
+fades — players TD-lucky in 2024 — lost 2.3 points a game on average.
+The buys gained 1.3. A 3.6-point spread, called before the season by a
+rule that knew nothing about 2025.
+
+| 2024 call | Player | 2025 PPG |
+|---|---|---|
+| Fade | Saquon Barkley | 19.2 → 11.4 |
+| Fade | Lamar Jackson | 24.4 → 15.7 |
+| Fade | Ja'Marr Chase | 15.7 → 11.4 |
+| Buy | Javonte Williams | 5.4 → 12.2 |
+| Buy | Travis Etienne | 5.2 → 11.9 |
+| Buy | Jaylen Warren | 4.8 → 10.2 |
+
+The misses, so you can weigh them: Drake Maye was flagged lucky and
+improved anyway (12.7 → 19.9), and buy Brian Robinson collapsed
+(9.3 → 2.8). Averages, not guarantees. This year's calls are marked on
+the [draft tool](#/draft) board — a ◆ by the player's name, his
+numbers in the note.

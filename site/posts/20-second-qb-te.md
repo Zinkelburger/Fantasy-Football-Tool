@@ -22,6 +22,3 @@ If you do want a backup QB, take him around round 10; waiting until 12–14 was 
 
 One caveat: this is calibrated to our family's habits. A room that hoards QBs early would make late backups scarcer and could change the QB answer.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/20-second-qb-te.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/20-second-qb-te.md)*

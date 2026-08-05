@@ -22,6 +22,3 @@ Its habits are sensible. [Touchdown luck regresses](#/blog/16-td-luck-regresses)
 
 No rookies — they have no NFL season to learn from, and need a separate model. No coach or scheme inputs, because no clean free data source exists. And it predicts points per game, not games played; availability is [the injury model's](#/blog/21-injury-model) job. This model powers the season-long board on this site.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/25-player-model.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/25-player-model.md)*

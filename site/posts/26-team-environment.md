@@ -20,6 +20,3 @@ Weather follows the same pattern. Wind is what bites: 15+ mph costs QBs almost t
 
 We tested the receiver-versus-cornerback idea three ways, including scoring a full week of a commercial matchup report against actual results. Their matchup grade had zero relationship with real scoring — their "bad matchup" receivers actually outscored their "good matchup" ones that week — and the best predictor on their own page was simply how many routes a receiver runs. A defense's supposedly weak left side doesn't even persist within a single season. Volume and recent form are signal; matchup talk is noise.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/26-team-environment.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/26-team-environment.md)*

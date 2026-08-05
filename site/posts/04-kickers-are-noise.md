@@ -51,7 +51,3 @@ were elite kickers attached to strong offenses — and that's the real
 lesson. Knowing the *offense* has a little predictive value. Knowing
 last week's box score has none.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/04-kickers-are-noise.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/04-kickers-are-noise.md)*

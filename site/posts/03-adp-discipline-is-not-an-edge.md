@@ -51,7 +51,3 @@ about what each pick costs to wait on.
 The slide version for draft night: the sheet beats your gut by ten
 points; the best strategy we've ever tested beats the sheet by one.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/03-adp-discipline-is-not-an-edge.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/03-adp-discipline-is-not-an-edge.md)*

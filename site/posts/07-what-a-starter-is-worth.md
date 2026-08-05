@@ -56,7 +56,3 @@ noisier but the same shape. And averaging six seasons smooths real
 year-to-year swings; the strategy backtests, not this chart, carry the
 risk story.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/07-what-a-starter-is-worth.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/07-what-a-starter-is-worth.md)*

@@ -26,6 +26,3 @@ Don't plan a draft around the wire; depth you draft is not replaceable by depth 
 
 A later audit of our simulated managers caught two flaws — claims wasted on players already done for the year, and starting holes left unfilled — both of which make the wire look *less* valuable than it is. We're rerunning with the fixes. The headline number could grow some, but the shape — small overall, concentrated at QB and kicker — is exactly what the roster-structure mechanism predicts, and we expect it to hold.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/22-waiver-wire-reality.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/22-waiver-wire-reality.md)*

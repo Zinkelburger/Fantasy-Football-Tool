@@ -56,7 +56,12 @@ it's the first thing we'll test when next season's data lands. We've
 paid this tax ourselves, twice — see
 [the audit of our own drafts](#/blog/11-methuen-jackels-audit).
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it:
-[findings/09-decline-discount-trap.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/09-decline-discount-trap.md)*
+Three 2025 mid-rounders fit the fallen-star profile. Brandon Aiyuk
+never made it back (no qualifying finish), Deebo Samuel middled
+(drafted WR38, finished WR32) — and Stefon Diggs bounced back
+(WR40 → WR24). Diggs is the escape clause in action: he kept 24% of
+his team's targets through the down year. But honesty check — Aiyuk
+kept 22% too, so the volume tell picked the hit *and* a miss. Two of
+three fades right, and the tell stays a lean, not a shield.

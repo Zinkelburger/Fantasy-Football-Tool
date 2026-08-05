@@ -51,7 +51,3 @@ flip in round 10, take yours — the insurance is free at that price,
 and you'll set your lineup with less stress. Just never spend a round
 early to get him. You're not buying an edge; you're buying a feeling.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/13-handcuffs-are-free-insurance.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/13-handcuffs-are-free-insurance.md)*

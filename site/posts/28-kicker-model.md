@@ -20,6 +20,3 @@ The honest numbers, in rank correlation (how well the model's weekly ordering ma
 
 Draft your kicker with your last pick — every finding on this site agrees on that. In season, don't agonize between two comparable kickers; there is no analysis that resolves that choice. When you do switch, take the kicker whose team is favored, indoors if possible, with a coach who kicks. That's the whole edge, and pretending there's more would be fake precision. The weekly kicker board on this site is built from exactly these inputs.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/28-kicker-model.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/28-kicker-model.md)*

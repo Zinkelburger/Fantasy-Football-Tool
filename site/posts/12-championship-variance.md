@@ -50,7 +50,3 @@ None of this means the playoffs are pure luck. A dominant team really
 does win far more titles over time. It means two specific finals are
 far too small a sample to indict anything.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/12-championship-variance.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/12-championship-variance.md)*

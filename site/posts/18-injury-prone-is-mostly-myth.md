@@ -22,6 +22,14 @@ Never discount a QB or WR for injury history. When someone at the table calls a 
 
 Our data only covers players who made it back onto rosters. Someone whose injury ended his career, or wiped out his whole next season, has no next year to measure and drops out of the sample. So this finding is about the ordinary range — sprains, hamstrings, ankles — not Achilles tears. And "weeks listed Out" is a proxy that occasionally counts a player who was really benched, not hurt. Neither issue rescues the injury-prone label for QBs and receivers, but they're why we stop short of calling anyone risk-free.
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it: [findings/18-injury-prone-is-mostly-myth.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/18-injury-prone-is-mostly-myth.md)*
+The 21 quarterbacks and receivers who'd have worn 2024's
+"injury-prone" label (two or more weeks listed Out) averaged **0.9**
+weeks Out in 2025 — *less* than the 1.2 weeks averaged by players with
+a clean 2024. Adam Thielen, Cooper Kupp, Jalen Hurts, DeVonta Smith:
+zero weeks apiece. The label's scariest name, Mike Evans, missed 4 —
+someone always pays the label off, which is why it feels real. At
+running back and tight end the flagged group did miss more time than
+the clean group (1.1 weeks against 0.7 and 0.4), so the small caution
+there stands.

@@ -52,7 +52,10 @@ We're publishing the broken half on purpose. A site that only showed
 findings that survived would quietly teach you that every tidy
 pattern is trustworthy. Most aren't.
 
----
+## The 2025 scorecard
 
-*The full write-up, with every table and how to reproduce it:
-[findings/10-wr-age-effects.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/10-wr-age-effects.md)*
+Five receivers aged 29–30 went in 2025's mid rounds. Three busted —
+Terry McLaurin (drafted WR15, finished WR50), Calvin Ridley (WR109),
+Chris Godwin (WR79) — Deebo Samuel middled, and Courtland Sutton beat
+his price (WR20 → WR12). Three clear busts in five keeps the caution
+alive, and five players keeps the confidence capped where it is.

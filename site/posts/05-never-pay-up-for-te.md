@@ -44,7 +44,3 @@ A true elite — Kelce in 2020, McBride in 2025 — is genuinely valuable.
 The claim isn't that tight ends don't matter; it's that the price the
 league sells them at hasn't been worth paying in six years of trying.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/05-never-pay-up-for-te.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/05-never-pay-up-for-te.md)*

@@ -48,7 +48,3 @@ leave the draft planning to stream the position. One caveat: our
 league scores 4 points per passing touchdown. At 6 points, paying up
 early would probably become a genuine edge, not just a fair trade.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/06-qb-timing.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/06-qb-timing.md)*

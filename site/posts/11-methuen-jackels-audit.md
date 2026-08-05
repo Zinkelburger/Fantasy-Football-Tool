@@ -57,7 +57,3 @@ playoffs do to the best team, and it gets its own write-up
 both years the eventual champion drafted worse than we did, with the
 #3 and #7 hauls.
 
----
-
-*The full write-up, with every table and how to reproduce it:
-[findings/11-methuen-jackels-audit.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/11-methuen-jackels-audit.md)*

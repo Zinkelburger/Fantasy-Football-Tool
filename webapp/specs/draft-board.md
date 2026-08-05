@@ -59,6 +59,9 @@ evidence instead of vibes.
   either re-simulates immediately when predict mode is on. The label is
   never hidden behind the gear: it is the assumption every surprising
   prediction traces back to, so it stays on screen.
+- The popover closes on Escape, or on any click outside it (clicks
+  inside it never close it); the gear's `aria-expanded` tracks the
+  open state.
 - Simulated cells are colored with a dashed orange border; on the main
   table, players predicted gone before my next pick get an orange tint.
 - An outlook answers the meta-game question per position: best available

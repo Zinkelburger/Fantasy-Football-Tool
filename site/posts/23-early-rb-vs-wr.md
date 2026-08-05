@@ -22,6 +22,3 @@ One myth worth killing: at the same price, RBs miss only about two-thirds of a g
 
 This is standard scoring only; leagues that award points per catch shrink or even flip the premium. And it doesn't automatically crown [RB-RB-RB](#/blog/01-robust-rb-wins): part of that plan's edge comes from our room [drafting backs a few picks late](#/blog/03-adp-discipline-is-not-an-edge). In a disciplined room the dogma fades while the take-the-back-first logic holds — even [perfect hindsight drafts](#/blog/24-hindsight-optimal-drafts) open with a running back only 58% of the time.
 
----
-
-*The full write-up, with every table and how to reproduce it: [findings/23-early-rb-vs-wr.md](https://github.com/Zinkelburger/Fantasy-Football-Tool/blob/main/engine/league-sim/findings/23-early-rb-vs-wr.md)*
