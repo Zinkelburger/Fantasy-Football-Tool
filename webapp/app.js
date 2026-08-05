@@ -753,6 +753,27 @@ function initApp() {
     return { flagged, hot, signal, tip: base + why };
   }
 
+  /* Findings marks (engine/league-sim/analysis/findings_marks.py):
+     tested per-player rules from findings 8/9/10/15/16/18 — buy/fade
+     with the player's own numbers, watch for context. Bundled per
+     clean name, like notes. */
+  const FM_LABEL = { buy: 'Buy', fade: 'Fade', watch: 'Context' };
+  function fmarksFor(p) {
+    return (DATA.fmarks || {})[cleanName(p.name)] || null;
+  }
+  function fmGlyph(fm) {
+    const dirs = new Set(fm.map(m => m.dir));
+    const cls = dirs.has('buy') && !dirs.has('fade') ? 'buy'
+      : dirs.has('fade') && !dirs.has('buy') ? 'fade' : 'mix';
+    const by = {};
+    for (const m of fm) (by[m.dir] = by[m.dir] || []).push(m.f);
+    const tip = 'Findings that apply: ' + ['buy', 'fade', 'watch']
+      .filter(d => by[d])
+      .map(d => `${FM_LABEL[d].toLowerCase()} (finding ${by[d].join(', ')})`)
+      .join(' · ') + ' — open the note for the why.';
+    return { cls, tip };
+  }
+
   function renderTable() {
     const picked = pickedSet();
     const extPicked = extPickedCanonical();
@@ -903,6 +924,8 @@ function initApp() {
         : '';
 
       const opp = oppRead(p);
+      const fm = fmarksFor(p);
+      const fmG = fm ? fmGlyph(fm) : null;
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
@@ -913,7 +936,8 @@ function initApp() {
         `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
         `${opp && opp.flagged
           ? `<span class="opp-flag ${opp.signal ? (opp.hot ? 'hot' : 'cold') : 'ctx'}" aria-hidden="true">${opp.hot ? '▾' : '▴'}</span>`
-          : ''}</span></td>` +
+          : ''}` +
+        `${fmG ? `<span class="fm-flag ${fmG.cls}" title="${escapeHtml(fmG.tip)}">◆</span>` : ''}</span></td>` +
         `<td>${escapeHtml(p.team)}</td>` +
         `<td>${escapeHtml(p.bye)}</td>` +
         (() => {
@@ -1328,6 +1352,11 @@ function initApp() {
         (opp.flagged ? (opp.hot ? ' (ran hot)' : ' (ran cold)') : '') : '') +
       `${edited ? ' · edited' : ''}`;
     $('note-meta').title = opp ? opp.tip : '';
+    const fm = fmarksFor(p);
+    $('note-findings').hidden = !fm;
+    $('note-findings').innerHTML = !fm ? '' : fm.map(m =>
+      `<p class="fm-row fm-${m.dir}"><b class="fm-chip">${FM_LABEL[m.dir]}` +
+      ` · finding ${m.f}</b> ${escapeHtml(m.note)}</p>`).join('');
     $('note-editor').hidden = !editing;
     $('note-body').hidden = editing;
     $('btn-edit-note').hidden = editing;

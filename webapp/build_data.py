@@ -28,6 +28,13 @@ OPP_CSV = os.path.join(HERE, "..", "engine", "league-sim", "data",
                        "market", "opportunity_2025.csv")
 OPP_FMT = {"STD": "std", "0.5PPR": "half", "PPR": "ppr"}
 
+# Per-player draft marks from the findings (engine/league-sim/analysis/
+# findings_marks.py): tested buy/fade/watch rules with the player's own
+# numbers. Bundled keyed by clean name, like notes.
+FM_CSV = os.path.join(HERE, "..", "engine", "league-sim", "data",
+                      "market", "findings_marks_2026.csv")
+FM_DIR_ORDER = {"buy": 0, "fade": 1, "watch": 2}
+
 # Matches archive/go-tool/loader.go nameCleaner: strips Jr./Sr./II/III/IV/V suffixes
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$")
 
@@ -54,6 +61,23 @@ def load_opportunity():
     with open(OPP_CSV, newline="", encoding="utf-8") as f:
         return {(norm_name(r["name"]), r["pos"]): r
                 for r in csv.DictReader(f)}
+
+
+def load_findings_marks():
+    """(normalized name, pos) -> [{f, dir, note}], buys first."""
+    if not os.path.exists(FM_CSV):
+        print("WARNING: no findings_marks_2026.csv — note panes get no "
+              "findings block (run engine/league-sim/analysis/"
+              "findings_marks.py)")
+        return {}
+    out = {}
+    with open(FM_CSV, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            out.setdefault((norm_name(r["name"]), r["pos"]), []).append(
+                {"f": int(r["finding"]), "dir": r["dir"], "note": r["note"]})
+    for v in out.values():
+        v.sort(key=lambda m: (FM_DIR_ORDER.get(m["dir"], 3), m["f"]))
+    return out
 
 
 def load_format(path: str, opp, opp_fmt: str):
@@ -130,6 +154,21 @@ def main():
     notes = load_notes()
     print(f"notes: {len(notes)} analysis files")
 
+    fm = load_findings_marks()
+    fmarks, fm_hit = {}, set()
+    for players in formats.values():
+        for p in players:
+            key = clean_name(p["name"])
+            if key in fmarks:
+                continue
+            mlist = fm.get((norm_name(p["name"]), p["pos"]))
+            if mlist:
+                fmarks[key] = mlist
+                fm_hit.add((norm_name(p["name"]), p["pos"]))
+    if fm:
+        print(f"findings marks: {len(fmarks)} board players marked "
+              f"({len(fm) - len(fm_hit)} marked names not on the board)")
+
     # Same check as the legacy Go tool: every player should have a note file
     missing = []
     for fmt, players in formats.items():
@@ -145,6 +184,7 @@ def main():
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "formats": formats,
         "notes": notes,
+        "fmarks": fmarks,
     }
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)

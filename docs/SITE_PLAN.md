@@ -32,7 +32,10 @@ projection input, because we measured that it isn't one.
    wait-cost pick logic (`PickValue`, finding 23 slope logic) + rules
    from findings (QB by r6, TE discipline, K last). Prior art: legacy
    Go draft tool (archive/go-tool) + webapp/ static port +
-   chrome-extension pick sync.
+   chrome-extension pick sync. SURFACED 2026-08-04: per-player
+   findings marks (`analysis/findings_marks.py` — findings 08/09/10/
+   15/16/17/18 as buy/fade/watch rows in the note pane, ◆ row glyph;
+   `--grade` reruns the rules on 2024 and prints the 2025 truth).
 2. **Strategy blogs** — findings 01–26 are the drafts: discipline
    (03), RB-vs-WR curves (23), hindsight optima (24), PPR imports
    warning (02), waiver reality (22). Mostly editing work, not new
