@@ -14,8 +14,9 @@ need or jargon I have to guess at.
 3. Click the Rank / ESPN / Sleeper headers to sort by that column.
 
 ## Expected
-- A table sorted by overall rank with columns: Rank, Player, Team, Bye, Pos,
+- A table sorted by overall rank with columns: Rank, Player, Team, Pos,
   **one** site-rank column, a truncated note preview, and the marker button.
+  (No Bye column — byes show on the My Team panel, where they matter.)
 - The Pos column includes NFL-team depth: **WR2** = that team's 2nd-ranked
   WR (bundled ranks, so imported ranks don't reshuffle other teams' depth).
 - The site-rank column auto-matches where the draft is happening: ESPN by
@@ -29,8 +30,8 @@ need or jargon I have to guess at.
 - Clicking a sortable header re-sorts the view (↓ marks the active sort);
   sorting never changes the real board order used by the AI prompt,
   predictions, or the pick marker (the marker only shows in rank order).
-- Every column header has a tooltip explaining what it means (what "Bye"
-  is, whose ranking "ESPN" is, etc.).
+- Every column header has a tooltip explaining what it means (what "Pos"
+  depth numbers mean, whose ranking "ESPN" is, etc.).
 - A count line shows how many players are shown / available / picked.
 - Picked players are struck through and dimmed (hidden by default).
 - Players on my team are marked with a ★.

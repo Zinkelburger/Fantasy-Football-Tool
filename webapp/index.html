@@ -64,7 +64,6 @@
                 title="Overall rank — the board order. Blue numbers are your own imported ranks. Click to sort by this (the default).">Rank</th>
               <th title="Click a row to open the player's note">Player</th>
               <th title="NFL team">Team</th>
-              <th title="Bye week — the week this player's team doesn't play (don't stack your starters on one bye)">Bye</th>
               <th title="Position and NFL-team depth — WR2 = that team's 2nd-ranked WR. Hover a cell for the full depth chart with ranks. Blue ⛓ = this player backs up someone on your roster (their handcuff).">Pos</th>
               <th id="th-espn" class="sortable"
                 title="ESPN's own ranking. (+n) = ESPN is n spots higher on them than board rank (goes earlier there); (−n) = lower (may fall to you). Click to sort by ESPN.">ESPN</th>
@@ -145,6 +144,7 @@
             <span id="note-meta" class="muted"></span>
             <button id="btn-edit-note" title="Edit this note — saved in this browser only (E)">Edit</button>
           </div>
+          <p id="note-room" class="muted" hidden></p>
           <div id="note-findings" hidden></div>
           <div id="note-body" class="md-body"></div>
           <div id="note-editor" hidden>
@@ -232,7 +232,8 @@
           draft is on (override in Settings). <b>(+n)</b> = the site is n spots higher on them
           than the board, so they'll go earlier there; <b>(−n)</b> = n spots lower — they may
           fall to you.</dd>
-        <dt>Bye</dt><dd>The week the player's team doesn't play. Don't stack your starters on one bye.</dd>
+        <dt>Bye (on My Team)</dt><dd>The week the player's team doesn't play — shown next to each
+          player on your team panel. Don't stack your starters on one bye.</dd>
         <dt>Target (last column)</dt><dd>Your shortlist marker — click it (or press <b>D</b>) to
           cycle <b>○</b> no opinion → <b>✅</b> want him → <b>❌</b> avoid him. It's only a note to
           yourself; it doesn't draft anyone.</dd>

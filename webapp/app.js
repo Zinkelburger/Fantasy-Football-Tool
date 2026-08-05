@@ -762,6 +762,38 @@ function initApp() {
      with the player's own numbers, watch for context. Bundled per
      clean name, like notes. */
   const FM_LABEL = { buy: 'Buy', fade: 'Fade', watch: 'Context' };
+  /* Where he sits in his own team's position room on the draft board:
+     "He's the Bengals WR1 — 31 picks ahead of their WR2 (Tee Higgins)."
+     Context for the note page only (build_data.py load_rooms). */
+  function roomText(p) {
+    const rm = p.room;
+    if (!rm) return '';
+    // This tool shows team codes, not nicknames — match it: "DET's RB1".
+    const poss = p.team ? `${p.team}'s` : 'his team\'s';
+    const subj = p.team || 'His team';
+    let rookSaid = false;
+    const rookTag = (n) => {
+      if (!rm.rook || rm.rook !== n) return '';
+      rookSaid = true;
+      return `, this year's pick ${rm.rookPick}`;
+    };
+    // Gaps are capped at 200 upstream; 0 means the market prices them level.
+    const gap = (n) => (n >= 200 ? '200+ picks' : `${n} picks`);
+    const bits = [];
+    if (rm.ahead && rm.aheadGap != null)
+      bits.push(rm.aheadGap === 0
+        ? `priced level with ${rm.ahead}${rookTag(rm.ahead)}`
+        : `${gap(rm.aheadGap)} behind ${rm.ahead}${rookTag(rm.ahead)}`);
+    if (rm.behind && rm.behindGap != null)
+      bits.push(`${rm.behindGap === 0 ? 'priced level with' :
+        `${gap(rm.behindGap)} ahead of`} their ${p.pos}${rm.rank + 1}` +
+        ` (${rm.behind}${rookTag(rm.behind)})`);
+    const rook = rm.rook && !rookSaid
+      ? ` ${subj} spent pick ${rm.rookPick} on a ${p.pos} (${rm.rook}).` : '';
+    return `He's ${poss} ${p.pos}${rm.rank} on the draft board` +
+      `${bits.length ? ` — ${bits.join(', ')}` : ''}.${rook}`;
+  }
+
   function fmarksFor(p) {
     return (DATA.fmarks || {})[cleanName(p.name)] || null;
   }
@@ -834,7 +866,7 @@ function initApp() {
     const sites = siteColumns();
     $('th-espn').hidden = !sites.includes('espn');
     $('th-sleeper').hidden = !sites.includes('sleeper');
-    const nCols = 7 + sites.length;
+    const nCols = 6 + sites.length;
 
     // Sorting is a view of the board, not a reordering of it: the AI top-15,
     // predictions, and the pick marker all still use board (rank) order.
@@ -999,7 +1031,6 @@ function initApp() {
         `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
         `${glyph ? `<span class="fm-flag ${glyph.cls}" title="${escapeHtml(nameTip)}">◆</span>` : ''}</span></td>` +
         `<td>${escapeHtml(p.team)}</td>` +
-        `<td>${escapeHtml(p.bye)}</td>` +
         (() => {
           const d = depthInfo(p);
           return `<td class="pos-cell${d.handcuffFor ? ' is-handcuff' : ''}" ` +
@@ -1413,6 +1444,13 @@ function initApp() {
         (opp.flagged ? (opp.hot ? ' (ran hot)' : ' (ran cold)') : '') : '') +
       `${edited ? ' · edited' : ''}`;
     $('note-meta').title = opp ? opp.tip : '';
+    // Who else is in his position room. Plain facts off the draft board,
+    // so it is shown regardless of the model-marks switch and never gets
+    // a row glyph: the room order comes from ADP, so it is not a
+    // disagreement with the market (finding 25).
+    const roomLine = roomText(p);
+    $('note-room').hidden = !roomLine;
+    $('note-room').textContent = roomLine || '';
     const fm = showModelMarks ? fmarksFor(p) : null;
     $('note-findings').hidden = !fm;
     $('note-findings').innerHTML = !fm ? '' : fm.map(m =>

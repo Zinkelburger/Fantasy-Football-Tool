@@ -35,6 +35,17 @@ FM_CSV = os.path.join(HERE, "..", "engine", "league-sim", "data",
                       "market", "findings_marks_2026.csv")
 FM_DIR_ORDER = {"buy": 0, "fade": 1, "watch": 2}
 
+# Position-room standing (engine/league-sim/analysis/position_room.py):
+# who else is in his team's room on the draft board, and the pick they
+# spent there. Context for the note only, never a board mark — the order
+# is read off ADP, so it is not a disagreement with the market
+# (finding 25). Per format, because the room order follows that
+# format's ADP.
+ROOM_CSV = {"STD": "position_room_2026.csv",
+            "0.5PPR": "position_room_2026_half.csv",
+            "PPR": "position_room_2026_ppr.csv"}
+ROOK_PICK_MAX = 100      # a 7th-rounder is not competition; don't mention him
+
 # Matches archive/go-tool/loader.go nameCleaner: strips Jr./Sr./II/III/IV/V suffixes
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$")
 
@@ -81,9 +92,11 @@ def load_findings_marks():
     return out
 
 
-def load_format(path: str, opp, opp_fmt: str):
+def load_format(path: str, opp, opp_fmt: str, rooms=None):
     players = []
+    rooms = rooms or {}
     matched = 0
+    room_hit = 0
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         required = {"Rank", "Player", "Team", "Bye", "POS", "ESPN_Rank", "Sleeper_Rank"}
@@ -121,11 +134,52 @@ def load_format(path: str, opp, opp_fmt: str):
                     "tdl": float(o["td_luck_pg"]),
                     "g25": int(o["games"]),
                 })
+            rm = rooms.get((norm_name(name), p["pos"]))
+            if rm:
+                room_hit += 1
+                p["room"] = rm
             players.append(p)
     if opp:
         print(f"  opportunity data: {matched}/{len(players)} players matched")
+    if rooms:
+        print(f"  position room: {room_hit}/{len(players)} players matched")
     players.sort(key=lambda p: p["rankNum"])
     return players
+
+
+def load_rooms(fname):
+    """(normalized name, pos) -> his standing in his own team's position
+    room, or {} if the board CSV is missing (the app must render fine
+    without it)."""
+    path = os.path.join(HERE, "..", "engine", "league-sim", "data",
+                        "market", fname)
+    if not os.path.exists(path):
+        print(f"WARNING: no {fname} — players get no position-room line "
+              "(run engine/league-sim/analysis/player_model.py)")
+        return {}
+
+    def num(v):
+        v = (v or "").strip()
+        return int(float(v)) if v else None
+
+    out = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            rank = num(r.get("room_rank"))
+            if rank is None:
+                continue
+            pick = num(r.get("rook_pick"))
+            deep = pick is None or pick > ROOK_PICK_MAX
+            out[(norm_name(r["name"]), r["pos"])] = {
+                "rank": rank,
+                "ahead": r.get("room_ahead") or None,
+                "aheadGap": num(r.get("room_ahead_gap")),
+                "behind": r.get("room_behind") or None,
+                "behindGap": num(r.get("room_behind_gap")),
+                "rook": None if deep else (r.get("rook_name") or None),
+                "rookPick": None if deep else pick,
+            }
+    return out
 
 
 def load_notes():
@@ -149,7 +203,8 @@ def main():
         path = os.path.join(DATA_DIR, "ranks", fname)
         if not os.path.exists(path):
             sys.exit(f"ERROR: missing CSV {path}")
-        formats[fmt] = load_format(path, opp, OPP_FMT[fmt])
+        formats[fmt] = load_format(path, opp, OPP_FMT[fmt],
+                                   load_rooms(ROOM_CSV[fmt]))
         print(f"{fmt}: {len(formats[fmt])} players from {fname}")
 
     notes = load_notes()
