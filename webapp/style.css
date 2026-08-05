@@ -217,8 +217,16 @@ tr.picked td.row-actions { text-decoration: none; }
 #player-tbody tr { cursor: pointer; }
 td.player-name { font-weight: 500; }
 /* Fixed-width flag slot so cycling ✅/❌ or joining the team never reflows the row */
-.name-flags { display: inline-block; width: 2.6em; margin-left: 0.3em; text-decoration: none; }
+.name-flags { display: inline-block; width: 3.2em; margin-left: 0.3em; text-decoration: none; }
 .flag-star { color: var(--yellow); }
+/* 2025 opportunity flag: ▾ ran hot (scored above his usage — fade),
+   ▴ ran cold (usage outran scoring — buy). Tooltip on the name cell.
+   Red/green only at WR/TE where the 2017-25 backtest found signal;
+   RB/QB flags are gray context (.ctx). */
+.opp-flag { margin-left: 0.15em; font-size: 0.9em; }
+.opp-flag.hot { color: var(--red); }
+.opp-flag.cold { color: var(--green); }
+.opp-flag.ctx { color: var(--fg-dim); }
 td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
 
 td.row-actions { text-align: right; }

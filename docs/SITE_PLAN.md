@@ -13,7 +13,7 @@ below draws on some mix of:
 
 | family | signals | status |
 |---|---|---|
-| Production & usage | weekly stats, usage-based expected points, targets/carries, snap trends (nflverse) | HAVE — engine/league-sim/data, EP blend validated (finding 26: usage is the #1 weekly signal) |
+| Production & usage | weekly stats, usage-based expected points, targets/carries, snap trends (nflverse) | HAVE — engine/league-sim/data, EP blend validated (finding 26: usage is the #1 weekly signal). SURFACED 2026-08-04: `analysis/export_opportunity.py` → board "2025 expected" column + hot/cold tags, draft-tool ▾/▴ flags; its weekly CSV is the ready feed for waiver spikes + week-in-review |
 | Market | game lines → implied totals (weekly env), player props (in-season player prior), ADP (draft market), preseason team environment | HAVE lines 1999-2025 + live via Odds API (.env key); props tool ready, posts Sept; historical props behind $59 one-month plan |
 | Context | injuries/status, depth charts, weather, team ratings (own Elo/SRS, nfelo), QB-Elo, salary/contracts, draft capital | HAVE historical; need in-season weekly refresh |
 | Narrative | reddit/blogs/podcasts scraped + LLM-summarized | PARTIAL — engine/reddit-scraper/ exists; research/reddit-notes-study verdict: tone adds NO projection edge over ADP. Use for *explanations*, not numbers |
@@ -98,11 +98,15 @@ already exists:
 2. **Waiver central** = weekly boards × sync: available players only,
    color-coded, ranked by our models. D/ST + K versions shipped
    today (manual marks); skill positions when the weekly model goes
-   live in September.
+   live in September. The buy signal is plumbed:
+   `analysis/export_opportunity.py --year 2026` emits per-player-week
+   EP + EWMA series (opportunity_weekly CSV) — the waiver list is
+   "FA-eligible, sorted by ewma_ep − ewma_pts".
 3. **Week in review / "post game."** Actuals vs our projections
    (residuals already computed), luck read (all-play vs actual
    record), biggest surprises. Product 5 in the list above — cheap
-   once weekly boards are live.
+   once weekly boards are live. Per-player "scored X on Y expected"
+   lines come straight from the same opportunity_weekly CSV.
 4. **Start/sit assistant.** v1 is just the weekly boards + finding-21
    injury rules surfaced as a compare-two-players widget.
 5. **Are they playing?** Finding 21's status table (Out/Doubtful = 0%,

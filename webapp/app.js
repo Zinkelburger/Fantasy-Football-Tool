@@ -703,6 +703,56 @@ function initApp() {
     }
   }
 
+  /* ---------- 2025 opportunity read ----------
+     Bundled by build_data.py from the engine's usage-based expected
+     points (analysis/export_opportunity.py). xfp = what a typical player
+     would have scored per game from this player's 2025 targets and
+     carries; gapc = his actual-minus-expected gap, centered on his
+     position (raw gaps are shifted by scoring floors — never threshold
+     ppg25 - xfp directly). Hot/cold needs 8+ games and a gap past the
+     per-format flag — same constants as the site board.
+     Backtested 2017-25 (league-sim analysis/gap_regression_check.py):
+     the gap predicts next season at WR/TE only, so those flags render
+     red/green while RB/QB get a gray context flag with a tooltip that
+     says so. */
+  const OPP_GAP_FLAG = { 'STD': 1.5, '0.5PPR': 1.9, 'PPR': 2.25 };
+  const OPP_SIGNAL_POS = new Set(['WR', 'TE']);
+
+  function oppRead(p) {
+    if (p.xfp === undefined) return null;
+    const flagged = p.g25 >= 8 &&
+      Math.abs(p.gapc) >= (OPP_GAP_FLAG[settings.scoringFormat] || 1.5);
+    const hot = p.gapc > 0;
+    const signal = OPP_SIGNAL_POS.has(p.pos);
+    const base = `2025: ${p.ppg25.toFixed(1)} PPG on ${p.xfp.toFixed(1)} ` +
+      `expected from his chances (${p.g25} games).`;
+    const caveat = ` Context, not a verdict: in 2017-25 backtests a gap ` +
+      `like this told us nothing extra about a ${p.pos}'s next season ` +
+      'once you account for how much he scored' +
+      (p.pos === 'RB'
+        ? ' — goal-line roles are sticky, so extra finishing partly repeats.'
+        : '.');
+    const why = !flagged ? ''
+      : hot
+        ? ` Ran hot — scored ${p.gapc.toFixed(1)} a game more than a typical ` +
+          `${p.pos} would have from the same targets and carries.` +
+          (!signal ? caveat
+            : (p.tdl >= 0.15
+                ? ` Mostly touchdown luck (+${p.tdl.toFixed(1)} TDs a game ` +
+                  'over expected). '
+                : ' ') +
+              'Hot WR/TE seasons gave back about 2 points a game the next ' +
+              'year in our 2017-25 backtests.')
+        : ` Ran cold — scored ${(-p.gapc).toFixed(1)} a game less than a ` +
+          `typical ${p.pos} with the same chances.` +
+          (!signal ? caveat
+            : ' Chances carry over to next season better than points do — ' +
+              'cold WR/TE seasons held their value while the average ' +
+              'player slid (2017-25): the strongest buy signal in our ' +
+              'research.');
+    return { flagged, hot, signal, tip: base + why };
+  }
+
   function renderTable() {
     const picked = pickedSet();
     const extPicked = extPickedCanonical();
@@ -852,13 +902,18 @@ function initApp() {
           `${team.has(p.name) ? '−Team' : '+Team'}</button>`
         : '';
 
+      const opp = oppRead(p);
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
           : `<td>${escapeHtml(p.rank)}</td>`) +
-        `<td class="player-name">${escapeHtml(p.name)}<span class="name-flags">` +
+        `<td class="player-name"${opp ? ` title="${escapeHtml(opp.tip)}"` : ''}>` +
+        `${escapeHtml(p.name)}<span class="name-flags">` +
         `${mark === 'yes' ? '✅' : mark === 'no' ? '❌' : ''}` +
-        `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}</span></td>` +
+        `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
+        `${opp && opp.flagged
+          ? `<span class="opp-flag ${opp.signal ? (opp.hot ? 'hot' : 'cold') : 'ctx'}" aria-hidden="true">${opp.hot ? '▾' : '▴'}</span>`
+          : ''}</span></td>` +
         `<td>${escapeHtml(p.team)}</td>` +
         `<td>${escapeHtml(p.bye)}</td>` +
         (() => {
@@ -1267,7 +1322,12 @@ function initApp() {
     if (!p) return;
     const edited = noteEditedFor(p);
     const editing = noteEditingName === p.name;
-    $('note-meta').textContent = `${p.team} ${p.pos}, rank ${p.rank}${edited ? ' · edited' : ''}`;
+    const opp = oppRead(p);
+    $('note-meta').textContent = `${p.team} ${p.pos}, rank ${p.rank}` +
+      (opp ? ` · 2025: ${p.ppg25.toFixed(1)} PPG on ${p.xfp.toFixed(1)} expected` +
+        (opp.flagged ? (opp.hot ? ' (ran hot)' : ' (ran cold)') : '') : '') +
+      `${edited ? ' · edited' : ''}`;
+    $('note-meta').title = opp ? opp.tip : '';
     $('note-editor').hidden = !editing;
     $('note-body').hidden = editing;
     $('btn-edit-note').hidden = editing;

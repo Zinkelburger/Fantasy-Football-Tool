@@ -22,6 +22,12 @@ FORMATS = {
     "PPR": "ppr_with_depth.csv",
 }
 
+# 2025 usage-based expected points (engine/league-sim/analysis/
+# export_opportunity.py). Format -> column suffix in that CSV.
+OPP_CSV = os.path.join(HERE, "..", "engine", "league-sim", "data",
+                       "market", "opportunity_2025.csv")
+OPP_FMT = {"STD": "std", "0.5PPR": "half", "PPR": "ppr"}
+
 # Matches archive/go-tool/loader.go nameCleaner: strips Jr./Sr./II/III/IV/V suffixes
 SUFFIX_RE = re.compile(r"\s+(?:Jr\.|Sr\.|II|III|IV|V)$")
 
@@ -30,8 +36,29 @@ def clean_name(name: str) -> str:
     return SUFFIX_RE.sub("", name.strip()).strip()
 
 
-def load_format(path: str):
+def norm_name(name: str) -> str:
+    """Join key across data sources: lowercase, no punctuation/suffixes
+    (FantasyPros 'D.K. Metcalf' == nflverse 'DK Metcalf')."""
+    n = clean_name(name).lower()
+    return re.sub(r"\s+", " ", n.replace(".", "").replace("'", "").replace("’", ""))
+
+
+def load_opportunity():
+    """(normalized name, pos) -> opportunity row, or {} if the CSV is
+    missing (the app must render fine without it)."""
+    if not os.path.exists(OPP_CSV):
+        print("WARNING: no opportunity_2025.csv — players get no "
+              "expected-points fields (run engine/league-sim/"
+              "analysis/export_opportunity.py)")
+        return {}
+    with open(OPP_CSV, newline="", encoding="utf-8") as f:
+        return {(norm_name(r["name"]), r["pos"]): r
+                for r in csv.DictReader(f)}
+
+
+def load_format(path: str, opp, opp_fmt: str):
     players = []
+    matched = 0
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         required = {"Rank", "Player", "Team", "Bye", "POS", "ESPN_Rank", "Sleeper_Rank"}
@@ -46,7 +73,7 @@ def load_format(path: str):
                 rank_num = float(row["Rank"])
             except (TypeError, ValueError):
                 rank_num = 9999.0
-            players.append({
+            p = {
                 "name": name,
                 "team": (row["Team"] or "").strip(),
                 "pos": (row["POS"] or "").strip(),
@@ -55,7 +82,23 @@ def load_format(path: str):
                 "rankNum": rank_num,
                 "espn": (row["ESPN_Rank"] or "").strip(),
                 "sleeper": (row["Sleeper_Rank"] or "").strip(),
-            })
+            }
+            o = opp.get((norm_name(name), p["pos"]))
+            if o:
+                matched += 1
+                # 2025 opportunity read: expected PPG from usage, actual
+                # PPG, position-centered gap (threshold on this, never on
+                # ppg-xfp — see export_opportunity.py), TD luck, games.
+                p.update({
+                    "xfp": float(o[f"ep_{opp_fmt}"]),
+                    "ppg25": float(o[f"ppg_{opp_fmt}"]),
+                    "gapc": float(o[f"gapc_{opp_fmt}"]),
+                    "tdl": float(o["td_luck_pg"]),
+                    "g25": int(o["games"]),
+                })
+            players.append(p)
+    if opp:
+        print(f"  opportunity data: {matched}/{len(players)} players matched")
     players.sort(key=lambda p: p["rankNum"])
     return players
 
@@ -76,11 +119,12 @@ def load_notes():
 
 def main():
     formats = {}
+    opp = load_opportunity()
     for fmt, fname in FORMATS.items():
         path = os.path.join(DATA_DIR, "ranks", fname)
         if not os.path.exists(path):
             sys.exit(f"ERROR: missing CSV {path}")
-        formats[fmt] = load_format(path)
+        formats[fmt] = load_format(path, opp, OPP_FMT[fmt])
         print(f"{fmt}: {len(formats[fmt])} players from {fname}")
 
     notes = load_notes()

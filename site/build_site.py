@@ -3,6 +3,8 @@
 Inputs (all tracked in the repo):
 - engine/league-sim/data/market/model_board_2026{,_half,_ppr}.csv
                                                       -> board.json
+- engine/league-sim/data/market/opportunity_2025.csv  -> board.json
+  (usage-based expected points; analysis/export_opportunity.py)
 - engine/league-sim/data/market/implied_2026.csv      -> market.json
 - engine/league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
 - site/posts/NN-*.md                                  -> blog.json
@@ -247,17 +249,42 @@ FORMATS = {"std": ("model_board_2026.csv", "std"),
            "ppr": ("model_board_2026_ppr.csv", "ppr")}
 
 
-def _board_for(csv_name, adp_fmt):
+def _opportunity():
+    """(pos, normalized name) -> 2025 usage row (expected PPG per format,
+    centered gap, TD luck, per-game volume). See export_opportunity.py
+    for why hot/cold calls must threshold gapc_*, never raw gap."""
+    path = MKT / "opportunity_2025.csv"
+    if not path.exists():
+        print("  (no opportunity_2025.csv — "
+              "run analysis/export_opportunity.py)")
+        return {}
+    return {(r["pos"], _norm(r["name"])): r for r in read_csv(path)}
+
+
+def _board_for(csv_name, adp_fmt, opp):
     rows = read_csv(MKT / csv_name)
     mkt = _market_pos_ranks(adp_fmt)
     board = {}
+    unmatched = 0
     for r in rows:
+        o = opp.get((r["pos"], _norm(r["name"])))
+        if opp and o is None:
+            unmatched += 1
         board.setdefault(r["pos"], []).append(dict(
             name=r["name"], pred=round(float(r["pred_ppg"]), 1),
             ppg25=round(float(r["ppg"]), 1),
             age=round(float(r["age"]), 1) if r.get("age") else None,
             cap=round(float(r["cap_pct"]), 1) if r.get("cap_pct") else 0,
-            mkt=mkt.get((r["pos"], _norm(r["name"])))))
+            mkt=mkt.get((r["pos"], _norm(r["name"]))),
+            xfp=round(float(o[f"ep_{adp_fmt}"]), 1) if o else None,
+            gapc=round(float(o[f"gapc_{adp_fmt}"]), 1) if o else 0,
+            tdl=round(float(o["td_luck_pg"]), 2) if o else 0,
+            tpg=round(float(o["tgt_pg"]), 1) if o else 0,
+            cpg=round(float(o["carry_pg"]), 1) if o else 0,
+            g=int(o["games"]) if o else 0))
+    if unmatched:
+        print(f"  ({csv_name}: {unmatched} players without 2025 "
+              "opportunity data)")
     for pos in board:
         board[pos].sort(key=lambda d: -d["pred"])
         board[pos] = board[pos][:40]
@@ -268,19 +295,22 @@ def build_board():
     """{format: {pos: [rows]}} — one board per scoring format. Each is a
     separate model fit, not the standard board re-sorted."""
     out = {}
+    opp = _opportunity()
     for key, (csv_name, adp_fmt) in FORMATS.items():
         path = MKT / csv_name
         if not path.exists():
             print(f"  (skipping {key}: {csv_name} missing — "
                   f"run analysis/player_model.py)")
             continue
-        out[key] = _board_for(csv_name, adp_fmt)
+        out[key] = _board_for(csv_name, adp_fmt, opp)
     return out
 
 
 def build_market():
     rows = read_csv(MKT / "implied_2026.csv")
-    out = [dict(team=TEAMS.get(r["team"].split()[-1], r["team"]),
+    # implied_2026.csv carries full names ("Los Angeles Rams"); every
+    # other table shows nicknames, so show the last word here too.
+    out = [dict(team=r["team"].split()[-1],
                 full=r["team"], ppg=round(float(r["imp_ppg"]), 1),
                 wins=round(float(r["imp_wins"]), 1)) for r in rows]
     return sorted(out, key=lambda d: -d["ppg"])

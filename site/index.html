@@ -105,7 +105,7 @@
       <div id="weekly-dst" class="tab-pane">
         <p class="blurb">Ranked by <b>opponent's implied total</b> — the
         score Vegas expects the other team to put up. Lower is better.
-        <a href="#/blog/27-dst-model">Why this works →</a></p>
+        <a href="#/blog/27-dst-model">Finding 27 →</a></p>
         <details class="note">
           <summary>Same list for ESPN and Yahoo — here's why</summary>
           <p>ESPN and Yahoo score defenses differently. Yahoo pays more
@@ -123,7 +123,7 @@
         <p class="blurb">Ranked by <b>own team's implied total</b> — the
         score Vegas expects that offense to put up — plus a bump for
         domes. Pick the offense and the venue, not the kicker.
-        <a href="#/blog/28-kicker-model">Why this works →</a></p>
+        <a href="#/blog/28-kicker-model">Finding 28 →</a></p>
         <div class="tbl"><table id="k-table"></table></div>
       </div>
 
@@ -131,8 +131,15 @@
         <div class="empty-state">
           <h3>Live in September</h3>
           <p>Weekly QB/RB/WR/TE rankings need a few weeks of real-season
-          data. Until then, use the
-          <a href="#/board">2026 draft board</a>.</p>
+          data. The model is already built and graded: it blends recent
+          scoring with <b>expected points</b> — what each player's
+          targets and carries should have been worth — plus the matchup
+          and the Vegas line. Expected points is its strongest signal,
+          and it powers the waiver read too: a player whose chances jump
+          before his scoring does is the one to grab off the wire early.
+          Until kickoff, use the <a href="#/board">2026 draft board</a> —
+          its <b>2025 expected</b> column is the same idea at season
+          scale.</p>
         </div>
       </div>
     </section>
@@ -148,8 +155,23 @@
       expects each player to average <b>per game over the 2026 regular
       season</b>. It reads last season's usage, age, contract and team,
       and it was graded on seasons it was never trained on.
-      <a href="#/post/25-player-model">How it works, and how often it
+      <a href="#/blog/25-player-model">How it works, and how often it
       beats the draft market →</a></p>
+      <p class="blurb"><b>2025 expected</b> is the opportunity check: the
+      points a typical player would have scored from his 2025 chances —
+      targets, carries, and where on the field they came.
+      <b>▼ ran hot</b> means he scored well above his chances (usually
+      touchdown luck, and it usually doesn't repeat); <b>▲ ran cold</b>
+      means his chances outran his scoring — the strongest buy signal in
+      our research, because chances carry over to the next season better
+      than points do. Hover any tag for the player's numbers.
+      One honest caveat: backtested on 2017–25, these tags called the
+      next season at <b>WR and TE in all 8 year-pairs</b> — hot seasons
+      gave back about 2 points a game, cold ones held their value — but
+      at <b>RB and QB</b> the gap added nothing once you account for how
+      much the player scored (goal-line roles are sticky). So the colored
+      tags are verdicts; the gray RB/QB ones are just context, and the
+      2026 proj column already weighs all of this per position.</p>
       <div class="scoring">
         <span class="scoring-label">Scoring</span>
         <div class="tabs" id="board-scoring"
@@ -170,8 +192,8 @@
       Defenses are a little more predictable, but the only thing that
       matters there is who they play. So use these two lists to break a
       tie at the end of your draft, then move on.
-      <a href="#/post/28-kicker-model">Kicker model →</a>
-      <a href="#/post/27-dst-model">D/ST model →</a></p>
+      <a href="#/blog/28-kicker-model">Kicker model →</a>
+      <a href="#/blog/27-dst-model">D/ST model →</a></p>
       <div class="pair">
         <div>
           <h4 class="mini-head">Kickers — best offenses to own</h4>

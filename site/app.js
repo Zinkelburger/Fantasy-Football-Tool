@@ -15,7 +15,8 @@ async function data(name) {
 /* ------------------------------------------------------------ router */
 function route() {
   const hash = location.hash.replace(/^#\/?/, "");
-  const [page, arg] = hash.split("/");
+  let [page, arg] = hash.split("/");
+  if (page === "blog" && arg) page = "post"; /* #/blog/<slug> deep link */
   const view = VIEWS.includes(page) ? page : "home";
 
   document.body.classList.toggle("draft-mode", view === "draft");
@@ -192,13 +193,17 @@ function applyBoardSearch() {
    `flag` is the points-per-game gap that earns a bounce-back / come-down
    tag. It rises with the format because PPR inflates every receiver's
    PPG, and a 2-point move should mean the same thing on all three. */
+/* `gapFlag` is the hot/cold threshold on the position-centered gap
+   between real and expected PPG (¾ of `flag`, same PPR-inflation
+   scaling). Centered because actual scoring has floors/fumbles that
+   expected points lacks — see analysis/export_opportunity.py. */
 const FORMATS = [
   { key: "std", label: "STD", note: "Standard — no points for catches",
-    flag: 2.0 },
+    flag: 2.0, gapFlag: 1.5 },
   { key: "half", label: "0.5 PPR", note: "Half PPR — 0.5 points per catch",
-    flag: 2.5 },
+    flag: 2.5, gapFlag: 1.9 },
   { key: "ppr", label: "PPR", note: "Full PPR — 1 point per catch",
-    flag: 3.0 },
+    flag: 3.0, gapFlag: 2.25 },
 ];
 const FMT_KEY = "ffScoring";
 
@@ -224,13 +229,53 @@ async function renderBoard() {
     `<button class="tab pos-${p.toLowerCase()}${p === pos ? " active" : ""}"
       data-pos="${p}">${p}</button>`).join("");
 
+  // Hot/cold chip for the expected-PPG column. `gapc` is how far the
+  // player's real-minus-expected scoring sat from the typical player at
+  // his position; only flagged with 8+ games so one hot month can't
+  // earn a season-long label. Backtested 2017-25 (league-sim
+  // analysis/gap_regression_check.py): the gap predicted next-season
+  // movement at WR/TE in 8 of 8 year-pairs, but added nothing beyond
+  // scoring level at RB/QB — so WR/TE chips are colored verdicts and
+  // RB/QB chips render gray, as context only.
+  const OPP_SIGNAL_POS = new Set(["WR", "TE"]);
+  const oppChip = (r, pos, gapFlag) => {
+    if (r.xfp == null || r.g < 8 || Math.abs(r.gapc) < gapFlag) return "";
+    const hot = r.gapc > 0;
+    const signal = OPP_SIGNAL_POS.has(pos);
+    const vol = pos === "QB" ? ""
+      : ` His chances: ${r.tpg} targets${r.cpg >= 1
+          ? ` and ${r.cpg} carries` : ""} a game.`;
+    const why = !signal
+      ? `Context, not a verdict: in our 2017-25 backtests a gap like this told us nothing extra about a ${pos}'s next season once you account for how much he scored`
+        + (pos === "RB"
+          ? " — goal-line roles are sticky, so an RB's extra finishing partly repeats"
+          : "")
+        + ". The 2026 proj column already weighs this correctly."
+      : !hot
+        ? "Targets and carries carry over to next season better than "
+          + "points do — in our 2017-25 backtests, cold WR/TE seasons "
+          + "held their value while the average player slid. The "
+          + "strongest buy signal in our research."
+        : (r.tdl >= 0.15
+            ? `Mostly touchdown luck — ${r.tdl} more TDs a game than his `
+              + "chances were worth. "
+            : "Efficiency like that rarely repeats. ")
+          + "Hot WR/TE seasons gave back about 2 points a game the next "
+          + "year in our 2017-25 backtests.";
+    return ` <span class="tag ${signal ? (hot ? "down" : "up") : ""}" title="Scored ${
+      Math.abs(r.gapc).toFixed(1)} points a game ${hot ? "more" : "less"
+      } than a typical ${pos} would have from the same chances. ${why}${vol}">${
+      signal ? (hot ? "▼ " : "▲ ") : ""}${hot ? "ran hot" : "ran cold"}</span>`;
+  };
+
   const draw = () => {
-    const { note, flag } = avail.find(f => f.key === fmt);
+    const { note, flag, gapFlag } = avail.find(f => f.key === fmt);
     const t = document.getElementById("board-table");
     t.innerHTML =
       `<thead><tr><th class="rank">#</th><th>Player</th>
        <th class="num" title="What our model expects him to average per game across the 2026 regular season (${note})">2026 proj PPG</th>
        <th class="num" title="What he actually averaged per game in 2025 (${note})">2025 PPG</th>
+       <th class="num" title="What a typical player would have averaged from his 2025 chances — targets, carries, and where on the field they came (${note}). When real scoring runs well above or below this, it usually snaps back the next season: the chances repeat, the luck doesn't.">2025 expected</th>
        <th class="num" title="Position rank by current draft market — Sleeper ADP for this same scoring format (${note})">ADP</th>
        <th class="num">Age</th>
        <th class="num" title="Share of the team's salary cap — teams play the players they pay">Cap %</th></tr></thead><tbody>` +
@@ -255,6 +300,8 @@ async function renderBoard() {
           ${d > 0 ? "▲ bounce back" : "▼ come down"}</span>` : ""}</td>
           <td class="num"><b>${r.pred.toFixed(1)}</b></td>
           <td class="num">${r.ppg25.toFixed(1)}</td>
+          <td class="num">${r.xfp == null ? "—"
+            : r.xfp.toFixed(1)}${oppChip(r, pos, gapFlag)}</td>
           <td class="num">${mkt}</td>
           <td class="num">${r.age ?? "—"}</td>
           <td class="num">${r.cap ? r.cap.toFixed(1) : "—"}</td></tr>`;
@@ -330,7 +377,7 @@ async function renderBlogList() {
   blogDone = true;
   const posts = await data("blog");
   document.getElementById("blog-list").innerHTML = posts.map(p =>
-    `<a class="post-row" href="#/post/${p.id}">
+    `<a class="post-row" href="#/blog/${p.id}">
        <h3><span class="post-num">#${String(p.num).padStart(2, "0")}</span>
        ${p.title}
        ${p.confidence ? `<span class="conf ${confClass(p.confidence)}">
@@ -346,15 +393,6 @@ async function renderPost(id) {
   el.innerHTML = `<h1>${p.title}</h1>` + p.html;
   window.scrollTo(0, 0);
 }
-
-/* internal links like #/blog/27-dst-model → #/post/... */
-document.addEventListener("click", e => {
-  const a = e.target.closest('a[href^="#/blog/"]');
-  if (a) {
-    e.preventDefault();
-    location.hash = a.getAttribute("href").replace("#/blog/", "#/post/");
-  }
-});
 
 window.addEventListener("hashchange", route);
 route();
