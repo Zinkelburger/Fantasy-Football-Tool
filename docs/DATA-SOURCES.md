@@ -88,6 +88,19 @@ Historical stats, injuries, depth charts, contracts and betting lines used
 by the simulation and projection work. See `engine/league-sim/findings/METHODS.md`.
 The Odds API key lives in `.env`, never in the repo.
 
+## 6. Preseason win totals (backtest history only)
+
+- **Links:** https://github.com/greerreNFL/nfl-win-total-data (2003–2022,
+  no longer updated) and https://www.sportsoddshistory.com/nfl-win/
+  (2023–2025, scraped 2026-08-05).
+- **Gives us:** each team's August Vegas win-total line —
+  `engine/league-sim/data/market/win_totals_sos.csv` and
+  `win_totals_2023_2025.csv`.
+- **Used by:** `engine/league-sim/analysis/good_offense_tiebreak.py`
+  (finding 30: the market's team number is real but already in ADP).
+- **Staleness:** static history; nothing to refresh until the 2026
+  season ends (then add the 2026 row for future backtests).
+
 ---
 
 ## How our model and JuiceBoxOne's projections compare

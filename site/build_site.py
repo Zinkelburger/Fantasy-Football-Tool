@@ -130,6 +130,10 @@ def md2html(md):
         if not line.strip():
             flush_para(); close_lists()
             continue
+        if (ul or ol) and out and out[-1].endswith("</li>"):
+            # a wrapped bullet continues on the next line
+            out[-1] = f"{out[-1][:-5]} {inline(line.strip())}</li>"
+            continue
         para.append(line.strip())
     flush_para(); flush_table(); close_lists()
     return "\n".join(out)
@@ -251,19 +255,14 @@ FORMATS = {"std": ("model_board_2026.csv", "std"),
 
 def _player_teams():
     """(pos, normalized name) -> team nickname, for the board's
-    per-player offense readout. ADP snapshot first, 2026 roster as the
-    fallback for deep names the ADP file doesn't carry."""
+    per-player offense readout. Roster export first (covers deep-bench
+    names; analysis/export_player_teams.py), ADP snapshot on top as the
+    fresher word on who moved."""
     out = {}
-    ros = MKT / "roster_2026.parquet"
-    try:
-        import pandas as pd
-        r = pd.read_parquet(ros)[["full_name", "position", "team"]].dropna()
-        for x in r.itertuples():
-            out.setdefault((x.position, _norm(x.full_name)), x.team)
-    except (ImportError, FileNotFoundError):
-        # stdlib-only run: ~12 deep-bench names lose the offense
-        # readout, everything else comes from the ADP snapshot below
-        pass
+    ros = MKT / "player_teams_2026.csv"
+    if ros.exists():
+        for r in read_csv(ros):
+            out.setdefault((r["pos"], _norm(r["name"])), r["team"])
     path = MKT / "adp_2026.csv"
     if path.exists():
         for r in read_csv(path):
