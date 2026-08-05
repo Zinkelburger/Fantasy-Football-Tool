@@ -17,9 +17,16 @@ posts.
 
 ## Expected
 - The ◆ appears only for players with at least one findings mark
-  (bundled from `engine/league-sim/data/market/findings_marks_2026.csv`).
-  It is **green** when every directional mark is buy, **red** when every
-  one is fade, and **gray** when they mix or are context-only.
+  (bundled from `engine/league-sim/data/market/findings_marks_2026.csv`)
+  or a flagged 2025 hot/cold season (opportunity-flags spec). One glyph
+  carries the net of both: **green** when the directional signals all
+  say buy, **red** when they all say fade, **gray** when they conflict
+  or are context-only. A direction beats gray (red + gray = red).
+- A **Model marks** checkbox sits in the toolbar next to Show picked
+  (default on, persisted). Unchecking it hides everything the models
+  add — the ◆, its tooltips, the note-pane findings box and
+  expected-points read — leaving the user's own marks, notes, and
+  rankings untouched.
 - The ◆ tooltip shows the marks themselves, one per line — `Buy
   (finding 16): 18 TDs on chances worth 11 — TD luck doesn't carry
   over.` — no click needed. The name-cell tooltip shows the 2025

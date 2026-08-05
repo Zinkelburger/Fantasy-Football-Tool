@@ -220,17 +220,10 @@ td.player-name { font-weight: 500; }
    the row (wide enough for all four: ✅ ★ ▾ ◆) */
 .name-flags { display: inline-block; width: 4em; margin-left: 0.3em; text-decoration: none; }
 .flag-star { color: var(--yellow); }
-/* 2025 opportunity flag: ▾ ran hot (scored above his usage — fade),
-   ▴ ran cold (usage outran scoring — buy). Tooltip on the name cell.
-   Red/green only at WR/TE where the 2017-25 backtest found signal;
-   RB/QB flags are gray context (.ctx). */
-.opp-flag { margin-left: 0.15em; font-size: 0.9em; }
-.opp-flag.hot { color: var(--red); }
-.opp-flag.cold { color: var(--green); }
-.opp-flag.ctx { color: var(--fg-dim); }
-/* Findings mark: ◆ when tested finding rules apply to the player —
-   green all-buy, red all-fade, gray mixed or context-only. The note
-   pane lists each rule with the player's own numbers. */
+/* Model mark: one ◆ per row — the net of the 2025 opportunity read and
+   the findings marks. Green net-buy, red net-fade, gray mixed/context.
+   Tooltip (also on the name cell) carries the actual reads; the
+   "Model marks" toolbar checkbox hides all of it. */
 .fm-flag { margin-left: 0.15em; font-size: 0.75em; vertical-align: 0.1em; }
 .fm-flag.buy { color: var(--green); }
 .fm-flag.fade { color: var(--red); }

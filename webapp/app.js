@@ -472,6 +472,7 @@ function initApp() {
   let posFilter = 'All';
   let searchText = '';
   let showPicked = false;
+  let showModelMarks = store.load('showModelMarks', true);
   let sortBy = 'board';         // 'board' | 'espn' | 'sleeper' (view only)
   let extDetected = false;
   let querying = false;
@@ -924,11 +925,22 @@ function initApp() {
           `${team.has(p.name) ? '−Team' : '+Team'}</button>`
         : '';
 
-      const opp = oppRead(p);
-      const fm = fmarksFor(p);
+      const opp = showModelMarks ? oppRead(p) : null;
+      const fm = showModelMarks ? fmarksFor(p) : null;
       const fmG = fm ? fmGlyph(fm) : null;
       const nameTip = [opp && opp.tip, fmG && fmG.tip]
         .filter(Boolean).join('\n\n');
+      // One model glyph per row: net of the opportunity read (hot=fade,
+      // cold=buy, WR/TE only — RB/QB is context) and the findings marks.
+      // A direction beats gray; conflicting directions show gray.
+      const glyph = (() => {
+        if (!fmG && !(opp && opp.flagged)) return null;
+        let buy = 0, fade = 0;
+        if (opp && opp.flagged && opp.signal) (opp.hot ? fade++ : buy++);
+        if (fmG && fmG.cls === 'buy') buy++;
+        if (fmG && fmG.cls === 'fade') fade++;
+        return { cls: buy && !fade ? 'buy' : fade && !buy ? 'fade' : 'mix' };
+      })();
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
@@ -937,10 +949,7 @@ function initApp() {
         `${escapeHtml(p.name)}<span class="name-flags">` +
         `${mark === 'yes' ? '✅' : mark === 'no' ? '❌' : ''}` +
         `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
-        `${opp && opp.flagged
-          ? `<span class="opp-flag ${opp.signal ? (opp.hot ? 'hot' : 'cold') : 'ctx'}" aria-hidden="true">${opp.hot ? '▾' : '▴'}</span>`
-          : ''}` +
-        `${fmG ? `<span class="fm-flag ${fmG.cls}" title="${escapeHtml(fmG.tip)}">◆</span>` : ''}</span></td>` +
+        `${glyph ? `<span class="fm-flag ${glyph.cls}" title="${escapeHtml(nameTip)}">◆</span>` : ''}</span></td>` +
         `<td>${escapeHtml(p.team)}</td>` +
         `<td>${escapeHtml(p.bye)}</td>` +
         (() => {
@@ -1349,13 +1358,13 @@ function initApp() {
     if (!p) return;
     const edited = noteEditedFor(p);
     const editing = noteEditingName === p.name;
-    const opp = oppRead(p);
+    const opp = showModelMarks ? oppRead(p) : null;
     $('note-meta').textContent = `${p.team} ${p.pos}, rank ${p.rank}` +
       (opp ? ` · 2025: ${p.ppg25.toFixed(1)} PPG on ${p.xfp.toFixed(1)} expected` +
         (opp.flagged ? (opp.hot ? ' (ran hot)' : ' (ran cold)') : '') : '') +
       `${edited ? ' · edited' : ''}`;
     $('note-meta').title = opp ? opp.tip : '';
-    const fm = fmarksFor(p);
+    const fm = showModelMarks ? fmarksFor(p) : null;
     $('note-findings').hidden = !fm;
     $('note-findings').innerHTML = !fm ? '' : fm.map(m =>
       `<p class="fm-row fm-${m.dir}"><a class="fm-chip" target="_blank" ` +
@@ -2326,6 +2335,13 @@ function initApp() {
   });
   $('search-box').addEventListener('input', (e) => { searchText = e.target.value; renderTable(); });
   $('show-picked').addEventListener('change', (e) => { showPicked = e.target.checked; renderTable(); });
+  $('show-model-marks').checked = showModelMarks;
+  $('show-model-marks').addEventListener('change', (e) => {
+    showModelMarks = e.target.checked;
+    store.save('showModelMarks', showModelMarks);
+    renderTable();
+    renderTabs();
+  });
   const setSort = (s) => { sortBy = s; renderTable(); };
   $('th-rank').addEventListener('click', () => setSort('board'));
   $('th-espn').addEventListener('click', () => setSort('espn'));
