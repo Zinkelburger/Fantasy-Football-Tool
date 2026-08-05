@@ -19,8 +19,9 @@
     <nav id="site-nav">
       <a href="#/" data-route="home">Home</a>
       <a href="#/weekly" data-route="weekly">Weekly</a>
-      <a href="#/board" data-route="board">2026 Board</a>
+      <a href="#/board" data-route="board">Draft K/DST</a>
       <a href="#/blog" data-route="blog">Research</a>
+      <a href="#/models" data-route="models">Models</a>
       <a href="#/cheat" data-route="cheat">Cheat sheet</a>
       <a href="#/draft" data-route="draft" class="nav-draft">Draft Tool</a>
     </nav>
@@ -31,25 +32,26 @@
     <!-- ============================================= HOME -->
     <section id="view-home" class="view">
       <div class="hero">
-        <h1>Fantasy football rankings you can check.</h1>
-        <p class="tagline">Every ranking here comes from a model tested
-        on eight seasons of history before we trusted it. The code, the
+        <h1>Fantasy football advice you can check.</h1>
+        <p class="tagline">Every claim on this site was tested against
+        eight seasons of real results before we made it. The code, the
         data and the methods are public — including the ideas that
-        didn't work.</p>
+        turned out to be wrong.</p>
         <div class="hero-actions">
-          <a class="btn primary" href="#/weekly">This week's boards</a>
-          <a class="btn" href="#/cheat">The draft plan, one page</a>
+          <a class="btn primary" href="#/cheat">The draft plan, one page</a>
           <a class="btn" href="#/blog">Read the findings</a>
+          <a class="btn" href="#/draft">Open the draft tool</a>
         </div>
       </div>
 
       <div class="cards">
         <a class="card" href="#/board">
-          <h3><span class="pill pill-board">Draft</span> 2026 draft board</h3>
-          <p>Season projections built from eight years of stats — usage,
-          touchdown luck, age, draft capital, contracts. Tested against
-          the draft market: it out-ranks ADP at QB, WR and TE.</p>
-          <span class="card-stat">beats ADP at 3 of 4 positions</span>
+          <h3><span class="pill pill-board">Draft</span> Kickers &amp; defenses</h3>
+          <p>Your last two picks, ranked by the betting lines — the
+          only signal that predicts either position. Take them off
+          these lists and spend your thinking on the rounds that
+          matter.</p>
+          <span class="card-stat">both lists ready for 2026</span>
         </a>
         <a class="card" href="#/weekly">
           <h3><span class="pill pill-weekly">Weekly</span> Weekly boards</h3>
@@ -60,10 +62,10 @@
         </a>
         <a class="card" href="#/blog">
           <h3><span class="pill pill-research">Research</span> The findings</h3>
-          <p>30 short write-ups on what wins fantasy leagues: what works,
+          <p>34 short write-ups on what wins fantasy leagues: what works,
           what's a myth, and which popular stats are noise. Each one
           shows its data and says how confident to be.</p>
-          <span class="card-stat">30 findings</span>
+          <span class="card-stat">34 findings</span>
         </a>
         <a class="card" href="#/draft">
           <h3><span class="pill pill-draft">Live</span> Draft assistant</h3>
@@ -139,9 +141,8 @@
           and the Vegas line. Expected points is its strongest signal,
           and it powers the waiver read too: a player whose chances jump
           before his scoring does is the one to grab off the wire early.
-          Until kickoff, use the <a href="#/board">2026 draft board</a> —
-          its <b>2025 expected</b> column is the same idea at season
-          scale.</p>
+          It ships once it has been graded against a real benchmark,
+          not before.</p>
         </div>
       </div>
     </section>
@@ -149,96 +150,136 @@
     <!-- ============================================= BOARD -->
     <section id="view-board" class="view" hidden>
       <div class="view-head">
-        <h2>2026 season board</h2>
-        <span class="dim">veterans only — for rookies, follow ADP until
-        our rookie model ships</span>
-      </div>
-      <ul class="cheat">
-        <li><b>2026 proj PPG</b> is the pick order — our model's
-          per-game projection. It out-ranks ADP at QB, WR and TE.
-          <a href="#/blog/25-player-model">Finding 25 →</a></li>
-        <li><span class="tag up">▲ ran cold</span> at WR or TE =
-          <b>buy</b>. His chances beat his points, and chances repeat.
-          <a href="#/blog/17-buy-targets-not-efficiency">Finding 17 →</a></li>
-        <li><span class="tag down">▼ ran hot</span> at WR or TE =
-          <b>fade</b>. Mostly touchdown luck; hot seasons give back
-          ~2 points a game.
-          <a href="#/blog/16-td-luck-regresses">Finding 16 →</a></li>
-        <li>Gray <i>ran hot/cold</i> tags at RB and QB: background
-          only — no verdict there, the projection already handles it.</li>
-        <li><b>Kickers and defenses don't matter.</b> Fill them with
-          your last two picks, off the two lists below.
-          <a href="#/blog/28-kicker-model">Finding 28 →</a>
-          <a href="#/blog/27-dst-model">Finding 27 →</a></li>
-        <li><b>"He's on a good offense" is not a tiebreak</b> — it's
-          already in his draft price. Click any player to see his
-          offense's expected points anyway.
-          <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></li>
-        <li>Hover any tag or column header for that player's numbers.</li>
-      </ul>
-      <details class="note">
-        <summary>The long version — what the columns mean</summary>
-        <p>The <b>2026 proj PPG</b> column is what this model expects
-        each player to average <b>per game over the 2026 regular
-        season</b>. It reads last season's usage, age, contract and
-        team, and it was graded on seasons it was never trained on.</p>
-        <p><b>2025 expected</b> is the opportunity check: the points a
-        typical player would have scored from his 2025 chances —
-        targets, carries, and where on the field they came.
-        <b>▼ ran hot</b> means he scored well above his chances
-        (usually touchdown luck, and it usually doesn't repeat);
-        <b>▲ ran cold</b> means his chances outran his scoring — the
-        strongest buy signal in our research, because chances carry
-        over to the next season better than points do. One honest
-        caveat: backtested on 2017–25, these tags called the next
-        season at <b>WR and TE in all 8 year-pairs</b> — hot seasons
-        gave back about 2 points a game, cold ones held their value —
-        but at <b>RB and QB</b> the gap added nothing once you account
-        for how much the player scored (goal-line roles are sticky).
-        So the colored tags are verdicts; the gray RB/QB ones are just
-        context, and the 2026 proj column already weighs all of this
-        per position.</p>
-      </details>
-      <div class="scoring">
-        <span class="scoring-label">Scoring</span>
-        <div class="tabs" id="board-scoring"
-             role="group" aria-label="Scoring format"></div>
-      </div>
-      <div class="tabs" id="board-tabs"></div>
-      <div class="board-tools">
-        <input id="board-search" type="search" placeholder="Find a player…"
-               aria-label="Find a player">
-      </div>
-      <div class="tbl"><table id="board-table"></table></div>
-      <h3 class="sub-head">Kickers and defenses, on draft day</h3>
-      <p class="blurb"><b>Take them last, off these lists, and don't
-      think hard about it.</b> A kicker's own history predicts almost
-      nothing — his points belong to his offense. A defense's points
-      belong to its schedule.
-      <a href="#/blog/28-kicker-model">Kicker model →</a>
-      <a href="#/blog/27-dst-model">D/ST model →</a></p>
-      <div class="pair">
-        <div>
-          <h4 class="mini-head">Kickers — best offenses to own</h4>
-          <div class="tbl"><table id="pre-k-table"></table></div>
-        </div>
-        <div>
-          <h4 class="mini-head">Defenses — easiest schedules</h4>
-          <div class="tbl"><table id="pre-dst-table"></table></div>
-        </div>
+        <h2>2026 draft: kickers &amp; defenses</h2>
+        <span class="dim">the two picks worth outsourcing to a model ·
+        <a href="#/models">the models →</a></span>
       </div>
 
-      <h3 class="sub-head">What Vegas expects from every 2026 offense</h3>
-      <p class="blurb">Add up the betting lines for all 272 games on the
-      2026 schedule and you get an expected points-per-game for every
-      offense (snapshot: Aug 2026). Vegas is genuinely good at this —
-      23 straight seasons calling the scoring order right. But
-      <b>don't break player ties with it</b>: everyone can read the
-      same lines, so it's already in each player's price — we tested
-      the tiebreak on eight years of drafts and it lost to a coin flip.
-      Where this table earns its keep is the kicker and defense lists
-      above. <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></p>
-      <div class="tbl half"><table id="market-table"></table></div>
+      <p class="blurb">For QB, RB, WR and TE, draft off your platform's
+      ADP and don't reach — in 9,000 simulated leagues that discipline
+      won titles at 2.5 times the base rate, and beat every ranking we
+      could build. Kicker and defense are different: their points
+      belong to the offense and the schedule, which a model reads
+      better than a draft board does. Those are the two lists below.
+      <a href="#/blog/32-draft-sim">Finding 32 →</a></p>
+
+      <div class="tabs section-tabs" id="board-sections"
+           role="group" aria-label="Which table">
+        <button class="tab active" data-sec="k">Kickers</button>
+        <button class="tab" data-sec="dst">Defenses</button>
+      </div>
+
+      <div id="board-sec-k" class="tab-pane">
+        <p class="blurb">Take a kicker with one of your last two picks,
+        off this list. A kicker's own history predicts almost nothing —
+        his points belong to his offense, so draft the offense.
+        <a href="#/blog/28-kicker-model">Kicker model →</a></p>
+        <div class="tbl half"><table id="pre-k-table"></table></div>
+      </div>
+
+      <div id="board-sec-dst" class="tab-pane" hidden>
+        <p class="blurb">Same idea at defense: take one with your other
+        last pick. A defense's points belong to its schedule, so this
+        list is sorted by the offenses it has to face.
+        <a href="#/blog/27-dst-model">D/ST model →</a></p>
+        <div class="tbl half"><table id="pre-dst-table"></table></div>
+      </div>
+    </section>
+
+    <!-- ============================================= MODELS -->
+    <section id="view-models" class="view" hidden>
+      <div class="view-head">
+        <h2>The models</h2>
+        <span class="dim">what each one predicts, what it reads, and how
+        it was tested</span>
+      </div>
+      <article class="post">
+        <h2>Why there's no ranking for QB, RB, WR and TE</h2>
+        <p>Because we tested one and it lost. We built a projection
+        model for returning players — 20 inputs: usage, expected
+        points, touchdown luck, age, seasons played, draft capital,
+        contracts and cap share, team changes — and graded it against
+        the draft market with both lists on the same players. The
+        market won at every position, .598 to .544.
+        <a href="#/blog/25-player-model">Finding 25 →</a></p>
+        <p>Then we settled it in 9,000 simulated leagues with full
+        drafts and seasons. Drafting by the model instead of ADP
+        <b>roughly halved title odds</b> (10.8% against 20.7%), and
+        every blend of the two finished behind the plain board.
+        <a href="#/blog/32-draft-sim">Finding 32 →</a></p>
+        <p>We built a rookie model too, on draft capital, combine
+        numbers and landing spot, deliberately without fantasy ADP. It
+        lands on top of NFL draft order almost exactly. Its projections
+        are honestly calibrated — rookies it put at 8+ points a game
+        averaged 10.0 and were startable 86% of the time, against 1%
+        for its bottom tier — but that tier information is just what
+        round a player was drafted in, which is public and already
+        priced into every draft board.
+        <a href="#/blog/31-rookie-model">Finding 31 →</a></p>
+        <p>So the honest advice for skill players is the boring one:
+        take your platform's ADP in order and don't reach. What did
+        survive from that work is descriptive rather than predictive —
+        expected points, touchdown-luck regression, and the
+        position-room readout in the draft tool — and it's below or
+        still shipping. The code and the dead ends are kept in
+        <code>archive/season-projection-model/</code>.</p>
+
+        <h2>Expected points — the "2025 expected" column</h2>
+        <p>Not a prediction — an audit of last season. For every 2025
+        play it asks what a typical player would have scored from the
+        same chance — who got the ball, where on the field, down and
+        distance — and adds it up. A player who scored far above his
+        chances usually got there on touchdown luck, which doesn't
+        repeat; the chances themselves do. That gap is the strongest
+        buy/fade signal in our research at WR and TE, and the player
+        model above already weighs it.
+        <a href="#/blog/16-td-luck-regresses">Finding 16 →</a>
+        <a href="#/blog/17-buy-targets-not-efficiency">Finding 17 →</a></p>
+
+        <h2>Kicker model</h2>
+        <p><b>Predicts:</b> kicker points, weekly and for the season.
+        <b>Reads:</b> the points Vegas expects his own offense to score
+        — that one number is nearly the whole model — plus the venue: a
+        dome is worth about +0.7 points a game, wind costs about −0.5.
+        A kicker's own history predicts almost nothing.
+        <a href="#/blog/28-kicker-model">Finding 28 →</a></p>
+
+        <h2>Defense (D/ST) model</h2>
+        <p><b>Predicts:</b> defense points, weekly and for the season.
+        <b>Reads:</b> the points Vegas expects the <i>opponent</i> to
+        score — that does about 97% of the work; each point off the
+        opponent's total is worth about +0.38 D/ST points. The season
+        list sums it over the whole 2026 schedule.
+        <a href="#/blog/27-dst-model">Finding 27 →</a></p>
+
+        <h2>Weekly player model — live in September</h2>
+        <p><b>Predicts:</b> this week's points for QB, RB, WR and TE.
+        <b>Reads:</b> recent scoring, expected points from recent usage
+        (its strongest signal), how many points the opponent's defense
+        has been giving up to his position, and the Vegas line for the
+        game. It powers the in-season weekly boards once real games
+        start.</p>
+
+        <h2>Injury model</h2>
+        <p><b>Predicts:</b> availability, from the 2018–25 injury
+        reports: the chance a player listed on Friday actually plays
+        Sunday, what playing hurt costs him, how long each injury type
+        keeps a player out, and the rust in his first game back.
+        <a href="#/blog/21-injury-model">Finding 21 →</a></p>
+
+        <h2>Vegas offense table</h2>
+        <p>Not our model — the betting market's. Sum the lines for all
+        272 games on the 2026 schedule and you get expected points per
+        game for every offense. It feeds the kicker and defense models
+        above. It is <i>not</i> a tiebreak between players: everyone
+        can read the same lines, so it's already in each player's draft
+        price. <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></p>
+
+        <p class="dim">Every model's code and data are public:
+        <a href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
+           target="_blank" rel="noopener">
+        github.com/Zinkelburger/Fantasy-Football-Tool</a></p>
+      </article>
     </section>
 
     <!-- ============================================= BLOG -->

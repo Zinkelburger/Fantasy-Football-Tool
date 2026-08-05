@@ -91,22 +91,6 @@ html, body {
 .view-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
 .view-head h2 { margin: 0.2rem 0 0.6rem; }
 .dim { color: var(--fg-dim); font-size: 0.88rem; }
-.sub-head { margin-top: 2.2rem; }
-.mini-head {
-  margin: 0 0 0.5rem;
-  font-size: 0.95rem;
-  color: var(--fg-dim);
-  font-weight: 600;
-}
-/* two side-by-side tables that stack on narrow screens */
-.pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
-  gap: 1.4rem;
-  align-items: start;
-  margin-top: 1rem;
-  max-width: 56rem;
-}
 .blurb a + a { margin-left: 0.9rem; }
 .blurb { color: var(--fg-dim); max-width: 44rem; margin-top: 0.2rem; }
 .blurb b { color: var(--fg); }
@@ -194,6 +178,31 @@ html, body {
 .tab:hover { color: var(--fg); background: var(--bg-hover); }
 .tab.active { color: #fff; border-color: transparent; background: var(--accent); }
 
+/* board: top-level switch between the four tables. Underlined rather
+   than pills so it doesn't read as a peer of the scoring/position
+   pills nested inside the players pane. */
+.section-tabs {
+  gap: 0.1rem;
+  margin: 1.2rem 0 0;
+  border-bottom: 1px solid var(--border);
+}
+.section-tabs .tab {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.98rem;
+  margin-bottom: -1px;
+}
+.section-tabs .tab:hover { background: var(--bg-hover); color: var(--fg); }
+.section-tabs .tab.active {
+  background: none;
+  color: var(--fg);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
 /* scoring-format switch above the position tabs */
 .scoring { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; }
 .scoring .tabs { margin: 0; }
@@ -233,6 +242,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   color: var(--fg-dim);
   margin-left: 0.4rem;
 }
+/* A colored tag is a verdict, a gray one is context — app.js leans on
+   that split for the hot/cold chips, so these have to out-rank the
+   plain .tag color above. */
+.tag.up   { color: var(--green); border-color: var(--green); }
+.tag.down { color: var(--red);   border-color: var(--red); }
 .tag.dome { color: var(--pos-k); border-color: var(--pos-k); }
 
 /* ------------------------------------------------- table toolbars */
@@ -322,18 +336,22 @@ tr.is-taken td.mark-cell { opacity: 1; }
 }
 .cheat b { color: var(--fg); }
 .cheat .tag { margin-left: 0; }
+#view-board .tab-pane > .blurb { margin-top: 1rem; }
 
-/* --------------------------------- per-player offense click panel */
+/* ---------------------- per-player click-note (numbers + findings) */
 #board-table tbody tr[data-search] { cursor: pointer; }
-tr.offense-row td {
+tr.note-row td {
   white-space: normal;
   background: var(--bg-panel);
   box-shadow: inset 3px 0 0 var(--accent);
   color: var(--fg-dim);
   font-size: 0.9rem;
 }
-tr.offense-row b { color: var(--fg); }
-.offense-note { font-style: italic; }
+tr.note-row b { color: var(--fg); }
+tr.note-row p { margin: 0.25rem 0; }
+tr.note-row ul { list-style: none; margin: 0.25rem 0; padding: 0; }
+tr.note-row li { margin: 0.3rem 0; }
+tr.note-row li .tag { margin-left: 0; margin-right: 0.35rem; }
 
 /* ------------------------------------------------ notes & glossary */
 details.note {
@@ -351,6 +369,7 @@ details.note summary {
   user-select: none;
 }
 details.note summary:hover { color: var(--fg); }
+details.note details.note { margin: 0.9rem 0 0.2rem; }
 details.note p { color: var(--fg-dim); margin: 0.6rem 0 0.2rem; }
 details.note dl { margin: 0.6rem 0 0.2rem; }
 details.note dt { color: var(--fg); font-weight: 600; margin-top: 0.6rem; }

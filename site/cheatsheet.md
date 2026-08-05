@@ -1,8 +1,8 @@
 # The whole system on one page
 
-Thirty findings, boiled down to what you actually do on draft night.
-Every rule links to its write-up — click through to see the data and
-how sure we are.
+Every finding on this site, boiled down to what you actually do on
+draft night. Every rule links to its write-up — click through to see
+the data and how sure we are.
 
 ## Before you pick
 
@@ -13,9 +13,10 @@ how sure we are.
 - **Spend your prep on players, not draft tricks.** Knowing who's good
   beats clever pick order about 40 to 1.
   [Finding 24](#/blog/24-hindsight-optimal-drafts)
-- **Use our board, with one caution.** The projections out-rank the
-  draft market at QB, WR and TE — at RB, follow the market.
-  [Finding 25](#/blog/25-player-model)
+- **Draft off ADP, and don't reach.** In 9,000 simulated leagues,
+  taking the market in order won titles two and a half times as often
+  as a typical drafter — and beat every custom ranking we could build,
+  including our own. [Finding 32](#/blog/32-draft-sim)
 
 ## Rounds 1–3: running backs
 
@@ -58,12 +59,19 @@ how sure we are.
 
 ## Rounds 9–12: tight end and the bench
 
-- **Tight end in round 10 or later.** Half of every year's top-8 TEs
-  cost a round-8-or-later pick or nothing at all.
+- **Tight end: elite in rounds 1–4, or wait for round 10. Never the
+  middle.** Early tight ends beat the receivers and backs taken at the
+  same picks 69% of the time and bust at half the rate. But after
+  round 4 the odds fall off a cliff, so rounds 5–9 pay a real pick for
+  round-12 odds. [Finding 33](#/blog/33-te-same-pick) ·
   [Finding 05](#/blog/05-never-pay-up-for-te)
 - **A second QB or TE is a free choice — the timing isn't.** Take one
   late or not at all; never early.
   [Finding 20](#/blog/20-second-qb-te)
+- **Don't draft to a roster template.** Any shape you'd plausibly want
+  is worth the same as just taking value — but only if you work the
+  waiver wire. If you're a set-and-forget manager, stay balanced and
+  take the backup QB. [Finding 34](#/blog/34-roster-shape)
 - **Don't overload the bench with lottery-ticket RBs.** The
   stash-a-back theory buys about one percent of championships.
   [Finding 19](#/blog/19-bench-composition)

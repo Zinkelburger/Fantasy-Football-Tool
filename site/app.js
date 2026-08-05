@@ -1,7 +1,8 @@
 /* Static SPA: hash routing over prebuilt JSON (site/build_site.py). */
 "use strict";
 
-const VIEWS = ["home", "weekly", "board", "blog", "post", "cheat", "draft"];
+const VIEWS = ["home", "weekly", "board", "blog", "post", "cheat",
+  "models", "draft"];
 const cache = {};
 
 async function data(name) {
@@ -200,190 +201,28 @@ async function renderWeekly() {
 }
 
 /* ------------------------------------------------------------- board */
-function applyBoardSearch() {
-  const q = document.getElementById("board-search").value.trim().toLowerCase();
-  // any open offense panel closes: its anchor row may be filtered away
-  document.querySelectorAll("#board-table .offense-row")
-    .forEach(row => row.remove());
-  document.querySelectorAll("#board-table tbody tr").forEach(row => {
-    row.hidden = q && !row.dataset.search.includes(q);
-  });
-}
-
-/* Scoring formats. The board is a separate model fit per format, and
-   the ADP column is that format's ADP — so the two columns compare
-   like with like.
-
-   `flag` is the points-per-game gap that earns a bounce-back / come-down
-   tag. It rises with the format because PPR inflates every receiver's
-   PPG, and a 2-point move should mean the same thing on all three. */
-/* `gapFlag` is the hot/cold threshold on the position-centered gap
-   between real and expected PPG (¾ of `flag`, same PPR-inflation
-   scaling). Centered because actual scoring has floors/fumbles that
-   expected points lacks — see analysis/export_opportunity.py. */
-const FORMATS = [
-  { key: "std", label: "STD", note: "Standard — no points for catches",
-    flag: 2.0, gapFlag: 1.5 },
-  { key: "half", label: "0.5 PPR", note: "Half PPR — 0.5 points per catch",
-    flag: 2.5, gapFlag: 1.9 },
-  { key: "ppr", label: "PPR", note: "Full PPR — 1 point per catch",
-    flag: 3.0, gapFlag: 2.25 },
-];
-const FMT_KEY = "ffScoring";
-
+/* Preseason kicker and defense boards. The season-long skill-position
+   projection board used to live here too; it was retired 2026-08-05
+   because it ranked worse than ADP and cost title odds in simulation
+   (findings 25 and 32). See archive/season-projection-model/. */
 let boardDone = false;
 async function renderBoard() {
   if (boardDone) return;
-  const board = await data("board");
-  const market = await data("market");
-  boardDone = true;   /* only after the fetches — a failure must retry */
-  // market.json is sorted best offense first, so index = scoring rank
-  const offense = new Map(market.map((r, i) =>
-    [r.team, { ...r, rank: i + 1 }]));
-  const tabs = document.getElementById("board-tabs");
-  const fmtTabs = document.getElementById("board-scoring");
-  const order = ["RB", "WR", "QB", "TE"];
-  const avail = FORMATS.filter(f => board[f.key]);
-  if (!avail.length) return;          // board data not built yet
-  let fmt = localStorage.getItem(FMT_KEY);
-  if (!avail.some(f => f.key === fmt)) fmt = avail[0].key;
-  let pos = "RB";
-
-  fmtTabs.innerHTML = avail.map(f =>
-    `<button class="tab fmt${f.key === fmt ? " active" : ""}"
-      data-fmt="${f.key}" title="${f.note}">${f.label}</button>`).join("");
-  tabs.innerHTML = order.map(p =>
-    `<button class="tab pos-${p.toLowerCase()}${p === pos ? " active" : ""}"
-      data-pos="${p}">${p}</button>`).join("");
-
-  // Hot/cold chip for the expected-PPG column. `gapc` is how far the
-  // player's real-minus-expected scoring sat from the typical player at
-  // his position; only flagged with 8+ games so one hot month can't
-  // earn a season-long label. Backtested 2017-25 (league-sim
-  // analysis/gap_regression_check.py): the gap predicted next-season
-  // movement at WR/TE in 8 of 8 year-pairs, but added nothing beyond
-  // scoring level at RB/QB — so WR/TE chips are colored verdicts and
-  // RB/QB chips render gray, as context only.
-  const OPP_SIGNAL_POS = new Set(["WR", "TE"]);
-  const oppChip = (r, pos, gapFlag) => {
-    if (r.xfp == null || r.g < 8 || Math.abs(r.gapc) < gapFlag) return "";
-    const hot = r.gapc > 0;
-    const signal = OPP_SIGNAL_POS.has(pos);
-    const vol = pos === "QB" ? ""
-      : ` His chances: ${r.tpg} targets${r.cpg >= 1
-          ? ` and ${r.cpg} carries` : ""} a game.`;
-    const why = !signal
-      ? `Context, not a verdict: in our 2017-25 backtests a gap like this told us nothing extra about a ${pos}'s next season once you account for how much he scored`
-        + (pos === "RB"
-          ? " — goal-line roles are sticky, so an RB's extra finishing partly repeats"
-          : "")
-        + ". The 2026 proj column already weighs this correctly."
-      : !hot
-        ? "Targets and carries carry over to next season better than "
-          + "points do — in our 2017-25 backtests, cold WR/TE seasons "
-          + "held their value while the average player slid. The "
-          + "strongest buy signal in our research."
-        : (r.tdl >= 0.15
-            ? `Mostly touchdown luck — ${r.tdl} more TDs a game than his `
-              + "chances were worth. "
-            : "Efficiency like that rarely repeats. ")
-          + "Hot WR/TE seasons gave back about 2 points a game the next "
-          + "year in our 2017-25 backtests.";
-    return ` <span class="tag ${signal ? (hot ? "down" : "up") : ""}" title="Scored ${
-      Math.abs(r.gapc).toFixed(1)} points a game ${hot ? "more" : "less"
-      } than a typical ${pos} would have from the same chances. ${why}${vol}">${
-      signal ? (hot ? "▼ " : "▲ ") : ""}${hot ? "ran hot" : "ran cold"}</span>`;
-  };
-
-  const draw = () => {
-    const { note, flag, gapFlag } = avail.find(f => f.key === fmt);
-    const t = document.getElementById("board-table");
-    t.innerHTML =
-      `<thead><tr><th class="rank">#</th><th>Player</th>
-       <th class="num" title="What our model expects him to average per game across the 2026 regular season (${note})">2026 proj PPG</th>
-       <th class="num" title="What he actually averaged per game in 2025 (${note})">2025 PPG</th>
-       <th class="num" title="What a typical player would have averaged from his 2025 chances — targets, carries, and where on the field they came (${note}). When real scoring runs well above or below this, it usually snaps back the next season: the chances repeat, the luck doesn't.">2025 expected</th>
-       <th class="num" title="Position rank by current draft market — Sleeper ADP for this same scoring format (${note})">ADP</th>
-       <th class="num">Age</th>
-       <th class="num" title="Share of the team's salary cap — teams play the players they pay">Cap %</th></tr></thead><tbody>` +
-      board[fmt][pos].map((r, i) => {
-        const d = r.pred - r.ppg25;
-        // Market delta: how many spots later the market drafts this player
-        // than we rank him. +n (green) = the market is sleeping on him.
-        const md = r.mkt ? r.mkt - (i + 1) : 0;
-        const mkt = r.mkt
-          ? `${r.mkt}${Math.abs(md) >= 3
-              ? ` <span class="${md > 0 ? "up" : "down"}" title="${md > 0
-                  ? `market drafts him ${md} spots later than our rank`
-                  : `market drafts him ${-md} spots earlier than our rank`}">(${md > 0 ? "+" : ""}${md})</span>`
-              : ""}`
-          : "—";
-        return `<tr data-search="${r.name.toLowerCase()}"
-          data-team="${r.team || ""}"
-          title="Click: what Vegas expects from his offense">
-          <td class="rank">${i + 1}</td><td><b>${r.name}</b>
-          ${Math.abs(d) > flag ? `<span class="tag ${d > 0 ? "up" : "down"}"
-          title="${d > 0
-            ? "model projects a jump from last season"
-            : "model projects a drop from last season"}">
-          ${d > 0 ? "▲ bounce back" : "▼ come down"}</span>` : ""}</td>
-          <td class="num"><b>${r.pred.toFixed(1)}</b></td>
-          <td class="num">${r.ppg25.toFixed(1)}</td>
-          <td class="num">${r.xfp == null ? "—"
-            : r.xfp.toFixed(1)}${oppChip(r, pos, gapFlag)}</td>
-          <td class="num">${mkt}</td>
-          <td class="num">${r.age ?? "—"}</td>
-          <td class="num">${r.cap ? r.cap.toFixed(1) : "—"}</td></tr>`;
-      }).join("") + "</tbody>";
-    applyBoardSearch();
-  };
-  draw();
-  tabs.addEventListener("click", e => {
-    const b = e.target.closest("button[data-pos]");
-    if (!b) return;
-    tabs.querySelectorAll(".tab")
-      .forEach(t => t.classList.toggle("active", t === b));
-    pos = b.dataset.pos;
-    draw();
-  });
-  fmtTabs.addEventListener("click", e => {
-    const b = e.target.closest("button[data-fmt]");
-    if (!b) return;
-    fmtTabs.querySelectorAll(".tab")
-      .forEach(t => t.classList.toggle("active", t === b));
-    fmt = b.dataset.fmt;
-    localStorage.setItem(FMT_KEY, fmt);
-    draw();
-  });
-  document.getElementById("board-search")
-    .addEventListener("input", applyBoardSearch);
-
-  /* Click a player -> a one-line panel under him: his offense's
-     market-implied scoring. Shown as context with the finding-30
-     caveat, never as a tiebreak. */
-  document.getElementById("board-table").addEventListener("click", e => {
-    if (e.target.closest("a")) return;
-    const row = e.target.closest("tr[data-search]");
-    if (!row) return;
-    const open = row.nextElementSibling?.classList.contains("offense-row");
-    document.querySelectorAll("#board-table .offense-row")
-      .forEach(p => p.remove());
-    if (open) return;               // second click on the same row closes
-    const o = offense.get(row.dataset.team);
-    const panel = document.createElement("tr");
-    panel.className = "offense-row";
-    panel.innerHTML = `<td colspan="8">${o
-      ? `<b>${o.full}</b> — Vegas expects <b>${o.ppg.toFixed(1)}</b>
-         points a game from this offense (<b>#${o.rank}</b> of 32),
-         about ${Math.round(o.ppg * 17)} points for the season.
-         <span class="offense-note">Context only — at the same ADP,
-         "better offense" won just 46% of head-to-heads.</span>
-         <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a>`
-      : "No 2026 team on file for this player yet."}</td>`;
-    row.after(panel);
-  });
-
   const pre = await data("preseason");
+  boardDone = true;   /* only after the fetch — a failure must retry */
+
+  const SECTIONS = ["k", "dst"];
+  const sections = document.getElementById("board-sections");
+  sections.addEventListener("click", e => {
+    const b = e.target.closest("button[data-sec]");
+    if (!b) return;
+    sections.querySelectorAll(".tab")
+      .forEach(t => t.classList.toggle("active", t === b));
+    for (const s of SECTIONS) {
+      document.getElementById(`board-sec-${s}`).hidden = s !== b.dataset.sec;
+    }
+  });
+
   document.getElementById("pre-k-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Kicker slot</th>
      <th class="num" title="Points Vegas expects this offense to score per game across the whole 2026 season. Kicker scoring follows the offense, not the kicker.">Own PPG</th>
@@ -405,16 +244,6 @@ async function renderBoard() {
       `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b></td>
        <td class="num ${r.opp <= 21.5 ? "up" : ""}">${r.opp.toFixed(1)}</td>
        </tr>`).join("") + "</tbody>";
-
-  document.getElementById("market-table").innerHTML =
-    `<thead><tr><th class="rank">#</th><th>Team</th>
-     <th class="num">Implied PPG</th><th class="num">Implied wins</th>
-     </tr></thead><tbody>` +
-    market.map((r, i) =>
-      `<tr><td class="rank">${i + 1}</td><td>${r.team}</td>
-       <td class="num">${r.ppg.toFixed(1)}</td>
-       <td class="num">${r.wins.toFixed(1)}</td></tr>`).join("") +
-    "</tbody>";
 }
 
 /* -------------------------------------------------------------- blog */

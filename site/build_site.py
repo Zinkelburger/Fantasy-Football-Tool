@@ -285,7 +285,55 @@ def _opportunity():
     return {(r["pos"], _norm(r["name"])): r for r in read_csv(path)}
 
 
-def _board_for(csv_name, adp_fmt, opp, teams):
+FM_DIR = {"buy": 0, "fade": 1, "watch": 2}
+
+
+def _findings_marks():
+    """(pos, normalized name) -> [{f, slug, dir, note}], buys first —
+    every tested finding that names this player, with his own numbers
+    baked into the note (analysis/findings_marks.py). Shown in the
+    board's click-note."""
+    path = MKT / "findings_marks_2026.csv"
+    if not path.exists():
+        print("  (no findings_marks_2026.csv — board click-notes get "
+              "no findings; run analysis/findings_marks.py)")
+        return {}
+    out = {}
+    for r in read_csv(path):
+        out.setdefault((r["pos"], _norm(r["name"])), []).append(
+            dict(f=int(r["finding"]), slug=r["slug"], dir=r["dir"],
+                 note=r["note"]))
+    for v in out.values():
+        v.sort(key=lambda m: (FM_DIR.get(m["dir"], 3), m["f"]))
+    return out
+
+
+def _room(r):
+    """Where he sits in his own team's position room, off the model
+    board (analysis/player_model.py `room_standing`): is he his team's
+    WR1, who is next, and did they spend a real pick at his position.
+
+    Context for the click-note only, never a mark on the board. The
+    ordering is read off ADP, so it is not a disagreement with the
+    market — finding 25 measured it adding nothing on top of ADP."""
+    def num(key):
+        v = (r.get(key) or "").strip()
+        return int(float(v)) if v else None
+
+    rank = num("room_rank")
+    if rank is None:
+        return None
+    pick = num("rook_pick")
+    return dict(
+        rank=rank,
+        ahead=r.get("room_ahead") or None, aheadGap=num("room_ahead_gap"),
+        behind=r.get("room_behind") or None, behindGap=num("room_behind_gap"),
+        # only a pick worth mentioning: a 7th-rounder is not competition
+        rook=(r.get("rook_name") or None) if pick and pick <= 100 else None,
+        rookPick=pick if pick and pick <= 100 else None)
+
+
+def _board_for(csv_name, adp_fmt, opp, teams, fm):
     rows = read_csv(MKT / csv_name)
     mkt = _market_pos_ranks(adp_fmt)
     board = {}
@@ -296,6 +344,8 @@ def _board_for(csv_name, adp_fmt, opp, teams):
             unmatched += 1
         board.setdefault(r["pos"], []).append(dict(
             name=r["name"], team=teams.get((r["pos"], _norm(r["name"]))),
+            marks=fm.get((r["pos"], _norm(r["name"])), []),
+            room=_room(r),
             pred=round(float(r["pred_ppg"]), 1),
             ppg25=round(float(r["ppg"]), 1),
             age=round(float(r["age"]), 1) if r.get("age") else None,
@@ -322,14 +372,35 @@ def build_board():
     out = {}
     opp = _opportunity()
     teams = _player_teams()
+    fm = _findings_marks()
     for key, (csv_name, adp_fmt) in FORMATS.items():
         path = MKT / csv_name
         if not path.exists():
             print(f"  (skipping {key}: {csv_name} missing — "
                   f"run analysis/player_model.py)")
             continue
-        out[key] = _board_for(csv_name, adp_fmt, opp, teams)
+        out[key] = _board_for(csv_name, adp_fmt, opp, teams, fm)
     return out
+
+
+def build_rookies():
+    """The 2026 rookie board (analysis/rookie_model.py): drafted skill
+    rookies ordered by projected rookie-year PPG, all three formats in
+    one table."""
+    path = MKT / "rookie_board_2026.csv"
+    if not path.exists():
+        print("  (no rookie_board_2026.csv — run analysis/rookie_model.py)")
+        return []
+    rows = []
+    for r in read_csv(path):
+        rows.append(dict(
+            name=r["name"], pos=r["pos"],
+            team=TEAMS.get(r["team"], r["team"]),
+            rnd=int(r["rnd"]), pick=int(r["pick"]),
+            std=float(r["pred_std"]), half=float(r["pred_half"]),
+            ppr=float(r["pred_ppr"])))
+    rows.sort(key=lambda d: -d["std"])
+    return rows
 
 
 def build_market():
@@ -480,8 +551,10 @@ def build_cheatsheet():
 def main():
     out = SITE / "data"
     out.mkdir(exist_ok=True)
-    for name, data in (("board", build_board()), ("market", build_market()),
-                       ("preseason", build_preseason()),
+    # board/rookies/market dropped 2026-08-05 with the projection models
+    # (findings 25, 32 — see archive/season-projection-model/). The
+    # builders are kept below so a future model can wire straight back in.
+    for name, data in (("preseason", build_preseason()),
                        ("weekly", build_weekly()), ("blog", build_blog()),
                        ("cheatsheet", build_cheatsheet())):
         (out / f"{name}.json").write_text(json.dumps(data))
