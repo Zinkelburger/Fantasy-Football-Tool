@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 from .config import LeagueConfig
 from .draft import run_draft
-from .lineup import ProjectionTable, set_lineup
+from .lineup import ProjectionTable, lineup_holes, set_lineup
 from .models import PlayerSeason, Team
 from .waivers import run_waivers
 
@@ -50,6 +50,13 @@ class SeasonResult:
     # first). Under reverse_standings the winners are structurally last,
     # so this is what a good team's wire access actually looks like.
     waiver_order: dict[int, list[int]] = field(default_factory=dict)
+    # Optional (track_weekly=True): per-week detail needed to price a
+    # SINGLE roster event rather than a season. team idx -> week -> slot
+    # -> points actually scored there, and team idx -> week -> the
+    # starting slots that had no active body at all.
+    weekly_slot_pts: dict[int, dict[int, dict[str, float]]] = field(
+        default_factory=dict)
+    weekly_holes: dict[int, dict[int, list[str]]] = field(default_factory=dict)
 
     def team_by_strategy(self, name: str) -> list[Team]:
         return [t for t in self.teams if t.strategy.name == name]
@@ -86,7 +93,8 @@ def wire_snapshot(free_agents: dict, table: ProjectionTable, week: int,
 def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
                table: ProjectionTable, rng: random.Random,
                names: list[str] | None = None,
-               track_wire: bool = False) -> SeasonResult:
+               track_wire: bool = False,
+               track_weekly: bool = False) -> SeasonResult:
     assert len(strategies) == league.n_teams
     teams = [Team(idx=i, name=(names[i] if names else f"{s.label} (seat {i+1})"),
                   strategy=s) for i, s in enumerate(strategies)]
@@ -115,6 +123,8 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
     wire_size: dict[int, dict] = {}
     wire_picks: dict[int, dict] = {}
     waiver_order: dict[int, list] = {}
+    weekly_slot_pts: dict[int, dict] = {t.idx: {} for t in teams}
+    weekly_holes: dict[int, dict] = {t.idx: {} for t in teams}
 
     for week in range(1, league.regular_season_weeks + 1):
         scores = {}
@@ -123,9 +133,14 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
             scores[t.idx] = pts
             t.weekly_scores[week] = pts
             t.points_for += pts
+            wk_slots = {}
             for slot, ps in lineup.items():
                 got = sum(p.points(week) for p in ps)
                 slot_points[t.idx][slot] = slot_points[t.idx].get(slot, 0.0) + got
+                wk_slots[slot] = got
+            if track_weekly:
+                weekly_slot_pts[t.idx][week] = wk_slots
+                weekly_holes[t.idx][week] = lineup_holes(t, week, league)
         for i, j in schedule[(week - 1) % len(schedule)]:
             si, sj = scores[i], scores[j]
             teams[i].points_against += sj
@@ -183,4 +198,6 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
                         champion=champion, transactions=transactions,
                         slot_points=slot_points, wire_pre=wire_pre,
                         wire_post=wire_post, wire_size=wire_size,
-                        wire_picks=wire_picks, waiver_order=waiver_order)
+                        wire_picks=wire_picks, waiver_order=waiver_order,
+                        weekly_slot_pts=weekly_slot_pts,
+                        weekly_holes=weekly_holes)

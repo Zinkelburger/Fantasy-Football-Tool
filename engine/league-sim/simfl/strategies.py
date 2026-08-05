@@ -375,11 +375,301 @@ class RobustThenValue(PickValue):
         return super().banned(p, rnd, team, state)
 
 
+class ModelBoard(DraftStrategy):
+    """Drafts veterans by OUR season projection model, everything else
+    (rookies, kickers, unmodeled names) by ADP.
+
+    Within each position, the ADP board's veteran slots are re-ordered
+    by the model's predicted PPG — leave-that-year-out fits from
+    analysis/export_model_history.py, so season Y is drafted from a
+    list the model could have printed before Y. Cross-position timing,
+    the rookie market and the shared competence layer all stay at
+    baseline: paired against BPA, the only difference is WHICH veteran
+    each slot buys, which is exactly the claim finding 25 makes."""
+    name = "model"
+    label = "Model board (LOYO)"
+
+    _CSV = DATA_DIR / "market" / "model_board_hist.csv"
+
+    def bind_year(self, year):
+        import csv
+        from .montecarlo import get_pool          # cached; no rebuild
+        from .config import DEFAULT_SCORING
+        pred = {}
+        with open(self._CSV, newline="") as f:
+            for r in csv.DictReader(f):
+                if int(r["year"]) == year:
+                    pred[r["pid"]] = float(r["pred"])
+        pool, _ = get_pool(year, DEFAULT_SCORING)
+        self._eff = {}
+        for pos in ("QB", "RB", "WR", "TE"):
+            vets = [p for p in pool if p.pos == pos and p.pid in pred]
+            slots = sorted(p.draft_rank for p in vets)
+            vets.sort(key=lambda p: -pred[p.pid])
+            for slot, p in zip(slots, vets):
+                self._eff[p.pid] = slot
+
+    def pick(self, state, team, rng):
+        # Window on the MODEL's board order, not ADP's — a vet the
+        # model promotes from ADP 70 to slot 8 must be visible at 8.
+        elig = state.eligible_positions(team)
+        rnd = len(team.roster) + 1
+        cands = [p for p in state.available
+                 if p.pos in elig and not self.banned(p, rnd, team, state)]
+        if not cands:
+            cands = [p for p in state.available if p.pos in elig]
+        cands.sort(key=lambda p: self._eff.get(p.pid, p.draft_rank))
+        cands = cands[:self.window]
+        scored = [(self.score(p, rnd, team, state, rng), p) for p in cands]
+        return min(scored, key=lambda t: t[0])[1]
+
+    def score(self, p, rnd, team, state, rng):
+        need = set(state.unfilled_starters(team))
+        fills = p.pos in need or ("FLEX" in need
+                                  and p.pos in state.league.flex_positions)
+        base = self._eff.get(p.pid, p.draft_rank)
+        return base * (0.93 if fills else 1.08)
+
+
+class ModelBlend(ModelBoard):
+    """ADP with a model tilt: each veteran's effective slot is a
+    weighted average of his ADP board rank and his model slot (the
+    ModelBoard transplant). w=0 is BPA, w=1 is the pure model board —
+    finding 25's corrected verdict says the board wins outright, so
+    the open question this arm answers is whether a PARTIAL tilt of
+    the board toward the model buys anything in league outcomes.
+
+    `positions` gates WHERE the tilt applies. Finding 25's same-player
+    table shows the board is not equally good everywhere (QB .55,
+    RB .69, WR .64, TE .50), so a uniform tilt spends model error at
+    RB — the board's best position — to buy whatever the model knows
+    at TE, its worst. Subclasses tilt only the weak spots."""
+    name = "blend50"
+    label = "ADP + model 50/50"
+    w = 0.5
+    positions = ("QB", "RB", "WR", "TE")
+    # Only tilt players this deep into their position's board.
+    # analysis/disagreement_check.py: our disagreements with ADP carry
+    # no information inside the top 12 at a position (corr -0.02) but
+    # do beyond rank 30 (+0.16, 2.9se). A uniform tilt spends error at
+    # the top to buy that, which is why blend50 lost.
+    min_pos_rank = 0
+
+    def bind_year(self, year):
+        super().bind_year(year)
+        from .config import DEFAULT_SCORING
+        from .montecarlo import get_pool
+        pool, _ = get_pool(year, DEFAULT_SCORING)
+        rank = {p.pid: p.draft_rank for p in pool}
+        pos = {p.pid: p.pos for p in pool}
+        prank = {p.pid: p.pos_rank for p in pool}
+        self._eff = {pid: (1 - self.w) * rank[pid] + self.w * slot
+                     for pid, slot in self._eff.items()
+                     if pos.get(pid) in self.positions
+                     and prank.get(pid, 0) > self.min_pos_rank}
+
+
+class ModelBlend25(ModelBlend):
+    name = "blend25"
+    label = "ADP + model 25% tilt"
+    w = 0.25
+
+
+class ModelBlendLate(ModelBlend):
+    """Tilt only past position rank 30 — the one region where our
+    disagreements with the market measurably point the right way.
+
+    EXPLORATORY: the rank-30 cut was chosen by looking at these same
+    seasons (analysis/disagreement_check.py), so this arm is selected
+    in-sample. A win here is a hypothesis for 2026, not a finding."""
+    name = "blend_late"
+    label = "ADP + model tilt, late board only"
+    w = 0.5
+    min_pos_rank = 30
+
+
+class ModelBlendNoTop(ModelBlend):
+    """Same idea, looser cut: leave only the top 12 at each position
+    alone (RB showed signal from the middle band onward)."""
+    name = "blend_notop"
+    label = "ADP + model tilt, outside top 12"
+    w = 0.5
+    min_pos_rank = 12
+
+
+class ModelBlendTE(ModelBlend):
+    """Tilt only TE — the position where the ADP board ranks worst."""
+    name = "blend_te"
+    label = "ADP + model tilt, TE only"
+    w = 0.5
+    positions = ("TE",)
+
+
+class ModelBlendQBTE(ModelBlend):
+    """Tilt only the board's two weakest positions."""
+    name = "blend_qbte"
+    label = "ADP + model tilt, QB+TE"
+    w = 0.5
+    positions = ("QB", "TE")
+
+
+class RookieFlier(DraftStrategy):
+    """BPA everywhere the market has an opinion; OUR rookie board for
+    the last picks, where it has one and the market does not.
+
+    ~70 drafted rookies reach the sim pool each season and the fantasy
+    market prices only ~20. The rest sit past the end of the ADP board
+    — and in a 12x15 league the draft is 180 picks against a 179-deep
+    board, so simply re-sorting that tail changes nothing. The only
+    way the coverage claim can pay in a DRAFT is if you spend real
+    late picks on unpriced rookies instead of ADP-tail veterans, so
+    that is what this arm does: the rookie model's top `n_promote`
+    unpriced rookies are promoted to effective ranks starting at
+    `promote_at`, i.e. the hero's last picks become model-chosen
+    rookie fliers.
+
+    Caveat that belongs with any result: drafted rookies who never
+    recorded a stat are absent from the pool entirely (~8 of ~78 a
+    year), so this arm is mildly flattered — its fliers cannot draw
+    the very worst outcomes."""
+    name = "rookie_flier"
+    label = "ADP + rookie fliers (last 12)"
+    n_promote = 12
+    promote_at = 145
+
+    _CSV = DATA_DIR / "market" / "rookie_board_hist.csv"
+
+    def bind_year(self, year):
+        import csv
+        from .config import DEFAULT_SCORING
+        from .montecarlo import get_pool
+        pred = {}
+        with open(self._CSV, newline="") as f:
+            for r in csv.DictReader(f):
+                if int(r["year"]) == year:
+                    pred[r["pid"]] = float(r["pred"])
+        pool, _ = get_pool(year, DEFAULT_SCORING)
+        rooks = sorted((p for p in pool
+                        if p.adp is None and p.rookie and p.pid in pred),
+                       key=lambda p: -pred[p.pid])[:self.n_promote]
+        self._eff = {p.pid: self.promote_at + i
+                     for i, p in enumerate(rooks)}
+
+    def pick(self, state, team, rng):
+        elig = state.eligible_positions(team)
+        rnd = len(team.roster) + 1
+        cands = [p for p in state.available
+                 if p.pos in elig and not self.banned(p, rnd, team, state)]
+        if not cands:
+            cands = [p for p in state.available if p.pos in elig]
+        cands.sort(key=lambda p: self._eff.get(p.pid, p.draft_rank))
+        cands = cands[:self.window]
+        scored = [(self.score(p, rnd, team, state, rng), p) for p in cands]
+        return min(scored, key=lambda t: t[0])[1]
+
+    def score(self, p, rnd, team, state, rng):
+        need = set(state.unfilled_starters(team))
+        fills = p.pos in need or ("FLEX" in need
+                                  and p.pos in state.league.flex_positions)
+        base = self._eff.get(p.pid, p.draft_rank)
+        return base * (0.93 if fills else 1.08)
+
+
+class RookieFlierWide(RookieFlier):
+    """Same idea, more aggressive: the last ~2.5 rounds go to fliers."""
+    name = "rookie_flier25"
+    label = "ADP + rookie fliers (last 25)"
+    n_promote = 25
+    promote_at = 130
+
+
+class MarksTilt(DraftStrategy):
+    """ADP, nudged by our TESTED buy/fade marks — the narrow shape our
+    research edges actually came in.
+
+    Findings 16/17: a WR or TE who scored well above what his targets
+    and carries were worth gives it back next season (fade); one who
+    scored well below holds his value (buy). Marks exported per season
+    by analysis/export_marks_history.py. Everything else is BPA, so
+    paired against BPA this prices the marks and nothing else.
+
+    `strength` is the rank multiplier: 0.85 moves a marked player about
+    15% of his board rank (roughly a round early in the mid rounds).
+    """
+    name = "marks"
+    label = "ADP + buy/fade marks"
+    strength = 0.85
+
+    _CSV = DATA_DIR / "market" / "marks_hist.csv"
+
+    def bind_year(self, year):
+        import csv
+        self._mark = {}
+        with open(self._CSV, newline="") as f:
+            for r in csv.DictReader(f):
+                if int(r["year"]) == year:
+                    self._mark[r["pid"]] = r["dir"]
+
+    def score(self, p, rnd, team, state, rng):
+        need = set(state.unfilled_starters(team))
+        fills = p.pos in need or ("FLEX" in need
+                                  and p.pos in state.league.flex_positions)
+        base = float(p.draft_rank)
+        d = self._mark.get(p.pid)
+        if d == "buy":
+            base *= self.strength
+        elif d == "fade":
+            base /= self.strength
+        return base * (0.93 if fills else 1.08)
+
+
+class MarksTiltHard(MarksTilt):
+    """Same marks, acted on twice as hard (~2 rounds of movement)."""
+    name = "marks_hard"
+    label = "ADP + buy/fade marks (strong)"
+    strength = 0.70
+
+
+class RookieModelBoard(ModelBoard):
+    """The other half of the rookie question: keep ADP for veterans,
+    but re-rank the rookies the market DID price by our rookie model.
+
+    Same transplant as ModelBoard — the rookie ADP slots stay, only
+    who occupies them changes. This is finding 31's B-block ("do we
+    beat rookie ADP where it exists?") asked in league outcomes
+    instead of rank correlation."""
+    name = "rookie_board"
+    label = "ADP + model-ranked rookies"
+
+    _CSV = DATA_DIR / "market" / "rookie_board_hist.csv"
+
+    def bind_year(self, year):
+        import csv
+        from .config import DEFAULT_SCORING
+        from .montecarlo import get_pool
+        pred = {}
+        with open(self._CSV, newline="") as f:
+            for r in csv.DictReader(f):
+                if int(r["year"]) == year:
+                    pred[r["pid"]] = float(r["pred"])
+        pool, _ = get_pool(year, DEFAULT_SCORING)
+        self._eff = {}
+        for pos in ("QB", "RB", "WR", "TE"):
+            rk = [p for p in pool if p.pos == pos and p.rookie
+                  and p.adp is not None and p.pid in pred]
+            slots = sorted(p.draft_rank for p in rk)
+            rk.sort(key=lambda p: -pred[p.pid])
+            for slot, p in zip(slots, rk):
+                self._eff[p.pid] = slot
+
+
 STRATEGIES: dict[str, type] = {
     cls.name: cls for cls in
     (BPA, Family, RobustRB, ZeroRB, HeroRB, EarlyQB, LateQB, PuntTE,
      WRHeavy, PickValue, PickValueHC, RobustThenValue,
-     DualWRRB, ThreePillars, Rainbow, HeroWR)
+     DualWRRB, ThreePillars, Rainbow, HeroWR, ModelBoard, ModelBlend,
+     ModelBlend25, ModelBlendLate, ModelBlendNoTop, ModelBlendTE, ModelBlendQBTE, RookieFlier,
+     RookieFlierWide, RookieModelBoard, MarksTilt, MarksTiltHard)
 }
 
 

@@ -22,6 +22,16 @@ Definitions (12-team, documented in finding 29):
   usable    = finish <= 18 (QB/TE) or <= 36 (RB/WR)
   smash     = finish <= 6  (QB/TE) or <= 12 (RB/WR)
 
+Playoff chances (the season-total definition hides the late bloomer —
+a handcuff who takes over in week 11 wins your championship while
+finishing RB35 on the year):
+  playoff window = the league's playoff weeks: 14-16 for the 2018-20
+                   seasons, 15-17 from 2021 on (ESPN 12-team defaults)
+  fin_po_*       = rank at the position by total points over just those
+                   weeks — "playoff starter" = same top-12/top-24 cut
+  po_wk24_*      = in how many of the 3 playoff weeks he was a weekly
+                   top-12 (QB/TE) / top-24 (RB/WR) scorer
+
 Run:  venv/bin/python analysis/round_profile.py
 """
 import json
@@ -46,6 +56,8 @@ USABLE = {"QB": 18, "TE": 18, "RB": 36, "WR": 36}
 SMASH = {"QB": 6, "TE": 6, "RB": 12, "WR": 12}
 BANDS = [(1, 2), (3, 5), (6, 8), (9, 11), (12, 15)]
 LATE = (9, 15)
+PLAYOFF_WEEKS = {y: [14, 15, 16] if y <= 2020 else [15, 16, 17]
+                 for y in YEARS}
 _SUFFIX = re.compile(r"\s+(jr|sr|ii|iii|iv|v)\.?$")
 rng = np.random.default_rng(42)
 
@@ -73,9 +85,12 @@ def roster_ids(year):
     return out
 
 
-def finishes(year):
-    """format -> {player_id: positional finish}, plus pos of each id."""
+def finishes(year, weeks=None):
+    """format -> {player_id: positional finish} by total points, over the
+    whole season or (weeks=...) just the playoff window."""
     w = weekly_raw(year)
+    if weeks is not None:
+        w = w[w.week.isin(weeks)]
     out = {}
     for fmt, ppr in FORMATS.items():
         pts = league_pts(w, ppr)
@@ -85,6 +100,21 @@ def finishes(year):
         g["fin"] = g.groupby("pos").total.rank(ascending=False,
                                                method="first")
         out[fmt] = {pid: int(f) for pid, f in g.fin.items()}
+    return out
+
+
+def playoff_week_counts(year):
+    """format -> {player_id: # playoff weeks he was a weekly top-12/24}."""
+    w = weekly_raw(year)
+    w = w[w.week.isin(PLAYOFF_WEEKS[year])]
+    out = {}
+    for fmt, ppr in FORMATS.items():
+        g = pd.DataFrame({"player_id": w.player_id, "pos": w.position,
+                          "week": w.week, "pts": league_pts(w, ppr)})
+        g["wrank"] = g.groupby(["week", "pos"]).pts.rank(ascending=False,
+                                                         method="first")
+        g["ok"] = g.wrank <= g.pos.map(STARTER)
+        out[fmt] = g.groupby("player_id").ok.sum().astype(int).to_dict()
     return out
 
 
@@ -103,6 +133,8 @@ def build():
     for year in YEARS:
         ids = roster_ids(year)
         fin = finishes(year)
+        fin_po = finishes(year, PLAYOFF_WEEKS[year])
+        wk24 = playoff_week_counts(year)
         usage = prior_usage(year)
         unmatched = 0
         for e in json.load(open(DATA / f"adp_{year}.json")):
@@ -122,19 +154,24 @@ def build():
                        tgt_pg=tgt, car_pg=car)
             for fmt in FORMATS:
                 row[f"fin_{fmt}"] = fin[fmt].get(pid)
+                row[f"fin_po_{fmt}"] = fin_po[fmt].get(pid)
+                row[f"po_wk24_{fmt}"] = wk24[fmt].get(pid, 0)
             rows.append(row)
         if unmatched:
             print(f"  ({year}: {unmatched} ADP names unmatched to rosters)")
     return pd.DataFrame(rows)
 
 
-def rate(sel, fmt, cut):
-    """share of picks finishing at/above `cut` for their position."""
-    ok = sel[f"fin_{fmt}"].notna()
+def rate(sel, fmt, cut, prefix="fin"):
+    """share of picks finishing at/above `cut` for their position.
+
+    prefix "fin" = season total; "fin_po" = playoff-window total."""
+    col = f"{prefix}_{fmt}"
+    ok = sel[col].notna()
     if not ok.any():
         return None, 0
     hits = sum(1 for r in sel[ok].itertuples()
-               if getattr(r, f"fin_{fmt}") <= cut[r.pos])
+               if getattr(r, col) <= cut[r.pos])
     n = int(ok.sum())
     # a drafted player with no season row is a zero, not missing data
     n_all = len(sel)
@@ -163,6 +200,25 @@ def section_bands(df):
     print("   (cells are std/half/ppr)")
 
 
+def perm_p(late, hit_flag, diff):
+    """Permutation p: shuffle pos labels within each year.
+
+    NOTE the null keeps each pick's own finish-at-its-own-position hit
+    flag and only permutes which label it counts under — it tests "are
+    late-RB picks likelier to hit than late-WR picks", not anything
+    about the positions' scales."""
+    is_rb = (late.pos == "RB").values
+    year_idx = [np.where((late.year == y).values)[0]
+                for y in late.year.unique()]
+    perms = np.empty(5000)
+    for i in range(5000):
+        lab = is_rb.copy()
+        for idx in year_idx:
+            lab[idx] = rng.permutation(lab[idx])
+        perms[i] = hit_flag[lab].mean() - hit_flag[~lab].mean()
+    return (np.sum(np.abs(perms) >= abs(diff)) + 1) / 5001
+
+
 def section_late(df):
     print("\n== 2. late rounds (9-15): RB vs WR ==")
     late = df[(df.rnd >= LATE[0]) & (df.rnd <= LATE[1])
@@ -177,25 +233,11 @@ def section_late(df):
         s_rb, _ = rate(rb, fmt, SMASH)
         s_wr, _ = rate(wr, fmt, SMASH)
         diff = r_rb - r_wr
-        # permutation: shuffle pos labels within each year (numpy).
-        # NOTE the null keeps each pick's own finish-at-its-own-position
-        # hit flag and only permutes which label it counts under — it
-        # tests "are late-RB picks likelier to hit than late-WR picks",
-        # not anything about the positions' scales.
         hit_flag = np.array([
             (not pd.isna(getattr(r, f"fin_{fmt}")))
             and getattr(r, f"fin_{fmt}") <= STARTER[r.pos]
             for r in late.itertuples()])
-        is_rb = (late.pos == "RB").values
-        year_idx = [np.where((late.year == y).values)[0]
-                    for y in late.year.unique()]
-        perms = np.empty(5000)
-        for i in range(5000):
-            lab = is_rb.copy()
-            for idx in year_idx:
-                lab[idx] = rng.permutation(lab[idx])
-            perms[i] = hit_flag[lab].mean() - hit_flag[~lab].mean()
-        p = (np.sum(np.abs(perms) >= abs(diff)) + 1) / 5001
+        p = perm_p(late, hit_flag, diff)
         print(f"  {fmt:>4}: RB starter {r_rb:.1%} (n={n_rb}) vs WR "
               f"{r_wr:.1%} (n={n_wr}), diff {diff:+.1%} p={p:.3f} | "
               f"usable {u_rb:.1%} vs {u_wr:.1%} | smash {s_rb:.1%} vs "
@@ -209,6 +251,67 @@ def section_late(df):
         r1, _ = rate(rb, "std", STARTER)
         r2, _ = rate(wr, "std", STARTER)
         print(f"    {y}: {r1 - r2:+.1%}  (RB n={len(rb)}, WR n={len(wr)})")
+
+
+def section_late_playoffs(df):
+    print("\n== 2b. late rounds (9-15), playoff chances: RB vs WR ==")
+    print("   (a late pick's real job is the championship weeks — a")
+    print("    handcuff who takes over in week 11 wins the title while")
+    print("    finishing RB35 on the year)")
+    late = df[(df.rnd >= LATE[0]) & (df.rnd <= LATE[1])
+              & df.pos.isin(["RB", "WR"])]
+    rb = late[late.pos == "RB"]
+    wr = late[late.pos == "WR"]
+    for fmt in FORMATS:
+        r_rb, n_rb = rate(rb, fmt, STARTER, prefix="fin_po")
+        r_wr, n_wr = rate(wr, fmt, STARTER, prefix="fin_po")
+        diff = r_rb - r_wr
+        hit_flag = np.array([
+            (not pd.isna(getattr(r, f"fin_po_{fmt}")))
+            and getattr(r, f"fin_po_{fmt}") <= STARTER[r.pos]
+            for r in late.itertuples()])
+        p = perm_p(late, hit_flag, diff)
+        wk = late[f"po_wk24_{fmt}"] >= 2
+        w_rb, w_wr = wk[late.pos == "RB"].mean(), wk[late.pos == "WR"].mean()
+        wp = perm_p(late, wk.values, w_rb - w_wr)
+        print(f"  {fmt:>4}: playoff-window RB {r_rb:.1%} vs WR {r_wr:.1%}, "
+              f"diff {diff:+.1%} p={p:.3f} | top-24 in >=2 of 3 playoff "
+              f"weeks RB {w_rb:.1%} vs WR {w_wr:.1%}, diff "
+              f"{w_rb - w_wr:+.1%} p={wp:.3f}")
+    # the mechanism: playoff hits who were season-total busts
+    for pos in ("RB", "WR"):
+        s = late[late.pos == pos]
+        po_hit = np.array([
+            (not pd.isna(r.fin_po_std)) and r.fin_po_std <= STARTER[pos]
+            for r in s.itertuples()])
+        se_hit = np.array([
+            (not pd.isna(r.fin_std)) and r.fin_std <= STARTER[pos]
+            for r in s.itertuples()])
+        emerged = s[po_hit & ~se_hit]
+        print(f"  {pos}: {int(po_hit.sum())} playoff-window hits (std), "
+              f"{len(emerged)} of them season-total busts who emerged "
+              f"late:")
+        print("    " + ", ".join(f"{r.name} {r.year}"
+                                 for r in emerged.itertuples()))
+
+
+def section_bands_playoffs(df):
+    print("\n== 2c. playoff-window starter rate by band x position "
+          "(std/half/ppr) ==")
+    for lo, hi in BANDS:
+        band = df[(df.rnd >= lo) & (df.rnd <= hi)]
+        line = [f"R{lo}-{hi:<2}"]
+        for pos in ("QB", "RB", "WR", "TE"):
+            sel = band[band.pos == pos]
+            if not len(sel):
+                line.append(f"{pos}: --")
+                continue
+            cells = []
+            for fmt in FORMATS:
+                r, n = rate(sel, fmt, STARTER, prefix="fin_po")
+                cells.append(f"{r:4.0%}" if r is not None else "  --")
+            line.append(f"{pos} n={len(sel):3d} " + "/".join(cells))
+        print("  " + "   ".join(line))
 
 
 def section_perround(df):
@@ -287,6 +390,8 @@ def main():
     print(f"picks matched: {len(df)} over {df.year.nunique()} drafts")
     section_bands(df)
     section_late(df)
+    section_late_playoffs(df)
+    section_bands_playoffs(df)
     section_perround(df)
     section_traits(df)
     section_formats(df)

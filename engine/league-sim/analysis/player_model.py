@@ -20,16 +20,27 @@ scoring, and features he couldn't get:
   the room's), and league-wide positional cap rank (OverTheCap via
   nflverse contracts, exact per-season cap_number)
 - team change flag for the upcoming season (rosters)
+- the rookie his team just drafted at his position (draft capital)
 
 Model: per-position ridge regression (standardized), lambda chosen by
 nested leave-one-year-out on the training years. Target = next-season
 fantasy PPG. Evaluated leave-one-year-out (target years 2019-2025)
 against three benchmarks: naive (this year's PPG), the FFC ADP board,
 and ADP+model residual stacking. Metric: Spearman rank correlation
-with next-season PPG (ranking is what a draft list is for), plus MAE.
+with next-season PPG (ranking is what a draft list is for).
 
-Rookies have no season-t features and are out of scope (v1 limitation
-- the list covers returning players; see finding for the rookie plan).
+EVERY board is scored on the same players: the ones the ADP board
+covers. This matters more than it sounds. Scoring the model on the
+whole panel while ADP is scored only on its own subset -- what this
+script did until 2026-08-05 -- flattered the model by ~+.14 pooled and
+produced finding 25's original "beats ADP at QB/WR/TE" claim. Matched,
+the model LOSES to ADP at every position and only the ADP+model stack
+wins. See finding 25.
+
+Rookies have no season-t features and are out of scope here -- they get
+their own model (analysis/rookie_model.py, finding 31). What this model
+does know about them is the pick a team spent at a position, which
+prices the incumbent's new competition.
 
 Scoring: the whole panel is rebuilt per format (standard, half PPR,
 full PPR), so both the features (last season's PPG, expected PPG, the
@@ -39,6 +50,7 @@ refit on PPR points, so receiving volume earns its own weight.
 
 Usage: player_model.py [--list]   (--list prints the 2026 boards only)
 """
+import csv
 import sys
 from pathlib import Path
 
@@ -48,6 +60,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from simfl.pool import build_pool                       # noqa: E402
 from simfl.config import DEFAULT_SCORING                # noqa: E402
+from simfl.data import norm_name                        # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -66,7 +79,14 @@ SCORINGS = (("standard", 0.0, "model_board_2026.csv"),
 FEATURES = [
     "ppg", "games", "ppg_prev", "ep_ppg", "eff_gap", "td_luck_pg",
     "tgt_pg", "tgt_share", "carry_pg", "rush_ypg",
-    "age", "ln_dpick", "cap_pct", "room_share", "cap_rank", "new_team",
+    # age AND seasons in the league: with both present, the TE (and
+    # partly QB) decline loads on mileage, not birthdays; RB/WR decline
+    # stays on age. Rank accuracy is a wash but the split is real.
+    "age", "yrs", "ln_dpick", "cap_pct", "room_share", "cap_rank", "new_team",
+    # the rookie his team just drafted on top of him (ln of the earliest
+    # pick spent at his position; ln 300 = none). The one piece of
+    # depth-chart news that is NOT already read off the ADP board.
+    "tm_rook_pick",
     # team environment of the UPCOMING team, rated from season t
     # (analysis/team_ratings.py): does a good offense/team lift its
     # players the following year beyond their own stats?
@@ -200,12 +220,20 @@ def roster(year):
     r = r[r.position.isin(POSITIONS)].dropna(subset=["gsis_id"])
     r = r.drop_duplicates("gsis_id", keep="last")
     return r.set_index("gsis_id")[["team", "position", "birth_date",
-                                   "years_exp"]]
+                                   "years_exp", "full_name"]]
 
 
 def draft_table():
     d = pd.read_parquet(MKT / "draft_picks.parquet").dropna(subset=["gsis_id"])
     return d.drop_duplicates("gsis_id").set_index("gsis_id")["pick"]
+
+
+# ---- the position room ------------------------------------------------
+# Moved to analysis/position_room.py when this model was retired: the
+# room readout still ships in the draft tool, the projection does not.
+# See archive/season-projection-model/README.md.
+from position_room import ROOM_COLS, room_standing        # noqa: E402
+
 
 
 def build_rows(t, ppr=0.0):
@@ -217,6 +245,9 @@ def build_rows(t, ppr=0.0):
     ros_next = roster(t + 1)
     ros_cur = roster(t)
     dpick = draft_table()
+    dep = room_standing(t + 1, ppr)
+    no_rook = dict(tm_rook_pick=float(np.log(300.0)),
+                   **{c: "" for c in ROOM_COLS})
 
     # position-room cap totals for t+1
     caps_next = {g: cap.get((g, t + 1), (0.0, 0.0))[0] for g in ros_next.index}
@@ -251,6 +282,7 @@ def build_rows(t, ppr=0.0):
             carry_pg=(u.car / u.gwk) if u is not None and u.gwk else 0.0,
             rush_ypg=r.rush_yds / r.games,
             age=age,
+            yrs=float(rn.years_exp) if pd.notna(rn.years_exp) else np.nan,
             ln_dpick=np.log(dpick.get(pid, 300.0)),
             cap_pct=cpct * 100,
             room_share=cnum / rm if rm > 0 else 0.0,
@@ -263,6 +295,8 @@ def build_rows(t, ppr=0.0):
                 r.games + (prev.loc[pid].games
                            if prev is not None and pid in prev.index
                            else r.games)) / (2.0 * (17 if t >= 2021 else 16)),
+            **{k: dep.get(pid, no_rook)[k]
+               for k in ("tm_rook_pick", *ROOM_COLS)},
         ))
     df = pd.DataFrame(rows)
     for pos in POSITIONS:
@@ -320,7 +354,9 @@ def build_board(label, ppr, dst, evaluate):
                             for r in data.itertuples()]
 
         print(f"panel: {len(data)} player-seasons with targets, "
-              f"{len(panel)-len(data)} feature-only\n")
+              f"{len(panel)-len(data)} feature-only; "
+              f"{int(data.adp_next.notna().sum())} of them carry an ADP "
+              f"— those are the ones every board below is scored on\n")
         print(f"{'pos':4s} {'year':>5s} {'n':>4s}   naive    ADP  model  "
               f"model+ADP")
         agg = {k: [] for k in ("naive", "adp", "model", "stack")}
@@ -348,17 +384,23 @@ def build_board(label, ppr, dst, evaluate):
                 a, b = standardize(Xtr_r, Xte_r)
                 beta = ridge_fit(a, tr.y.values, best[0])
                 pred = ridge_pred(beta, b)
-                m = ~te.adp_next.isna()
+                # Every board is scored on the SAME players — the ones
+                # the ADP board actually covers. Scoring the model on the
+                # full panel and ADP only on its own subset flatters the
+                # model badly: the extra ~1,000 rows are undrafted deep
+                # players (WR 2.9 PPG vs 7.4 for the drafted), and a
+                # field that wide is far easier to rank-order.
+                m = (~te.adp_next.isna()).values
+                yy = te.y.values[m]
                 row = dict(
-                    naive=spearman(te.ppg.values, te.y.values),
-                    model=spearman(pred, te.y.values),
-                    adp=spearman(-te.adp_next.values[m], te.y.values[m]),
+                    naive=spearman(te.ppg.values[m], yy),
+                    model=spearman(pred[m], yy),
+                    adp=spearman(-te.adp_next.values[m], yy),
                     stack=spearman(
                         pd.Series(-te.adp_next.values[m]).rank().values
-                        + 0.5 * pd.Series(pred[m]).rank().values,
-                        te.y.values[m]),
+                        + 0.5 * pd.Series(pred[m]).rank().values, yy),
                 )
-                yr_rows.append((hold, len(te), row))
+                yr_rows.append((hold, int(m.sum()), row))
                 for k in agg:
                     agg[k].append(row[k])
             for hold, n, row in yr_rows:
@@ -370,6 +412,18 @@ def build_board(label, ppr, dst, evaluate):
                   f"{mean['stack']:6.3f}\n")
         print("pooled means: " + "  ".join(
             f"{k}={np.mean(v):.3f}" for k, v in agg.items()))
+
+        # The honest headline: paired against ADP, one pair per
+        # position-year. A board only earns a claim if it beats the
+        # market on the same players, and the spread across years is
+        # wide enough that the mean alone oversells it.
+        base = np.array(agg["adp"])
+        print(f"\n{'':16s}{'mean diff':>10s}{'se':>8s}{'wins':>8s}")
+        for k in ("naive", "model", "stack"):
+            d = np.array(agg[k]) - base
+            se = d.std(ddof=1) / np.sqrt(len(d))
+            print(f"{k + ' - ADP':16s}{d.mean():+10.3f}{se:8.3f}"
+                  f"{f'{int((d > 0).sum())}/{len(d)}':>8s}")
 
         # standardized coefficients on the full panel (interpretation)
         print("\nstandardized ridge coefficients (lam=30), full panel:")
@@ -403,7 +457,7 @@ def build_board(label, ppr, dst, evaluate):
             print(f"  {i:2d}. {r.name:24s} {r.pred_ppg:5.1f} | {r.ppg:5.1f}")
     full = pd.concat(out).sort_values("pred_ppg", ascending=False)
     full[["name", "pos", "pred_ppg", "ppg", "age", "cap_pct",
-          "room_share"]].to_csv(dst, index=False)
+          "room_share", *ROOM_COLS]].to_csv(dst, index=False)
     print(f"\nfull board -> {dst.relative_to(ROOT)}")
 
 

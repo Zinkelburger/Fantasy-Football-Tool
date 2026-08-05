@@ -34,6 +34,9 @@ class HeroStats:
     finishes: list = field(default_factory=list)
     all_plays: list = field(default_factory=list)
     pfs: list = field(default_factory=list)
+    # per-sim title flags: arms share a seed sequence, so these pair up
+    # sim-for-sim (analysis/paired_arm_test.py)
+    title_flags: list = field(default_factory=list)
     moves: float = 0.0
 
     def add(self, team, result):
@@ -46,6 +49,7 @@ class HeroStats:
         self.finishes.append(result.standings.index(team) + 1)
         self.all_plays.append(team.all_play_pct)
         self.pfs.append(team.points_for)
+        self.title_flags.append(1.0 if team is result.champion else 0.0)
         self.moves += team.moves
 
     @property
@@ -66,6 +70,7 @@ class HeroStats:
         return {"year": self.year, "strategy": self.strategy,
                 "summary": self.summary, "finishes": self.finishes,
                 "all_plays": self.all_plays, "pfs": self.pfs,
+                "title_flags": self.title_flags,
                 "playoffs": self.playoffs, "titles": self.titles}
 
 
