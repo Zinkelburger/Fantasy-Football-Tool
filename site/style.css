@@ -302,6 +302,39 @@ tr.is-taken td.mark-cell { opacity: 1; }
   max-width: 44rem;
 }
 
+/* ----------------------------------------- board cheat-sheet rules */
+.cheat {
+  list-style: none;
+  padding: 0;
+  margin: 0.3rem 0 0.6rem;
+  max-width: 44rem;
+}
+.cheat li {
+  color: var(--fg-dim);
+  padding: 0.3rem 0 0.3rem 1.05rem;
+  position: relative;
+}
+.cheat li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+.cheat b { color: var(--fg); }
+.cheat .tag { margin-left: 0; }
+
+/* --------------------------------- per-player offense click panel */
+#board-table tbody tr[data-search] { cursor: pointer; }
+tr.offense-row td {
+  white-space: normal;
+  background: var(--bg-panel);
+  box-shadow: inset 3px 0 0 var(--accent);
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+}
+tr.offense-row b { color: var(--fg); }
+.offense-note { font-style: italic; }
+
 /* ------------------------------------------------ notes & glossary */
 details.note {
   background: var(--bg-panel);

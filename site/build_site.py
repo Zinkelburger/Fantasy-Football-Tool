@@ -249,6 +249,31 @@ FORMATS = {"std": ("model_board_2026.csv", "std"),
            "ppr": ("model_board_2026_ppr.csv", "ppr")}
 
 
+def _player_teams():
+    """(pos, normalized name) -> team nickname, for the board's
+    per-player offense readout. ADP snapshot first, 2026 roster as the
+    fallback for deep names the ADP file doesn't carry."""
+    out = {}
+    ros = MKT / "roster_2026.parquet"
+    try:
+        import pandas as pd
+        r = pd.read_parquet(ros)[["full_name", "position", "team"]].dropna()
+        for x in r.itertuples():
+            out.setdefault((x.position, _norm(x.full_name)), x.team)
+    except (ImportError, FileNotFoundError):
+        # stdlib-only run: ~12 deep-bench names lose the offense
+        # readout, everything else comes from the ADP snapshot below
+        pass
+    path = MKT / "adp_2026.csv"
+    if path.exists():
+        for r in read_csv(path):
+            if r.get("team"):
+                out[(r["pos"], _norm(r["player"]))] = r["team"]
+    # feed codes that differ from the TEAMS map (nflverse codes)
+    alias = {"LAR": "LA", "JAC": "JAX"}
+    return {k: TEAMS.get(alias.get(ab, ab)) for k, ab in out.items()}
+
+
 def _opportunity():
     """(pos, normalized name) -> 2025 usage row (expected PPG per format,
     centered gap, TD luck, per-game volume). See export_opportunity.py
@@ -261,7 +286,7 @@ def _opportunity():
     return {(r["pos"], _norm(r["name"])): r for r in read_csv(path)}
 
 
-def _board_for(csv_name, adp_fmt, opp):
+def _board_for(csv_name, adp_fmt, opp, teams):
     rows = read_csv(MKT / csv_name)
     mkt = _market_pos_ranks(adp_fmt)
     board = {}
@@ -271,7 +296,8 @@ def _board_for(csv_name, adp_fmt, opp):
         if opp and o is None:
             unmatched += 1
         board.setdefault(r["pos"], []).append(dict(
-            name=r["name"], pred=round(float(r["pred_ppg"]), 1),
+            name=r["name"], team=teams.get((r["pos"], _norm(r["name"]))),
+            pred=round(float(r["pred_ppg"]), 1),
             ppg25=round(float(r["ppg"]), 1),
             age=round(float(r["age"]), 1) if r.get("age") else None,
             cap=round(float(r["cap_pct"]), 1) if r.get("cap_pct") else 0,
@@ -296,13 +322,14 @@ def build_board():
     separate model fit, not the standard board re-sorted."""
     out = {}
     opp = _opportunity()
+    teams = _player_teams()
     for key, (csv_name, adp_fmt) in FORMATS.items():
         path = MKT / csv_name
         if not path.exists():
             print(f"  (skipping {key}: {csv_name} missing — "
                   f"run analysis/player_model.py)")
             continue
-        out[key] = _board_for(csv_name, adp_fmt, opp)
+        out[key] = _board_for(csv_name, adp_fmt, opp, teams)
     return out
 
 
@@ -443,12 +470,21 @@ def build_blog():
     return posts
 
 
+def build_cheatsheet():
+    """site/cheatsheet.md — the findings distilled to one page of
+    draft-night rules, every rule linking to its finding."""
+    lines = (SITE / "cheatsheet.md").read_text().splitlines()
+    return dict(title=re.sub(r"^#\s*", "", lines[0]).strip(),
+                html=glossarize(md2html("\n".join(lines[1:]))))
+
+
 def main():
     out = SITE / "data"
     out.mkdir(exist_ok=True)
     for name, data in (("board", build_board()), ("market", build_market()),
                        ("preseason", build_preseason()),
-                       ("weekly", build_weekly()), ("blog", build_blog())):
+                       ("weekly", build_weekly()), ("blog", build_blog()),
+                       ("cheatsheet", build_cheatsheet())):
         (out / f"{name}.json").write_text(json.dumps(data))
         print(f"data/{name}.json written")
 

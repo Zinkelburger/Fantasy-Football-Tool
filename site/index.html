@@ -21,6 +21,7 @@
       <a href="#/weekly" data-route="weekly">Weekly</a>
       <a href="#/board" data-route="board">2026 Board</a>
       <a href="#/blog" data-route="blog">Research</a>
+      <a href="#/cheat" data-route="cheat">Cheat sheet</a>
       <a href="#/draft" data-route="draft" class="nav-draft">Draft Tool</a>
     </nav>
   </header>
@@ -37,6 +38,7 @@
         didn't work.</p>
         <div class="hero-actions">
           <a class="btn primary" href="#/weekly">This week's boards</a>
+          <a class="btn" href="#/cheat">The draft plan, one page</a>
           <a class="btn" href="#/blog">Read the findings</a>
         </div>
       </div>
@@ -58,10 +60,10 @@
         </a>
         <a class="card" href="#/blog">
           <h3><span class="pill pill-research">Research</span> The findings</h3>
-          <p>29 short write-ups on what wins fantasy leagues: what works,
+          <p>30 short write-ups on what wins fantasy leagues: what works,
           what's a myth, and which popular stats are noise. Each one
           shows its data and says how confident to be.</p>
-          <span class="card-stat">29 findings</span>
+          <span class="card-stat">30 findings</span>
         </a>
         <a class="card" href="#/draft">
           <h3><span class="pill pill-draft">Live</span> Draft assistant</h3>
@@ -151,27 +153,52 @@
         <span class="dim">veterans only — for rookies, follow ADP until
         our rookie model ships</span>
       </div>
-      <p class="blurb">The <b>2026 proj PPG</b> column is what this model
-      expects each player to average <b>per game over the 2026 regular
-      season</b>. It reads last season's usage, age, contract and team,
-      and it was graded on seasons it was never trained on.
-      <a href="#/blog/25-player-model">How it works, and how often it
-      beats the draft market →</a></p>
-      <p class="blurb"><b>2025 expected</b> is the opportunity check: the
-      points a typical player would have scored from his 2025 chances —
-      targets, carries, and where on the field they came.
-      <b>▼ ran hot</b> means he scored well above his chances (usually
-      touchdown luck, and it usually doesn't repeat); <b>▲ ran cold</b>
-      means his chances outran his scoring — the strongest buy signal in
-      our research, because chances carry over to the next season better
-      than points do. Hover any tag for the player's numbers.
-      One honest caveat: backtested on 2017–25, these tags called the
-      next season at <b>WR and TE in all 8 year-pairs</b> — hot seasons
-      gave back about 2 points a game, cold ones held their value — but
-      at <b>RB and QB</b> the gap added nothing once you account for how
-      much the player scored (goal-line roles are sticky). So the colored
-      tags are verdicts; the gray RB/QB ones are just context, and the
-      2026 proj column already weighs all of this per position.</p>
+      <ul class="cheat">
+        <li><b>2026 proj PPG</b> is the pick order — our model's
+          per-game projection. It out-ranks ADP at QB, WR and TE.
+          <a href="#/blog/25-player-model">Finding 25 →</a></li>
+        <li><span class="tag up">▲ ran cold</span> at WR or TE =
+          <b>buy</b>. His chances beat his points, and chances repeat.
+          <a href="#/blog/17-buy-targets-not-efficiency">Finding 17 →</a></li>
+        <li><span class="tag down">▼ ran hot</span> at WR or TE =
+          <b>fade</b>. Mostly touchdown luck; hot seasons give back
+          ~2 points a game.
+          <a href="#/blog/16-td-luck-regresses">Finding 16 →</a></li>
+        <li>Gray <i>ran hot/cold</i> tags at RB and QB: background
+          only — no verdict there, the projection already handles it.</li>
+        <li><b>Kickers and defenses don't matter.</b> Fill them with
+          your last two picks, off the two lists below.
+          <a href="#/blog/28-kicker-model">Finding 28 →</a>
+          <a href="#/blog/27-dst-model">Finding 27 →</a></li>
+        <li><b>"He's on a good offense" is not a tiebreak</b> — it's
+          already in his draft price. Click any player to see his
+          offense's expected points anyway.
+          <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></li>
+        <li>Hover any tag or column header for that player's numbers.</li>
+      </ul>
+      <details class="note">
+        <summary>The long version — what the columns mean</summary>
+        <p>The <b>2026 proj PPG</b> column is what this model expects
+        each player to average <b>per game over the 2026 regular
+        season</b>. It reads last season's usage, age, contract and
+        team, and it was graded on seasons it was never trained on.</p>
+        <p><b>2025 expected</b> is the opportunity check: the points a
+        typical player would have scored from his 2025 chances —
+        targets, carries, and where on the field they came.
+        <b>▼ ran hot</b> means he scored well above his chances
+        (usually touchdown luck, and it usually doesn't repeat);
+        <b>▲ ran cold</b> means his chances outran his scoring — the
+        strongest buy signal in our research, because chances carry
+        over to the next season better than points do. One honest
+        caveat: backtested on 2017–25, these tags called the next
+        season at <b>WR and TE in all 8 year-pairs</b> — hot seasons
+        gave back about 2 points a game, cold ones held their value —
+        but at <b>RB and QB</b> the gap added nothing once you account
+        for how much the player scored (goal-line roles are sticky).
+        So the colored tags are verdicts; the gray RB/QB ones are just
+        context, and the 2026 proj column already weighs all of this
+        per position.</p>
+      </details>
       <div class="scoring">
         <span class="scoring-label">Scoring</span>
         <div class="tabs" id="board-scoring"
@@ -184,14 +211,10 @@
       </div>
       <div class="tbl"><table id="board-table"></table></div>
       <h3 class="sub-head">Kickers and defenses, on draft day</h3>
-      <p class="blurb"><b>Take them last, and don't think hard about
-      it.</b> Ranking kickers by how well they kicked last year predicts
-      almost nothing — a rank correlation of .08, where 0 is a coin flip
-      — and telling our model who the kicker is actually makes it
-      slightly worse. Kicker points belong to the offense, not the guy.
-      Defenses are a little more predictable, but the only thing that
-      matters there is who they play. So use these two lists to break a
-      tie at the end of your draft, then move on.
+      <p class="blurb"><b>Take them last, off these lists, and don't
+      think hard about it.</b> A kicker's own history predicts almost
+      nothing — his points belong to his offense. A defense's points
+      belong to its schedule.
       <a href="#/blog/28-kicker-model">Kicker model →</a>
       <a href="#/blog/27-dst-model">D/ST model →</a></p>
       <div class="pair">
@@ -208,9 +231,13 @@
       <h3 class="sub-head">What Vegas expects from every 2026 offense</h3>
       <p class="blurb">Add up the betting lines for all 272 games on the
       2026 schedule and you get an expected points-per-game for every
-      offense (snapshot: Aug 2026). More team points = more fantasy
-      points to go around. Use it as a tiebreak — when two players are
-      close, take the one in the better offense.</p>
+      offense (snapshot: Aug 2026). Vegas is genuinely good at this —
+      23 straight seasons calling the scoring order right. But
+      <b>don't break player ties with it</b>: everyone can read the
+      same lines, so it's already in each player's price — we tested
+      the tiebreak on eight years of drafts and it lost to a coin flip.
+      Where this table earns its keep is the kicker and defense lists
+      above. <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></p>
       <div class="tbl half"><table id="market-table"></table></div>
     </section>
 
@@ -256,6 +283,11 @@
     <section id="view-post" class="view" hidden>
       <a class="back" href="#/blog">← all research</a>
       <article id="post-body" class="post"></article>
+    </section>
+
+    <!-- ========================================= CHEAT SHEET -->
+    <section id="view-cheat" class="view" hidden>
+      <article id="cheat-body" class="post"></article>
     </section>
 
     <!-- ============================================= DRAFT -->

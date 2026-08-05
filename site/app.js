@@ -1,7 +1,7 @@
 /* Static SPA: hash routing over prebuilt JSON (site/build_site.py). */
 "use strict";
 
-const VIEWS = ["home", "weekly", "board", "blog", "post", "draft"];
+const VIEWS = ["home", "weekly", "board", "blog", "post", "cheat", "draft"];
 const cache = {};
 
 async function data(name) {
@@ -52,6 +52,7 @@ function route() {
   if (view === "board") guard(renderBoard());
   if (view === "blog") guard(renderBlogList());
   if (view === "post" && arg) guard(renderPost(arg));
+  if (view === "cheat") guard(renderCheat());
   if (view === "draft") {
     const f = document.getElementById("draft-frame");
     if (!f.src) f.src = "../webapp/index.html";
@@ -201,6 +202,9 @@ async function renderWeekly() {
 /* ------------------------------------------------------------- board */
 function applyBoardSearch() {
   const q = document.getElementById("board-search").value.trim().toLowerCase();
+  // any open offense panel closes: its anchor row may be filtered away
+  document.querySelectorAll("#board-table .offense-row")
+    .forEach(row => row.remove());
   document.querySelectorAll("#board-table tbody tr").forEach(row => {
     row.hidden = q && !row.dataset.search.includes(q);
   });
@@ -233,6 +237,9 @@ async function renderBoard() {
   const board = await data("board");
   const market = await data("market");
   boardDone = true;   /* only after the fetches — a failure must retry */
+  // market.json is sorted best offense first, so index = scoring rank
+  const offense = new Map(market.map((r, i) =>
+    [r.team, { ...r, rank: i + 1 }]));
   const tabs = document.getElementById("board-tabs");
   const fmtTabs = document.getElementById("board-scoring");
   const order = ["RB", "WR", "QB", "TE"];
@@ -311,7 +318,9 @@ async function renderBoard() {
                   : `market drafts him ${-md} spots earlier than our rank`}">(${md > 0 ? "+" : ""}${md})</span>`
               : ""}`
           : "—";
-        return `<tr data-search="${r.name.toLowerCase()}">
+        return `<tr data-search="${r.name.toLowerCase()}"
+          data-team="${r.team || ""}"
+          title="Click: what Vegas expects from his offense">
           <td class="rank">${i + 1}</td><td><b>${r.name}</b>
           ${Math.abs(d) > flag ? `<span class="tag ${d > 0 ? "up" : "down"}"
           title="${d > 0
@@ -348,6 +357,31 @@ async function renderBoard() {
   });
   document.getElementById("board-search")
     .addEventListener("input", applyBoardSearch);
+
+  /* Click a player -> a one-line panel under him: his offense's
+     market-implied scoring. Shown as context with the finding-30
+     caveat, never as a tiebreak. */
+  document.getElementById("board-table").addEventListener("click", e => {
+    if (e.target.closest("a")) return;
+    const row = e.target.closest("tr[data-search]");
+    if (!row) return;
+    const open = row.nextElementSibling?.classList.contains("offense-row");
+    document.querySelectorAll("#board-table .offense-row")
+      .forEach(p => p.remove());
+    if (open) return;               // second click on the same row closes
+    const o = offense.get(row.dataset.team);
+    const panel = document.createElement("tr");
+    panel.className = "offense-row";
+    panel.innerHTML = `<td colspan="8">${o
+      ? `<b>${o.full}</b> — Vegas expects <b>${o.ppg.toFixed(1)}</b>
+         points a game from this offense (<b>#${o.rank}</b> of 32),
+         about ${Math.round(o.ppg * 17)} points for the season.
+         <span class="offense-note">Context only — at the same ADP,
+         "better offense" won just 46% of head-to-heads.</span>
+         <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a>`
+      : "No 2026 team on file for this player yet."}</td>`;
+    row.after(panel);
+  });
 
   const pre = await data("preseason");
   document.getElementById("pre-k-table").innerHTML =
@@ -412,6 +446,16 @@ async function renderPost(id) {
   if (!p) { el.innerHTML = "<p>Post not found.</p>"; return; }
   el.innerHTML = `<h1>${p.title}</h1>` + p.html;
   window.scrollTo(0, 0);
+}
+
+/* -------------------------------------------------------- cheat sheet */
+let cheatDone = false;
+async function renderCheat() {
+  if (cheatDone) return;
+  const c = await data("cheatsheet");
+  document.getElementById("cheat-body").innerHTML =
+    `<h1>${c.title}</h1>` + c.html;
+  cheatDone = true;
 }
 
 window.addEventListener("hashchange", route);

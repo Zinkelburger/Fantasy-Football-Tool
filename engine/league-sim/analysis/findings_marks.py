@@ -251,10 +251,13 @@ def wr_cohort_marks(ps, adv, draft_year):
         n, team = norm(c["name"]), ALIAS.get(c["team"], c["team"])
         if wr1.get(c["team"]) == c["name"] and winpct.get(team, .5) <= .45:
             w, l, d = rec[team]
+            share = shares.get(n) or 0
             out.append(mark(
                 c["name"], "WR", c["team"], 8, "buy",
-                f"Clear WR1 on a {w}-{l}{f'-{d}' if d else ''} team — "
-                f"this profile hits top-24 43% vs 25%."))
+                f"Clear WR1 on a {w}-{l}{f'-{d}' if d else ''} team"
+                + (f" ({share:.0%} of team targets last year)"
+                   if share >= .15 else "")
+                + " — this profile hits top-24 43% vs 25%."))
         two, last = fin2.get(n), fin1.get(n)
         if two is not None and two <= 20 and (last is None or last > 35):
             tell = shares.get(n, 0) or 0
