@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Draft Assistant: Player Extractor",
-  "version": "1.3.0",
-  "description": "Extracts draft picks (ESPN, Sleeper, Yahoo, NFL.com, CBS) and relays them to the Fantasy Football web app tab (and the local Go app if running). Open source at https://github.com/Zinkelburger/Fantasy-Football-Tool",
+  "version": "1.4.0",
+  "description": "Extracts draft picks (ESPN, Sleeper, Yahoo, NFL.com, CBS) and relays them to the Fantasy Football web app tab (and the local Go app if running). Also lets the web app read your private ESPN league. Open source at https://github.com/Zinkelburger/Fantasy-Football-Tool",
 
   "icons": {
     "16": "icons/icon16.png",
@@ -78,7 +78,8 @@
   "host_permissions": [
     "http://localhost/*",
     "https://*.espn.com/*",
-    "https://espn.com/"
+    "https://espn.com/",
+    "https://lm-api-reads.fantasy.espn.com/*"
   ],
   "background": {
     "service_worker": "background.js",

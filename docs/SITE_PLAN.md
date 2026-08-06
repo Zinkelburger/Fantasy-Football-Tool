@@ -86,6 +86,100 @@ projection input, because we measured that it isn't one.
   not a model feature (tested null season-long).
 - Weather: priced into totals; skip as a feature, keep for content.
 
+## Worldwide pivot (2026-08-05)
+
+The site is for anyone, not just the family league. That changes the
+sync story, because a static page has to reach somebody else's league
+without a login.
+
+**Two of the three big services turn out to be reachable.** Sleeper's
+API is CORS-open, needs no auth and no key, and exposes leagues,
+rosters, matchups and live points from a username alone. ESPN's read
+API is friendlier than it looks: **public leagues work from the browser
+with no auth at all**, and private ones fail on cookies rather than on
+CORS, which is exactly the gap the browser extension can close. Yahoo
+needs OAuth and is therefore out until there is a server.
+
+*(An earlier draft of this section said ESPN was "CORS-blocked from our
+origin". That was wrong and it hid a free feature for a while: ESPN
+echoes the requesting Origin and allows credentials. The cookies are
+the problem, not the headers.)*
+
+Shipped 2026-08-05, nav → **My league** (`#/live`), six tabs:
+
+| tab | what it does | file |
+|---|---|---|
+| Matchup | live win probability, 10k Monte Carlo in the browser, finding 35's model over ESPN's game clock | `site/live.js` |
+| Start/sit | your best legal lineup against the one you actually set, and the swaps that close the gap | `site/league.js` |
+| Waivers | every player by position, ranked by **what he'd add to your starting lineup** rather than by raw projection — a 20-point QB is worth nothing to a team that already starts a better one | `site/league.js` |
+| Teams | league analyzer — teams ranked by the projected points of their best legal lineup, not by record | `site/league.js` |
+| Week in review | all-play record and a luck column, counting finished weeks only | `site/league.js` |
+| Moves | completed adds, waivers and trades, last four weeks | `site/league.js` |
+
+**Both services, one shape.** `site/provider.js` defines a normalised
+league context and `site/sleeper.js` / `site/espn.js` are adapters onto
+it; nothing above this line knows which service a league came from.
+That's what made ESPN a day of work instead of a rewrite.
+
+- **Sleeper**: username → leagues → pick one. No auth anywhere.
+- **ESPN public leagues**: league id → pick your team. Also no auth —
+  the read API echoes our Origin and even allows `X-Fantasy-Filter` on
+  preflight, so free agents work too, and ESPN's own weekly
+  projections come down with the rosters.
+- **ESPN private leagues**: through the extension (v1.4.0). Not because
+  of CORS — CORS is fine — but because `espn_s2`/`SWID` are
+  `.espn.com` cookies that won't ride a third-party request from our
+  origin. `background.js` exposes one narrow door: GET only, one URL
+  prefix, one allowed header, nothing stored, and the cookie never
+  reaches the page.
+
+`site/live-demo.html` is a dev fixture: it replaces the provider
+context and the scoreboard with a fabricated mid-season league and
+drives the real render paths, so these views can be worked on in
+August. It deliberately includes the cases that were once wrong — a
+starter on a bye, one ruled out, one with no projection, and a QB
+stacked with two of his own receivers.
+
+Not built, deliberately: trade analyzer (rest-of-season projections in
+a costume; trades are rare in a 12-team league) and news primers (the
+reddit-notes verdict says narrative adds no projection edge — it can
+be context, never a number).
+
+**The projection is the whole ballgame.** Finding 35 showed the ceiling
+is set by projection quality, not simulation machinery, and the
+headroom test (2026-08-05) put a number on it: at kickoff, a crude
+projection picks the matchup winner 68.3% of the time and a decent one
+gets 74.3%. By the start of Q4 the gap is 0.3 points — the clock has
+eaten it. **All the value is before kickoff.**
+
+Ladder of projection sources, best last:
+
+1. ~~season-pace average off Sleeper history~~ (shipped first, crude)
+2. **Sleeper's own weekly projections** — `/v1/projections/nfl/regular/
+   {season}/{week}`, 9,403 players, `pts_std`/`pts_half_ppr`/`pts_ppr`,
+   free and CORS-open. Shipped 2026-08-05.
+3. **TODO: player prop odds at kickoff.** The market's own per-player
+   projection, and per finding 26/27/28 the closing line tends to price
+   everything our features do. Plan:
+   - Sunday-morning cron pulls props (receiving yards, rush yards, pass
+     yards, anytime TD, receptions) from the Odds API — key already in
+     `.env`, same one `market_implied.py` uses.
+   - Convert each prop line to expected fantasy points (de-vig the two
+     sides, take the implied median, convert yards→points by league
+     scoring; anytime-TD probability × 6).
+   - Write `site/data/props_<week>.json`; `projOf()` in `live.js`
+     prefers props, falls back to Sleeper's projection, then to pace.
+   - **Test it before trusting it**: score props vs Sleeper's projection
+     vs actuals for a few weeks (the accuracy harness below does this
+     for free). Props should win on starters and be missing entirely
+     for deep bench, which is exactly why the fallback chain matters.
+   - Only starters get props, so coverage is maybe 150–200 players.
+   - Historical props for a proper backtest sit behind a $59 one-month
+     Odds API plan (see the gap list above) — the cheap version is to
+     paper-trade it live from week 1.
+
+Backlog entry: `engine/league-sim/findings/BACKLOG.md` B13.
+
 ## In-season app roadmap (added 2026-08-04)
 
 Goal: a fantasy player manages their week from our UI instead of

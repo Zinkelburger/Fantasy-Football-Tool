@@ -27,7 +27,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PUBLIC = ROOT / "public"
 
-SITE_FILES = ["index.html", "app.js", "style.css"]
+# Every file index.html asks for by name. Miss one and the page doesn't
+# degrade -- app.js references Live and League at route time, so a single
+# missing script takes the whole site down, not just the page that needed
+# it. build_deploy checks for that below rather than trusting this list.
+SITE_FILES = ["index.html", "app.js", "style.css", "sleeper.js", "espn.js",
+              "provider.js", "live.js", "league.js"]
 WEBAPP_FILES = ["index.html", "app.js", "style.css"]
 
 HEADERS = """\
@@ -40,6 +45,9 @@ HEADERS = """\
   Cache-Control: public, max-age=300
 
 /webapp/data/*
+  Cache-Control: public, max-age=300
+
+/figures/*
   Cache-Control: public, max-age=300
 
 /*.js
@@ -92,6 +100,25 @@ def bust(html_path: Path):
     html_path.write_text(ASSET_REF.sub(stamp, html))
 
 
+def check_assets(html_path: Path):
+    """Every script and stylesheet the page names must actually be here.
+
+    This is a build-breaker on purpose. A missing .js doesn't degrade
+    gracefully: app.js touches Live and League on every route, so one
+    absent file throws on the first navigation and takes down every
+    page, not just the one that needed it. That shipped once already,
+    because SITE_FILES was a hand-kept list and the page had grown past
+    it. Now the page is the list and this is the check.
+    """
+    missing = [m.group("ref") for m in ASSET_REF.finditer(html_path.read_text())
+               if not (html_path.parent / m.group("ref")).is_file()]
+    if missing:
+        raise SystemExit(
+            f"{html_path.name} asks for files that weren't deployed: "
+            f"{', '.join(missing)}\n"
+            f"Add them to SITE_FILES (or WEBAPP_FILES) in build_deploy.py.")
+
+
 def main():
     if "--no-rebuild" not in sys.argv:
         run(ROOT / "webapp" / "build_data.py")
@@ -104,12 +131,17 @@ def main():
     for f in SITE_FILES:
         shutil.copy2(ROOT / "site" / f, PUBLIC / f)
     shutil.copytree(ROOT / "site" / "data", PUBLIC / "data")
+    if (ROOT / "site" / "figures").exists():
+        shutil.copytree(ROOT / "site" / "figures", PUBLIC / "figures")
 
     webapp_out = PUBLIC / "webapp"
     webapp_out.mkdir()
     for f in WEBAPP_FILES:
         shutil.copy2(ROOT / "webapp" / f, webapp_out / f)
     shutil.copytree(ROOT / "webapp" / "data", webapp_out / "data")
+
+    check_assets(PUBLIC / "index.html")
+    check_assets(webapp_out / "index.html")
 
     bust(PUBLIC / "index.html")
     bust(webapp_out / "index.html")

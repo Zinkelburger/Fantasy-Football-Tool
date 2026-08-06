@@ -76,7 +76,47 @@ draft page).
 - `draft-common.js` — candidate-selector engine + `ffdaDiag()` for the new sites
 - `yahoo-draft.js`, `nfl-draft.js`, `cbs-draft.js` — unverified scrapers
 - `bridge.js` — relays extension storage into the web app page
-  (`all_frames: true` so it works inside foss.football's Draft Tool iframe)
-- `background.js` — ESPN cookie handoff (service worker in Chrome,
-  event page in Firefox)
+  (`all_frames: true` so it works inside foss.football's Draft Tool iframe),
+  and relays the site's ESPN league reads (below)
+- `background.js` — ESPN cookie handoff and the ESPN read proxy
+  (service worker in Chrome, event page in Firefox)
 - `package.py` — emits `dist/` per-browser builds
+
+
+## Reading a private ESPN league for the web app (v1.4.0)
+
+The site's **My league** page can read an ESPN league directly when
+that league is public — ESPN's read API answers cross-origin requests
+properly, so no extension is needed for those.
+
+Private leagues are different, and the reason is worth stating
+precisely because it is easy to get wrong: **it is not a CORS
+problem.** ESPN echoes the requesting origin and sets
+`access-control-allow-credentials: true`. The blocker is that
+`espn_s2` and `SWID` are cookies on `.espn.com`, so a request from
+`foss.football` is a third-party one and the browser never attaches
+them. The request is allowed; it just arrives signed out.
+
+This extension already holds host permission for `espn.com`, so the
+same request made from its background script does carry the cookies.
+That's the whole feature:
+
+```
+site/espn.js  --401-->  bridge.js  -->  background.js  -->  ESPN
+                                   <--   JSON only    <--
+```
+
+The door is deliberately narrow:
+
+- **GET only.** No body, no method choice, so nothing can be changed —
+  no lineup set, no player dropped, no trade accepted.
+- **One URL prefix**, `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/`,
+  checked in the background script rather than trusted from the page.
+- **One allowed header**, `X-Fantasy-Filter`, and it must be JSON.
+- **Nothing is stored**, and the cookies never reach the page — only
+  the JSON answer does.
+- Only pages listed in the manifest's `bridge.js` matches can ask at
+  all (our own site, localhost, and local files).
+
+If you'd rather not grant this, don't install the extension: public
+leagues and every Sleeper league work without it.

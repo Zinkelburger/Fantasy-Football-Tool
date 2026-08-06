@@ -35,5 +35,14 @@ coverage.html
 
 # Trained models (regenerate: python injury_predictor/unified_injury_predictor.py)
 *.pkl
+
+# nflverse play-by-play cache, ~20MB/season (regenerate:
+# python engine/league-sim/analysis/ingame_model.py --fetch).
+# Unanchored on purpose: a run from the wrong working directory once
+# left a second copy at engine/league-sim/engine/league-sim/data/pbp,
+# 98MB of it, sitting untracked and *unignored* in a public repo
+# because the old rule was pinned to the one correct path.
+# (not a blanket *.parquet -- 30-odd of them are tracked on purpose)
+**/data/pbp/
 public/
 chrome-extension/dist/

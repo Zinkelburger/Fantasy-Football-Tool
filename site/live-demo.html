@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Development fixture for the My-League pages.
+
+     These views can only be exercised for real on a Sunday afternoon
+     during the season, so this page fakes a provider context — a
+     fabricated mid-season league with games pre / in progress / final,
+     four weeks of results, adds and trades — and drives the REAL
+     live.js and league.js render paths against it.
+
+     Because everything now goes through the one normalised context in
+     provider.js, the fixture is just that object: no Sleeper or ESPN
+     stubbing needed, and anything that renders here renders the same
+     way for either service.
+
+     Deliberately includes the awkward cases, since those are the ones
+     that were wrong: a starter on a bye, a starter ruled out, a
+     starter with no projection at all, and a QB stacked with two of
+     his own receivers.
+
+     Nothing here is linked from the site nav. Serve the repo root and
+     open /site/live-demo.html. -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>league demo harness</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="site-header"><a class="brand" href="#/"><span class="brand-dot"></span> FOSS Football</a>
+<nav id="site-nav"><a href="#" class="active">demo harness</a></nav></header>
+<main id="main">
+<section id="view-live" class="view">
+  <h1>My league <span class="dim" style="font-size:1rem">— fixture</span></h1>
+  <nav id="league-tabs" class="league-tabs">
+    <a href="#matchup" data-tab="matchup">Matchup</a>
+    <a href="#startsit" data-tab="startsit">Start/sit</a>
+    <a href="#waivers" data-tab="waivers">Waivers</a>
+    <a href="#teams" data-tab="teams">Teams</a>
+    <a href="#review" data-tab="review">Week in review</a>
+    <a href="#moves" data-tab="moves">Moves</a>
+  </nav>
+  <div id="live-body"></div>
+  <div id="league-body"></div>
+</section>
+</main>
+
+<script src="sleeper.js"></script>
+<script src="espn.js"></script>
+<script src="provider.js"></script>
+<script src="live.js"></script>
+<script src="league.js"></script>
+<script>
+/* ---- the fabricated league --------------------------------------- */
+const P = (name, pos, team, inj) => ({ name, pos, team, inj: inj || null });
+const PLAYERS = {
+  /* my team — Allen stacked with two Bills receivers, on purpose */
+  "1": P("Josh Allen", "QB", "BUF"),        "2": P("Khalil Shakir", "WR", "BUF"),
+  "3": P("Dalton Kincaid", "TE", "BUF"),    "4": P("Bijan Robinson", "RB", "ATL"),
+  "5": P("De'Von Achane", "RB", "MIA"),     "6": P("Ja'Marr Chase", "WR", "CIN"),
+  "7": P("Puka Nacua", "WR", "LAR"),        "8": P("Brandon Aubrey", "K", "DAL"),
+  "9": P("Steelers D/ST", "DST", "PIT"),
+  /* my bench — Pollard outprojects a starter, which start/sit should catch */
+  "20": P("Tony Pollard", "RB", "TEN"),     "21": P("Jaylen Waddle", "WR", "MIA"),
+  "22": P("Jordan Love", "QB", "GB"),       "23": P("Rome Odunze", "WR", "CHI"),
+  /* the opponent, including the three awkward cases */
+  "11": P("Lamar Jackson", "QB", "BAL"),    "12": P("Saquon Barkley", "RB", "PHI"),
+  "13": P("Jahmyr Gibbs", "RB", "DET"),     "14": P("CeeDee Lamb", "WR", "DAL"),
+  "15": P("Justin Jefferson", "WR", "MIN"),          /* MIN is on bye */
+  "16": P("George Kittle", "TE", "SF", "O"),         /* ruled out */
+  "17": P("Garrett Wilson", "WR", "NYJ"),
+  "18": P("Cam Little", "K", "JAX"),                 /* no projection */
+  "19": P("Broncos D/ST", "DST", "DEN"),
+  "24": P("Bucky Irving", "RB", "TB"),      "25": P("Tucker Kraft", "TE", "GB"),
+  /* free agents, so the waiver list has something to say */
+  "30": P("Rashid Shaheed", "WR", "NO"),    "31": P("Ty Chandler", "RB", "MIN"),
+  "32": P("Cade Otton", "TE", "TB"),        "33": P("Bryce Young", "QB", "CAR"),
+  "34": P("Wan'Dale Robinson", "WR", "NYG", "Q"),
+  "35": P("Tyjae Spears", "RB", "TEN"),     "36": P("Jalen McMillan", "WR", "TB"),
+  "37": P("Jauan Jennings", "WR", "SF"),
+  /* the waiver-wire hit: good enough to crack the lineup, so the
+     "adds" column has something to prove itself on */
+  "38": P("Blake Corum", "RB", "LAR"),
+};
+
+const PROJ = {
+  "1": 21.4, "2": 9.2, "3": 7.8, "4": 15.1, "5": 13.6, "6": 17.2, "7": 12.9,
+  "8": 8.4, "9": 6.1, "20": 14.8, "21": 11.0, "22": 17.9, "23": 8.1,
+  "11": 20.8, "12": 16.4, "13": 14.2, "14": 15.9, "16": 9.0, "17": 11.3,
+  "19": 5.5, "24": 10.2, "25": 6.9,
+  /* 15 (bye) and 18 (no projection) are deliberately absent */
+  "30": 9.8, "31": 6.2, "32": 7.1, "33": 15.4, "34": 8.8, "35": 7.7,
+  "36": 6.4, "37": 10.6, "38": 16.2,
+};
+
+const LIVE = {
+  "1": 18.2, "2": 5.4, "3": 2.1, "4": 11.8, "5": 6.2, "6": 14.9, "7": 0,
+  "8": 0, "9": 3.0,
+  "11": 15.1, "12": 12.6, "13": 8.8, "14": 0, "15": 0, "16": 0, "17": 9.3,
+  "18": 0, "19": 2.0,
+};
+
+const MY = ["1","2","3","4","5","6","7","8","9","20","21","22","23"];
+const OPP = ["11","12","13","14","15","16","17","18","19","24","25"];
+const rest = (n, seed) => Array.from({length: n}, (_, i) => `x${seed}${i}`);
+
+const TEAMS = [
+  { id: 1, name: "Gridiron Gophers", mine: true, players: MY,
+    starters: ["1","2","3","4","5","6","7","8","9"],
+    matchupId: 1, w: 4, l: 2, t: 0, pf: 742.1, pa: 690.4 },
+  { id: 2, name: "Route Tree Huggers", mine: false, players: OPP,
+    starters: ["11","12","13","14","15","16","17","18","19"],
+    matchupId: 1, w: 3, l: 3, t: 0, pf: 701.8, pa: 715.2 },
+  { id: 3, name: "Play Action Jackson", mine: false, players: rest(13, "c"),
+    starters: rest(9, "c"), matchupId: 2, w: 5, l: 1, t: 0, pf: 788.3, pa: 660.1 },
+  { id: 4, name: "Sunday Scaries", mine: false, players: rest(13, "d"),
+    starters: rest(9, "d"), matchupId: 2, w: 1, l: 5, t: 0, pf: 634.7, pa: 780.9 },
+];
+
+/* games: final / in progress / not started, plus MIN on bye */
+const G = (id, state, period, clock) => ({ id, state, period, clock });
+const GAMES = {
+  byTeam: {
+    BUF: G("g1","post",4,"0:00"), CIN: G("g1","post",4,"0:00"),
+    ATL: G("g2","in",3,"7:12"),   PHI: G("g2","in",3,"7:12"),
+    MIA: G("g3","in",2,"1:48"),   DET: G("g3","in",2,"1:48"),
+    LAR: G("g4","pre",0,"0:00"),  DAL: G("g4","pre",0,"0:00"),
+    BAL: G("g5","in",4,"11:30"),  PIT: G("g5","in",4,"11:30"),
+    SF:  G("g6","pre",0,"0:00"),  NYJ: G("g6","pre",0,"0:00"),
+    TEN: G("g7","post",4,"0:00"), JAX: G("g7","post",4,"0:00"),
+    GB:  G("g8","pre",0,"0:00"),  CHI: G("g8","pre",0,"0:00"),
+    NO:  G("g9","pre",0,"0:00"),  TB:  G("g9","pre",0,"0:00"),
+    CAR: G("g10","pre",0,"0:00"), NYG: G("g10","pre",0,"0:00"),
+    DEN: G("g11","in",2,"5:00"),  ARI: G("g11","in",2,"5:00"),
+  },
+  bye: new Set(["MIN"]),
+  trustworthy: true,
+};
+
+const POOL = Object.keys(PLAYERS).map(id => {
+  const owner = TEAMS.find(t => t.players.includes(id));
+  return { id, ...PLAYERS[id], proj: PROJ[id] ?? null,
+           ownerTeamId: owner ? owner.id : null,
+           pctOwned: owner ? null : 20 + (Number(id) % 7) * 11 };
+});
+
+const CTX = {
+  kind: "demo", leagueId: "demo", leagueName: "Demo League",
+  season: "2025", week: 7, scoring: "std",
+  slots: ["QB","RB","RB","WR","WR","TE","FLEX","DST","K"],
+  players: PLAYERS, teams: TEAMS, proj: PROJ, live: LIVE, pool: POOL,
+  myTeam: TEAMS[0], opponent: TEAMS[1], completedWeeks: 6,
+  scores: async (w) => {
+    const seed = w * 37;
+    return TEAMS.map((t, i) => ({
+      teamId: t.id, matchupId: t.matchupId,
+      points: 88 + ((seed + i * 53) % 47) + i * 3,
+    }));
+  },
+  moves: async (from, to) => ({ ok: true, items: [
+    { week: to, type: "waiver", teamIds: [1],
+      adds: [{ id: "30", teamId: 1 }], drops: [{ id: "23", teamId: 1 }], when: 9 },
+    { week: to, type: "add", teamIds: [3],
+      adds: [{ id: "37", teamId: 3 }], drops: [], when: 8 },
+    { week: to - 1, type: "trade", teamIds: [2, 4],
+      adds: [{ id: "24", teamId: 2 }], drops: [{ id: "25", teamId: 4 }], when: 7 },
+  ] }),
+};
+
+/* Point the real code at the fixture instead of the network. */
+Provider.load = async () => CTX;
+Live.feeds.league = async () => CTX;
+Live.feeds.games = async () => GAMES;
+
+/* ---- drive the real renderers ------------------------------------ */
+async function show(tab) {
+  const liveBody = document.getElementById("live-body");
+  const lgBody = document.getElementById("league-body");
+  document.querySelectorAll("#league-tabs a").forEach(a =>
+    a.classList.toggle("active", a.dataset.tab === tab));
+  if (tab === "matchup") {
+    lgBody.innerHTML = ""; lgBody.hidden = true; liveBody.hidden = false;
+    Live.startPolling(liveBody, {});
+  } else {
+    Live.stopPolling();
+    liveBody.innerHTML = ""; liveBody.hidden = true; lgBody.hidden = false;
+    await League.render(tab, lgBody, {});
+  }
+}
+
+const current = () => (location.hash.replace("#", "") || "matchup");
+window.addEventListener("hashchange", () => show(current()));
+Live.init().then(() => show(current()))
+  .catch(e => { document.getElementById("live-body").textContent =
+    "Couldn't load data/ingame.json — serve the site directory over HTTP. " + e.message; });
+</script>
+</body>
+</html>

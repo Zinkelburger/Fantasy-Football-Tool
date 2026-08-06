@@ -74,6 +74,57 @@ ext.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log("📤 Background: Sending final parsed response:", finalResponse);
         return finalResponse;
 
+      // Read one ESPN fantasy endpoint on the web app's behalf.
+      //
+      // Why this exists: espn_s2 and SWID are .espn.com cookies, so a
+      // request from foss.football is third-party and the browser won't
+      // attach them -- which is what makes a private league unreadable
+      // from the site itself. (CORS is not the problem; ESPN echoes our
+      // origin and allows credentials. The cookies simply never leave.)
+      // We hold host permission for espn.com, so the same request made
+      // from here does carry them.
+      //
+      // This is deliberately the narrowest possible door:
+      //   - GET only, no body, no way to make a change
+      //   - one URL prefix, the read-only league API
+      //   - the only header a caller may set is X-Fantasy-Filter, and
+      //     it must be JSON
+      //   - nothing is stored, and the cookies never reach the page
+      // The manifest already limits which origins may ask (bridge.js
+      // runs on our own site and localhost only).
+      case "espnFetch": {
+        const ALLOWED =
+          "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/";
+        if (typeof request.url !== "string" || !request.url.startsWith(ALLOWED)) {
+          return { error: "That URL isn't the ESPN read API." };
+        }
+        const headers = {};
+        if (request.filter) {
+          try {
+            headers["X-Fantasy-Filter"] = typeof request.filter === "string"
+              ? request.filter : JSON.stringify(request.filter);
+          } catch (e) {
+            return { error: "Bad filter." };
+          }
+        }
+        try {
+          const res = await fetch(request.url, {
+            method: "GET",
+            credentials: "include",
+            headers,
+          });
+          if (!res.ok) {
+            return { error: res.status === 401
+              ? "ESPN says you're not signed in, or that league isn't yours. "
+                + "Open fantasy.espn.com, sign in, then try again."
+              : `ESPN returned HTTP ${res.status}.` };
+          }
+          return { data: await res.json() };
+        } catch (e) {
+          return { error: `Couldn't reach ESPN: ${e.message}` };
+        }
+      }
+
       // NOTE: a "debugCookies" case used to live here and dumped every
       // espn.com cookie (including espn_s2/SWID) to the console. Removed --
       // it was debug-only and leaked session credentials to anyone looking at

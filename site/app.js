@@ -1,7 +1,7 @@
 /* Static SPA: hash routing over prebuilt JSON (site/build_site.py). */
 "use strict";
 
-const VIEWS = ["home", "weekly", "board", "blog", "post", "cheat",
+const VIEWS = ["home", "live", "weekly", "board", "blog", "post", "cheat",
   "models", "draft"];
 const cache = {};
 
@@ -54,6 +54,7 @@ function route() {
   if (view === "blog") guard(renderBlogList());
   if (view === "post" && arg) guard(renderPost(arg));
   if (view === "cheat") guard(renderCheat());
+  if (view === "live") guard(renderLive(arg)); else Live.stopPolling();
   if (view === "draft") {
     const f = document.getElementById("draft-frame");
     if (!f.src) f.src = "../webapp/index.html";
@@ -285,6 +286,211 @@ async function renderCheat() {
   document.getElementById("cheat-body").innerHTML =
     `<h1>${c.title}</h1>` + c.html;
   cheatDone = true;
+}
+
+
+/* ==================================================================== */
+/*  My league                                                           */
+/*                                                                      */
+/*  Two ways in. Sleeper takes a username and finds your leagues, which  */
+/*  is the whole flow. ESPN has no public "which leagues am I in"        */
+/*  lookup without a login, so it takes a league id and you pick your    */
+/*  team out of the list — and private ESPN leagues route through the    */
+/*  browser extension (see site/espn.js).                                */
+/* ==================================================================== */
+
+const LIVE_STORE = "ff_live_v2";
+let liveWired = false;
+let liveTab = "matchup";
+
+const liveSaved = () => {
+  try { return JSON.parse(localStorage.getItem(LIVE_STORE)) || {}; }
+  catch (e) { return {}; }
+};
+const liveSave = (o) => {
+  try { localStorage.setItem(LIVE_STORE, JSON.stringify(o)); }
+  catch (e) { /* private mode */ }
+};
+
+function liveError(msg) {
+  const p = document.getElementById("live-error");
+  p.hidden = !msg;
+  p.textContent = msg || "";
+}
+
+function showLeagueTabs(on) {
+  const nav = document.getElementById("league-tabs");
+  nav.hidden = !on;
+  nav.querySelectorAll("a").forEach(a =>
+    a.classList.toggle("active", a.dataset.tab === liveTab));
+}
+
+/* Only one of the two bodies is ever populated, so switching tabs can't
+   leave a stale matchup sitting under a waiver list. */
+function showLeagueTab(cfg) {
+  const liveBody = document.getElementById("live-body");
+  const lgBody = document.getElementById("league-body");
+  showLeagueTabs(true);
+  const fail = (box) => (err) => {
+    console.error(err);
+    box.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "load-error";
+    p.textContent = `Couldn't load that: ${err.message}`;
+    box.append(p);
+  };
+  if (liveTab === "matchup") {
+    lgBody.innerHTML = "";
+    lgBody.hidden = true;
+    liveBody.hidden = false;
+    Live.startPolling(liveBody, cfg);
+  } else {
+    Live.stopPolling();
+    liveBody.innerHTML = "";
+    liveBody.hidden = true;
+    lgBody.hidden = false;
+    League.render(liveTab, lgBody, cfg).catch(fail(lgBody));
+  }
+}
+
+function useLeague(cfg) {
+  liveSave(cfg);
+  Provider.invalidate();
+  document.getElementById("live-picked").hidden = false;
+  document.getElementById("live-picked-name").textContent =
+    `${cfg.leagueName} · ${cfg.teamName || "your team"}`;
+  document.getElementById("live-source").textContent =
+    cfg.kind === "espn" ? "ESPN" : "Sleeper";
+  showLeagueTab(cfg);
+}
+
+/* A row of buttons; resolves with whichever one is clicked. */
+function chooser(box, heading, items, label) {
+  box.hidden = false;
+  box.innerHTML = "";
+  const h = document.createElement("p");
+  h.className = "dim";
+  h.textContent = heading;
+  box.append(h);
+  for (const it of items) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "btn live-league";
+    b.textContent = label(it);
+    b.onclick = () => {
+      box.querySelectorAll(".live-league").forEach(x =>
+        x.classList.toggle("active", x === b));
+      box.dispatchEvent(new CustomEvent("pick", { detail: it }));
+    };
+    box.append(b);
+  }
+}
+
+async function connectSleeper() {
+  const input = document.getElementById("live-username");
+  const name = input.value.trim();
+  if (!name) return;
+  const user = await Sleeper.user(name);
+  const season = (await Sleeper.state()).season;
+  const leagues = await Sleeper.leagues(user.user_id, season);
+  if (!leagues || !leagues.length) {
+    throw new Error("that account has no leagues this season");
+  }
+  const box = document.getElementById("live-leagues");
+  const pick = (lg) => useLeague({
+    kind: "sleeper", leagueId: lg.league_id, leagueName: lg.name,
+    teamKey: user.user_id, teamName: user.display_name,
+    username: user.username, season,
+  });
+  chooser(box, leagues.length === 1 ? "One league found."
+    : `${leagues.length} leagues — pick one.`, leagues, lg => lg.name);
+  box.addEventListener("pick", e => pick(e.detail), { once: false });
+  if (leagues.length === 1) box.querySelector(".live-league").click();
+}
+
+async function connectEspn() {
+  const input = document.getElementById("live-espn-id");
+  const raw = input.value.trim();
+  /* people paste the whole URL, so pull the id out of it */
+  const m = raw.match(/leagueId=(\d+)/i) || raw.match(/^(\d+)$/);
+  if (!m) throw new Error("Paste your ESPN league id, or the league URL.");
+  const leagueId = m[1];
+  const season = (await Sleeper.state()).season;
+  const pv = await Espn.preview(leagueId, season);
+  if (!pv.teams.length) throw new Error("that league has no teams in it");
+  const box = document.getElementById("live-leagues");
+  chooser(box, `${pv.name} — which team is yours?`, pv.teams, t => t.name);
+  box.addEventListener("pick", e => useLeague({
+    kind: "espn", leagueId, leagueName: pv.name,
+    teamKey: e.detail.id, teamName: e.detail.name, season,
+  }), { once: false });
+}
+
+function wireLive() {
+  if (liveWired) return;
+  liveWired = true;
+
+  /* the Sleeper / ESPN switch */
+  document.querySelectorAll("#live-source-tabs button").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll("#live-source-tabs button").forEach(x =>
+        x.classList.toggle("active", x === b));
+      document.getElementById("live-form-sleeper").hidden = b.dataset.src !== "sleeper";
+      document.getElementById("live-form-espn").hidden = b.dataset.src !== "espn";
+      document.getElementById("live-leagues").hidden = true;
+      liveError("");
+    };
+  });
+
+  const run = async (btn, fn) => {
+    liveError("");
+    const was = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Connecting…";
+    try { await fn(); }
+    catch (e) { liveError(e.message); }
+    finally { btn.disabled = false; btn.textContent = was; }
+  };
+
+  const sBtn = document.getElementById("live-go");
+  const eBtn = document.getElementById("live-espn-go");
+  sBtn.onclick = () => run(sBtn, connectSleeper);
+  eBtn.onclick = () => run(eBtn, connectEspn);
+  document.getElementById("live-username").addEventListener("keydown",
+    e => { if (e.key === "Enter") sBtn.click(); });
+  document.getElementById("live-espn-id").addEventListener("keydown",
+    e => { if (e.key === "Enter") eBtn.click(); });
+
+  document.getElementById("live-switch").onclick = () => {
+    liveSave({});
+    Provider.invalidate();
+    Live.stopPolling();
+    document.getElementById("live-picked").hidden = true;
+    document.getElementById("live-connect").hidden = false;
+    document.getElementById("live-leagues").hidden = true;
+    document.getElementById("live-body").innerHTML = "";
+    document.getElementById("league-body").innerHTML = "";
+    showLeagueTabs(false);
+  };
+
+  const saved = liveSaved();
+  if (saved.username) document.getElementById("live-username").value = saved.username;
+}
+
+async function renderLive(tab) {
+  liveTab = (tab && (tab === "matchup" || League.TABS[tab])) ? tab : "matchup";
+  await Live.init();
+  wireLive();
+
+  const cfg = liveSaved();
+  if (cfg.leagueId && cfg.kind) {
+    document.getElementById("live-connect").hidden = true;
+    useLeague(cfg);
+  } else {
+    document.getElementById("live-connect").hidden = false;
+    document.getElementById("live-picked").hidden = true;
+    showLeagueTabs(false);
+  }
 }
 
 window.addEventListener("hashchange", route);

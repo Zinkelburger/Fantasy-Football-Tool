@@ -54,7 +54,8 @@
     });
   } catch (e) { /* context invalidated */ }
 
-  // Page-initiated requests (handshake retries, reset button).
+  // Page-initiated requests (handshake retries, reset button, and the
+  // ESPN read relay below).
   window.addEventListener('message', (event) => {
     if (event.source !== window) return;
     const msg = event.data;
@@ -67,6 +68,36 @@
       try {
         chrome.storage.local.remove(STORAGE_KEYS);
       } catch (e) { /* context invalidated */ }
+    } else if (msg.type === 'espn-fetch') {
+      // The site is asking us to read one ESPN league endpoint for it.
+      // We can do this and the page can't, because the espn_s2/SWID
+      // cookies are .espn.com cookies and won't ride along on a
+      // third-party request from our origin -- see background.js.
+      //
+      // Everything about the request is re-checked in the background
+      // script (GET only, one URL prefix, one allowed header). Nothing
+      // here needs the cookie itself, and the cookie never reaches the
+      // page: only the JSON answer does.
+      const reply = (payload) =>
+        window.postMessage(
+          Object.assign({ source: 'ffda-ext', type: 'espn-result', id: msg.id },
+                        payload), '*');
+      try {
+        chrome.runtime.sendMessage(
+          { type: 'espnFetch', url: msg.url, filter: msg.filter },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              reply({ error: chrome.runtime.lastError.message });
+            } else if (!response) {
+              reply({ error: 'the extension gave no answer' });
+            } else {
+              reply(response.error ? { error: response.error }
+                                   : { data: response.data });
+            }
+          });
+      } catch (e) {
+        reply({ error: 'the extension needs reloading' });
+      }
     }
   });
 

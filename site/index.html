@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- the browser extension's handshake: it only injects its bridge on
+       pages that claim to be ours (see chrome-extension/bridge.js) -->
+  <meta name="ff-draft-assistant" content="1">
   <title>FOSS Football</title>
   <meta name="description" content="Free, open-source fantasy football rankings and draft tools. Every ranking comes from a model tested on eight seasons of history — methods, code and misses all published.">
   <meta property="og:title" content="FOSS Football">
@@ -18,6 +21,7 @@
     </a>
     <nav id="site-nav">
       <a href="#/" data-route="home">Home</a>
+      <a href="#/live" data-route="live">My league</a>
       <a href="#/weekly" data-route="weekly">Weekly</a>
       <a href="#/board" data-route="board">Draft K/DST</a>
       <a href="#/blog" data-route="blog">Research</a>
@@ -326,6 +330,72 @@
       <article id="post-body" class="post"></article>
     </section>
 
+    <!-- ============================================ MY LEAGUE -->
+    <section id="view-live" class="view" hidden>
+      <h1>My league</h1>
+      <p class="blurb">Your team, your matchup and your waiver wire, in
+      one place. Everything here reads your league live — nothing is
+      stored on a server, because there isn't one.</p>
+
+      <div id="live-connect" class="live-connect">
+        <div id="live-source-tabs" class="live-source-tabs">
+          <button type="button" class="active" data-src="sleeper">Sleeper</button>
+          <button type="button" data-src="espn">ESPN</button>
+        </div>
+
+        <div id="live-form-sleeper">
+          <label for="live-username">Sleeper username</label>
+          <div class="live-connect-row">
+            <input id="live-username" type="text" autocomplete="username"
+                   placeholder="your Sleeper username" spellcheck="false">
+            <button id="live-go" class="btn primary" type="button">Connect</button>
+          </div>
+          <p class="dim">Your username is enough — Sleeper's API is open, so
+          there's nothing to log into.</p>
+        </div>
+
+        <div id="live-form-espn" hidden>
+          <label for="live-espn-id">ESPN league id</label>
+          <div class="live-connect-row">
+            <input id="live-espn-id" type="text" inputmode="numeric"
+                   placeholder="your league id, or paste the league URL"
+                   spellcheck="false">
+            <button id="live-espn-go" class="btn primary" type="button">Connect</button>
+          </div>
+          <p class="dim">It's the <code>leagueId=</code> number in your ESPN
+          league's web address. <strong>Public leagues work right away.</strong>
+          A private league needs our browser extension installed and you
+          signed in to ESPN — your ESPN login can't reach us from this page
+          on its own, and the extension never hands it over, it just reads
+          the league and passes the answer back.</p>
+        </div>
+
+        <p class="dim">Read-only either way, and your league choice stays in
+        this browser — there's no server to send it to. Yahoo needs a login
+        server we don't have, so it isn't supported.</p>
+        <div id="live-leagues" class="live-leagues" hidden></div>
+        <p id="live-error" class="load-error" hidden></p>
+      </div>
+
+      <div id="live-picked" class="live-picked" hidden>
+        <span id="live-picked-name" class="live-picked-name"></span>
+        <span class="dim">via <span id="live-source"></span></span>
+        <button id="live-switch" class="btn small" type="button">Change league</button>
+      </div>
+
+      <nav id="league-tabs" class="league-tabs" hidden>
+        <a href="#/live" data-tab="matchup">Matchup</a>
+        <a href="#/live/startsit" data-tab="startsit">Start/sit</a>
+        <a href="#/live/waivers" data-tab="waivers">Waivers</a>
+        <a href="#/live/teams" data-tab="teams">Teams</a>
+        <a href="#/live/review" data-tab="review">Week in review</a>
+        <a href="#/live/moves" data-tab="moves">Moves</a>
+      </nav>
+
+      <div id="live-body"></div>
+      <div id="league-body"></div>
+    </section>
+
     <!-- ========================================= CHEAT SHEET -->
     <section id="view-cheat" class="view" hidden>
       <article id="cheat-body" class="post"></article>
@@ -350,6 +420,11 @@
       sources.</span>
   </footer>
 
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="provider.js"></script>
+  <script src="live.js"></script>
+  <script src="league.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

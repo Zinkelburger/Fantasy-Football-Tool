@@ -88,7 +88,76 @@ Historical stats, injuries, depth charts, contracts and betting lines used
 by the simulation and projection work. See `engine/league-sim/findings/METHODS.md`.
 The Odds API key lives in `.env`, never in the repo.
 
-## 6. Preseason win totals (backtest history only)
+## 6. Live feeds — Sleeper and ESPN (the in-season app)
+
+All of these are public and need no key, which is what makes live
+tracking possible on a static site with no backend. Re-checked
+2026-08-05 against real leagues.
+
+- **Sleeper** — `https://api.sleeper.app/v1`, `access-control-allow-origin: *`.
+  League, rosters, users, per-week matchups with live `players_points`,
+  transactions. Look a user up by username, no auth at any step. An
+  unknown username returns `null` with HTTP 200, not a 404.
+  - `/players/nfl` is the id→name/pos/team map: **14.6 MB raw, 2.5 MB
+    gzipped, ~2.6s**. `site/sleeper.js` filters it to ~4,260 relevant
+    players (0.44 MB) and keeps that in localStorage for a day, which
+    is the most often Sleeper wants it fetched.
+  - `/projections/nfl/regular/{season}/{week}` answers with ~9,400
+    player ids, **but only about 810 of them carry a points field** —
+    the rest are deep-roster bodies with nothing but an ADP stub. Don't
+    quote the 9,400 as coverage; it isn't. Bye-week teams get no
+    projection at all (1–2 players against ~14 for a playing team).
+- **ESPN scoreboard** — `https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard`,
+  `access-control-allow-origin: *`. Gives `displayClock`, `period` and
+  game state per team — the clock that drives the remaining-points
+  model (finding 35). Takes `?week=N&seasontype=2&dates=YYYY`, which
+  matters: without it you get whatever week ESPN thinks is current, so
+  a Tuesday visit reads the wrong clock. It also returns
+  `week.teamsOnBye` outright, which beats inferring byes from absence.
+- **ESPN fantasy leagues** — `https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/{season}/segments/0/leagues/{id}`.
+  - **Public leagues work from the browser with no auth at all.** ESPN
+    echoes our Origin back, allows credentials, and allows
+    `X-Fantasy-Filter` on preflight — so even the free-agent list
+    (`view=kona_player_info`) is reachable. Rosters, settings,
+    schedule, live scores and **ESPN's own weekly projections**
+    (`statSourceId: 1`, `statSplitTypeId: 1`) all arrive in one call.
+  - **Private leagues are not a CORS problem.** CORS passes fine. The
+    blocker is that `espn_s2`/`SWID` are `.espn.com` cookies, so a
+    request from our origin is third-party and the browser never
+    attaches them. The browser extension holds host permission for
+    espn.com, so it *can* make that request, and `site/espn.js` falls
+    back to it on a 401 (see `chrome-extension/background.js`).
+  - **Transactions are unreliable.** `view=mTransactions2` accepts the
+    request and answers 200 with no `transactions` key at all on the
+    leagues we could test. Valid `filterType` values are `WAIVER`,
+    `FREEAGENT`, `ROSTER`, `TRADE_ACCEPT`, `DRAFT`; `TRADE` and
+    `LINEUP` are rejected with a 400. Undocumented, so written down
+    here. The Moves tab says so rather than rendering an empty list
+    that reads like "no moves".
+  - Useful id maps (`proTeamId`, `lineupSlotId`, `defaultPositionId`)
+    live at the top of `site/espn.js`, checked against
+    `site.api.espn.com/.../teams`.
+- **Yahoo** needs OAuth and therefore a backend; not supported.
+
+## 7. nflverse play-by-play (in-game model)
+
+- **Link:** `https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_<year>.parquet`
+- **Gives us:** every play with `game_seconds_remaining`, fantasy
+  attribution (passer/rusher/receiver), `spread_line`, `total_line`.
+- **Used by:** `engine/league-sim/analysis/ingame_model.py` (QB/RB/WR/TE)
+  and `analysis/kdst_sigma.py` (K, and the D/ST full-game sigma) →
+  finding 35 → `data/market/ingame_params.json` → `site/data/ingame.json`.
+- **Not committed** — ~20 MB/season, gitignored by `**/data/pbp/`.
+  Refresh with `python engine/league-sim/analysis/ingame_model.py --fetch`,
+  then `python engine/league-sim/analysis/kdst_sigma.py`. The ignore
+  rule is unanchored deliberately: a run from the wrong directory once
+  left a second 98 MB copy at a nested path that the old pinned rule
+  didn't cover.
+- **Last fetched: 2026-08-05** (2021–2025).
+- **Staleness:** refit once the 2026 season is a few weeks old; the
+  clock curve is stable year to year, the sigma table less so.
+
+## 8. Preseason win totals (backtest history only)
 
 - **Links:** https://github.com/greerreNFL/nfl-win-total-data (2003–2022,
   no longer updated) and https://www.sportsoddshistory.com/nfl-win/
