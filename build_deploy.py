@@ -59,9 +59,56 @@ HEADERS = """\
 # The .js/.css rules sit last so players-data.js ends up immutable, not
 # on the 300s /webapp/data/* rule. Safe because bust() versions every
 # .js/.css reference: a deploy changes the ?v= hash, never a cached URL.
+#
+# That safety depends on NOTFOUND below. Without a 404.html, Pages answers
+# a path it doesn't have with index.html and a 200 -- so a request for a
+# .js file that isn't there gets HTML, wearing this immutable header, for
+# a year. A real 404 can't be mistaken for the asset or cached as one.
 
 REDIRECTS = """\
 https://www.foss.football/* https://foss.football/:splat 301
+"""
+
+# Cloudflare Pages serves this, with a real 404, for any path it has no
+# file for. Deliberately self-contained -- no stylesheet, no script. The
+# reason a path is missing is often that a file didn't deploy, and a 404
+# page that depends on the files that just failed to deploy shows a blank
+# screen at the exact moment somebody needs to read it.
+#
+# Nothing here needs the SPA: the site routes on the hash (#/blog/...),
+# so every real page is / and every deep link still lands on it.
+NOTFOUND = """\
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found — FOSS Football</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1b1b1f; color: #e6e6ea;
+    font-family: "Segoe UI", "Noto Sans", system-ui, sans-serif;
+    line-height: 1.55; }
+  main { max-width: 34rem; margin: 0 auto; padding: 4rem 1.25rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 .75rem; }
+  p { color: #9a9aa6; margin: 0 0 1rem; }
+  a { color: #4f8ef7; }
+  ul { padding-left: 1.1rem; }
+  li { margin-bottom: .35rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>There's nothing at this address</h1>
+  <p>The link was probably mistyped, or pointed at a page we've since
+     moved.</p>
+  <ul>
+    <li><a href="/">Start over from the front page</a></li>
+    <li><a href="/#/blog">Research write-ups</a></li>
+    <li><a href="/webapp/">Draft tool</a></li>
+  </ul>
+</main>
+</body>
+</html>
 """
 
 ROBOTS = """\
@@ -149,6 +196,7 @@ def main():
     (PUBLIC / "_headers").write_text(HEADERS)
     (PUBLIC / "_redirects").write_text(REDIRECTS)
     (PUBLIC / "robots.txt").write_text(ROBOTS)
+    (PUBLIC / "404.html").write_text(NOTFOUND)
 
     n_files = sum(1 for p in PUBLIC.rglob("*") if p.is_file())
     size_mb = sum(p.stat().st_size for p in PUBLIC.rglob("*") if p.is_file()) / 1e6
