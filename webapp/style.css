@@ -217,8 +217,8 @@ tr.picked td.row-actions { text-decoration: none; }
 #player-tbody tr { cursor: pointer; }
 td.player-name { font-weight: 500; }
 /* Fixed-width flag slot so cycling ✅/❌ or joining the team never reflows
-   the row (wide enough for all four: ✅ ★ ▾ ◆) */
-.name-flags { display: inline-block; width: 4em; margin-left: 0.3em; text-decoration: none; }
+   the row (wide enough for both: ✅ ★) */
+.name-flags { display: inline-block; width: 3em; margin-left: 0.3em; text-decoration: none; }
 .flag-star { color: var(--yellow); }
 /* Round guide: one muted line of findings advice for the current
    round; "all rounds" opens the full dialog. Model marks off hides it. */
@@ -238,14 +238,11 @@ td.player-name { font-weight: 500; }
 #guide-body a { color: var(--accent); text-decoration: none; }
 #guide-body a:hover { text-decoration: underline; }
 
-/* Model mark: one ◆ per row — the net of the 2025 opportunity read and
-   the findings marks. Green net-buy, red net-fade, gray mixed/context.
-   Tooltip (also on the name cell) carries the actual reads; the
-   "Model marks" toolbar checkbox hides all of it. */
-.fm-flag { margin-left: 0.15em; font-size: 0.75em; vertical-align: 0.1em; }
-.fm-flag.buy { color: var(--green); }
-.fm-flag.fade { color: var(--red); }
-.fm-flag.mix { color: var(--fg-dim); }
+/* Findings box in the note pane: one row per rule, each named in plain
+   words ("Buy · TD regression") and linked to its write-up. No color
+   coding — buy/fade is written out, so green vs red would only be a
+   second, harder-to-read copy of the same word. The "Model marks"
+   toolbar checkbox hides all of it. */
 #note-findings { margin: 0.5em 0 0.7em; padding: 0.45em 0.7em;
   background: var(--bg-row); border-left: 3px solid var(--border);
   border-radius: 4px; }
@@ -254,8 +251,6 @@ td.player-name { font-weight: 500; }
 #note-findings .fm-chip { color: var(--fg); white-space: nowrap;
   font-weight: 600; text-decoration: none; }
 #note-findings .fm-chip:hover { text-decoration: underline; }
-#note-findings .fm-buy .fm-chip { color: var(--green); }
-#note-findings .fm-fade .fm-chip { color: var(--red); }
 td.note-cell { color: var(--fg-dim); max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
 
 td.row-actions { text-align: right; }
@@ -285,10 +280,64 @@ td.row-actions { text-align: right; }
   color: var(--fg);
   opacity: 1;
 }
-/* A marker you actually set stays fully lit — that's the point of setting it */
-.row-actions .todraft-yes, .row-actions .todraft-no { opacity: 1; }
-.row-actions .todraft-yes { color: var(--green); }
-.row-actions .todraft-no { color: var(--red); }
+/* Rating picker. Opens on the rating button and shows the whole scale in
+   words, so the five steps are something you read once rather than
+   something you discover by clicking. The kbd column teaches the number
+   keys, which are the fast way once you know them. */
+#rating-menu {
+  /* Absolute, not fixed: the page body itself never scrolls (the app is a
+     flex column with its own scroll panes), so this anchors just as well
+     and stays out of the fixed-position layer the header lives in. */
+  position: absolute;
+  z-index: 60;
+  min-width: 12.5rem;
+  padding: 0.25rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+#rating-menu[hidden] { display: none; }
+.rating-menu-head {
+  margin: 0.1rem 0.15rem 0.3rem;
+  padding: 0 0.35rem 0.3rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg-dim);
+  font-size: 0.8rem;
+}
+.rating-opt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  background: none;
+  border-color: transparent;
+  text-align: left;
+  font-size: 0.88rem;
+}
+.rating-opt:hover, .rating-opt:focus {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  outline: none;
+}
+.rating-opt-glyph { width: 1.2em; text-align: center; }
+.rating-opt-word { flex: 1; }
+/* The rating already set: a filled left edge, so you can see where you are
+   without reading — the row you'd click to undo is the one lit up. */
+.rating-opt.is-current { box-shadow: inset 3px 0 0 var(--accent); }
+.rating-opt kbd { color: var(--fg-dim); font-size: 0.72rem; }
+
+/* A marker you actually set stays fully lit — that's the point of setting it.
+   Five steps, and the eye has to sort them at a glance while the draft moves:
+   one shape family (tick / cross) for direction, and the strong opinions get
+   the bold emoji so ✅ and ❌ jump out of a screen of plain ticks. */
+.row-actions .act-mark.mark-yes, .row-actions .act-mark.mark-no,
+.row-actions .act-mark.mark-love, .row-actions .act-mark.mark-hate { opacity: 1; }
+.mark-yes { color: var(--green); }
+.mark-no { color: var(--red); }
+/* ✅/❌ carry their own color; sizing is all that separates them from ✔/✘ */
+.mark-love, .mark-hate { font-size: 0.85em; }
 
 /* Row inserted where your next pick lands (snake math from the Draft Board) */
 tr.next-pick-marker td {
@@ -868,9 +917,219 @@ kbd {
 .hint { color: var(--fg-dim); font-size: 0.78rem; margin: 0.2rem 0 0.5rem; }
 .dialog-actions { display: flex; justify-content: space-between; gap: 0.6rem; }
 
+/* ==================== narrow screens ====================
+   Two steps down from the desktop layout:
+
+   ≤860px (small window, tablet) — the two panels stop sitting side by side
+   and stack, both still scrolling on their own.
+
+   ≤620px (phone) — stacking stops working too: two panes sharing 650px of
+   height gives each one about six rows. So the panes become four views and
+   #mobile-nav switches between them, one at a time, full height. The
+   breakpoint is duplicated in app.js (phoneQuery) — change both together. */
+
 @media (max-width: 860px) {
   main { flex-direction: column; }
   #left-panel { border-bottom: 1px solid var(--border); flex: 3 !important; width: auto !important; }
   #panel-divider { display: none; }
   #right-panel { min-width: 0; }
+  /* Stacked, the panels are flex items in a *column*, where the constraint
+     that keeps them inside the viewport is min-height — min-width did that
+     job side by side. Without this each panel floors at its content height
+     and the board runs off the bottom of the page, under the footer. */
+  #left-panel, #right-panel { min-height: 0; }
+}
+
+/* Bottom view switcher — off unless the phone layout is on. */
+#mobile-nav { display: none; }
+
+@media (max-width: 620px) {
+  :root { font-size: 14.5px; }
+
+  /* ---- one pane at a time ---- */
+  #left-panel, #right-panel {
+    /* Basis 0 (not auto) plus min-height: 0 so the visible pane takes the
+       space it's given rather than the space its contents want. Beats both
+       the desktop flex ratios and the inline width the panel divider may
+       have written into left-panel on a previous desktop visit. */
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0;
+    min-height: 0;
+    border-bottom: 0;
+  }
+  /* The frame around the pane: never squeezed by it. */
+  header, footer, #mobile-nav { flex-shrink: 0; }
+  body[data-mview="players"] #right-panel,
+  body[data-mview="board"] #left-panel,
+  body[data-mview="note"] #left-panel,
+  body[data-mview="team"] #left-panel { display: none; }
+  body[data-mview="board"] #team-panel,
+  body[data-mview="note"] #team-panel,
+  body[data-mview="team"] #tabbed-panel { display: none; }
+  #tabbed-panel { border-bottom: 0; }
+  /* Your Team is the whole view here, so the desktop collapse is meaningless
+     — hide its control and undo a collapse left over from a desktop visit.
+     :not([hidden]) so this doesn't force an empty needs bar back on screen. */
+  #btn-team-collapse { display: none; }
+  body[data-mview="team"] #team-panel.collapsed #team-list { display: block; }
+  body[data-mview="team"] #team-panel.collapsed #team-needs:not([hidden]) { display: block; }
+  body[data-mview="team"] #team-panel,
+  body[data-mview="team"] #team-panel.collapsed { flex: 1 1 auto; }
+
+  #mobile-nav {
+    display: flex;
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    /* Clears the home indicator / gesture bar on phones that report one. */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  #mobile-nav button {
+    flex: 1;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--fg-dim);
+    font-size: 0.85rem;
+    padding: 0.65rem 0.2rem;
+    /* The one row of controls that's always on screen — it gets a real
+       thumb-sized target rather than the compact desktop button height. */
+    min-height: 2.9rem;
+  }
+  #mobile-nav button.active {
+    color: var(--fg);
+    font-weight: 600;
+    box-shadow: inset 0 2px 0 var(--accent);
+  }
+
+  /* ---- header ---- */
+  header { gap: 0.4rem 0.55rem; padding: 0.35rem 0.55rem; }
+  header h1 {
+    font-size: 0.92rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .header-controls { gap: 0.45rem; }
+  /* The extension is desktop Chrome only, so its badge is pure noise here —
+     and with no extension, manual mode is the only way to run a draft on a
+     phone, so its Reset button stays. The scoring select's own options read
+     STD / PPR, so the label beside it can go. */
+  #ext-status { display: none; }
+  .fmt-label { font-size: 0; }
+  .fmt-label select { font-size: 0.85rem; }
+  header button { padding: 0.35rem 0.6rem; }
+
+  /* ---- player list ---- */
+  /* Team is one more column of three letters and the note preview is a
+     truncated sentence you can just tap the row to read in full — dropping
+     both is what gets the remaining five columns inside a phone. */
+  .team-col, .team-cell, .note-col, td.note-cell { display: none; }
+  #player-table { font-size: 0.88rem; }
+  #player-table th, #player-table td { padding-left: 0.35rem; padding-right: 0.35rem; }
+  #player-table td { padding-top: 0.42rem; padding-bottom: 0.42rem; }
+  /* Desktop reserves a fixed 4em so cycling a marker never reflows the row.
+     On a phone that's an eighth of the screen held empty for a glyph. */
+  .name-flags { width: auto; min-width: 0.9em; }
+  .row-actions .act-mark { font-size: 1.05rem; padding: 0.15rem 0.3rem; }
+  .row-actions button { margin-left: 0.1rem; }
+  /* The equal button widths that stop desktop columns jumping as labels
+     change ('Picked'/'Undo') are the first thing to give up for width. */
+  .row-actions .act-pick, .row-actions .act-team {
+    min-width: 0;
+    font-size: 0.76rem;
+    padding: 0.28rem 0.28rem;
+  }
+  #player-table td.row-actions { padding-left: 0.1rem; padding-right: 0.25rem; }
+  /* Manual mode adds Picked and +Team to every row, and five data columns
+     plus three buttons will not fit a phone however they're trimmed. The
+     site-rank column goes: in manual mode you're recording a draft on this
+     device, where pressing the right button beats knowing the ADP — and the
+     rank is still in the player's note, one tap away. Browsing (the default,
+     extension-driven mode) keeps it. */
+  body.manual-mode #th-espn,
+  body.manual-mode #th-sleeper,
+  body.manual-mode td.site-cell { display: none; }
+  #filter-bar { gap: 0.4rem; padding: 0.4rem 0.5rem; }
+  #pos-filters button { padding: 0.3rem 0.5rem; }
+  #search-box { min-width: 7rem; padding: 0.35rem 0.45rem; }
+  #player-count { display: none; }
+
+  /* ---- draft board ---- */
+  /* app.js gives the columns a 64px floor at this size, so the grid is wider
+     than the screen by design and pans. The round numbers stay pinned so you
+     never lose track of which round you're looking at mid-pan. */
+  /* Desktop gives the grid its own scroll strip under a fixed outlook. On a
+     phone that strip is about one round tall once the outlook has had its
+     say, so the whole tab scrolls as one page instead: read the suggestion,
+     keep scrolling, and the grid below is full height. */
+  #board-view { overflow-y: auto; }
+  #board-outlook { flex: none; }
+  #board-grid-wrap { flex: none; overflow-x: auto; }
+  .bd-round, .bd-corner {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--bg);
+  }
+  .bd-corner { z-index: 3; }
+  /* Five nowrap columns of projections; let it scroll rather than squash. */
+  #board-outlook { overflow-x: auto; }
+  #board-toolbar { gap: 0.5rem; padding: 0.4rem 0.5rem; }
+  /* Squeezed into a flex column beside two buttons this sentence wraps to
+     four lines. Its own row costs less height than sharing one. */
+  #board-config-summary { flex: 1 0 100%; }
+  #bot-config { width: min(20rem, calc(100vw - 1.6rem)); }
+
+  /* ---- notes / tabs ---- */
+  .tab { padding: 0.5rem 0.6rem; }
+  .tab .tab-label { max-width: 7em; }
+  #note-body, #ai-output { padding: 0.7rem 0.8rem; }
+
+  /* ---- footer ---- */
+  /* There is no keyboard to press ? on. */
+  #footer-hint { display: none; }
+  footer { padding: 0.2rem 0.6rem; }
+
+  /* ---- dialogs ---- */
+  /* A centred 92vw card inside a 640px-tall viewport leaves no room for its
+     own content, so on a phone every dialog is the screen. */
+  dialog {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    border-width: 0;
+    border-radius: 0;
+  }
+  #guide-scroll { max-height: none; }
+  .dialog-close { font-size: 1.6rem; padding: 0 0.5rem; }
+  /* Four columns of key/meaning pairs. As a 2-column grid each row becomes
+     two stacked pairs, which is the same content down the page instead of
+     off the side of it. */
+  .help-keys, .help-keys tbody { display: block; }
+  .help-keys tr {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0 0.5rem;
+    padding: 0.2rem 0;
+  }
+  .help-keys td { padding: 0.1rem 0; }
+  .help-keys td[colspan] { grid-column: 1 / -1; padding-top: 0.5rem; }
+  .dialog-actions { flex-wrap: wrap; gap: 0.5rem; }
+  #settings-form label { font-size: 0.95rem; }
+}
+
+/* Nothing here has a hover state to fall back on, and :hover sticks after a
+   tap on touch screens — so the affordances that only exist on hover become
+   permanent instead. */
+@media (hover: none) {
+  .row-actions .act-mark { opacity: 1; }
+  #board-outlook tbody tr:hover td { background: none; }
+  /* No keyboard to teach, and a finger needs a bigger target than a cursor */
+  .rating-opt kbd { display: none; }
+  .rating-opt { padding: 0.6rem 0.5rem; font-size: 1rem; }
+  #rating-menu { min-width: 14rem; }
 }

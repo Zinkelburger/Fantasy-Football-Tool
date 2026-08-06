@@ -17,6 +17,9 @@ stale one) right where I read it.
 ## Expected
 - The edited note persists in localStorage as an overlay; the bundled note is
   untouched. "Revert to bundled" (with confirm) restores it.
+- With the Chrome extension installed, edits are also mirrored into extension
+  storage, so they survive clearing browser data and follow the tool between
+  origins (see live-draft-sync spec).
 - The note's meta line shows "edited" and the table's note preview gets a ✎
   marker when a note is overridden.
 - An in-progress draft survives switching tabs and comes back untouched;

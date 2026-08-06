@@ -35,7 +35,7 @@
       <span id="ext-status" class="ext-off" title="Chrome extension draft sync">Extension: not detected</span>
       <button id="btn-ask" title="Ask the AI for draft advice (Q)">Ask AI</button>
       <button id="btn-reset-top" class="danger" hidden
-        title="Clear picks, roster, markers and extension data (debug/manual mode)">Reset draft</button>
+        title="Clear picks, roster, ratings and extension data (debug/manual mode)">Reset draft</button>
       <button id="btn-help" title="Help — shortcuts, what everything means, guided tour (?)">?</button>
       <button id="btn-settings" title="Settings">&#9881;</button>
     </div>
@@ -48,7 +48,7 @@
         <input type="search" id="search-box" placeholder="Search players..."
           title="Search by player or NFL team — press / to jump here">
         <label class="chk"><input type="checkbox" id="show-picked"> Show picked</label>
-        <label class="chk" title="The ◆ marks and expected-points reads our models add. Uncheck for a clean board — your own marks and notes stay."><input type="checkbox" id="show-model-marks" checked> Model marks</label>
+        <label class="chk" title="What our research adds to a player: the buy/fade reads in his note and in the hover on his name. Uncheck for a clean board — your own marks and notes stay."><input type="checkbox" id="show-model-marks" checked> Model marks</label>
         <span id="player-count"></span>
       </div>
       <div id="round-guide" hidden>
@@ -63,13 +63,13 @@
               <th id="th-rank" class="sortable"
                 title="Overall rank — the board order. Blue numbers are your own imported ranks. Click to sort by this (the default).">Rank</th>
               <th title="Click a row to open the player's note">Player</th>
-              <th title="NFL team">Team</th>
+              <th class="team-col" title="NFL team">Team</th>
               <th title="Position and NFL-team depth — WR2 = that team's 2nd-ranked WR. Hover a cell for the full depth chart with ranks. Blue ⛓ = this player backs up someone on your roster (their handcuff).">Pos</th>
               <th id="th-espn" class="sortable"
                 title="ESPN's own ranking. (+n) = ESPN is n spots higher on them than board rank (goes earlier there); (−n) = lower (may fall to you). Click to sort by ESPN.">ESPN</th>
               <th id="th-sleeper" class="sortable"
                 title="Sleeper's own ranking. (+n) = Sleeper is n spots higher on them than board rank (goes earlier there); (−n) = lower (may fall to you). Click to sort by Sleeper.">Sleeper</th>
-              <th title="Analysis note preview — click the row for the full note (✎ = you edited it)">Note</th>
+              <th class="note-col" title="Analysis note preview — click the row for the full note (✎ = you edited it)">Note</th>
               <th class="actions-col" id="th-actions"></th>
             </tr>
           </thead>
@@ -176,8 +176,18 @@
 
   <footer>
     <span id="status-bar">Ready</span>
-    <span class="muted" title="Keyboard shortcuts, column glossary, guided tour">Press <b>?</b> for help</span>
+    <span id="footer-hint" class="muted" title="Keyboard shortcuts, column glossary, guided tour">Press <b>?</b> for help</span>
   </footer>
+
+  <!-- Phone layout. The player list, the panel and Your Team can't share a
+       phone screen, so one shows at a time and this bar swaps between them.
+       Hidden entirely above the phone breakpoint. -->
+  <nav id="mobile-nav" aria-label="Switch view">
+    <button type="button" data-mview="players">Players</button>
+    <button type="button" data-mview="board">Board</button>
+    <button type="button" data-mview="note">Note</button>
+    <button type="button" data-mview="team">Team</button>
+  </nav>
 
   <div id="tour-overlay" hidden>
     <div id="tour-highlight"></div>
@@ -195,6 +205,9 @@
     </div>
   </div>
 
+  <!-- Rating picker, anchored to whichever row's rating button opened it -->
+  <div id="rating-menu" role="menu" aria-label="Rate this player" hidden></div>
+
   <dialog id="help-dialog">
     <div class="dialog-head">
       <span>How to use</span>
@@ -207,7 +220,7 @@
       <table class="help-keys">
         <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>move the selected row</td>
             <td><kbd>Enter</kbd></td><td>open the selected player's note</td></tr>
-        <tr><td><kbd>D</kbd> / <kbd>Space</kbd></td><td>cycle the ✅/❌ target marker</td>
+        <tr><td><kbd>1</kbd>–<kbd>5</kbd></td><td>rate the selected player</td>
             <td><kbd>Ctrl+Enter</kbd> / <kbd>Ctrl</kbd>+click</td><td>open the note in an extra tab</td></tr>
         <tr><td><kbd>P</kbd></td><td>mark picked / undo</td>
             <td><kbd>E</kbd></td><td>edit the selected player's note</td></tr>
@@ -234,9 +247,12 @@
           fall to you.</dd>
         <dt>Bye (on My Team)</dt><dd>The week the player's team doesn't play — shown next to each
           player on your team panel. Don't stack your starters on one bye.</dd>
-        <dt>Target (last column)</dt><dd>Your shortlist marker — click it (or press <b>D</b>) to
-          cycle <b>○</b> no opinion → <b>✅</b> want him → <b>❌</b> avoid him. It's only a note to
-          yourself; it doesn't draft anyone.</dd>
+        <dt>Rating (last column)</dt><dd>What you think of the player, on five steps: <b>✅</b> really
+          good, <b>✔</b> good, <b>○</b> no opinion, <b>✘</b> bad, <b>❌</b> really bad. Click the
+          button and pick one — or press <b>1</b>–<b>5</b> on the selected row, which is much
+          faster once you've seen the picker (it lists the number next to each step). Your rating
+          shows next to his name so the board reads at a glance during the draft. It's only a note
+          to yourself; it doesn't draft anyone.</dd>
         <dt>★</dt><dd>On your team. &nbsp; <b>✎</b> — a note you edited.</dd>
         <dt>Orange rows</dt><dd>After "Who should I take?" on the Draft Board: players the simulation
           expects to be gone before your next turn.</dd>
@@ -337,9 +353,11 @@
           <button type="button" id="btn-import-backup">Import my data&hellip;</button>
           <button type="button" id="btn-export-notes">Download edited notes</button>
         </div>
-        <p class="hint">"My data" = target markers, picks, your team, rank overrides, edited
+        <p class="hint">"My data" = your player ratings, picks, your team, rank overrides, edited
         notes, and prompts in one JSON file — move your prep to another browser or keep a
-        backup. Your API key is never included.</p>
+        backup. Your API key is never included. With the Chrome extension installed, your
+        ratings and note edits are also kept in the extension, so they survive clearing your
+        browser data and follow you between the site and a local copy of the tool.</p>
         <input type="file" id="file-rankings" accept=".csv,.txt,text/csv,text/plain" hidden>
         <input type="file" id="file-backup" accept=".json,application/json" hidden>
       </fieldset>
@@ -353,8 +371,9 @@
         Rounds controls on the Draft Board. "Undo" stays available on picked rows either way,
         and the P / T keys always work.</p>
         <button type="button" id="btn-reset-draft" class="danger">Reset draft state</button>
-        <p class="hint">Clears picked players, your team, target markers, and the extension's
-        stored draft data — use it between drafts or while testing.</p>
+        <p class="hint">Clears picked players, your team, your player ratings, and the extension's
+        stored draft data — use it between drafts or while testing. Your edited notes and
+        custom ranks are kept.</p>
       </fieldset>
       <div class="dialog-actions">
         <span></span>

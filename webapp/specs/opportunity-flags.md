@@ -10,8 +10,8 @@ buy suppressed usage without leaving the draft tool.
 
 ## Steps
 1. Hover any veteran's name on the player board.
-2. Look for the ◆ model glyph after the name flags (red = net fade,
-   green = net buy, gray = context).
+2. Read the tooltip — it says whether he ran hot or cold and what that
+   means, in words; there is no glyph or color code on the row.
 3. Open the player's note and read the line under the tab bar.
 
 ## Expected
@@ -22,20 +22,17 @@ buy suppressed usage without leaving the draft tool.
   scoring format (STD/0.5PPR/PPR follow the format switcher).
 - A hot/cold season (8+ games and actual-minus-expected at least 1.5
   (STD) / 1.9 (0.5PPR) / 2.25 (PPR) points per game past the typical
-  player at his position) feeds the row's single **◆ model glyph**
-  (shared with the findings marks — see findings-marks spec): ran hot
-  votes fade/red, ran cold votes buy/green.
+  player at his position) adds a sentence to that tooltip saying he ran
+  hot or cold and by how much.
 - Direction counts **only for WR and TE**, per the 2017–25 backtest
   (`engine/league-sim/analysis/gap_regression_check.py`): the gap
   predicted the next season in 8 of 8 year-pairs there. **RB and QB
-  gaps contribute gray context only**, and their tooltips say the gap
-  is context, not a verdict (goal-line roles are sticky). WR/TE
-  tooltips say how much and why it matters (TD luck named when it
-  explains the gap).
-- The ◆ never displaces the ✅/❌/★ flags and adds no new column — row
-  layout is unchanged for unflagged players. Unchecking **Model marks**
-  in the toolbar hides the glyph, the tooltip line, and the note-pane
-  read.
+  gaps are context only**, and their tooltips say the gap is context,
+  not a verdict (goal-line roles are sticky). WR/TE tooltips say how
+  much and why it matters (TD luck named when it explains the gap).
+- The read adds no glyph, no color, and no new column — row layout is
+  unchanged. Unchecking **Model marks** in the toolbar hides the
+  tooltip line and the note-pane read.
 - The note pane meta line repeats the read:
   `TEAM POS, rank N · 2025: 13.9 PPG on 11.2 expected (ran hot)`.
 - Players without 2025 data (2026 rookies, injury redshirts) show no flag, no
@@ -46,5 +43,4 @@ buy suppressed usage without leaving the draft tool.
   `renderTable()`, `renderNotePane()`
 - `webapp/build_data.py` — `load_opportunity()`, `xfp/ppg25/gapc/tdl/g25`
   fields
-- `webapp/style.css` — `.fm-flag`
 - `engine/league-sim/analysis/export_opportunity.py` — the numbers' source

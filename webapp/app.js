@@ -461,12 +461,30 @@ function initApp() {
   let settings = Object.assign({}, DEFAULT_SETTINGS, store.load('settings', {}));
   let manualPicked = new Set(store.load('manualPicked', []));   // canonical names
   let manualTeam = store.load('manualTeam', []);                // canonical names
-  let toDraft = store.load('toDraft', {});                      // name -> 'yes' | 'no'
+  let toDraft = store.load('toDraft', {});                      // name -> MARK_SCALE value
   let extState = store.load('extState', {});                    // raw bridge payloads
   let extPickedRaw = store.load('extPickedRaw', []);            // union of raw scraped picks
   let unpicked = new Set(store.load('unpicked', []));           // canonical names un-picked by hand
   let rankOverrides = store.load('rankOverrides', {});          // format -> { cleanName: rank }
   let noteOverrides = store.load('noteOverrides', {});          // cleanName -> markdown
+
+  /* Your own read on a player, five steps from love him to never. The
+     two middle values stay 'yes'/'no', so prep and backup files written
+     before the scale existed still load and still mean the same thing.
+     In scale order, best first — the order the picker shows and the
+     order the number keys follow. Five states is too many to cycle
+     through, so nothing cycles: you pick the one you mean. */
+  const MARK_SCALE = [
+    { v: 'love', key: '1', glyph: '✅', cls: 'mark-love', word: 'really good' },
+    { v: 'yes',  key: '2', glyph: '✔', cls: 'mark-yes',  word: 'good' },
+    { v: null,   key: '3', glyph: '○', cls: '',          word: 'no opinion' },
+    { v: 'no',   key: '4', glyph: '✘', cls: 'mark-no',   word: 'bad' },
+    { v: 'hate', key: '5', glyph: '❌', cls: 'mark-hate', word: 'really bad' },
+  ];
+  const NO_MARK = MARK_SCALE.find(s => s.v === null);
+  const markStep = (v) => MARK_SCALE.find(s => s.v === (v || null)) || NO_MARK;
+  // The legend, built from the scale so it can never drift from it.
+  const MARK_LEGEND = MARK_SCALE.map(s => `${s.glyph} ${s.word}`).join(' · ');
 
   /* ---------- volatile state ---------- */
   let posFilter = 'All';
@@ -762,6 +780,24 @@ function initApp() {
      with the player's own numbers, watch for context. Bundled per
      clean name, like notes. */
   const FM_LABEL = { buy: 'Buy', fade: 'Fade', watch: 'Context' };
+  /* Each rule gets the name people already use for it. "Finding 16"
+     means nothing at a draft table; "TD regression" does. */
+  const FM_TOPIC = {
+    8: 'Top receiver on a bad team',
+    9: 'Bounce-back discount',
+    10: 'Receiver age',
+    15: 'Hot/cold finish',
+    16: 'TD regression',
+    17: 'Targets vs. points',
+    18: 'Injury history',
+  };
+  // Unmapped finding: fall back to its write-up title ("16-td-luck-
+  // regresses" -> "Td luck regresses") rather than a bare number.
+  function fmTopic(m) {
+    if (FM_TOPIC[m.f]) return FM_TOPIC[m.f];
+    const words = String(m.slug || '').replace(/^\d+-/, '').replace(/-/g, ' ');
+    return words ? words[0].toUpperCase() + words.slice(1) : `Finding ${m.f}`;
+  }
   /* Where he sits in his own team's position room on the draft board:
      "He's the Bengals WR1 — 31 picks ahead of their WR2 (Tee Higgins)."
      Context for the note page only (build_data.py load_rooms). */
@@ -797,15 +833,11 @@ function initApp() {
   function fmarksFor(p) {
     return (DATA.fmarks || {})[cleanName(p.name)] || null;
   }
-  function fmGlyph(fm) {
-    const dirs = new Set(fm.map(m => m.dir));
-    const cls = dirs.has('buy') && !dirs.has('fade') ? 'buy'
-      : dirs.has('fade') && !dirs.has('buy') ? 'fade' : 'mix';
-    // The hover carries the marks themselves — nobody should have to
-    // open the note just to learn what the diamond means.
-    const tip = fm.map(m =>
-      `${FM_LABEL[m.dir]} (finding ${m.f}): ${m.note}`).join('\n');
-    return { cls, tip };
+  // The hover carries the marks themselves, in words — no symbol to
+  // decode, no write-up to open first.
+  function fmTip(fm) {
+    return fm.map(m =>
+      `${FM_LABEL[m.dir]} — ${fmTopic(m)}: ${m.note}`).join('\n');
   }
 
   /* Round-by-round guide: the findings condensed to one line per band
@@ -984,11 +1016,9 @@ function initApp() {
         tr.title = `Predicted gone before your next pick — simulation has them taken at #${predGone.get(p.name)}\n${openHint}`;
       }
 
-      const mark = toDraft[p.name];
       // Empty state is a hollow ring, not a dash: it reads as "slot waiting to
-      // be filled" and lines up with the two filled states above it.
-      const markLabel = mark === 'yes' ? '✅' : mark === 'no' ? '❌' : '○';
-      const markClass = mark === 'yes' ? 'todraft-yes' : mark === 'no' ? 'todraft-no' : '';
+      // be filled" and lines up with the filled states above it.
+      const step = markStep(toDraft[p.name]);
       const fromExt = extPicked.has(p.name);
       const ovRank = rankOverrideFor(p);
 
@@ -1007,30 +1037,20 @@ function initApp() {
 
       const opp = showModelMarks ? oppRead(p) : null;
       const fm = showModelMarks ? fmarksFor(p) : null;
-      const fmG = fm ? fmGlyph(fm) : null;
-      const nameTip = [opp && opp.tip, fmG && fmG.tip]
+      // The model reads live in the name-cell hover and the note pane,
+      // written out. No colored glyph on the row: a red/green ◆ is a
+      // code you have to learn, and it says less than one sentence does.
+      const nameTip = [opp && opp.tip, fm && fmTip(fm)]
         .filter(Boolean).join('\n\n');
-      // One model glyph per row: net of the opportunity read (hot=fade,
-      // cold=buy, WR/TE only — RB/QB is context) and the findings marks.
-      // A direction beats gray; conflicting directions show gray.
-      const glyph = (() => {
-        if (!fmG && !(opp && opp.flagged)) return null;
-        let buy = 0, fade = 0;
-        if (opp && opp.flagged && opp.signal) (opp.hot ? fade++ : buy++);
-        if (fmG && fmG.cls === 'buy') buy++;
-        if (fmG && fmG.cls === 'fade') fade++;
-        return { cls: buy && !fade ? 'buy' : fade && !buy ? 'fade' : 'mix' };
-      })();
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
           : `<td>${escapeHtml(p.rank)}</td>`) +
         `<td class="player-name"${nameTip ? ` title="${escapeHtml(nameTip)}"` : ''}>` +
         `${escapeHtml(p.name)}<span class="name-flags">` +
-        `${mark === 'yes' ? '✅' : mark === 'no' ? '❌' : ''}` +
-        `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}` +
-        `${glyph ? `<span class="fm-flag ${glyph.cls}" title="${escapeHtml(nameTip)}">◆</span>` : ''}</span></td>` +
-        `<td>${escapeHtml(p.team)}</td>` +
+        `${step.v ? `<span class="${step.cls}" title="You marked him ${step.word}">${step.glyph}</span>` : ''}` +
+        `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}</span></td>` +
+        `<td class="team-cell">${escapeHtml(p.team)}</td>` +
         (() => {
           const d = depthInfo(p);
           return `<td class="pos-cell${d.handcuffFor ? ' is-handcuff' : ''}" ` +
@@ -1043,7 +1063,7 @@ function initApp() {
           const raw = s === 'espn' ? p.espn : p.sleeper;
           const site = parseInt(raw, 10);
           const base = ovRank !== null ? ovRank : p.rankNum;
-          if (!isFinite(site) || !isFinite(base)) return `<td>${escapeHtml(String(raw))}</td>`;
+          if (!isFinite(site) || !isFinite(base)) return `<td class="site-cell">${escapeHtml(String(raw))}</td>`;
           // Signed like the user thinks about it: how the site feels vs the
           // board. (+n) = the site is n spots HIGHER on them (goes earlier
           // there), (−n) = n spots lower (may fall to you there).
@@ -1053,16 +1073,15 @@ function initApp() {
           const tip = d === 0 ? `${label} agrees with the board rank`
             : d > 0 ? `${label} is ${d} spots higher on them than the board — they'll go earlier there`
             : `${label} is ${-d} spots lower on them than the board — they may fall to you there`;
-          return `<td title="${escapeHtml(tip)}">${site}${diff}</td>`;
+          return `<td class="site-cell" title="${escapeHtml(tip)}">${site}${diff}</td>`;
         }).join('') +
         `<td class="note-cell"${noteEditedFor(p) ? ' title="You edited this note"' : ''}>` +
         `${noteEditedFor(p) ? '✎ ' : ''}${escapeHtml(truncateNote(noteFor(p)))}</td>` +
         `<td class="row-actions">` +
         pickBtn +
-        `<button class="act-mark ${markClass}" title="${mark === 'yes'
-          ? 'Targeting him — click for ❌ avoid'
-          : mark === 'no' ? 'Avoiding him — click to clear'
-          : 'Not marked — click for ✅ target'} (D or Space)">${markLabel}</button>` +
+        `<button class="act-mark ${step.cls}" aria-haspopup="menu" title="${escapeHtml(
+          `${step.v ? `You rate him ${step.word}` : 'Not rated'} — click to change` +
+          ` (or press 1-5 with the row selected)\n${MARK_LEGEND}`)}">${step.glyph}</button>` +
         teamBtn +
         `</td>`;
 
@@ -1076,7 +1095,15 @@ function initApp() {
       });
       const pickEl = tr.querySelector('.act-pick');
       if (pickEl) pickEl.addEventListener('click', () => togglePicked(p.name));
-      tr.querySelector('.act-mark').addEventListener('click', () => cycleToDraft(p.name));
+      tr.querySelector('.act-mark').addEventListener('click', (e) => {
+        const open = ratingMenuFor === p.name;
+        closeRatingMenu();
+        if (!open) {                      // a second click on it closes it
+          selectedName = p.name;
+          updateSelection();
+          openRatingMenu(p.name, e.currentTarget);
+        }
+      });
       const teamEl = tr.querySelector('.act-team');
       if (teamEl) teamEl.addEventListener('click', () => toggleTeam(p.name));
       tbody.appendChild(tr);
@@ -1086,18 +1113,19 @@ function initApp() {
       `${shown} shown · ${available} available · ${picked.size} picked`;
 
     // Name the column after what the button in it does. In normal (extension-
-    // driven) mode the only control there is the target marker, so the header
-    // says Target; the "we never draft for you" explanation moves into the
+    // driven) mode the only control there is your own rating, so the header
+    // says Rating; the "we never draft for you" explanation moves into the
     // tooltip, where it answers the question it was really there to answer.
     const thActions = $('th-actions');
     if (thActions) {
-      thActions.textContent = manual ? 'Actions' : 'Target';
+      thActions.textContent = manual ? 'Actions' : 'Rating';
       thActions.title = manual
         ? 'Manual mode: mark picks and build your roster by hand with these buttons. ' +
-          '○ ✅ ❌ is still your target marker.'
-        : 'Your shortlist — ✅ want him, ❌ avoid him, ○ no opinion. Click to cycle (or press D). ' +
-          'Drafting itself happens in your ESPN/Sleeper draft room; picks show up here ' +
-          'automatically. Settings → Manual mode adds by-hand Picked / +Team buttons.';
+          `Your rating is still here too — ${MARK_LEGEND}.`
+        : `What you think of him — ${MARK_LEGEND}. Click the button to pick one ` +
+          '(or press 1-5 on the selected row). Drafting itself happens in your ' +
+          'ESPN/Sleeper draft room; picks show up here automatically. ' +
+          'Settings → Manual mode adds by-hand Picked / +Team buttons.';
     }
     // Whose turn it is, not just how many picks have gone. In a manual
     // (debug) draft you pick for all 12 teams in turn — the snake decides who
@@ -1249,6 +1277,9 @@ function initApp() {
       predictedMeta = null;
     }
     $('btn-reset-top').hidden = !settings.manualMode;
+    // Manual mode puts two more buttons on every row. The phone stylesheet
+    // has to trade a column away to fit them, so it needs to know.
+    document.body.classList.toggle('manual-mode', settings.manualMode);
     renderPosFilters();
     renderTable();
     renderRoundGuide();
@@ -1309,13 +1340,87 @@ function initApp() {
     renderAll();
   }
 
-  function cycleToDraft(name) {
-    const next = { undefined: 'yes', yes: 'no', no: undefined }[toDraft[name]];
-    if (next === undefined) delete toDraft[name];
-    else toDraft[name] = next;
-    store.save('toDraft', toDraft);
+  function setMark(name, v) {
+    if (v === null) delete toDraft[name];
+    else toDraft[name] = v;
+    closeRatingMenu();
+    savePrep('toDraft', toDraft);
     renderAll();
   }
+
+  /* ---------- rating picker ---------- */
+  /* Clicking the rating opens the five steps and you take the one you
+     mean. The alternative — click to advance one step — needs four
+     clicks to say "really bad" and only tells you the scale exists if
+     you keep clicking. A menu shows the whole scale, in words, the
+     first time you open it, and teaches its own number keys while it's
+     up (1-5 also work straight from the board). */
+  let ratingMenuFor = null;      // player the open menu belongs to, or null
+  let ratingMenuAnchor = null;   // the rating button it hangs off
+
+  function closeRatingMenu() {
+    if (!ratingMenuFor) return;
+    ratingMenuFor = null;
+    ratingMenuAnchor = null;
+    const el = $('rating-menu');
+    el.hidden = true;
+    el.innerHTML = '';
+  }
+
+  function openRatingMenu(name, anchor) {
+    const cur = toDraft[name] || null;
+    const el = $('rating-menu');
+    ratingMenuFor = name;
+    ratingMenuAnchor = anchor;
+    el.innerHTML =
+      `<p class="rating-menu-head">${escapeHtml(name)}</p>` +
+      MARK_SCALE.map(s =>
+        `<button type="button" class="rating-opt${s.v === cur ? ' is-current' : ''}" ` +
+        `data-v="${s.v === null ? '' : s.v}">` +
+        `<span class="rating-opt-glyph ${s.cls}">${s.glyph}</span>` +
+        `<span class="rating-opt-word">${s.word}</span>` +
+        `<kbd>${s.key}</kbd></button>`).join('');
+    el.hidden = false;
+    positionRatingMenu();
+
+    el.querySelectorAll('.rating-opt').forEach(b => {
+      b.addEventListener('click', () => setMark(name, b.dataset.v || null));
+    });
+    const cursor = el.querySelector('.is-current') || el.querySelector('.rating-opt');
+    if (cursor) cursor.focus();
+  }
+
+  // Anchored under the button, then pulled back inside the window — rows
+  // near the bottom or the right edge must not open off-screen.
+  function positionRatingMenu() {
+    const el = $('rating-menu');
+    if (!ratingMenuAnchor) return;
+    const r = ratingMenuAnchor.getBoundingClientRect();
+    const box = el.getBoundingClientRect();
+    const pad = 6;
+    let top = r.bottom + 4;
+    if (top + box.height > window.innerHeight - pad)
+      top = Math.max(pad, r.top - box.height - 4);
+    let left = r.right - box.width;
+    left = Math.min(Math.max(pad, left), window.innerWidth - box.width - pad);
+    el.style.top = `${top + window.scrollY}px`;
+    el.style.left = `${left + window.scrollX}px`;
+  }
+
+  /* Scrolling the board moves the row the menu belongs to, so the menu goes
+     with it — it does NOT close. Closing on any scroll event looks the same
+     in normal use and then quietly eats the menu whenever a re-render
+     happens to fire one. It closes only when its row is genuinely gone. */
+  document.addEventListener('scroll', () => {
+    if (!ratingMenuFor) return;
+    const r = ratingMenuAnchor && ratingMenuAnchor.getBoundingClientRect();
+    if (!r || !r.height || r.bottom < 0 || r.top > window.innerHeight) closeRatingMenu();
+    else positionRatingMenu();
+  }, true);
+  window.addEventListener('resize', closeRatingMenu);
+  document.addEventListener('mousedown', (e) => {
+    if (ratingMenuFor && !e.target.closest('#rating-menu, .act-mark')) closeRatingMenu();
+  });
 
   function toggleTeam(name) {
     const i = manualTeam.indexOf(name);
@@ -1374,6 +1479,8 @@ function initApp() {
     activeTab = name;
     lastNoteTab = name;
     touchTabHistory(name);
+    // Tapping a row on a phone is a request to read the note, so go there.
+    if (onPhone()) showMobileView('note');
     renderTabs();
   }
 
@@ -1397,6 +1504,10 @@ function initApp() {
     activeTab = tab;
     if (isNoteTab(tab)) lastNoteTab = tab;
     touchTabHistory(tab);
+    // On a phone the panel is only on screen in two of the four views, so
+    // jumping to a tab (B, A, the tab strip) has to bring its view along —
+    // otherwise the tab switches behind whatever pane you're looking at.
+    if (onPhone()) showMobileView(tab === 'board' ? 'board' : 'note');
     renderTabs();
   }
 
@@ -1456,8 +1567,8 @@ function initApp() {
     $('note-findings').innerHTML = !fm ? '' : fm.map(m =>
       `<p class="fm-row fm-${m.dir}"><a class="fm-chip" target="_blank" ` +
       `rel="noopener" href="https://foss.football/#/blog/${escapeHtml(m.slug)}" ` +
-      `title="Open finding ${m.f} in a new tab">${FM_LABEL[m.dir]}` +
-      ` · finding ${m.f} ↗</a> ${escapeHtml(m.note)}</p>`).join('');
+      `title="Read the research behind this in a new tab">${FM_LABEL[m.dir]}` +
+      ` · ${escapeHtml(fmTopic(m))} ↗</a> ${escapeHtml(m.note)}</p>`).join('');
     $('note-editor').hidden = !editing;
     $('note-body').hidden = editing;
     $('btn-edit-note').hidden = editing;
@@ -1660,6 +1771,17 @@ function initApp() {
       `<table><thead>${head}</thead><tbody>${rows.join('')}</tbody></table>` + legend;
   }
 
+  // Below this a cell can't hold even a shortened name, so the board stops
+  // shrinking columns and starts scrolling sideways instead. That is the
+  // whole phone story for this grid: 12 columns will never fit 375px.
+  const BD_MIN_COL = 64;
+
+  // Width one team column gets at a given wrapper width, before the floor.
+  // Mirrors the grid template: round gutter + padding + inter-column gaps.
+  function boardColWidth(wrapW, teams) {
+    return (wrapW - 21 - 0.8 * 15 - 2 * teams) / teams;
+  }
+
   // Cell text scales to the column width: as large as fits where there's
   // room, smaller (never unreadable) when 12+ columns share a narrow panel.
   // Everything else in a cell is sized in em off this, so one number drives
@@ -1669,9 +1791,10 @@ function initApp() {
     const wrap = $('board-grid-wrap');
     const grid = $('board-grid');
     if (!wrap || !grid || !wrap.clientWidth) return;
-    // Mirrors the grid template: round gutter + padding + inter-column gaps.
     const teams = settings.numTeams;
-    const colW = (wrap.clientWidth - 21 - 0.8 * 15 - 2 * teams) / teams;
+    // Once the floor kicks in the columns are BD_MIN_COL wide regardless of
+    // the wrapper, so size the text off that and not off the squeezed share.
+    const colW = Math.max(BD_MIN_COL, boardColWidth(wrap.clientWidth, teams));
     // Sized to fit ~10 bold characters, which covers the median shortened
     // name ("J. Chase", 9 chars). Longer ones wrap to a second line rather
     // than holding the whole grid down to their width.
@@ -1700,16 +1823,24 @@ function initApp() {
     renderOutlook(info);
 
     const grid = $('board-grid');
-    // Equal columns that grow with the panel — the board fills whatever width
-    // it's given and never needs a horizontal scroll to see all teams.
-    grid.style.gridTemplateColumns = `1.4em repeat(${teams}, minmax(0, 1fr))`;
+    // Equal columns that grow with the panel: on a normal window the board
+    // fills the width and never scrolls sideways. On a phone the columns hit
+    // their floor and the board pans instead — a 12-wide grid squeezed into
+    // 375px would be twelve columns of ellipsis.
+    const wrapW = $('board-grid-wrap').clientWidth;
+    const min = wrapW && boardColWidth(wrapW, teams) < BD_MIN_COL ? `${BD_MIN_COL}px` : '0';
+    grid.style.gridTemplateColumns = `1.4em repeat(${teams}, minmax(${min}, 1fr))`;
     sizeBoardFont();
     grid.innerHTML = '';
 
     // The round the draft is in right now — the "badly needs" threshold.
     const curRound = Math.min(Math.ceil((made + 1) / teams), rounds);
 
-    grid.appendChild(document.createElement('div')); // corner above round numbers
+    // Corner above the round numbers. Classed so it can stay pinned with them
+    // when the board is being panned sideways on a narrow screen.
+    const corner = document.createElement('div');
+    corner.className = 'bd-corner';
+    grid.appendChild(corner);
     for (let t = 1; t <= teams; t++) {
       const h = document.createElement('button');
       h.type = 'button';
@@ -1933,6 +2064,47 @@ function initApp() {
   }
 
   /* ---------- extension bridge (see chrome-extension/bridge.js) ---------- */
+
+  /* Your prep — the marks you set, the notes you rewrote, the ranks you
+     imported — is work you can't get back, and localStorage is the wrong
+     place to keep the only copy of it: "clear browsing data" wipes it, and
+     it doesn't follow you from one origin to another (a local copy of the
+     tool and foss.football are separate stores). So when the extension is
+     installed we mirror prep into chrome.storage.local, which survives both.
+     localStorage stays the working copy — synchronous, always there,
+     unchanged when there's no extension — and the mirror is a backup that
+     wins only when it is newer than what this browser has. */
+  const PREP_FIELDS = ['toDraft', 'noteOverrides', 'rankOverrides'];
+
+  function savePrep(key, value) {
+    store.save(key, value);
+    mirrorPrep();
+  }
+
+  function mirrorPrep() {
+    const at = Date.now();
+    store.save('prepSavedAt', at);
+    // Harmless when no extension is listening — nobody answers.
+    window.postMessage({ source: 'ffda-page', type: 'save-prep',
+      prep: { savedAt: at, toDraft, noteOverrides, rankOverrides } }, '*');
+  }
+
+  // The extension's copy is newer than this browser's: adopt it wholesale.
+  // Whole-blob, not per-player: merging two edit histories without a real
+  // sync protocol invents a third state that neither browser ever had.
+  function adoptPrep(prep) {
+    if (!prep || typeof prep !== 'object') return false;
+    const mine = store.load('prepSavedAt', 0);
+    if (!(prep.savedAt > mine)) return false;
+    if (noteEditingName) return false;   // never yank a note out from under an edit
+    toDraft = prep.toDraft || {};
+    noteOverrides = prep.noteOverrides || {};
+    rankOverrides = prep.rankOverrides || {};
+    for (const f of PREP_FIELDS) store.save(f, { toDraft, noteOverrides, rankOverrides }[f]);
+    store.save('prepSavedAt', prep.savedAt);
+    return true;
+  }
+
   window.addEventListener('message', (event) => {
     if (event.source !== window) return;
     const msg = event.data;
@@ -1942,17 +2114,25 @@ function initApp() {
     // The bridge says hello with an empty payload before any draft page has
     // been scraped; that is not "data received", it is just a handshake.
     let gotData = false;
+    let gotPrep = false;
     if (msg.type === 'state' && msg.data) {
       for (const key of ['picked_players', 'roster_players', 'available_players']) {
         if (msg.data[key]) { extState[key] = msg.data[key]; gotData = true; }
       }
+      // Prep rides along with every state push. Either the extension has a
+      // newer copy and we take it, or ours is newer and it should have it.
+      if (adoptPrep(msg.data.prep)) gotPrep = true;
+      else if (!msg.data.prep || msg.data.prep.savedAt < store.load('prepSavedAt', 0)) mirrorPrep();
     }
-    if (!gotData) { renderExtStatus(); return; }
+    if (!gotData && !gotPrep) { renderExtStatus(); return; }
 
-    store.save('extState', extState);
+    if (gotData) store.save('extState', extState);
     const picked = extState.picked_players;
-    if (picked && Array.isArray(picked.players)) mergeExtPicked(picked.players);
-    setStatus('Draft data received from extension');
+    if (gotData && picked && Array.isArray(picked.players)) mergeExtPicked(picked.players);
+    setStatus(gotPrep && !gotData
+      ? 'Your marks and note edits came back from the extension'
+      : gotPrep ? 'Draft data and your saved prep received from the extension'
+      : 'Draft data received from extension');
     renderAll();
   });
 
@@ -2168,7 +2348,7 @@ function initApp() {
       }
       const fmt = settings.scoringFormat;
       rankOverrides[fmt] = overrides;
-      store.save('rankOverrides', rankOverrides);
+      savePrep('rankOverrides', rankOverrides);
       renderAll();
       setStatus(`Imported ${Object.keys(overrides).length} custom ranks for the ${fmt} board`);
       if (unmatched.length) {
@@ -2200,6 +2380,7 @@ function initApp() {
       store.save('unpicked', [...unpicked]);
       store.save('rankOverrides', rankOverrides);
       store.save('noteOverrides', noteOverrides);
+      mirrorPrep();
       $('scoring-format').value = settings.scoringFormat;
       $('settings-dialog').close();
       renderAll();
@@ -2293,7 +2474,7 @@ function initApp() {
   }
 
   function resetDraftState() {
-    if (!confirm('Clear all draft state (picked players, your team, target markers, extension data)?')) return;
+    if (!confirm('Clear all draft state (picked players, your team, your ratings, extension data)?')) return;
     manualPicked = new Set();
     manualTeam = [];
     toDraft = {};
@@ -2307,6 +2488,7 @@ function initApp() {
     store.save('manualPicked', []);
     store.save('manualTeam', []);
     store.save('toDraft', {});
+    mirrorPrep();
     store.save('extState', {});
     store.save('extPickedRaw', []);
     store.save('unpicked', []);
@@ -2325,8 +2507,8 @@ function initApp() {
       text: 'Type a few letters of a name or team. The board narrows as you type — fastest way to find someone mid-draft. Press / to jump here.' },
     { target: '#player-tbody tr', title: 'Player notes',
       text: 'Click any row to open that player\'s full analysis note in a tab on the right — Ctrl+click opens it in an extra tab (like Obsidian). Press E to edit the note and make it yours.' },
-    { target: '#player-tbody tr .row-actions', title: 'Target markers',
-      text: 'The Target button (or D / Space) cycles ○ no opinion → ✅ want him → ❌ avoid him. It is a note to yourself, nothing more. Manual Picked/+Team buttons are hidden by default — the extension tracks the draft for you. Turn on Manual mode in Settings to run a draft by hand.' },
+    { target: '#player-tbody tr .row-actions', title: 'Rate the players',
+      text: 'Click the Rating button and pick what you think of him — ✅ really good, ✔ good, ○ no opinion, ✘ bad, ❌ really bad. The picker shows the number key for each one, so once you know them you can just press 1 to 5 on the selected row and fly down the list. Your rating shows next to the player\'s name, so on draft day you can scan the board instead of reading it. It is a note to yourself, nothing more. Manual Picked/+Team buttons are hidden by default — the extension tracks the draft for you. Turn on Manual mode in Settings to run a draft by hand.' },
     { target: '#tab-bar', title: 'Tabs',
       text: 'AI Output and Draft Board live here permanently; player notes open as tabs next to them. A normal click on a player replaces the current note tab, Ctrl+click adds another, × (or the X key) closes one.' },
     { target: '#tab-strip .tab:nth-child(2)', title: 'The draft board',
@@ -2485,7 +2667,7 @@ function initApp() {
     // Saving the bundled text unchanged just clears the override.
     if (text === bundledNoteFor(p)) delete noteOverrides[key];
     else noteOverrides[key] = text;
-    store.save('noteOverrides', noteOverrides);
+    savePrep('noteOverrides', noteOverrides);
     noteEditingName = null;
     renderAll();
     setStatus(`Note for ${p.name} saved (this browser only)`);
@@ -2495,7 +2677,7 @@ function initApp() {
     if (!p) return;
     if (!confirm(`Discard your edits to ${p.name}'s note and restore the bundled one?`)) return;
     delete noteOverrides[cleanName(p.name)];
-    store.save('noteOverrides', noteOverrides);
+    savePrep('noteOverrides', noteOverrides);
     noteEditingName = null;
     renderAll();
   });
@@ -2528,6 +2710,46 @@ function initApp() {
     leftPct = null;
     store.remove('leftPct');
     applySplit();
+  });
+
+  /* ---------- phone layout: one pane at a time ---------- */
+  // The divider above is a mouse affordance for a two-pane screen. A phone
+  // has neither, so below the breakpoint the panes become four views and the
+  // bar at the bottom switches between them. The breakpoint here must match
+  // the one in style.css — the CSS hides the panes, this only picks which.
+  const phoneQuery = window.matchMedia('(max-width: 620px)');
+  function onPhone() { return phoneQuery.matches; }
+
+  // Purely presentational: the CSS keys off the body attribute. It never
+  // calls activateTab, so activateTab can call it without looping.
+  function showMobileView(v) {
+    document.body.dataset.mview = v;
+    for (const b of document.querySelectorAll('#mobile-nav button')) {
+      b.classList.toggle('active', b.dataset.mview === v);
+    }
+    // The board sizes its text off a width it can only measure once its pane
+    // is actually on screen, so re-measure after the layout settles.
+    if (v === 'board') requestAnimationFrame(sizeBoardFont);
+  }
+
+  for (const btn of document.querySelectorAll('#mobile-nav button')) {
+    btn.addEventListener('click', () => {
+      const v = btn.dataset.mview;
+      // Board and Note are the same pane showing different tabs, so those two
+      // go through activateTab (which calls showMobileView back).
+      if (v === 'board' && activeTab !== 'board') activateTab('board');
+      else if (v === 'note' && activeTab === 'board') activateTab(lastNoteTab || 'ai');
+      else showMobileView(v);
+    });
+  }
+  showMobileView('players');
+  // Rotating a phone into landscape crosses the breakpoint: the two-pane CSS
+  // takes over and the stale attribute stops mattering, but coming back has
+  // to land on a view whose pane matches the tab that's actually active.
+  phoneQuery.addEventListener('change', (e) => {
+    if (e.matches && document.body.dataset.mview !== 'players') {
+      showMobileView(activeTab === 'board' ? 'board' : 'note');
+    }
   });
 
   /* ---------- Your Team collapse ---------- */
@@ -2634,7 +2856,7 @@ function initApp() {
     }
     if (!confirm(`Remove your custom ranks from the ${fmt} board and restore the bundled order?`)) return;
     delete rankOverrides[fmt];
-    store.save('rankOverrides', rankOverrides);
+    savePrep('rankOverrides', rankOverrides);
     renderAll();
     setStatus(`${fmt} board restored to bundled rankings`);
   });
@@ -2670,6 +2892,18 @@ function initApp() {
     // browser default), not also fire a shortcut on the selected row.
     if (tag === 'button' && (e.key === ' ' || e.key === 'Enter')) return;
     if (document.querySelector('dialog[open]')) return;
+    // An open rating picker owns the arrows and Esc — otherwise ↑/↓ would
+    // move the board selection out from under the menu. Enter/Space fall
+    // through to the focused option, and 1-5 to the switch below.
+    if (ratingMenuFor && (e.key === 'Escape' || e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      if (e.key === 'Escape') { closeRatingMenu(); return; }
+      const opts = [...$('rating-menu').querySelectorAll('.rating-opt')];
+      const i = opts.indexOf(document.activeElement);
+      opts[((i < 0 ? 0 : i) + (e.key === 'ArrowDown' ? 1 : -1) + opts.length)
+        % opts.length].focus();
+      return;
+    }
     const sel = selectedPlayer();
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       if (sel) { e.preventDefault(); openNote(sel, true); }
@@ -2685,8 +2919,27 @@ function initApp() {
         e.preventDefault(); moveSelection(1); break;
       case 'ArrowUp':
         e.preventDefault(); moveSelection(-1); break;
+      case '1': case '2': case '3': case '4': case '5': {
+        // Straight to the step you mean — the fast path once you know the
+        // numbers, which is what the picker spends its right-hand column
+        // teaching. Works whether or not the picker is open.
+        const step = MARK_SCALE.find(s => s.key === e.key);
+        const on = ratingMenuFor || (sel && sel.name);
+        if (step && on) { e.preventDefault(); setMark(on, step.v); }
+        break;
+      }
       case 'd': case 'D': case ' ':
-        if (sel) { e.preventDefault(); cycleToDraft(sel.name); }
+        // Same key as before, now opening the picker instead of nudging
+        // the rating one step — the scale is too long to walk.
+        if (sel) {
+          e.preventDefault();
+          // Selected row, found by data — player names carry apostrophes,
+          // which an attribute selector would need escaping for.
+          const row = document.querySelector('#player-tbody tr.selected');
+          const btn = row && row.querySelector('.act-mark');
+          if (ratingMenuFor === sel.name) closeRatingMenu();
+          else if (btn) openRatingMenu(sel.name, btn);
+        }
         break;
       case 'p': case 'P':
         if (sel) { e.preventDefault(); keepSelectionNear(() => togglePicked(sel.name)); }
