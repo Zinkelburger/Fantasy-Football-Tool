@@ -145,8 +145,11 @@ def report(data):
         d = data[arm]
         dap, sap = paired(d["all_play"], ctl["all_play"])
         dti, sti = paired(d["titles"], ctl["titles"])
-        t = dap / sap if sap else 0.0
-        verdict = ("all-play SIGNIF" if abs(t) >= 2 else "within noise")
+        # report each metric on its own: at this n every all-play gap
+        # clears t=2, so a shared verdict column would say nothing
+        tt = dti / sti if sti else 0.0
+        verdict = (f"titles {'DOWN' if tt < 0 else 'UP'}"
+                   if abs(tt) >= 2 else "titles unresolved")
         print(f"{arm:<15}{DOOR[arm]:<13}"
               f"{np.mean(d['all_play']):>9.4f}{dap:>+9.4f}{sap:>7.4f}   "
               f"{np.mean(d['titles']):>7.2%}{dti:>+8.2%}{sti:>7.2%}  "

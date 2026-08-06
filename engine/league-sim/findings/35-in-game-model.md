@@ -1,18 +1,17 @@
 # 35 — Live win probability: the clock is the whole model, and everyone's number is too confident
 
-**Confidence: High** for the scoring-curve and correlation measurements
-(5 seasons, 259,009 player-plays, 242,177 player-game-checkpoints).
-**Medium** for the calibration result — it rests on synthetic matchups
-built from real weeks, not on real league rosters.
+**Confidence: High** for the scoring-curve and correlation
+measurements — 5 seasons, 259,009 player-plays, 242,177
+player-game-checkpoints. **Medium** for the calibration result — it
+rests on synthetic matchups built from real weeks, not on real league
+rosters.
 
-## TL;DR
-
-- Fantasy points accrue **almost exactly linearly with the game clock**.
-  Quarter shares are 21.6 / 28.6 / 22.6 / 27.1 percent, and the entire
-  deviation from flat is the two two-minute drills.
+- Fantasy points accrue **almost exactly linearly with the game
+  clock**. Quarter shares are 21.6 / 28.6 / 22.6 / 27.1 percent, and
+  the entire deviation from flat is the two two-minute drills.
 - So `remaining = 0.92 x projection x fraction of game left` is a
-  genuinely good live model. Fitting anything on top of it —
-  game script, live production, Vegas totals — buys **1–2%**.
+  genuinely good live model. Fitting anything on top of it — game
+  script, live production, Vegas totals — buys **1–2%**.
 - Same-team receivers are **uncorrelated** (r = 0.00). The only real
   in-game link is QB to his own pass-catchers (r = 0.28).
 - Every published win-probability number, ours included, is
@@ -23,11 +22,10 @@ built from real weeks, not on real league rosters.
 ## Question
 
 We want live in-game matchup tracking. Two things have to be true for
-that to be worth building: you have to be able to predict remaining
-points from partway through a game, and the win probability you print
-has to be honest. So: how do fantasy points actually accumulate across
-a game, what predicts the rest of them, and is the resulting
-probability calibrated?
+that to be worth building: you can predict remaining points from
+partway through a game, and the win probability you print is honest.
+So: how do fantasy points accumulate across a game, what predicts the
+rest of them, and is the resulting probability calibrated?
 
 ## Setup
 
@@ -40,8 +38,8 @@ probability calibrated?
   300 game-seconds.
 - The stand-in for "the projection a manager had" is a **leak-free
   trailing EWMA** (alpha 0.35) of that player's prior games this
-  season, requiring 3 prior games. It is deliberately not a season
-  average — that would be hindsight.
+  season, requiring 3 prior games. Not a season average — that would
+  be hindsight.
 - Fit on 2021–2024, scored out-of-sample on 2025.
 
 ## Result 1 — the clock curve
@@ -66,9 +64,10 @@ The curves are the same for every position — QB, RB, WR and TE are
 within 1.5 percentage points of each other at every checkpoint. One
 universal clock curve serves all four.
 
-**This kills the "you can't predict until the fourth quarter" intuition.**
-Q4 holds 27% of the scoring, barely above a flat 25%. Half the points
-are gone by halftime, and the model is usable from kickoff.
+**This kills the "you can't predict until the fourth quarter"
+intuition.** Q4 holds 27% of the scoring, barely above a flat 25%.
+Half the points are gone by halftime, and the model is usable from
+kickoff.
 
 ## Result 2 — nothing beats the clock
 
@@ -119,11 +118,11 @@ competition for the same targets cancel almost perfectly.
 
 That rules out the obvious implementation. A shared team factor would
 force WR↔WR to equal QB↔WR, and it doesn't. The structure the data
-implies is causal: a quarterback's day is *built out of* his receivers'
-days. Draw the pass-catchers independently, then build the QB from
-them. Two correlation terms, not a covariance matrix.
+implies is causal: a quarterback's day is *built out of* his
+receivers' days. Draw the pass-catchers independently, then build the
+QB from them. Two correlation terms, not a covariance matrix.
 
-## Result 4 — the honest part: it's overconfident, and the obvious fixes don't work
+## Result 4 — it's overconfident, and the obvious fixes don't work
 
 Building 4,000 synthetic 9-player matchups per checkpoint out of real
 2025 weeks and simulating each 2,000 times:
@@ -136,8 +135,8 @@ Building 4,000 synthetic 9-player matchups per checkpoint out of real
 | + sigma scaled to projection | 0.1412 | 3.2% |
 
 **All four land in the same place.** Three plausible fixes, each
-motivated by a real measured feature of the data, and none of them
-moves the needle:
+motivated by a real measured feature of the data, none moves the
+needle:
 
 1. **Zero-inflation doesn't survive aggregation.** Individually the
    marginals are badly non-normal — a TE scores nothing in the second
@@ -169,8 +168,7 @@ Because the bias is monotone, the fix is a one-parameter shrink:
     p_reported = 0.5 + 0.87 x (p_simulated − 0.5)
 
 The 0.87 is the mean of the per-decile ratios above. **That single
-constant is worth more than all three structural fixes combined**,
-which is the least satisfying and most useful sentence in this finding.
+constant is worth more than all three structural fixes combined.**
 
 ## What to build
 
@@ -192,8 +190,8 @@ runs in the browser in well under a second.
 
 ### Three ways the first implementation got this wrong
 
-Worth recording, because each one was a plausible reading of the
-paragraph above and each one moved the printed number.
+Each was a plausible reading of the block above. Each moved the
+printed number.
 
 1. **Scaling sigma by the clock twice.** `sigma_var_fn` is fit at
    `sec_left == 3600` only — it maps a full game's projection to a full
@@ -214,9 +212,8 @@ paragraph above and each one moved the printed number.
    bye had no projection and no game on the scoreboard, and a fallback
    of "a typical week at his position" plus "assume the game hasn't
    kicked off" handed him about nine points that could never arrive.
-   This is the caveat at the bottom of this page, met in the least
-   useful way possible. The rule that works: no projection means no
-   points, and say so on the screen.
+   The rule that works: no projection means no points, and say so on
+   the screen.
 
 ### K and D/ST
 
@@ -229,21 +226,22 @@ rather than leaving the browser on an invented flat sigma of 6:
 | K | 0.960 | 4.99 | play-by-play, same method as above (n=21,554) |
 | D/ST | 0.799 | 5.86 | full-game fit on weekly D/ST points (n=1,790) |
 
-D/ST **borrows its clock shape** from the offensive positions, and that
-is an assumption rather than a measurement: a defense's biggest scoring
+D/ST **borrows its clock shape** from the offensive positions. That is
+an assumption, not a measurement: a defense's biggest scoring
 component is the points-allowed tier, which is only knowable when the
-game ends, so "remaining D/ST points at halftime" isn't well defined the
-way "remaining rushing points" is. The borrowing is recorded in the
-`_meta.kdst` block of the params file so it can't be mistaken for a fit.
+game ends, so "remaining D/ST points at halftime" isn't well defined
+the way "remaining rushing points" is. The borrowing is recorded in
+the `_meta.kdst` block of the params file so it can't be mistaken for
+a fit.
 
 That D/ST decay of 0.799 is much the lowest of the six, which is
 finding 27's premise showing up from a different direction: defensive
 scoring regresses hard, so a defense's recent form buys you less than
 any other position's does.
 
-The honest headline for the UI: **this number is good to about ±4
-percentage points, and it is at its worst when it is most confident.**
-Nobody else says that, and saying it is the differentiator.
+The headline for the UI: **this number is good to about ±4 percentage
+points, and it is at its worst when it is most confident.** Nobody
+else says that, and saying it is the differentiator.
 
 ## Caveats
 
@@ -260,12 +258,12 @@ Nobody else says that, and saying it is the differentiator.
 - Half-PPR decimal scoring throughout. The clock curve is a share and
   is close to format-invariant; the sigma table is not, and should be
   refit per format before it's used for a standard or full-PPR league.
-  **The site currently ships the half-PPR table to every league,
-  including standard ones**, which is a known and unmeasured
-  approximation — the reception term is the only difference and it is
-  the low-variance part of a receiver's day, so the error should be
-  small and in the direction of slightly too wide for standard. Refit
-  per format when there's a reason to.
+- **The site currently ships the half-PPR table to every league,
+  including standard ones.** Known and unmeasured. The reception term
+  is the only difference and it is the low-variance part of a
+  receiver's day, so the error should be small and in the direction of
+  slightly too wide for standard. Refit per format when there's a
+  reason to.
 - 2025 is a single out-of-sample season.
 - In-game injuries are invisible here. A player who leaves in the first
   quarter looks like a catastrophic projection miss. Real live tracking

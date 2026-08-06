@@ -34,7 +34,8 @@ projection input, because we measured that it isn't one.
    Go draft tool (archive/go-tool) + webapp/ static port +
    chrome-extension pick sync. SURFACED 2026-08-04: per-player
    findings marks (`analysis/findings_marks.py` — findings 08/09/10/
-   15/16/17/18 as buy/fade/watch rows in the note pane, ◆ row glyph;
+   15/16/17/18 as buy/fade/watch rows in the note pane and the name
+   hover, each named in plain words ("TD regression"), no row glyph;
    `--grade` reruns the rules on 2024 and prints the 2025 truth).
 2. **Strategy blogs** — findings 01–26 are the drafts: discipline
    (03), RB-vs-WR curves (23), hindsight optima (24), PPR imports

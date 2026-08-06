@@ -1,24 +1,26 @@
 # 29 — What hits, round by round (and the answer barely changes in PPR)
 
 **Confidence: Medium-High** for the hit-rate structure and the
-format-invariance (1,489 drafted players over eight ADP boards, all
-three scorings, per-season stability shown below); **Medium** for the
-trait profile of late hits (significant, but found by exploration in
-this same sample — treat as pre-registered only from 2026 forward).
+format-invariance — 1,489 drafted players, eight ADP boards, all three
+scorings, per-season stability shown below. **Medium** for the trait
+profile of late hits: significant, but found by exploring this same
+sample, so treat it as pre-registered only from 2026 forward.
 
-## TL;DR
+Eight years of draft boards, scored three ways.
 
-Eight years of draft boards, scored three ways. Starter-rate falls
-smoothly from ~81% in round 1 to ~5% in round 15, and the shape is the
-same in standard, 0.5PPR, and full PPR — only 3.8% of drafted RB/WR
-seasons flip top-24 status between standard and PPR. The "stash
-running backs late" instinct fails: late-round WRs hit slightly MORE
-than late RBs in every format (the gap is inside noise, so treat it as
-"no RB edge exists", not "WRs are the play"). What does separate late
-hits from late busts: youth at the pass-catching positions — late WR
-hits are 1.7 years younger than the busts, TE hits 1.9 years, both
-p ≈ 0.01 — and position: TE and QB remain ~40-50% likely to return a
-starter as late as rounds 9-11, when RB and WR are already lotteries.
+Starter-rate falls smoothly from ~81% in round 1 to ~5% in round 15,
+and the shape is the same in standard, 0.5PPR and full PPR. Only 3.8%
+of drafted RB/WR seasons flip top-24 status between standard and PPR.
+
+The "stash running backs late" instinct fails. Late-round WRs hit
+slightly MORE than late RBs in every format. The gap is inside noise,
+so read it as "no RB edge exists", not "WRs are the play."
+
+Two things separate late hits from late busts. Youth at the
+pass-catching positions: late WR hits are 1.7 years younger than the
+busts, TE hits 1.9 years, both p ≈ 0.01. And position: TE and QB stay
+~40-50% likely to return a starter as late as rounds 9-11, when RB and
+WR are already lotteries.
 
 ## The data
 
@@ -44,8 +46,8 @@ drafted player with no season counts as a bust, not missing data.
 Per-round (all positions pooled, std): 81, 68, 63, 54, 44, 46, 32,
 34, 27, 20, 24, 15, 21, 7, 5.
 
-Reading it: the QB/TE columns stay startable absurdly deep because
-"startable" is top-12 at a 12-team position — which is exactly why
+The QB/TE columns stay startable absurdly deep because "startable" is
+top-12 at a 12-team position. That is exactly why
 [finding 05](05-never-pay-up-for-te.md) and
 [finding 06](06-qb-timing.md) say what they say. RB and WR fall off a
 cliff after round 8.
@@ -61,14 +63,15 @@ Rounds 9-15, starter rate:
 | ppr | 8.4% | 12.0% | −3.6% | 0.22 |
 
 The RB-minus-WR gap was negative in six of eight seasons (std). None
-of it is significant — the honest headline is "late RBs do NOT hit
-more than late WRs", in any format, and PPR tilts what little there
-is further toward the receivers. The appeal of the late RB is
-conditional value — the handcuff who pays exactly when your starter
-sits ([finding 13](13-handcuffs-are-free-insurance.md)) — not
-season-long hit rate, and deliberately tilting a bench toward RBs
-bought ~1% of championships
-([finding 19](19-bench-composition.md)).
+of it is significant. Late RBs do NOT hit more than late WRs, in any
+format, and PPR tilts what little there is further toward the
+receivers.
+
+The late RB's appeal is conditional value: the handcuff who pays
+exactly when your starter sits
+([finding 13](13-handcuffs-are-free-insurance.md)). Not season-long
+hit rate. Deliberately tilting a bench toward RBs bought ~1% of
+championships ([finding 19](19-bench-composition.md)).
 
 ## What a good late pick looks like
 
@@ -81,17 +84,21 @@ Hits vs busts, rounds 9-15, permutation p on the age gap:
 | RB | 20 | +0.16 | 0.84 |
 | QB | 33 | −0.67 | 0.57 |
 
-Pooled WR+TE: −1.48 years, p = 0.002. Rookie share alone is not
-significant (+8% WR, p = 0.33) — it is youth generally, not rookies
-specifically. Prior-year volume (targets/carries per game) separates
-nothing late — everyone available in round 11 had a mediocre role
-last year; that is why they are available. At RB no observable trait
-separated late hits from busts: a late RB is a lottery ticket, and
-the only structure we know of is the handcuff link above.
+Pooled WR+TE: −1.48 years, p = 0.002. It is youth generally, not
+rookies specifically — rookie share alone is not significant (+8% WR,
+p = 0.33).
 
-Suggestive but thin (noted, not claimed): in rounds 6-8, rookie RBs
-were 6% of hits but 23% of busts — the mid-priced rookie RB in a
-murky committee looks like the worst version of the position.
+Prior-year volume (targets/carries per game) separates nothing late.
+Everyone available in round 11 had a mediocre role last year; that is
+why they are available.
+
+At RB no observable trait separated late hits from busts. A late RB is
+a lottery ticket, and the only structure we know of is the handcuff
+link above.
+
+Thin, and recorded rather than claimed: in rounds 6-8, rookie RBs were
+6% of hits but 23% of busts. The mid-priced rookie RB in a murky
+committee looks like the worst version of the position.
 
 ## Formats: checked, and it barely matters
 
@@ -109,11 +116,11 @@ murky committee looks like the worst version of the position.
   hot finishes ([15](15-late-season-momentum-myth.md)) stay ~zero
   everywhere (+0.04 to +0.05).
 
-So: strategy built on standard scoring transfers. The one caveat we
-have NOT retested under PPR is the simulation family (zero-RB, round
-sweeps, bench composition — findings 01/02/14/19/22); those sims run
-the family's standard league and a PPR re-run is queued behind the
-env-v5 rerun.
+Strategy built on standard scoring transfers. The one thing we have
+NOT retested under PPR is the simulation family (zero-RB, round
+sweeps, bench composition — findings 01/02/14/19/22). Those sims run
+the family's standard league; a PPR re-run is queued behind the env-v5
+rerun.
 
 ## Methodology
 
@@ -126,11 +133,10 @@ labels within season (5,000 draws).
 
 ## Caveats
 
-- The trait analysis (age of late hits) was found by exploring this
-  sample, not pre-registered — the 2026 season is its first
-  out-of-sample test. The band hit rates and the RB/WR null carry no
-  such caveat; they are direct tabulations with stable per-season
-  signs.
+- The age-of-late-hits result was found by exploring this sample, not
+  pre-registered. 2026 is its first out-of-sample test.
+- The band hit rates and the RB/WR null carry no such caveat — direct
+  tabulations, stable per-season signs.
 - "Starter by season total" rewards health. A per-game definition
   shrinks every gap slightly but reorders nothing we report.
 - One ADP source per year; late-round ADP is soft everywhere.

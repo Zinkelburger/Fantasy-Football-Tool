@@ -1,16 +1,14 @@
 # 11 — The Methuen Jackels audit: best drafts in the league, two leaks
 
-**Confidence: High** (it's the league's own data, fully enumerated)
+**Confidence: High.** The league's own data, fully enumerated.
 
-## TL;DR
-
-We audited our own team's drafts. 2024: the **best draft haul of all
-12 teams**. 2025: #4. Combined 24-4 record, two #1 seeds — and two
-runner-up finishes (finding 12 explains why that's variance, not a
-broken process). The strengths that repeat: patience for value,
-excellent mid-round WR picks, sensible QB and kicker timing. The two
-leaks, each committed twice: paying a premium price for a TE, and
-the round-4/5 "discounted veteran WR."
+We audited our own drafts. 2024: the **best draft haul of all 12
+teams**. 2025: #4. Combined 24-4 record, two #1 seeds, and two
+runner-up finishes — finding 12 explains why that's variance, not a
+broken process. The strengths repeat: patience for value, excellent
+mid-round WR picks, sensible QB and kicker timing. Two leaks, each
+committed twice: paying a premium price for a TE, and the round-4/5
+"discounted veteran WR."
 
 ## Draft-by-draft
 
@@ -30,7 +28,8 @@ the round-4/5 "discounted veteran WR."
 | 16 | Younghoe Koo (last real pick) | | PK20 — correct timing, irrelevant outcome |
 
 Haul: **1,779** perfect-lineup points — #1 of 12 (2nd place 1,699).
-Nearly every pick arrived *below* market price: patience, not reaching.
+Nearly every pick arrived *below* market price: patience, not
+reaching.
 
 ### 2025 (seat 11) — grade: B+
 
@@ -52,8 +51,8 @@ wipeouts (Tyreek + Irving + Najee = 138 combined points).
 
 ## League-wide draft-haul ranks
 
-Perfect-lineup points from drafted rosters only (isolates drafting
-from waivers/lineup skill):
+Perfect-lineup points from drafted rosters only, which isolates
+drafting from waivers and lineup skill:
 
 - **2024:** Jackels 1779 · Rubber Ducks 1699 · **Bombers 1672 (champ)** ·
   Lancers 1629 · … · Cape Crusaders 1178
@@ -63,15 +62,16 @@ from waivers/lineup skill):
 
 ## Hindsight replays
 
-Replaying each draft pick-by-pick with perfect knowledge of the
-season (opponents' picks held fixed, take the best-total legal player
-at each Jackels slot): the clairvoyant 2024 roster delivers 2,189
-points → **the real draft captured 81% of theoretical perfection**
-(74% in 2025). More telling: the clairvoyant drafts *keep most of the
-actual picks* — 2024's keeps Henry, Jacobs, Hubbard, McLaurin, Lamb,
-Higgins; 2025's keeps JSN, ASB, Olave, Dowdle, Judkins,
-Croskey-Merritt. The player identification is near-optimal; the
-residual gap is concentrated in the two leaks plus injury luck.
+Replay each draft pick-by-pick with perfect knowledge of the season:
+opponents' picks held fixed, take the best-total legal player at each
+Jackels slot. The clairvoyant 2024 roster delivers 2,189 points, so
+**the real draft captured 81% of theoretical perfection** (74% in
+2025).
+
+The clairvoyant drafts keep most of the actual picks. 2024's keeps
+Henry, Jacobs, Hubbard, McLaurin, Lamb, Higgins. 2025's keeps JSN,
+ASB, Olave, Dowdle, Judkins, Croskey-Merritt. Player identification is
+near-optimal. The gap is the two leaks plus injury luck.
 
 ## The two leaks, quantified
 
@@ -81,8 +81,9 @@ residual gap is concentrated in the two leaks plus injury luck.
 2. **Discounted veteran WR in rounds 4–5** (findings 09–10): Cooper
    '24 (age 30) → 74 pts; Tyreek '25 (age 31) → 30 pts. Cooper fits
    the flagged profiles; Tyreek is defensible-but-unlucky (age bucket
-   unresolved, finding 10). Combined cost vs their slot expectation:
-   roughly a top-20 WR season's worth of points across two years.
+   unresolved, finding 10). Combined cost against their slot
+   expectation: roughly a top-20 WR season's worth of points across
+   two years.
 
 ## Methodology
 
@@ -90,8 +91,8 @@ residual gap is concentrated in the two leaks plus injury luck.
   picks joined to nflverse via `load_ff_playerids` (ESPN id → gsis id),
   scored under league-exact settings.
 - "Draft haul" = points a roster would score with a *perfect* lineup
-  set every week (upper bound; removes lineup-skill and waiver
-  effects). Same formula for all 12 teams.
+  set every week. It is an upper bound and removes lineup-skill and
+  waiver effects. Same formula for all 12 teams.
 - Hindsight replay rules: at each Jackels pick, choose the maximum
   season-total player not yet drafted by anyone at that moment,
   subject to roster legality (fill all starting slots, positional
@@ -102,6 +103,6 @@ residual gap is concentrated in the two leaks plus injury luck.
 
 - "Perfect lineups" flatter everyone equally; relative ranks are the
   meaningful part.
-- Hindsight replays are a ceiling no human reaches — 81% capture is
-  the headline *because* the ceiling is absurd.
+- Hindsight replays are a ceiling no human reaches. 81% capture is the
+  headline *because* the ceiling is absurd.
 - D/ST picks excluded throughout (not modeled).

@@ -1,20 +1,23 @@
 # 21 — The injury model: what a Friday tag is actually worth
 
-**Confidence: High** for P(play | status) and the Questionable discount
-(n=991 played-while-listed weeks). **Medium** for per-injury-type
+**Confidence: High** for P(play | status) and the Questionable
+discount, n=991 played-while-listed weeks. **Medium** for per-injury
 durations (n=28–111 per type) and the rust effect.
 
-## TL;DR
+## What a Friday tag means
 
-What the Friday injury report actually means, from eight years of
-data: **Out or Doubtful means he is not playing** (0.1% and 1% play
-rates — treat both as zero). **Questionable means 69% to play, and
-about 83% of his usual production when he does** — nearly full
-strength for QBs, a real discount for TEs. Once a player actually
-sits out with an injury, the typical absence is 2 weeks, a quarter
-of the time he never plays again that season, and the longer he has
-been out the worse the outlook gets (average total absence climbs
-2.7 → 3.6 → 4.7 weeks as misses pile up). His first game back runs
+Eight years of injury reports.
+
+**Out or Doubtful means he is not playing.** Play rates of 0.1% and
+1%. Treat both as zero.
+
+**Questionable means 69% to play, at about 83% of his usual
+production.** Nearly full strength for QBs. A real discount for TEs.
+
+Once a player sits out with an injury, the typical absence is 2 weeks
+and a quarter of the time he never plays again that season. The longer
+he has been out, the worse the outlook: average total absence climbs
+2.7 → 3.6 → 4.7 weeks as misses pile up. His first game back runs
 15–25% below normal.
 
 ## 1. P(plays Sunday | Friday report status), 2018–2025
@@ -25,15 +28,14 @@ been out the worse the outlook gets (average total absence climbs
 | Doubtful | 185 | 1% |
 | Out | 1,065 | 0.1% |
 
-By position, Questionable: WR 75%, TE 74%, RB 68%, **QB 47%** — a
-listed QB is a genuine coin flip to suit up, but see below: if he
-plays, he's fine.
+By position, Questionable: WR 75%, TE 74%, RB 68%, **QB 47%**. A
+listed QB is a coin flip to suit up. If he plays, he's fine.
 
 ## 2. Playing through it: points vs own healthy baseline
 
-Healthy-week control (same leave-one-out ratio on unlisted weeks):
-median 0.89 — single weeks always sit below a mean baseline, so
-compare to that, not to 1.0.
+Healthy-week control, same leave-one-out ratio on unlisted weeks:
+median 0.89. Single weeks always sit below a mean baseline, so compare
+to 0.89, not to 1.0.
 
 | | n | median ratio | EV (mean) ratio |
 |---|---|---|---|
@@ -61,12 +63,13 @@ Questionable **TE** ~25% — bench the TE on any close call.
 | Foot | 29 | 3 | 4.1 | **34%** |
 | Groin | 28 | 1 | 2.0 | 21% |
 
-The hazard *rises* with time already missed (injuries that linger are
-the bad ones): given ≥1 week out, mean total absence 2.7 and 25%
-season-ending; given ≥3 weeks out, 4.7 and 34%. This is why the sim's
-drop rule (3 straight misses + no return = knowably done) is sound —
-by then a third of them are never coming back and real news has said
-so.
+The hazard *rises* with time already missed. Given ≥1 week out, mean
+total absence is 2.7 weeks and 25% are season-ending. Given ≥3 weeks
+out, 4.7 and 34%. Injuries that linger are the bad ones.
+
+That is why the sim's drop rule — 3 straight misses and no return means
+knowably done — is sound. By then a third of them are never coming
+back and real news has said so.
 
 Hold/cut guide: hamstrings come back (hold); feet are the stealth
 season-enders; concussions are short *or* career-alteringly long.
@@ -75,8 +78,8 @@ season-enders; concussions are short *or* career-alteringly long.
 
 First game after an absence: median **0.75×** baseline after a 1-week
 absence, **0.67×** after 2+ weeks (healthy control 0.89). Expect
-~15–25% less than his normal week 1 back; overlaps with §2 since
-returnees are usually tagged Questionable.
+~15–25% less than normal in his first week back. This overlaps with §2,
+since returnees are usually tagged Questionable.
 
 ## What the simulator now uses (environment v4)
 
@@ -86,14 +89,14 @@ returnees are usually tagged Questionable.
   ranking — flips ~5% of team-week start/sit calls.
 - Handcuff news promotion recalibrated from 577 real promotion weeks
   (`analysis/validate_promote.py`): k = 0.85 first week of an absence,
-  0.55 weeks 2–3, 0.30 after (was flat 0.75, which overvalued stale
-  news by ~1 ppg).
+  0.55 weeks 2–3, 0.30 after. Was a flat 0.75, which overvalued stale
+  news by ~1 ppg.
 - Knowably-done players (3+ straight misses, never return) are
   droppable and worth 0 — dead roster spots at week 14 fell to ~0.1
   per team.
 
-**All sim results produced before these changes are stale**; clear
-`results*/` before regenerating (the grid skips existing cells).
+**All sim results produced before these changes are stale.** Clear
+`results*/` before regenerating; the grid skips existing cells.
 
 ## Methodology
 
@@ -108,12 +111,12 @@ returnees are usually tagged Questionable.
 
 ## Caveats
 
-- Injury labels are coarse: "Knee" is a sprain or an ACL; the table is
-  the *blend*, so it understates the tail once an MRI says ligament.
-- "Never returns that year" counts any reason (IR, benched, cut) —
-  it's the roster-planning number, not a medical one.
+- Injury labels are coarse. "Knee" is a sprain or an ACL; the table is
+  the blend, so it understates the tail once an MRI says ligament.
+- "Never returns that year" counts any reason — IR, benched, cut. It
+  is the roster-planning number, not a medical one.
 - The Questionable discount conflates snap limits, pitch counts, and
-  true degradation — fine for start/sit, wrong for talent evaluation.
-- Game-time surprises are still not modeled: sim managers know actives
-  at lineup lock. The Q discount narrows this unrealism; a full
-  treatment would need per-seat attentiveness modeling.
+  true degradation. Fine for start/sit, wrong for talent evaluation.
+- Game-time surprises are not modeled: sim managers know actives at
+  lineup lock. The Q discount narrows this; a full treatment needs
+  per-seat attentiveness modeling.

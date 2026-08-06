@@ -1,15 +1,14 @@
 # 28 — Kicker weekly model: half as predictable as D/ST, and skill isn't the signal
 
-**Confidence: High** (4,215 kicker-weeks, 8 seasons, LOYO)
+**Confidence: High.** 4,215 kicker-weeks, 8 seasons, LOYO.
 
-## TL;DR
+Kickers are the least predictable position in fantasy. The kicker
+himself is the least important part of the prediction.
 
-Kickers are the least predictable position in fantasy — and the
-kicker himself is the least important part of the prediction.
 Ranking kickers by their own scoring history barely beats guessing
-(.079); adding Vegas lines, weather and coach tendencies reaches
-.186 — still only half as predictable as defenses. The model ladder
-(within-week Spearman, ESPN scoring, tested on held-out seasons):
+(.079). Adding Vegas lines, weather and coach tendencies reaches .186
+— still half as predictable as defenses. The model ladder (within-week
+Spearman, ESPN scoring, tested on held-out seasons):
 
 | model | Spearman | Pearson | MAE |
 |---|---|---|---|
@@ -28,23 +27,28 @@ Ranking kickers by their own scoring history barely beats guessing
   traits: share of drives ending in FG attempts (+5.1 — the
   stall/aggressiveness trait) and TD share (−2.9 — great offenses
   steal PAT-only games from their kicker).
-- Ceiling is low everywhere: best model .186 within-week rank corr —
+- Ceiling is low everywhere: best model .186 within-week rank corr,
   **half of D/ST's .304** (finding 27). Do not agonize between
-  comparable kickers; the model is a tilt, not an answer.
+  comparable kickers. The model is a tilt, not an answer.
 
 ## vs subvertadown
 
 His published K material (see Attribution) matches on every axis we
-can check: he calls kickers the least predictable position
-("predictability ~ individual WR1s"), average score ~7.5 with typical
-error ±3 (ours: mean 8.1 ESPN scoring, MAE 3.51), names win chance /
-coaching aggressiveness / dome-wind as inputs (all three carry real
-coefficients here), and claims his model beats "normal kicker models,
-represented by betting line accuracy" — our ladder confirms that
-direction and sizes it: everything beyond Vegas is worth **+0.02 rank
-corr**. His kicker page shows no free numeric ranks (unlike D/ST's
-top-2, which matched us exactly), so the head-to-head goes through
-the September accuracy log like everything else.
+can check:
+
+- He calls kickers the least predictable position ("predictability ~
+  individual WR1s").
+- He reports average score ~7.5 with typical error ±3. Ours: mean 8.1
+  ESPN scoring, MAE 3.51.
+- He names win chance, coaching aggressiveness and dome/wind as
+  inputs. All three carry real coefficients here.
+- He claims his model beats "normal kicker models, represented by
+  betting line accuracy." Our ladder confirms that direction and sizes
+  it: everything beyond Vegas is worth **+0.02 rank corr**.
+
+His kicker page shows no free numeric ranks, unlike D/ST's top-2,
+which matched us exactly. So the head-to-head goes through the
+September accuracy log like everything else.
 
 ## Methodology
 

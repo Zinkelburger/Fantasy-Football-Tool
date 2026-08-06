@@ -1,26 +1,26 @@
 # 20 — The 2nd QB / 2nd TE is a free choice; only the *timing* can hurt
 
-**Confidence: High** for the null (paired design, 1,440 seasons per
-arm, two independent base drafters agree). **Medium** for the
-"take QB2 by round 10, not 12–14" ordering.
+**Confidence: High** for the null. Paired design, 1,440 seasons per
+arm, two independent base drafters agree. **Medium** for the "take
+QB2 by round 10, not 12–14" ordering.
 
-## TL;DR
+## The number
 
-Should you spend a late pick on a backup QB or TE? It doesn't
-matter. We forced strategies to take one, and banned them from it,
-and every version landed within ±0.35 points of all-play of the
-control — worth nothing, costs nothing. That bench spot is yours to
-play with. Two timing mistakes *are* real, though: waiting until
-rounds 12–14 for a backup QB is mildly bad, and pushing your
-*starting* TE to round 10 without a streaming plan is genuinely
-expensive.
+Spending a late pick on a backup QB or TE does not matter. We forced
+strategies to take one, and banned them from it. Every version landed
+within ±0.35 points of all-play of the control. Worth nothing, costs
+nothing. That bench spot is yours to play with.
+
+Two timing mistakes are real. Waiting until rounds 12–14 for a backup
+QB is mildly bad. Pushing your *starting* TE to round 10 without a
+streaming plan is expensive.
 
 ## The data
 
-Engine v3, n=240 × 6 seasons = **1,440 seasons per arm**, hero rotating
-all 12 seats. Arms are *paired on seed*: sim `i` of every arm faced the
-same field from the same seat, so differences are within-pair and the
-CIs are far tighter than unpaired all-play CIs at this n.
+Engine v3, n=240 × 6 seasons = **1,440 seasons per arm**, hero
+rotating all 12 seats. Arms are paired on seed: sim `i` of every arm
+faced the same field from the same seat. Differences are within-pair,
+so the CIs are far tighter than unpaired all-play CIs at this n.
 
 **On the base disciplined drafter** (control .589):
 
@@ -39,7 +39,7 @@ CIs are far tighter than unpaired all-play CIs at this n.
 | punt TE to r10, single TE | .575 | **−1.42** | 0.46 | 15.2% |
 | punt TE to r10, two darts | .577 | **−1.17** | 0.47 | 15.0% |
 
-**On top of `pick_value`** (control .596) — same arms, same conclusion:
+**On top of `pick_value`** (control .596) — same arms, same answer:
 
 | Arm | All-play | vs ctrl | ±95% |
 |---|---|---|---|
@@ -50,7 +50,7 @@ CIs are far tighter than unpaired all-play CIs at this n.
 | 2nd QB @ r12 | .593 | −0.31 | 0.35 |
 | both | .593 | −0.33 | 0.37 |
 
-**The clean A/B — force the second vs ban it outright** (paired):
+**Force the second vs ban it outright** (paired):
 
 | Contrast | Δ all-play | ±95% | |
 |---|---|---|---|
@@ -67,8 +67,7 @@ first TE*, not whether you take a second.
 
 ## Why the dart throw doesn't pay
 
-**Not because the backup never plays.** On frozen post-draft rosters
-(no waivers), the backup is used more than folklore suggests:
+The backup does play. On frozen post-draft rosters, no waivers:
 
 | pair | weeks the backup started | season pts added | slot empty 1-deep | 2-deep |
 |---|---|---|---|---|
@@ -78,12 +77,11 @@ first TE*, not whether you take a second.
 A QB1 misses ~2.4 weeks to bye and injury and gets out-projected in
 another ~1.4, so the QB2 starts ~3.9 weeks a season.
 
-**It doesn't pay because the wire sells the same ticket.** Those
-numbers are the value of a backup *when you cannot replace him* — an
-upper bound. Switch waivers on and the "empty slot" weeks, which are
-the bulk of the backup's job, get filled by a Tuesday claim instead of
-a draft pick. The slot decomposition of full seasons shows the money
-moving, then cancelling:
+**The wire sells the same ticket.** Those numbers price a backup you
+*cannot* replace — an upper bound. Switch waivers on and the empty-slot
+weeks, which are the bulk of the backup's job, get filled by a Tuesday
+claim instead of a draft pick. The slot decomposition of full seasons
+shows the money move, then cancel:
 
 ```
 vs control (reg-season pts by slot)   QB     RB     WR     TE   FLEX   total
@@ -92,18 +90,17 @@ never a 2nd QB                      -6.4   +1.4   +2.2   -1.2   +0.5    -5.4
 ```
 
 Banning the TE2 costs TE-slot points and gets them back at RB/WR/FLEX.
-Banning the QB2 costs more than it recovers — but ~5 points on a
-~1,150-point season is 0.5%, which is exactly why all-play can't see
-it. This is [finding 19](19-bench-composition.md)'s mechanism again:
-rounds 10–15 are worth so little that no reshuffling of them registers.
+Banning the QB2 costs more than it recovers. But ~5 points on a
+~1,150-point season is 0.5%, which is why all-play cannot see it.
+[Finding 19](19-bench-composition.md)'s mechanism again: rounds 10–15
+are worth so little that no reshuffling of them registers.
 
-## A note on `pick_value`'s reasoning
+## Where `pick_value` gets it wrong
 
-`pick_value` drafts a QB2 in **100.0%** of drafts (median round 10) and
-a TE2 in 69.2% (median round 12), measured over 240 drafts across the
-six seasons; the base drafter is 97.1% / 65.4%. The QB2 habit looks
-wrong and is *reasoned* wrong — but the error turns out not to cost
-anything. At a round-10 pick it scores:
+`pick_value` drafts a QB2 in **100.0%** of drafts (median round 10)
+and a TE2 in 69.2% (median round 12), over 240 drafts across the six
+seasons. The base drafter is 97.1% / 65.4%. The QB2 habit is reasoned
+wrong, and the error costs nothing. At a round-10 pick it scores:
 
 ```
 Tua Tagovailoa    QB  adp= 96.7   raw wait_cost= 24.0   <- takes this
@@ -113,35 +110,34 @@ Damien Harris     RB  adp=100.5   raw wait_cost=  8.4
 
 The fitted QB curve is ~2× as steep *in raw points* (slope −76.7 per
 ln-pick vs −39.3 RB, −32.7 WR) purely because QBs score ~370 points a
-season to an RB's ~160. So waiting always looks costlier at QB.
+season to an RB's ~160. Waiting always looks costlier at QB.
 
-The wait-cost differential itself is sound, and genuinely
-replacement-like: at a round-5 pick the best available kicker scores
-`wait_cost = 0.0`, because no one will take a K before your next turn,
-so the same kicker is still there — exactly the property the docstring
-claims. The error is narrower than "it isn't VORP." It is that **for a
-bench player the formula uses the wrong baseline**. It asks *how much
-worse is the QB I could draft next round*, when the real question is
-*how much better is this QB than the one I would stream the week I
-actually need him*. The flat `BENCH_WEIGHT = 0.45`
-(`simfl/strategies.py:270`) is the stand-in for that, and it is most
-wrong at QB — where the streaming alternative is nearly as good and the
-raw-points scale is double everyone else's.
+The wait-cost differential is sound and genuinely replacement-like. At
+a round-5 pick the best available kicker scores `wait_cost = 0.0`,
+because nobody takes a K before your next turn, so the same kicker is
+still there — exactly the property the docstring claims.
 
-The arms above say fixing it would buy ≈0.1–0.3 points of all-play,
-i.e. nothing — so it is a wart, not a leak.
+The error is narrower than "it isn't VORP." **For a bench player the
+formula uses the wrong baseline.** It asks *how much worse is the QB I
+could draft next round*, when the real question is *how much better is
+this QB than the one I would stream the week I actually need him*. The
+flat `BENCH_WEIGHT = 0.45` (`simfl/strategies.py:270`) stands in for
+that, and it is most wrong at QB — where the streaming alternative is
+nearly as good and the raw-points scale is double everyone else's.
 
-## Practical rules
+Fixing it would buy ≈0.1–0.3 points of all-play. A wart, not a leak.
+
+## Rules
 
 1. **Backup QB/TE: do what you feel like.** It is not a strategy, and
    nobody at the table is gaining or losing a game over it.
 2. **If you do take a QB2, take it around round 10** — not 12–14. By
-   then the startable backups are gone and you are just burning a pick
+   then the startable backups are gone and you are burning a pick
    (−0.41 at r12, −0.60 at r14).
-3. **Don't stack both** — TE2 r12 + QB2 r13 is the worst non-punt arm
+3. **Don't stack both.** TE2 r12 + QB2 r13 is the worst non-punt arm
    tested (−0.67).
-4. **Don't punt your TE1 to round 10 unless you actually intend to
-   stream** (−1.42). A second dart does not rescue it (+0.25, noise).
+4. **Don't punt your TE1 to round 10 unless you intend to stream**
+   (−1.42). A second dart does not rescue it (+0.25, noise).
 
 ## Methodology
 
@@ -160,17 +156,17 @@ venv/bin/python scripts/stash_mechanism.py   # slot + frozen-roster views
 
 ## Caveats
 
-- The `never` arms are **draft-only bans**; the waiver policy may still
-  add a QB/TE in-season. That is realistic but softens the contrast, so
-  the true forced-vs-banned gap is if anything smaller than shown.
+- The `never` arms are draft-only bans. The waiver policy may still
+  add a QB/TE in-season, which softens the contrast: the true
+  forced-vs-banned gap is smaller than shown, not larger.
 - `punt TE to r10, single TE` bans the TE2 *and* carries no streaming
-  policy, so its −1.42 is not a clean test of TE1 timing and does **not**
-  overturn [finding 05](05-never-pay-up-for-te.md), whose round-10+ advice
-  is explicitly conditional on streaming the position afterward.
-- Title-rate columns move ±1.5% on noise at this n (SE ≈ 1.0%); the
+  policy, so its −1.42 is not a clean test of TE1 timing and does not
+  overturn [finding 05](05-never-pay-up-for-te.md), whose round-10+
+  advice is conditional on streaming the position afterward.
+- Title-rate columns move ±1.5% on noise at this n (SE ≈ 1.0%). The
   17.9% for QB2 @ r10 is not a real title edge.
 - The QB2 ordering (r10 > r12 > r14) is three cells with overlapping
-  CIs; the *sign* is consistent but the shape is soft.
+  CIs. The sign is consistent, the shape is soft.
 - All of this is against the calibrated family field. A room that
   hoards QBs early would make the last startable QB scarcer and could
   move the QB2 result.

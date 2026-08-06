@@ -5,16 +5,16 @@ order (−0.001 ± 0.023 over 36 position-classes). **Low** on anything
 about rookie ADP — the fantasy market prices too few rookies to test it
 at three of four positions.
 
-**CORRECTION 2026-08-05.** This finding previously claimed the model
-"beats rookie ADP at QB/WR/TE, loses at RB." That was an artifact of
-giving every rookie the fantasy market never priced a **tied**
-worst-rank of 999 — 74% of the panel. The old version explicitly
-argued the finding-25 bug did not apply here because the player set
-was the same. That reasoning was wrong: the set was the same, but the
-benchmark was crippled. A tied block is not a ranking, and the model
-was being scored on its ability to sort a group ADP was never asked
-to sort. Fixed in `analysis/rookie_model.py` (`market_adp_rank` now
-returns NaN and callers mask); corrected results below.
+> **Corrected 2026-08-05.** This used to claim the model "beats rookie
+> ADP at QB/WR/TE, loses at RB." That was an artifact of giving every
+> rookie the fantasy market never priced a **tied** worst-rank of 999
+> — 74% of the panel. The old version explicitly argued the finding-25
+> bug did not apply here because the player set was the same. That
+> reasoning was wrong: the set was the same, but the benchmark was
+> crippled. A tied block is not a ranking, and the model was being
+> scored on its ability to sort a group ADP was never asked to sort.
+> Fixed in `analysis/rookie_model.py` (`market_adp_rank` now returns
+> NaN and callers mask). Corrected results below.
 
 ## Question
 
@@ -42,7 +42,7 @@ rookie), because it prices his path to the field, not the player.
 - **Eval**: leave-one-class-out Spearman, run separately against each
   benchmark **on the rows where that benchmark is defined**.
 
-## Why rookie ADP can barely be tested at all
+## Why rookie ADP can barely be tested
 
 Only **185 of 721** drafted rookies (26%) were ever priced by the
 fantasy market. Priced rookies per class, by position:
@@ -82,9 +82,9 @@ where the NFL drafted them."
 
 The coefficients say why: `ln_pick` is −2.75 (QB), −2.02 (RB), −1.38
 (WR), −0.85 (TE) — 3–6× any other input. The model is mostly a
-smoothed restatement of draft capital. QB looks better than draft order
-(+.065 mean) but on 9 classes of n≈9–14 that is one standard error of
-noise, not a position-level verdict.
+smoothed restatement of draft capital. QB looks better than draft
+order (+.065 mean), but on 9 classes of n≈9–14 that is one standard
+error of noise.
 
 ## B) Rookies the fantasy market priced — the ADP head-to-head
 
@@ -102,13 +102,12 @@ Paired over the 10 testable cells:
 | model − ADP | −0.078 | 0.099 | 3/10 |
 | draft order − ADP | −0.118 | 0.095 | 2/10 |
 
-The model does not beat rookie ADP, and neither does raw draft order.
-Neither gap clears its own standard error on 10 cells, so the honest
-statement is: **on the rookies the market bothers to price, we have no
-evidence of an edge, and the point estimate is against us.** The one
-thing that does replicate from the old version is the RB story — the
-fantasy crowd is good at rookie backfields (ADP .599 vs model .420 over
-7 classes).
+The model does not beat rookie ADP. Neither does raw draft order.
+Neither gap clears its own standard error on 10 cells. **On the
+rookies the market bothers to price, we have no evidence of an edge,
+and the point estimate is against us.** The RB story replicates from
+the old version: the fantasy crowd is good at rookie backfields (ADP
+.599 vs model .420 over 7 classes).
 
 ## C) Accuracy in POINTS, not ranks (`analysis/rookie_accuracy.py`)
 
@@ -123,14 +122,14 @@ classes 2020-25, LOYO predictions, target = PPG per SCHEDULED game.
 | draft order (LOYO log fit on ln pick) | **1.73** | −0.01 | **2.49** |
 | class-position mean | 2.50 | −0.00 | 3.26 |
 
-Same verdict as block A, now in points: the model cuts error 28% vs
+Same verdict as block A, now in points. The model cuts error 28% vs
 predicting the average, and is a hair WORSE than a curve through draft
 position. Per class it beats draft order in 3 of 6 (2021, 2022, 2025).
 Per position it is level at RB/WR/TE (within 0.05 MAE) and clearly
-worse at QB (2.93 vs 2.55) — note QB is where block A's rank
+worse at QB (2.93 vs 2.55) — and QB is where block A's rank
 correlation looked *best* (.644 vs .579). It orders quarterbacks fine
 and prices them badly, because rookie QB outcomes have the widest
-spread (a hit averages 20, a bust 4).
+spread: a hit averages 20, a bust 4.
 
 **Calibration is the one genuine strength.** Bucketed by projection:
 
@@ -144,9 +143,8 @@ spread (a hit averages 20, a bust 4).
 
 Every bucket's mean projection lands on its mean outcome, and the
 tiers separate hard (1% -> 86% startable). The board's *numbers* are
-honest and its *tiers* are informative even though its *ordering*
-adds nothing over draft position. Those are separable claims and we
-should stop conflating them.
+honest and its *tiers* are informative even though its *ordering* adds
+nothing over draft position. Those are separable claims.
 
 Usefulness check — startable (>=7 PPG) rookies inside each list's top
 10, summed over the six classes: **model 33, NFL's top 10 picks 33.**
@@ -196,20 +194,21 @@ It dissolves within position:
 | WR | 55 | 0.768 | 0.720 | +0.048 |
 | TE | 12 | — | — | (too few) |
 
-RB reverses, WR is small, and the pooled gap was carried by 16
-quarterbacks plus the composition effect of pooling positions with very
-different startable rates (rookie QBs clear 7 PPG far more often than
-rookie TEs). Pooled AUC across positions is not a safe statistic here.
-No edge over rookie ADP survives.
+RB reverses and WR is small. The pooled gap was carried by 16
+quarterbacks plus the composition effect of pooling positions with
+very different startable rates — rookie QBs clear 7 PPG far more often
+than rookie TEs. Pooled AUC across positions is not a safe statistic
+here. No edge over rookie ADP survives.
 
-Receipts (model top-5 per class) show the failure mode is availability,
-not evaluation: the worst misses are Travis Etienne (proj 7.1, actual
-0.0), J.J. McCarthy (7.0, 0.0) and Travis Hunter (8.6, 0.0) — all
-missed the season. Per-SCHEDULED-game charges those to the model in
-full, which is the right call for a draft board but means ~a third of
-its error is an injury model's job, not a projection's. Biggest
-under-calls are the QB league-winners it saw as ordinary: Herbert
-(7.9 -> 20.0), Daniels (8.6 -> 20.2), Stroud (10.3 -> 15.4).
+Receipts (model top-5 per class) show the failure mode is
+availability, not evaluation. The worst misses are Travis Etienne
+(proj 7.1, actual 0.0), J.J. McCarthy (7.0, 0.0) and Travis Hunter
+(8.6, 0.0) — all missed the season. Per-SCHEDULED-game charges those
+to the model in full, which is the right call for a draft board but
+means ~a third of its error is an injury model's job, not a
+projection's. Biggest under-calls are the QB league-winners it saw as
+ordinary: Herbert (7.9 -> 20.0), Daniels (8.6 -> 20.2), Stroud
+(10.3 -> 15.4).
 
 ## Coefficients (lam=30, full panel, standardized)
 
@@ -222,12 +221,12 @@ overfit, not signal.
 
 ## Product rule (changed)
 
-The rookie board is, in effect, **a draft-order list with a landing-spot
-tilt** — present it that way. Do not claim it beats the fantasy market;
-at RB the market is measurably better and rookie ADP should lead. The
-board remains useful as a *coverage* tool (it prices all 80 drafted
-rookies, where ADP prices ~20), which is a different and honest claim
-from being more accurate.
+The rookie board is, in effect, **a draft-order list with a
+landing-spot tilt** — present it that way. Do not claim it beats the
+fantasy market. At RB the market is measurably better and rookie ADP
+should lead. The board remains useful as a *coverage* tool: it prices
+all 80 drafted rookies where ADP prices ~20. That is a different and
+honest claim from being more accurate.
 
 Board CSV: `data/market/rookie_board_2026.csv` (rebuild via
 `analysis/rookie_model.py`, then `build_deploy.py`).

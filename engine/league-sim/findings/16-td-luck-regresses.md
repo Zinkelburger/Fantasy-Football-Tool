@@ -1,22 +1,19 @@
 # 16 — TD luck regresses hard (the one repricing edge in this study)
 
-**Confidence: High** (p = 0.0002, effect negative in 8/8 season
-pairs, clustered CI well clear of zero, coherent mechanism)
-
-## TL;DR
+**Confidence: High.** p = 0.0002, negative in 8/8 season pairs,
+clustered CI well clear of zero, coherent mechanism.
 
 Touchdowns are the luckiest stat in football, and the market keeps
-paying full price for them. Whether a player scored more or fewer
-TDs than his chances deserved does **not** carry over from year to
-year (r = +0.05, statistically zero) — yet TDs are ~40% of standard
-scoring. The consequence is predictable: the players who got
-luckiest on TDs score about **1.6 PPG less** the next season than
-equally-productive players who got unlucky, a gap that showed up in
-**all eight** season pairs we checked. Over a 14-week season that's
-~23 hidden points per flagged player: fade last year's TD-lucky,
-buy the TD-unlucky.
+paying full price for them. Whether a player scored more or fewer TDs
+than his chances deserved does **not** carry over from year to year
+(r = +0.05, statistically zero) — yet TDs are ~40% of standard
+scoring. So the players who got luckiest on TDs score about **1.6 PPG
+less** the next season than equally-productive players who got
+unlucky, in **all eight** season pairs we checked. Over a 14-week
+season that's ~23 hidden points per flagged player. Fade last year's
+TD-lucky, buy the TD-unlucky.
 
-## The data
+## The number
 
 Same sample as finding 15 (rosterable players, 2017→2025). TDOE =
 (rush+rec TD) − (expected rush+rec TD), from `ff_opportunity`'s
@@ -30,25 +27,24 @@ depth, etc.
 | Lucky-vs-unlucky quintile gap (Δ PPG) | **−1.63** | — | [−2.2, −1.0] | 957 |
 
 Per-season gaps: −0.2, −1.2, −1.4, −2.3, −2.1, −1.3, −2.1, −2.9 —
-negative in 8/8 (one-sided sign p = 0.004); the partial correlation
+negative in 8/8 (one-sided sign p = 0.004). The partial correlation
 is negative in 7/8.
 
-Two honest nulls attached to the same analysis:
+Two nulls attached to the same analysis:
 
-- **QBs**: pass-TDOE partial r = −0.146, p = 0.056, CI [−0.28, +0.02],
-  n = 168. Same direction, same size — but not independently
-  significant at this sample. Treat QB TD-luck as Medium-confidence
-  corroboration, not its own proof.
-- **xTD is NOT a better raw projector**: r(xTD → next TD) beats
-  r(TD → next TD) by only +0.014 (CI [−0.03, +0.06]). The value of
-  expected TDs is *flagging outliers*, not replacing projections.
+- **QBs.** Pass-TDOE partial r = −0.146, p = 0.056, CI [−0.28, +0.02],
+  n = 168. Same direction, same size, not independently significant
+  at this sample. Medium-confidence corroboration, not its own proof.
+- **xTD is NOT a better raw projector.** r(xTD → next TD) beats
+  r(TD → next TD) by only +0.014 (CI [−0.03, +0.06]). Expected TDs
+  flag outliers. They don't replace projections.
 
 ## Why the market misses it
 
-TD rate per opportunity is nearly all noise (a 60-yard bomb vs a
-tackle at the 1), but TDs dominate highlight reels, season-recap
+TD rate per opportunity is nearly all noise — a 60-yard bomb vs a
+tackle at the 1. But TDs dominate highlight reels, season-recap
 points totals, and therefore ADP. Opportunity (touches, red-zone
-usage) persists; conversion doesn't. Everyone drafting off last
+usage) persists. Conversion doesn't. Everyone drafting off last
 year's finish is drafting the conversion luck too.
 
 ## 2026 draft lists (from 2025, `ff_opportunity`)
@@ -83,9 +79,9 @@ Buy (TDs under expected):
 
 QBs: Dak **−10.7**(!), Mahomes −8.1, Bo Nix −4.3.
 
-These shift priors ~1–2 PPG; they don't override role changes,
-age, or injury. A fade means "don't pay the TD-inflated price,"
-not "never roster."
+These shift priors ~1–2 PPG. They don't override role changes, age,
+or injury. A fade means "don't pay the TD-inflated price," not
+"never roster."
 
 ## Methodology
 
@@ -98,12 +94,12 @@ TDOE quintile minus bottom quintile. Stats machinery as in finding 15.
 ## Caveats
 
 - xTD is itself a model; systematic biases (e.g. elite-finisher
-  effects) would inflate apparent "luck." Mitigation: even the
-  luckiest *quintile* — full of genuinely good players — regressed
-  in 8/8 years.
+  effects) would inflate apparent "luck." Even the luckiest
+  *quintile* — full of genuinely good players — regressed in 8/8
+  years.
 - A few players (goal-line hammers, Tyreek-tier burners) may sustain
-  positive TDOE across years; with persistence r = 0.05 they are
+  positive TDOE across years. With persistence r = 0.05 they are
   rare. Check usage before fading a repeat offender.
-- Lists use 2025 stats only; injuries/roles already changed some
-  prices (e.g. Jefferson's down year has other causes too — see
-  finding 17, where he's also the #2 target-excess buy).
+- Lists use 2025 stats only; injuries and roles already changed some
+  prices. Jefferson's down year has other causes too — see finding
+  17, where he's also the #2 target-excess buy.

@@ -1,14 +1,12 @@
 # 07 — What a starter is worth: the value curves behind everything
 
-**Confidence: High** (descriptive averages over six full seasons)
+**Confidence: High.** Descriptive averages over six full seasons.
 
-## TL;DR
-
-How much better is the #1 player at each position than the #10, in
-points per game? This table (2020–2025, league scoring) is the spine
-of every draft rule here: RB value falls off a cliff, WR stays nearly
-flat for 20+ ranks, TE is elite-or-nothing, QB scores the most but is
-replaceable, and kickers are a rounding error.
+RB value falls off a cliff. WR stays nearly flat for 20+ ranks. TE is
+elite-or-nothing. QB scores the most and is the most replaceable.
+Kickers are a rounding error. The table below — points per game at
+each positional rank, 2020–2025, league scoring — is the spine of
+every draft rule here.
 
 ## The data
 
@@ -25,42 +23,40 @@ replaceable, and kickers are a rounding error.
 | #22 | 14.0 | 9.8 | 8.5 | 4.4 | 7.9 |
 | #28 | 11.9 | 8.6 | 8.0 | 3.6 | 7.1 |
 
-Reading it against this league's lineup (1 QB / 2 RB / 2 WR / TE /
-RB-WR FLEX / K in 12 teams — so the "last starter" is roughly QB12,
-RB30, WR30, TE12, K12):
+This league starts 1 QB / 2 RB / 2 WR / TE / RB-WR FLEX / K across 12
+teams, so the last starter is roughly QB12, RB30, WR30, TE12, K12.
 
-- **RB**: RB1→RB10 loses 6.8 PPG; the position's entire premium lives
-  in the first ~12 names. This is finding 01's engine.
-- **WR**: WR7→WR28 loses only 3.5 PPG. Mid WRs are near-commodities —
-  which is why WR-heavy fails (02) and why the mid-round WR game is
-  about hit *rate*, not slot (08).
-- **TE**: TE1 (11.2) is a genuine weapon; TE7 (6.9) is barely above
-  TE12 (5.9). Elite-or-punt; the league sells the middle at round-5
+- **RB**: RB1→RB10 loses 6.8 PPG. The entire premium lives in the
+  first ~12 names. This is finding 01's engine.
+- **WR**: WR7→WR28 loses 3.5 PPG. Mid WRs are near-commodities. That
+  is why WR-heavy fails (02) and why the mid-round WR game is about
+  hit *rate*, not slot (08).
+- **TE**: TE1 (11.2) is a genuine weapon. TE7 (6.9) is barely above
+  TE12 (5.9). Elite or punt — the league sells the middle at round-5
   prices (05).
-- **QB**: biggest absolute drop (23.5 → 16.3 by QB13), but the last
-  starter still scores 16+ — more than any RB2. High floor is why
-  waiting is survivable; steep top is why streaming isn't (06).
+- **QB**: biggest absolute drop (23.5 → 16.3 by QB13), and the last
+  starter still scores 16+, more than any RB2. The high floor is why
+  waiting is survivable. The steep top is why streaming isn't (06).
 - **K**: 11.5 → 8.4 across the entire startable population. Three
-  points separate the best from the worst starter (04).
+  points separate the best starter from the worst (04).
 
 ## Methodology
 
 - For each season 2020–2025: rank all players at each position by
   season PPG (min 6 games), take PPG at each rank, average the curves
   across the six seasons.
-- PPG (not season total) avoids conflating quality with games played;
-  the min-games filter removes cameo distortion.
+- PPG instead of season total keeps games played out of the quality
+  measure. The min-games filter removes cameo distortion.
 - Scoring is league-exact standard (whole-point floors, 4-pt pass TD).
-  These curves would look materially different in PPR — WR/TE flatten
-  upward — which is exactly why imported advice misleads (02).
+  PPR flattens the WR/TE curves upward, which is why imported advice
+  misleads (02).
 - Reproduce: `venv/bin/python -m simfl analyze scarcity` and
   `venv/bin/python -m simfl.plots` (fig1).
 
 ## Caveats
 
-- End-of-season ranks are hindsight; a *draft-time* version of this
-  chart (points by ADP slot) is noisier but same-shaped (fig6 shows
-  the QB version).
-- Averaging six seasons smooths real year-to-year swings (2023's RB
-  top-tier was much weaker than 2024's); the strategy backtests, not
-  the averaged curve, carry the year-risk story (01's per-year row).
+- End-of-season ranks are hindsight. The draft-time version (points by
+  ADP slot) is noisier and the same shape (fig6 shows the QB version).
+- Six-season averages smooth real year-to-year swings — 2023's RB top
+  tier was much weaker than 2024's. The strategy backtests carry the
+  year-risk story (01's per-year row), not this curve.

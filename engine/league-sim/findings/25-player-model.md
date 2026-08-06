@@ -1,14 +1,14 @@
 # 25 — Our projection model does NOT beat the ADP board (corrected)
 
-**Confidence: High** on the correction (it is an apples-to-apples fix,
-and the sign flips at every position). **Low** on the one thing that
-still wins — the ADP+model stack is +0.006 ± 0.005, about 1σ.
+**Confidence: High** on the correction — apples-to-apples fix, and the
+sign flips at every position. **Low** on the one thing that still wins:
+the ADP+model stack is +0.006 ± 0.005, about 1σ.
 
-**CORRECTION 2026-08-05.** This finding previously claimed the model
-out-ranked ADP at QB (+.09), WR (+.11) and TE (+.15). That was an
-artifact of scoring the two boards on **different sets of players**.
-Fixed in `analysis/player_model.py`; the corrected result is below.
-The old headline table is wrong and should not be quoted.
+> **Corrected 2026-08-05.** This finding used to claim the model
+> out-ranked ADP at QB (+.09), WR (+.11) and TE (+.15). That was an
+> artifact of scoring the two boards on **different sets of players**.
+> Fixed in `analysis/player_model.py`; the corrected result is below.
+> The old headline table is wrong and should not be quoted.
 
 ## Attribution
 
@@ -37,8 +37,7 @@ model = spearman(pred, te.y.values)                        # all 2,232
 adp   = spearman(-te.adp_next.values[m], te.y.values[m])   # only the 1,217
 ```
 
-The 1,015 extra rows are not marginal — they are a different
-population, and a much wider one:
+The 1,015 extra rows are a different population, and a much wider one:
 
 | pos | with ADP (n, next-yr PPG) | no ADP (n, next-yr PPG) |
 |---|---|---|
@@ -50,9 +49,8 @@ population, and a much wider one:
 Rank-ordering a field that runs from stars to scrubs is far easier than
 ordering only draftable players. The model was being credited for the
 free call *"the undrafted guys finish worse"* — a call ADP was never
-graded on. The tell: the naive baseline drops by almost exactly the
-same amount under the fix (.603 → .480), so it is the population, not
-the model.
+graded on. The naive baseline drops by almost exactly the same amount
+under the fix (.603 → .480). It is the population, not the model.
 
 ## Corrected results
 
@@ -77,17 +75,17 @@ Paired against ADP, one pair per position-year (n=32):
 | **stack − ADP** | **+0.006** | 0.005 | 18/32 |
 
 **The model loses to ADP at all four positions.** The only board that
-edges the market on rank accuracy is the stack, and at +0.006 ± 0.005
-that is about one standard error — suggestive, not established.
+edges the market on rank accuracy is the stack, and +0.006 ± 0.005 is
+about one standard error. Suggestive, not established.
 
 **Do not act on that stack number.** [Finding 32](32-draft-sim.md)
 took the same boards into 9,000 simulated leagues and measured what
 they are actually for: pure ADP won titles at 20.7%, a 25% model tilt
 at 18.7%, a 50/50 blend at 14.8%, the pure model at 10.8%. Every step
 toward the model made drafting worse. Rank correlation over the whole
-ADP pool is simply not the objective — most of that pool is picked in
-rounds you can rebuild off the wire, so ordering it better buys little,
-while the stack's disagreements near the top cost real picks.
+ADP pool is not the objective — most of that pool is picked in rounds
+you can rebuild off the wire, so ordering it better buys little, while
+the stack's disagreements near the top cost real picks.
 
 The practical rule, from finding 32 rather than from this table:
 *draft off ADP in order; the model is context for choosing between
@@ -99,7 +97,7 @@ one. ADP is priced in August with camp reports, depth charts,
 coordinator changes, holdouts, and the rookies competing for the same
 touches. The model sees last season's box score, contracts, and age.
 
-## Things that were tried and did not rescue it
+## What didn't rescue it
 
 All on the matched population, LOYO, paired over 32 position-years:
 
@@ -110,10 +108,10 @@ All on the matched population, LOYO, paired over 32 position-years:
 | ADP + ¼·model | .605 | +0.007 ± 0.003 |
 | ADP + ½·model | .610 | +0.012 ± 0.005 |
 
-Giving the model ADP as a feature pulls it up to a tie and no further —
-i.e. the model carries essentially no information the board lacks.
-(These four rows predate the `yrs` and `tm_rook_pick` features; the
-shipped model's stack number is the +0.006 in the table above.)
+Giving the model ADP as a feature pulls it up to a tie and no further.
+The model carries essentially no information the board lacks. (These
+four rows predate the `yrs` and `tm_rook_pick` features; the shipped
+model's stack number is the +0.006 in the table above.)
 
 ## The position room (depth chart) — real signal, no edge
 
@@ -138,11 +136,11 @@ lifted the standalone model from .550 to .577 pooled and cut its
 deficit to ADP from −0.048 to −0.021, almost all of it at QB
 (.499 → .576).
 
-**But it adds nothing on top of ADP**: stacked, +0.011 ± 0.006 with the
+**It adds nothing on top of ADP.** Stacked: +0.011 ± 0.006 with the
 room features vs +0.012 ± 0.005 without; paired head-to-head
 **−0.001 ± 0.005**. The reason is structural — five of the six features
 are *computed from the ADP board*, so the model was re-deriving what
-the board already knew. Note this also kills the "self-sufficiency"
+the board already knew. That also kills the "self-sufficiency"
 argument for shipping them: features read off ADP do not survive the
 loss of the ADP feed either.
 
@@ -161,15 +159,15 @@ later pick (or none) at your position is good for you, i.e. **an early
 rookie at your position costs the incumbent.** Consistent and
 mechanistically sensible.
 
-Its effect on rank accuracy is *not* established: stacked on ADP it
+Its effect on rank accuracy is not established: stacked on ADP it
 moved +0.0024 ± 0.0025 (t = 0.96), positive at QB (+0.011, 6/8 years)
 and WR (+0.007, 6/8), negative at TE (−0.008, 2/8). Kept because the
-mechanism is real and ridge shrinks it if it is noise; flagged here as
+mechanism is real and ridge shrinks it if it is noise. Flagged here as
 unproven.
 
 ## What the coefficients say (standardized, λ=30, full panel)
 
-Unaffected by the correction — these are descriptive fits, not the
+Unaffected by the correction. These are descriptive fits, not the
 head-to-head.
 
 | feature | QB | RB | WR | TE |
@@ -184,11 +182,11 @@ head-to-head.
 | rookie drafted at his position | +0.25 | +0.41 | +0.32 | +0.21 |
 | rushing yds/g | +0.19 | **+0.74** | −0.08 | +0.08 |
 
-- **TD-luck regresses**, formalizing finding 16 inside a multivariate
+- **TD luck regresses**, formalizing finding 16 inside a multivariate
   model — except at RB, where TDs are goal-line *role* and it persists.
-- **Age decay is real at RB and WR**; at TE it is mileage (seasons
+- **Age decay is real at RB and WR.** At TE it is mileage (seasons
   played), not birthdays.
-- **The salary hypothesis (league-mate's idea) works**: share of the
+- **The salary hypothesis (league-mate's idea) works.** Share of the
   team's position-room cap is by far the strongest QB feature.
 - **Changing teams costs**, most at QB.
 - Caveat: PPG, expected-PPG and the efficiency gap are linearly
@@ -214,12 +212,13 @@ use the upcoming season's numbers — knowable at draft time.
   a distinct prediction for each, which handicaps the benchmark the
   same way this one was handicapped.
 - Survivorship: players who wash out of the league entirely leave the
-  panel; the model doesn't price roster-cut risk.
-- PPG target sidesteps availability; total-points drafting should
+  panel. The model doesn't price roster-cut risk.
+- The PPG target sidesteps availability. Total-points drafting should
   multiply by an expected-games model (finding 21's machinery).
 - The PPR/half-PPR boards are separate fits but are **not** separately
-  evaluated — the LOYO table above is standard scoring only, and the
-  free ADP feeds don't archive per-format history to benchmark against.
+  evaluated. The LOYO table above is standard scoring only, and the
+  free ADP feeds don't archive per-format history to benchmark
+  against.
 - One model per position, ~20 features, n≈300–560. Year-to-year spread
   is wide (see the per-year table in the script output); 2019 was hard
   for everything.

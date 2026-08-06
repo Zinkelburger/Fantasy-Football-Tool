@@ -1,23 +1,26 @@
 # 30 — Good-offense tiebreak: the market already priced it
 
-**Confidence: High** on both halves — the team-level signal is positive
-in 23 of 23 seasons, and the player-level null is stable across every
-threshold choice we tried (1,414 close-ADP pairs over eight boards).
+**Confidence: High** on both halves. The team-level signal is positive
+in 23 of 23 seasons. The player-level null is stable across every
+threshold we tried (1,414 close-ADP pairs, eight boards).
 
-## TL;DR
+Two questions, opposite answers.
 
-Two questions, opposite answers. Does the preseason betting market know
-which offenses will score? Yes, reliably: the August win-total line
-correlated with actual points per game at mean Spearman +0.45 across
-2003-2025, positive in all 23 seasons (2025: +0.39; the top-8 teams by
-line averaged 25.5 PPG, the bottom-8 18.0). Should you therefore break
-a draft tie toward the player on the better offense? No: among
-same-position players drafted within 6 ADP slots of each other whose
-teams' lines sat 1.5+ wins apart, the better-offense player finished
-with more points only **46%** of the time (646/1414, 2018-2025) — at
-or below a coin flip in every position and under every variant tested.
+Does the preseason betting market know which offenses will score? Yes,
+reliably. The August win-total line correlated with actual points per
+game at mean Spearman +0.45 across 2003-2025, positive in all 23
+seasons. 2025 was +0.39, and the top-8 teams by line averaged 25.5 PPG
+against the bottom-8's 18.0.
+
+Should you therefore break a draft tie toward the player on the better
+offense? No. Among same-position players drafted within 6 ADP slots of
+each other whose teams' lines sat 1.5+ wins apart, the better-offense
+player finished with more points **46%** of the time (646/1414,
+2018-2025). At or below a coin flip in every position and under every
+variant tested.
+
 ADP already carries the team context. The offense number is real
-information about *teams* (it drives our K and D/ST boards) and zero
+information about *teams* — it drives our K and D/ST boards — and zero
 information about *which of two similarly-drafted players to take*.
 
 ## The signal and its proxy
@@ -71,21 +74,21 @@ ask who actually finished with more points.
 | TE | 23/53 (43%) |
 | **all** | **646/1414 (46%)** |
 
-Per-season: above 50% in only 2 of 8 seasons (53% at best, 35% at
-worst). Robustness — widening the ADP window to 12, demanding a 2.5 or
-3-win gap, cutting to ADP ≤ 100, or scoring per-game with an 8-game
+Per season it clears 50% in only 2 of 8 seasons: 53% at best, 35% at
+worst. Robustness — widening the ADP window to 12, demanding a 2.5 or
+3-win gap, cutting to ADP ≤ 100, scoring per-game with an 8-game
 minimum — moves the number between 44% and 51%, never meaningfully
-above the flip. (The naive binomial p for "beats a coin flip" is 0.9995;
-overlapping pairs share players so that p is anti-conservative, which is
-why the per-season signs are the honest read.)
+above the flip. (The naive binomial p for "beats a coin flip" is
+0.9995; overlapping pairs share players, so that p is
+anti-conservative and the per-season signs are the honest read.)
 
-Why the null makes sense: ADP is set by drafters who can all read the
-same Vegas lines, so team quality is in the price
-([finding 03](03-adp-discipline-is-not-an-edge.md)) — and what the
-price misses runs the *other* way: bad teams concentrate their volume
-on fewer mouths ([finding 08](08-bad-team-wr1-edge.md)), and 46% < 50%
-hints the market may even overpay a touch for good-offense association.
-We do not claim the fade; we claim the null.
+ADP is set by drafters who can all read the same Vegas lines, so team
+quality is in the price
+([finding 03](03-adp-discipline-is-not-an-edge.md)). What the price
+misses runs the *other* way: bad teams concentrate their volume on
+fewer mouths ([finding 08](08-bad-team-wr1-edge.md)), and 46% < 50%
+hints the market may even overpay a touch for good-offense
+association. We claim the null, not the fade.
 
 ## What this changes
 

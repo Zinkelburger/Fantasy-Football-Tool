@@ -1,21 +1,19 @@
 # 18 — "Injury-prone" is mostly myth (except TE, and maybe RB)
 
-**Confidence: Medium** — the QB/WR null is well-powered and solid;
-the TE persistence is significant but rests on 24 repeat cases; the
-RB effect wouldn't survive a multiple-comparisons correction.
-
-## TL;DR
+**Confidence: Medium.** The QB/WR null is well-powered and solid. TE
+persistence rests on 24 repeat cases, and the RB effect wouldn't
+survive a multiple-comparisons correction.
 
 Being hurt this year barely predicts being hurt next year. Across
 1,200+ player-seasons, injury history explains **half a percent** of
-who misses time next season — and at QB and WR the carryover is
-exactly zero. The exceptions: **TEs** who missed 2+ weeks miss
-significant time again 38% of the time (vs 19% for healthy TEs),
-with a weaker echo at RB (30% vs 18%). Injury history also adds
-*nothing* to predicting next year's points once you know this
-year's points. Don't discount a QB or WR for last season's bad luck.
+who misses time next season, and at QB and WR the carryover is
+exactly zero. The exception is **TE**: those who missed 2+ weeks miss
+significant time again 38% of the time, vs 19% for healthy TEs. RB
+shows a weaker echo (30% vs 18%). Injury history also adds *nothing*
+to predicting next year's points once you know this year's points.
+Don't discount a QB or WR for last season's bad luck.
 
-## The data
+## The number
 
 Weeks listed **Out or Doubtful** on official NFL injury reports
 (regular season), 2017→2025, same rosterable sample as findings 15–17.
@@ -30,23 +28,23 @@ Weeks listed **Out or Doubtful** on official NFL injury reports
 Read the WR row twice: previously-injured WRs repeated *less* often
 than never-injured ones. That's what a true zero looks like.
 
-Honest scoring of the positives: eight tests were run in this table.
-TE's r (p = 0.008, clustered CI [+0.06, +0.31]) is the only result
-that survives that scrutiny; the RB repeat-rate (p = 0.037) and TE
-repeat-rate (p = 0.039) are each one moderately-unlucky draw from
-surviving it. Hence Medium, not High.
+Eight tests were run in this table. TE's r (p = 0.008, clustered CI
+[+0.06, +0.31]) is the only result that survives that scrutiny. The
+RB repeat-rate (p = 0.037) and TE repeat-rate (p = 0.039) are each
+one moderately-unlucky draw from surviving it. Hence Medium, not
+High.
 
-## What it means at the draft
+## At the draft
 
 - **Never discount a QB or WR for injury history.** When a family
-  member says a WR is "made of glass," that's a buying opportunity —
-  the discount is real, the risk isn't.
-- A modest discount on TEs (and, more weakly, RBs) coming off
+  member says a WR is "made of glass," that's a buying opportunity.
+  The discount is real, the risk isn't.
+- A modest discount on TEs, and more weakly RBs, coming off
   multi-week injuries is defensible — plausibly because the injuries
   that recur (soft-tissue, high-contact roles) concentrate there.
-- Don't expect injury history to predict *production*: among players
-  healthy enough to stay rosterable, weeks-Out adds zero PPG signal
-  beyond PPG itself.
+- Injury history doesn't predict *production*. Among players healthy
+  enough to stay rosterable, weeks-Out adds zero PPG signal beyond
+  PPG itself.
 
 ## Methodology
 
@@ -57,13 +55,13 @@ p-values by permutation; the pooled CI is player-clustered.
 
 ## Caveats
 
-- Injury reports only cover rostered players: someone who spent the
-  whole next season on IR (or out of the league) has no next-year
-  row and drops out. This *understates* persistence for
-  career-altering injuries — the finding is about the ordinary
+- Injury reports only cover rostered players. Someone who spent the
+  whole next season on IR (or out of the league) has no next-year row
+  and drops out. That *understates* persistence for career-altering
+  injuries — this finding is about the ordinary
   sprains-and-hamstrings range, not Achilles tears.
 - Weeks *listed* Out ≠ games missed (bye-week reports, players
   benched while nominally hurt). Treated as a proxy throughout.
-- No injury-type split yet (soft-tissue vs contact) — the reports
+- No injury-type split yet (soft-tissue vs contact). The reports
   carry `report_primary_injury`, so this is testable if the TE/RB
   result matters for a real draft call. Backlogged.

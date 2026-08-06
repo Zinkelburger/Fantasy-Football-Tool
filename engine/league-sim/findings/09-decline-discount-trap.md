@@ -1,17 +1,15 @@
 # 09 — WRs coming off a collapse year bust more, at every age
 
-**Confidence: Medium** (n=17; direction consistent across both age halves)
+**Confidence: Medium.** n=17. Direction consistent across both age
+halves.
 
-## TL;DR
-
-The "he was great two years ago, he'll bounce back" discount buy is
-usually a trap. Mid-round WRs who were top-20 two seasons ago but
-collapsed last season busted **53%** of the time vs 42% for other
-mid-rounders, and finished 9 more spots below their cost on average.
-A cheap price on a former star usually means the market knows
-something, not that it missed something. (Different from the age
-discount — finding 10 — and the bad-team discount — finding 08 —
-which behave differently.)
+The "he was great two years ago, he'll bounce back" buy is a trap.
+Mid-round WRs who were top-20 two seasons ago and collapsed last
+season busted **53%** of the time against 42% for other mid-rounders,
+and finished 9 more spots below their cost on average. A cheap price
+on a former star usually means the market knows something. This is not
+the age discount (finding 10) or the bad-team discount (finding 08),
+which behave differently.
 
 ## The data
 
@@ -33,21 +31,21 @@ The full list, best-to-worst outcome:
   '22, Christian Kirk '24, Julio Jones '21, DJ Chark '21
 
 Split by age: under-29 fallen studs busted 56% (n=9), 29+ busted 50%
-(n=8) — youth does **not** rescue the archetype.
+(n=8). Youth does **not** rescue the archetype.
 
 ## Why the market gets this one right
 
-A production collapse usually has a cause that persists: declining
+A production collapse has a cause that persists: declining
 athleticism, a broken offense, a role lost to a younger teammate.
-Survivorship memory (everyone remembers Higgins '24, nobody remembers
-Golladay '21) makes the archetype *feel* +EV when it's the single
+Survivorship memory makes the archetype *feel* +EV. Everyone remembers
+Higgins '24; nobody remembers Golladay '21. It is the single
 worst-performing discount type tested.
 
-Jackels relevance: Amari Cooper '24 and Tyreek '25 were adjacent to
-this profile (Tyreek is a boundary case — his 2024 was bad-by-his-
-standards rather than a sub-WR35 collapse). The clean rule: a
-mid-round discount is buyable when it comes from *team narrative*
-(08) and not buyable when it comes from the player's own tape.
+Jackels relevance: Amari Cooper '24 and Tyreek '25 sat next to this
+profile. Tyreek is a boundary case — his 2024 was bad by his own
+standards, not a sub-WR35 collapse. The rule: buy a mid-round discount
+that comes from *team narrative* (08), not one that comes from the
+player's own tape.
 
 ## Methodology
 
@@ -58,11 +56,11 @@ qualifying season) in year−1, computed from 2018+ finish tables so
 
 ## Caveats
 
-- n=17 across six years — the bust-rate gap (53 vs 42) is ~1 SE wide.
-  What earns Medium confidence is the coherent mechanism, the
-  age-split consistency, and the lopsided tail (the busts are *total*
-  zeroes: Golladay −56, Chark −88 vs cost).
-- Definition sensitivity untested (top-20/35 thresholds chosen once).
+- n=17 across six years. The bust-rate gap (53 vs 42) is ~1 SE wide.
+- Medium confidence comes from the mechanism, the age-split
+  consistency, and the lopsided tail — the busts are *total* zeroes
+  (Golladay −56, Chark −88 vs cost).
+- Definition sensitivity untested; top-20/35 thresholds chosen once.
 - Hits cluster in players who kept elite target share during the down
-  year (Diggs, Allen, Higgins) — target-share retention may be the
-  real discriminator, worth testing when 2026 data lands.
+  year (Diggs, Allen, Higgins). Target-share retention may be the real
+  discriminator. Worth testing when 2026 data lands.

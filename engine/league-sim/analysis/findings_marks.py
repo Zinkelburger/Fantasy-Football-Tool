@@ -139,13 +139,13 @@ def f16_td_luck(m, season, team):
         if r.tdoe >= hi:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 16, "fade",
-                f"{r.td:.0f} TDs on chances worth {r.xtd:.0f} — TD luck "
-                f"doesn't carry over.", r.player_id))
+                f"{r.td:.0f} TDs on chances worth {r.xtd:.0f}.",
+                r.player_id))
         elif r.tdoe <= lo:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 16, "buy",
-                f"Only {r.td:.0f} TDs on chances worth {r.xtd:.0f} — the "
-                f"missing scores usually come back.", r.player_id))
+                f"Only {r.td:.0f} TDs on chances worth {r.xtd:.0f}.",
+                r.player_id))
     q = m[m.relevant & (m.season == season) & (m.gp >= 8)
           & (m.position == "QB")].dropna(subset=["a_pass_td"]).copy()
     q["ptdoe"] = q.a_pass_td - q.x_pass_td
@@ -153,14 +153,12 @@ def f16_td_luck(m, season, team):
         out.append(mark(
             r.name, "QB", team.get(r.player_id), 16, "fade",
             f"{r.a_pass_td:.0f} pass TDs on chances worth "
-            f"{r.x_pass_td:.0f} — regresses too (smaller QB sample).",
-            r.player_id))
+            f"{r.x_pass_td:.0f}.", r.player_id))
     for r in q.nsmallest(5, "ptdoe").itertuples():
         out.append(mark(
             r.name, "QB", team.get(r.player_id), 16, "buy",
             f"{r.a_pass_td:.0f} pass TDs on chances worth "
-            f"{r.x_pass_td:.0f} — the short end of TD luck.",
-            r.player_id))
+            f"{r.x_pass_td:.0f}.", r.player_id))
     return out
 
 
@@ -175,14 +173,13 @@ def f17_targets(m, season, team):
         if r.excess >= hi:
             out.append(mark(
                 r.name, "WR", team.get(r.player_id), 17, "buy",
-                f"{r.tpg:.1f} targets a game, only {r.ppg:.1f} PPG — "
-                f"targets predict next season, points don't.",
+                f"{r.tpg:.1f} targets a game, only {r.ppg:.1f} PPG.",
                 r.player_id))
         elif r.excess <= lo:
             out.append(mark(
                 r.name, "WR", team.get(r.player_id), 17, "fade",
-                f"{r.ppg:.1f} PPG on just {r.tpg:.1f} targets a game — "
-                f"efficiency-driven points don't repeat.", r.player_id))
+                f"{r.ppg:.1f} PPG on just {r.tpg:.1f} targets a game.",
+                r.player_id))
     return out
 
 
@@ -195,14 +192,13 @@ def f15_momentum(ps, season, team):
         if r.surge >= SURGE:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 15, "watch",
-                f"Hot finish ({r.ppg_last3:.1f} PPG last 3, {r.ppg:.1f} "
-                f"season) — predicts nothing; price the season.",
-                r.player_id))
+                f"Hot finish: {r.ppg_last3:.1f} PPG over the last 3, "
+                f"{r.ppg:.1f} on the season.", r.player_id))
         elif r.surge <= -SURGE:
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 15, "watch",
-                f"Cold finish ({r.ppg_last3:.1f} PPG last 3, {r.ppg:.1f} "
-                f"season) — predicts nothing either.", r.player_id))
+                f"Cold finish: {r.ppg_last3:.1f} PPG over the last 3, "
+                f"{r.ppg:.1f} on the season.", r.player_id))
     return out
 
 
@@ -215,19 +211,16 @@ def f18_injury_label(im, season, team):
         if r.position in ("QB", "WR"):
             out.append(mark(
                 r.name, r.position, team.get(r.player_id), 18, "buy",
-                f"Out {wk} weeks in {season} — doesn't carry over at "
-                f"{r.position}; take the injury-prone discount.",
-                r.player_id))
+                f"Out {wk} weeks in {season}.", r.player_id))
         elif r.position == "TE":
             out.append(mark(
                 r.name, "TE", team.get(r.player_id), 18, "watch",
-                f"Out {wk} weeks in {season} — TE is where missed time "
-                f"does repeat.", r.player_id))
+                f"Out {wk} weeks in {season} — the one position where "
+                f"that repeats.", r.player_id))
         else:
             out.append(mark(
                 r.name, "RB", team.get(r.player_id), 18, "watch",
-                f"Out {wk} weeks in {season} — RB carryover is real but "
-                f"weak.", r.player_id))
+                f"Out {wk} weeks in {season}.", r.player_id))
     return out
 
 
@@ -255,9 +248,8 @@ def wr_cohort_marks(ps, adv, draft_year):
             out.append(mark(
                 c["name"], "WR", c["team"], 8, "buy",
                 f"Clear WR1 on a {w}-{l}{f'-{d}' if d else ''} team"
-                + (f" ({share:.0%} of team targets last year)"
-                   if share >= .15 else "")
-                + " — this profile hits top-24 43% vs 25%."))
+                + (f", {share:.0%} of their targets last year"
+                   if share >= .15 else "") + "."))
         two, last = fin2.get(n), fin1.get(n)
         if two is not None and two <= 20 and (last is None or last > 35):
             tell = shares.get(n, 0) or 0
@@ -265,14 +257,13 @@ def wr_cohort_marks(ps, adv, draft_year):
                 c["name"], "WR", c["team"], 9, "fade",
                 f"Top-20 in {draft_year - 2}, "
                 f"{'WR' + str(last) if last else 'off the map'} in "
-                f"{draft_year - 1} — this discount profile busts 53%."
-                + (f" (Kept {tell:.0%} of team targets — the rare "
-                   f"bounce-back tell.)" if tell >= .20 else "")))
+                f"{draft_year - 1}"
+                + (f", but kept {tell:.0%} of his team's targets"
+                   if tell >= .20 else "") + "."))
         if ages.get(n) in (29, 30):
             out.append(mark(
                 c["name"], "WR", c["team"], 10, "watch",
-                f"{ages[n]}-year-old WR at a mid-round price — the age "
-                f"band that busted most (thin sample)."))
+                f"{ages[n]} years old at a mid-round price."))
     return out
 
 

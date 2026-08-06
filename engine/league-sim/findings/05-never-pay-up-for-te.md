@@ -1,30 +1,27 @@
 # 05 — Never pay up for TE; the pure-wire punt is drying up
 
-**Confidence: High** for "don't pay up" (descriptive + sim + your own
-drafts agree). **Medium** for the trend claim (three recent seasons).
+**Confidence: High** for "don't pay up" — data, sim, and your own
+drafts agree. **Medium** for the trend claim: three seasons.
 
 > **Partly superseded (2026-08-05) by
-> [finding 33](33-te-same-pick.md).** This finding asks "was the TE
+> [finding 33](33-te-same-pick.md).** This page asks "was the TE
 > available late as good as the one you paid for?" and answers yes.
 > Finding 33 asks the harder question — "did the early TE beat the
-> *WR/RB you'd have taken at that exact pick*?" — and answers yes too:
-> rounds 1–4 TEs beat their same-pick alternatives 69% of the time and
-> busted at half the rate. Both findings agree that **rounds 5–9 are
-> the trap** and that the wire is thinning. Where they part: this
-> page's "never spend an early pick on one" is too strong. Read the
-> rule as *elite door (rounds 1–4) or wait door (round 10+), never the
-> middle* — the case study below is a round-6-and-later mistake, not an
-> argument against McBride at his price.
-
-## TL;DR
+> *WR/RB you'd have taken at that exact pick*?" — and answers yes
+> too: rounds 1–4 TEs beat their same-pick alternatives 69% of the
+> time and busted at half the rate. Both findings agree **rounds 5–9
+> are the trap** and that the wire is thinning. This page's "never
+> spend an early pick on one" is too strong. Read the rule as *elite
+> door (rounds 1–4) or wait door (round 10+), never the middle*. The
+> case study below is a round-6-and-later mistake, not an argument
+> against McBride at his price.
 
 Every season, half or more of the year's top-8 tight ends cost a
 round-8-or-later pick — or nothing at all. So never spend an early
-pick on one. One update, though: the extreme version (draft no TE,
-live off free agents) is drying up — undrafted TEs cracking the
-top-8 went **3, 2, 3** in 2020–22, then **0, 1, 0** in 2023–25.
-Verdict: take your TE in round 10+, hit the wire only if he busts,
-and never pay up.
+pick on one. The extreme version — draft no TE, live off free agents
+— is drying up: undrafted TEs cracking the top-8 went **3, 2, 3** in
+2020–22, then **0, 1, 0** in 2023–25. Take your TE in round 10+, hit
+the wire only if he busts, and never pay up.
 
 ## The data
 
@@ -51,9 +48,8 @@ Rest-of-season (after week 3) top-8 TEs, tagged by acquisition cost —
 
 Simulation cross-check (environment v3, see finding 13): a full
 punt-TE-and-stream bot finished at .584 all-play vs .591 for plain
-disciplined drafting — a statistically marginal ~0.7-point cost,
-effectively *par*. The picks saved by not paying for a TE offset the
-streaming losses. Meanwhile the value
+disciplined drafting. A ~0.7-point cost, effectively *par*. The picks
+saved by not paying for a TE offset the streaming losses. The value
 curve (finding 07) shows TE7 ≈ 6.9 PPG vs TE12 ≈ 5.8 — beyond the top
 few, everyone's TE is roughly the same guy.
 
@@ -74,11 +70,12 @@ Goedert (118) were nearly free.
 
 ## Caveats
 
-- The 0/1/0 recent-FA trend is three data points; the mechanism
-  (leagues draft more TEs deep now that Bowers/LaPorta-type breakouts
-  are famous) is plausible but unproven.
+- The 0/1/0 recent-FA trend is three data points. The mechanism —
+  leagues draft more TEs deep now that Bowers/LaPorta-type breakouts
+  are famous — is plausible but unproven.
 - "Round 10+" is calibrated to a 12-team room that drafts ~14–16 TEs
-  total; in a room that hoards TEs, adjust earlier.
-- An *elite* TE hit (Kelce '20, McBride '25) is genuinely valuable —
-  the claim is that the price at which the league sells them (rounds
-  2–6) has not been worth it in this window, not that TEs don't matter.
+  total. In a room that hoards TEs, adjust earlier.
+- An *elite* TE hit (Kelce '20, McBride '25) is genuinely valuable.
+  The claim is that the price at which the league sells them (rounds
+  2–6) has not been worth it in this window, not that TEs don't
+  matter.
