@@ -86,6 +86,20 @@ html, body {
 }
 #site-nav a.nav-draft:hover { background: var(--accent); color: #fff; }
 
+/* the GitHub mark. Square padding instead of the nav links' text padding,
+   and the #site-nav prefix so it outranks the generic nav-link rules. */
+#site-nav a.gh-link,
+#site-footer .gh-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--fg-dim);
+  padding: 0.3rem;
+  border-radius: 6px;
+}
+#site-nav a.gh-link:hover,
+#site-footer .gh-link:hover { color: var(--fg); background: var(--bg-hover); }
+#site-footer .gh-link { vertical-align: -0.28em; margin-left: 0.35rem; }
+
 /* ------------------------------------------------------------ layout */
 #main { max-width: 68rem; margin: 0 auto; padding: 1.6rem 1.2rem 3rem; }
 .view-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
@@ -93,7 +107,14 @@ html, body {
 .dim { color: var(--fg-dim); font-size: 0.88rem; }
 .blurb a + a { margin-left: 0.9rem; }
 .blurb { color: var(--fg-dim); max-width: 44rem; margin-top: 0.2rem; }
-.blurb b { color: var(--fg); }
+.blurb b, .blurb strong { color: var(--fg); }
+
+/* A [data-copy] slot holds rendered markdown from site/copy.md, so its
+   contents are always block elements. Collapse the outer margins so a
+   one-paragraph block sits exactly where the <p> it replaced did. */
+[data-copy] > :first-child { margin-top: 0; }
+[data-copy] > :last-child { margin-bottom: 0; }
+.blurb[data-copy] > p + p { margin-bottom: 0.4rem; }
 
 /* -------------------------------------------------------------- home */
 .hero { padding: 2.6rem 0 1.8rem; max-width: 46rem; }
@@ -475,8 +496,13 @@ body.draft-mode #main { max-width: none; padding: 0; }
 #view-draft { position: relative; }
 #draft-frame {
   display: block;
-  width: 100vw;
+  width: 100%;
+  /* dvh, not vh: on a phone vh is the height with the browser's address bar
+     hidden, so the tool's own footer and view switcher sit under the bar
+     until you scroll. dvh tracks what's actually visible. vh first, for
+     browsers that don't know dvh. */
   height: 100vh;
+  height: 100dvh;
   border: 0;
   background: var(--bg);
 }
@@ -498,6 +524,44 @@ body.draft-mode #main { max-width: none; padding: 0; }
   .hero h1 { font-size: 1.6rem; }
   :root { font-size: 14.5px; }
 }
+
+/* ------------------------------------------------------------- phones */
+/* Eight nav links plus the GitHub mark next to the wordmark is three wrapped
+   rows on a phone, and it's a *sticky* header — that's a third of the screen
+   gone on every page. So the header splits into two rows and the links become
+   one line you swipe, which costs 2rem instead of 6. */
+@media (max-width: 700px) {
+  #site-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    padding: 0.5rem 0 0;
+  }
+  .brand { padding: 0 0.9rem; }
+  #site-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 0.9rem 0.4rem;
+    /* The bar is short and the links are self-evidently a row — a scrollbar
+       under them reads as a third piece of chrome. */
+    scrollbar-width: none;
+  }
+  #site-nav::-webkit-scrollbar { display: none; }
+  #site-nav a { white-space: nowrap; padding: 0.3rem 0.55rem; }
+
+  #main { padding: 1.1rem 0.9rem 2.5rem; }
+  .hero { padding: 1.6rem 0 1.2rem; }
+  .hero-actions .btn { flex: 1 1 auto; text-align: center; }
+  #site-footer { padding: 0.9rem 0.9rem 1.4rem; }
+  /* Full-width so the tap target is the row, not a 13rem box inside it. */
+  .board-tools input[type="search"] { min-width: 0; width: 100%; }
+}
+
+/* The browser's own [hidden] rule is `display: none`, which any author
+   `display` beats — so every flex or grid element we toggle with .hidden
+   stayed on screen. That is why the league tab bar used to sit above the
+   connect form with nothing behind it. Say it once, loudly, here. */
+[hidden] { display: none !important; }
 
 /* -------------------------------------------------------------- live */
 .live-connect {
@@ -531,6 +595,20 @@ body.draft-mode #main { max-width: none; padding: 0; }
   outline-offset: 1px;
 }
 .live-connect .dim { margin: 0.6rem 0 0; font-size: 0.82rem; }
+.live-connect .live-hint { min-height: 1.2em; margin: 0.5rem 0 0; }
+.live-connect .live-hint:empty { min-height: 0; margin: 0; }
+
+/* a button that reads as a link — for the one-click "no, it's a
+   Sleeper username" correction under the box */
+.linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 .live-leagues { margin-top: 0.9rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .live-leagues p { width: 100%; margin: 0 0 0.2rem; }
@@ -839,27 +917,36 @@ body.draft-mode #main { max-width: none; padding: 0; }
 .lg-drop { color: var(--fg-dim); }
 .lg-move-week { text-align: right; font-size: 0.78rem; }
 
-/* ---- source picker (Sleeper / ESPN) ---------------------------------- */
-.live-source-tabs {
+/* ---- leagues the extension found for us ------------------------------ */
+.live-found { margin-bottom: 1.1rem; }
+.live-connect .live-found p { margin: 0 0 0.45rem; font-size: 0.82rem; }
+.live-found-card {
   display: flex;
-  gap: 0.35rem;
-  margin-bottom: 0.9rem;
-}
-.live-source-tabs button {
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
   background: var(--bg-row);
   border: 1px solid var(--border);
-  color: var(--fg-dim);
-  border-radius: 999px;
-  padding: 0.3rem 0.95rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 0.35rem;
   font: inherit;
-  font-size: 0.85rem;
+  color: var(--fg);
   cursor: pointer;
 }
-.live-source-tabs button.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+.live-found-card:hover { border-color: var(--accent); }
+.live-found-card.is-busy { opacity: 0.6; }
+.live-found-name { font-weight: 600; }
+
+/* ---- the details drawer under the box -------------------------------- */
+.live-help { margin-top: 1rem; font-size: 0.82rem; }
+.live-help summary {
+  cursor: pointer;
+  color: var(--fg-dim);
 }
+.live-help p { margin: 0.6rem 0 0; color: var(--fg-dim); }
 .live-connect code {
   background: var(--bg-row);
   padding: 0.05rem 0.3rem;

@@ -7,9 +7,12 @@
        pages that claim to be ours (see chrome-extension/bridge.js) -->
   <meta name="ff-draft-assistant" content="1">
   <title>FOSS Football</title>
-  <meta name="description" content="Free, open-source fantasy football rankings and draft tools. Every ranking comes from a model tested on eight seasons of history — methods, code and misses all published.">
+  <!-- The four lines below are the only reader-facing text outside
+       site/copy.md. They have to be in the HTML because search engines
+       and link previews read them before any script runs. -->
+  <meta name="description" content="Fantasy football rankings and draft tools. Every ranking comes from a model tested against eight seasons of real results, and the code, the data and the methods are public.">
   <meta property="og:title" content="FOSS Football">
-  <meta property="og:description" content="Free, open-source fantasy football rankings and draft tools, tested on eight seasons of history.">
+  <meta property="og:description" content="Fantasy football rankings and draft tools, tested against eight seasons of real results.">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
   <link rel="stylesheet" href="style.css">
@@ -17,136 +20,119 @@
 <body>
   <header id="site-header">
     <a class="brand" href="#/">
-      <span class="brand-dot"></span> FOSS Football
+      <span class="brand-dot"></span> <span data-copy-text="site.name">FOSS Football</span>
     </a>
     <nav id="site-nav">
-      <a href="#/" data-route="home">Home</a>
-      <a href="#/live" data-route="live">My league</a>
-      <a href="#/weekly" data-route="weekly">Weekly</a>
-      <a href="#/board" data-route="board">Draft K/DST</a>
-      <a href="#/blog" data-route="blog">Research</a>
-      <a href="#/models" data-route="models">Models</a>
-      <a href="#/cheat" data-route="cheat">Cheat sheet</a>
-      <a href="#/draft" data-route="draft" class="nav-draft">Draft Tool</a>
+      <a href="#/" data-route="home" data-copy-text="nav.home">Home</a>
+      <a href="#/live" data-route="live" data-copy-text="nav.live">My league</a>
+      <a href="#/weekly" data-route="weekly" data-copy-text="nav.weekly">Weekly</a>
+      <a href="#/board" data-route="board" data-copy-text="nav.board">Draft K/DST</a>
+      <a href="#/blog" data-route="blog" data-copy-text="nav.blog">Research</a>
+      <a href="#/models" data-route="models" data-copy-text="nav.models">Models</a>
+      <a href="#/cheat" data-route="cheat" data-copy-text="nav.cheat">Cheat sheet</a>
+      <a href="#/draft" data-route="draft" class="nav-draft"
+         data-copy-text="nav.draft">Draft tool</a>
+      <a class="gh-link" href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
+         target="_blank" rel="noopener"
+         data-copy-title="link.github" data-copy-aria="link.github">
+        <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a>
     </nav>
   </header>
 
   <main id="main">
 
-    <!-- ============================================= HOME -->
-    <section id="view-home" class="view">
+    <!-- ============================================= HOME
+         Every view starts hidden: the router unhides the right one once
+         copy.json has landed, so no page flashes its empty slots. -->
+    <section id="view-home" class="view" hidden>
       <div class="hero">
-        <h1>Fantasy football advice you can check.</h1>
-        <p class="tagline">Every claim on this site was tested against
-        eight seasons of real results before we made it. The code, the
-        data and the methods are public — including the ideas that
-        turned out to be wrong.</p>
+        <h1 data-copy-text="home.title"></h1>
+        <p class="tagline" data-copy-text="home.tagline"></p>
         <div class="hero-actions">
-          <a class="btn primary" href="#/cheat">The draft plan, one page</a>
-          <a class="btn" href="#/blog">Read the findings</a>
-          <a class="btn" href="#/draft">Open the draft tool</a>
+          <a class="btn primary" href="#/cheat" data-copy-text="home.btn.cheat"></a>
+          <a class="btn" href="#/blog" data-copy-text="home.btn.blog"></a>
+          <a class="btn" href="#/draft" data-copy-text="home.btn.draft"></a>
         </div>
       </div>
 
       <div class="cards">
         <a class="card" href="#/board">
-          <h3><span class="pill pill-board">Draft</span> Kickers &amp; defenses</h3>
-          <p>Your last two picks, ranked by the betting lines — the
-          only signal that predicts either position. Take them off
-          these lists and spend your thinking on the rounds that
-          matter.</p>
-          <span class="card-stat">both lists ready for 2026</span>
+          <h3><span class="pill pill-board" data-copy-text="home.pill.board"></span>
+            <span data-copy-text="home.card.board.title"></span></h3>
+          <p data-copy-text="home.card.board.body"></p>
+          <span class="card-stat" data-copy-text="home.card.board.stat"></span>
         </a>
         <a class="card" href="#/weekly">
-          <h3><span class="pill pill-weekly">Weekly</span> Weekly boards</h3>
-          <p>Who to stream at defense and kicker, ranked by the Vegas
-          lines — the one signal that actually predicts those positions.
-          Skill-position boards join in September.</p>
-          <span class="card-stat">D/ST &amp; K live now</span>
+          <h3><span class="pill pill-weekly" data-copy-text="home.pill.weekly"></span>
+            <span data-copy-text="home.card.weekly.title"></span></h3>
+          <p data-copy-text="home.card.weekly.body"></p>
+          <span class="card-stat" data-copy-text="home.card.weekly.stat"></span>
         </a>
         <a class="card" href="#/blog">
-          <h3><span class="pill pill-research">Research</span> The findings</h3>
-          <p>34 short write-ups on what wins fantasy leagues: what works,
-          what's a myth, and which popular stats are noise. Each one
-          shows its data and says how confident to be.</p>
-          <span class="card-stat">34 findings</span>
+          <h3><span class="pill pill-research" data-copy-text="home.pill.blog"></span>
+            <span data-copy-text="home.card.blog.title"></span></h3>
+          <p data-copy-text="home.card.blog.body"></p>
+          <span class="card-stat" data-copy-text="home.card.blog.stat"></span>
         </a>
         <a class="card" href="#/draft">
-          <h3><span class="pill pill-draft">Live</span> Draft assistant</h3>
-          <p>The draft-day tool: a live board that syncs picks straight
-          from your ESPN or Sleeper draft room, flags value, and
-          suggests who to take.</p>
-          <span class="card-stat">launches full screen →</span>
+          <h3><span class="pill pill-draft" data-copy-text="home.pill.draft"></span>
+            <span data-copy-text="home.card.draft.title"></span></h3>
+          <p data-copy-text="home.card.draft.body"></p>
+          <span class="card-stat" data-copy-text="home.card.draft.stat"></span>
         </a>
       </div>
 
       <div class="strip">
-        <div><b>We publish our misses.</b> When an idea fails the test,
-        the write-up still goes up — about a third of the findings are
-        "this doesn't work" results (WR-vs-cornerback matchups,
-        "injury-prone" labels, team ratings). That's how you know the
-        wins are real.</div>
+        <div data-copy="home.strip"></div>
       </div>
     </section>
 
     <!-- ============================================= WEEKLY -->
     <section id="view-weekly" class="view" hidden>
       <div class="view-head">
-        <h2>Weekly boards</h2>
+        <h2 data-copy-text="weekly.title"></h2>
         <span id="weekly-label" class="dim"></span>
       </div>
       <div class="tabs" id="weekly-tabs">
-        <button data-tab="dst" class="tab pos-dst active">D/ST</button>
-        <button data-tab="k" class="tab pos-k">K</button>
-        <button data-tab="skill" class="tab">QB / RB / WR / TE</button>
+        <button data-tab="dst" class="tab pos-dst active"
+                data-copy-text="weekly.tab.dst"></button>
+        <button data-tab="k" class="tab pos-k"
+                data-copy-text="weekly.tab.k"></button>
+        <button data-tab="skill" class="tab"
+                data-copy-text="weekly.tab.skill"></button>
       </div>
 
       <div class="board-tools" id="weekly-tools">
-        <input id="weekly-search" type="search" placeholder="Search…"
-               aria-label="Search teams">
+        <input id="weekly-search" type="search"
+               data-copy-placeholder="weekly.search"
+               data-copy-aria="weekly.search.label">
         <button id="weekly-hide-taken" class="mini-btn" aria-pressed="false"
-                title="Hide rows marked taken">Hide taken</button>
+                data-copy-title="weekly.hide-taken.tip"
+                data-copy-text="weekly.hide-taken"></button>
         <button id="weekly-clear" class="mini-btn"
-                title="Clear all marks">Clear</button>
+                data-copy-title="weekly.clear.tip"
+                data-copy-text="weekly.clear"></button>
       </div>
 
       <div id="weekly-dst" class="tab-pane">
-        <p class="blurb">Ranked by <b>opponent's implied total</b> — the
-        score Vegas expects the other team to put up. Lower is better.
-        <a href="#/blog/27-dst-model">Finding 27 →</a></p>
+        <div class="blurb" data-copy="weekly.dst.blurb"></div>
         <details class="note">
-          <summary>Same list for ESPN and Yahoo — here's why</summary>
-          <p>ESPN and Yahoo score defenses differently. Yahoo pays more
-          at the extremes: a shutout is worth +10 there vs +5 on ESPN,
-          and getting blown out costs as much as −10 vs −6. But both
-          systems reward the same thing — facing a bad offense — so
-          when we re-ran our model under each system, the order barely
-          moved. Your point totals will differ by platform; the ranking
-          won't.</p>
+          <summary data-copy-text="weekly.dst.note.title"></summary>
+          <div data-copy="weekly.dst.note.body"></div>
         </details>
         <div class="tbl"><table id="dst-table"></table></div>
       </div>
 
       <div id="weekly-k" class="tab-pane" hidden>
-        <p class="blurb">Ranked by <b>own team's implied total</b> — the
-        score Vegas expects that offense to put up — plus a bump for
-        domes. Pick the offense and the venue, not the kicker.
-        <a href="#/blog/28-kicker-model">Finding 28 →</a></p>
+        <div class="blurb" data-copy="weekly.k.blurb"></div>
         <div class="tbl"><table id="k-table"></table></div>
       </div>
 
       <div id="weekly-skill" class="tab-pane" hidden>
         <div class="empty-state">
-          <h3>Live in September</h3>
-          <p>Weekly QB/RB/WR/TE rankings need a few weeks of real-season
-          data. The model is already built and graded: it blends recent
-          scoring with <b>expected points</b> — what each player's
-          targets and carries should have been worth — plus the matchup
-          and the Vegas line. Expected points is its strongest signal,
-          and it powers the waiver read too: a player whose chances jump
-          before his scoring does is the one to grab off the wire early.
-          It ships once it has been graded against a real benchmark,
-          not before.</p>
+          <h3 data-copy-text="weekly.skill.title"></h3>
+          <div data-copy="weekly.skill.body"></div>
         </div>
       </div>
     </section>
@@ -154,38 +140,27 @@
     <!-- ============================================= BOARD -->
     <section id="view-board" class="view" hidden>
       <div class="view-head">
-        <h2>2026 draft: kickers &amp; defenses</h2>
-        <span class="dim">the two picks worth outsourcing to a model ·
-        <a href="#/models">the models →</a></span>
+        <h2 data-copy-text="board.title"></h2>
+        <div class="dim" data-copy="board.subtitle"></div>
       </div>
 
-      <p class="blurb">For QB, RB, WR and TE, draft off your platform's
-      ADP and don't reach — in 9,000 simulated leagues that discipline
-      won titles at 2.5 times the base rate, and beat every ranking we
-      could build. Kicker and defense are different: their points
-      belong to the offense and the schedule, which a model reads
-      better than a draft board does. Those are the two lists below.
-      <a href="#/blog/32-draft-sim">Finding 32 →</a></p>
+      <div class="blurb" data-copy="board.blurb"></div>
 
       <div class="tabs section-tabs" id="board-sections"
-           role="group" aria-label="Which table">
-        <button class="tab active" data-sec="k">Kickers</button>
-        <button class="tab" data-sec="dst">Defenses</button>
+           role="group" data-copy-aria="board.tabs.label">
+        <button class="tab active" data-sec="k"
+                data-copy-text="board.tab.k"></button>
+        <button class="tab" data-sec="dst"
+                data-copy-text="board.tab.dst"></button>
       </div>
 
       <div id="board-sec-k" class="tab-pane">
-        <p class="blurb">Take a kicker with one of your last two picks,
-        off this list. A kicker's own history predicts almost nothing —
-        his points belong to his offense, so draft the offense.
-        <a href="#/blog/28-kicker-model">Kicker model →</a></p>
+        <div class="blurb" data-copy="board.k.blurb"></div>
         <div class="tbl half"><table id="pre-k-table"></table></div>
       </div>
 
       <div id="board-sec-dst" class="tab-pane" hidden>
-        <p class="blurb">Same idea at defense: take one with your other
-        last pick. A defense's points belong to its schedule, so this
-        list is sorted by the offenses it has to face.
-        <a href="#/blog/27-dst-model">D/ST model →</a></p>
+        <div class="blurb" data-copy="board.dst.blurb"></div>
         <div class="tbl half"><table id="pre-dst-table"></table></div>
       </div>
     </section>
@@ -193,203 +168,76 @@
     <!-- ============================================= MODELS -->
     <section id="view-models" class="view" hidden>
       <div class="view-head">
-        <h2>The models</h2>
-        <span class="dim">what each one predicts, what it reads, and how
-        it was tested</span>
+        <h2 data-copy-text="models.title"></h2>
+        <span class="dim" data-copy-text="models.subtitle"></span>
       </div>
-      <article class="post">
-        <h2>Why there's no ranking for QB, RB, WR and TE</h2>
-        <p>Because we tested one and it lost. We built a projection
-        model for returning players — 20 inputs: usage, expected
-        points, touchdown luck, age, seasons played, draft capital,
-        contracts and cap share, team changes — and graded it against
-        the draft market with both lists on the same players. The
-        market won at every position, .598 to .544.
-        <a href="#/blog/25-player-model">Finding 25 →</a></p>
-        <p>Then we settled it in 9,000 simulated leagues with full
-        drafts and seasons. Drafting by the model instead of ADP
-        <b>roughly halved title odds</b> (10.8% against 20.7%), and
-        every blend of the two finished behind the plain board.
-        <a href="#/blog/32-draft-sim">Finding 32 →</a></p>
-        <p>We built a rookie model too, on draft capital, combine
-        numbers and landing spot, deliberately without fantasy ADP. It
-        lands on top of NFL draft order almost exactly. Its projections
-        are honestly calibrated — rookies it put at 8+ points a game
-        averaged 10.0 and were startable 86% of the time, against 1%
-        for its bottom tier — but that tier information is just what
-        round a player was drafted in, which is public and already
-        priced into every draft board.
-        <a href="#/blog/31-rookie-model">Finding 31 →</a></p>
-        <p>So the honest advice for skill players is the boring one:
-        take your platform's ADP in order and don't reach. What did
-        survive from that work is descriptive rather than predictive —
-        expected points, touchdown-luck regression, and the
-        position-room readout in the draft tool — and it's below or
-        still shipping. The code and the dead ends are kept in
-        <code>archive/season-projection-model/</code>.</p>
-
-        <h2>Expected points — the "2025 expected" column</h2>
-        <p>Not a prediction — an audit of last season. For every 2025
-        play it asks what a typical player would have scored from the
-        same chance — who got the ball, where on the field, down and
-        distance — and adds it up. A player who scored far above his
-        chances usually got there on touchdown luck, which doesn't
-        repeat; the chances themselves do. That gap is the strongest
-        buy/fade signal in our research at WR and TE, and the player
-        model above already weighs it.
-        <a href="#/blog/16-td-luck-regresses">Finding 16 →</a>
-        <a href="#/blog/17-buy-targets-not-efficiency">Finding 17 →</a></p>
-
-        <h2>Kicker model</h2>
-        <p><b>Predicts:</b> kicker points, weekly and for the season.
-        <b>Reads:</b> the points Vegas expects his own offense to score
-        — that one number is nearly the whole model — plus the venue: a
-        dome is worth about +0.7 points a game, wind costs about −0.5.
-        A kicker's own history predicts almost nothing.
-        <a href="#/blog/28-kicker-model">Finding 28 →</a></p>
-
-        <h2>Defense (D/ST) model</h2>
-        <p><b>Predicts:</b> defense points, weekly and for the season.
-        <b>Reads:</b> the points Vegas expects the <i>opponent</i> to
-        score — that does about 97% of the work; each point off the
-        opponent's total is worth about +0.38 D/ST points. The season
-        list sums it over the whole 2026 schedule.
-        <a href="#/blog/27-dst-model">Finding 27 →</a></p>
-
-        <h2>Weekly player model — live in September</h2>
-        <p><b>Predicts:</b> this week's points for QB, RB, WR and TE.
-        <b>Reads:</b> recent scoring, expected points from recent usage
-        (its strongest signal), how many points the opponent's defense
-        has been giving up to his position, and the Vegas line for the
-        game. It powers the in-season weekly boards once real games
-        start.</p>
-
-        <h2>Injury model</h2>
-        <p><b>Predicts:</b> availability, from the 2018–25 injury
-        reports: the chance a player listed on Friday actually plays
-        Sunday, what playing hurt costs him, how long each injury type
-        keeps a player out, and the rust in his first game back.
-        <a href="#/blog/21-injury-model">Finding 21 →</a></p>
-
-        <h2>Vegas offense table</h2>
-        <p>Not our model — the betting market's. Sum the lines for all
-        272 games on the 2026 schedule and you get expected points per
-        game for every offense. It feeds the kicker and defense models
-        above. It is <i>not</i> a tiebreak between players: everyone
-        can read the same lines, so it's already in each player's draft
-        price. <a href="#/blog/30-good-offense-tiebreak">Finding 30 →</a></p>
-
-        <p class="dim">Every model's code and data are public:
-        <a href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
-           target="_blank" rel="noopener">
-        github.com/Zinkelburger/Fantasy-Football-Tool</a></p>
-      </article>
+      <article class="post" data-copy="models.body"></article>
+      <div class="dim" data-copy="models.source"></div>
     </section>
 
     <!-- ============================================= BLOG -->
     <section id="view-blog" class="view" hidden>
-      <div class="view-head"><h2>Research</h2>
-        <span class="dim">newest first · every finding shows its work</span></div>
+      <div class="view-head">
+        <h2 data-copy-text="blog.title"></h2>
+        <span class="dim" data-copy-text="blog.subtitle"></span>
+      </div>
       <details id="glossary" class="note">
-        <summary>The stats we use, in plain English</summary>
-        <dl>
-          <dt>Spearman / rank correlation</dt>
-          <dd>How well two rankings agree, from −1 to 1. 1 = identical
-          order, 0 = no relationship. Our usual yardstick, since fantasy
-          is about who finishes ahead of whom.</dd>
-          <dt>Pearson correlation</dt>
-          <dd>How closely two sets of numbers move together, −1 to 1.
-          Like Spearman, but it also cares how big the gaps are, not
-          just the order.</dd>
-          <dt>Implied total</dt>
-          <dd>The score Vegas expects a team to put up, worked out from
-          that game's point spread and over/under.</dd>
-          <dt>ADP</dt>
-          <dd>Average draft position — where real drafters are taking a
-          player. The market's opinion of him.</dd>
-          <dt>All-play</dt>
-          <dd>Your record if you played every team in the league every
-          week. Measures team strength with schedule luck stripped out.</dd>
-          <dt>Backtest / LOYO</dt>
-          <dd>Testing a model on past seasons it never saw while being
-          built ("leave one year out"), so it can't grade its own
-          homework.</dd>
-          <dt>MAE</dt>
-          <dd>Mean absolute error — how many points a prediction missed
-          by, on average.</dd>
-          <dt>95% CI</dt>
-          <dd>The margin of error: the range the true number sits in, 19
-          times out of 20.</dd>
-        </dl>
+        <summary data-copy-text="blog.glossary.title"></summary>
+        <div data-copy="blog.glossary.body"></div>
       </details>
       <div id="blog-list"></div>
     </section>
 
     <section id="view-post" class="view" hidden>
-      <a class="back" href="#/blog">← all research</a>
+      <a class="back" href="#/blog" data-copy-text="blog.back"></a>
       <article id="post-body" class="post"></article>
     </section>
 
     <!-- ============================================ MY LEAGUE -->
     <section id="view-live" class="view" hidden>
-      <h1>My league</h1>
-      <p class="blurb">Your team, your matchup and your waiver wire, in
-      one place. Everything here reads your league live — nothing is
-      stored on a server, because there isn't one.</p>
+      <h1 data-copy-text="live.title"></h1>
 
       <div id="live-connect" class="live-connect">
-        <div id="live-source-tabs" class="live-source-tabs">
-          <button type="button" class="active" data-src="sleeper">Sleeper</button>
-          <button type="button" data-src="espn">ESPN</button>
-        </div>
+        <!-- Filled in by the extension when it can see your ESPN
+             leagues, which makes the box below unnecessary. -->
+        <div id="live-found" class="live-found" hidden></div>
 
-        <div id="live-form-sleeper">
-          <label for="live-username">Sleeper username</label>
-          <div class="live-connect-row">
-            <input id="live-username" type="text" autocomplete="username"
-                   placeholder="your Sleeper username" spellcheck="false">
-            <button id="live-go" class="btn primary" type="button">Connect</button>
-          </div>
-          <p class="dim">Your username is enough — Sleeper's API is open, so
-          there's nothing to log into.</p>
+        <label for="live-id" data-copy-text="live.field.label"></label>
+        <div class="live-connect-row">
+          <input id="live-id" type="text" spellcheck="false" autocomplete="off"
+                 data-copy-placeholder="live.field.placeholder">
+          <button id="live-go" class="btn primary" type="button"
+                  data-copy-text="live.connect"></button>
         </div>
+        <p id="live-hint" class="live-hint dim"></p>
 
-        <div id="live-form-espn" hidden>
-          <label for="live-espn-id">ESPN league id</label>
-          <div class="live-connect-row">
-            <input id="live-espn-id" type="text" inputmode="numeric"
-                   placeholder="your league id, or paste the league URL"
-                   spellcheck="false">
-            <button id="live-espn-go" class="btn primary" type="button">Connect</button>
-          </div>
-          <p class="dim">It's the <code>leagueId=</code> number in your ESPN
-          league's web address. <strong>Public leagues work right away.</strong>
-          A private league needs our browser extension installed and you
-          signed in to ESPN — your ESPN login can't reach us from this page
-          on its own, and the extension never hands it over, it just reads
-          the league and passes the answer back.</p>
-        </div>
-
-        <p class="dim">Read-only either way, and your league choice stays in
-        this browser — there's no server to send it to. Yahoo needs a login
-        server we don't have, so it isn't supported.</p>
         <div id="live-leagues" class="live-leagues" hidden></div>
         <p id="live-error" class="load-error" hidden></p>
+
+        <details class="live-help">
+          <summary data-copy-text="live.help.title"></summary>
+          <div data-copy="live.help.body"></div>
+        </details>
       </div>
 
       <div id="live-picked" class="live-picked" hidden>
         <span id="live-picked-name" class="live-picked-name"></span>
-        <span class="dim">via <span id="live-source"></span></span>
-        <button id="live-switch" class="btn small" type="button">Change league</button>
+        <span class="dim"><span data-copy-text="live.via"></span>
+          <span id="live-source"></span></span>
+        <button id="live-switch" class="btn small" type="button"
+                data-copy-text="live.switch"></button>
       </div>
 
       <nav id="league-tabs" class="league-tabs" hidden>
-        <a href="#/live" data-tab="matchup">Matchup</a>
-        <a href="#/live/startsit" data-tab="startsit">Start/sit</a>
-        <a href="#/live/waivers" data-tab="waivers">Waivers</a>
-        <a href="#/live/teams" data-tab="teams">Teams</a>
-        <a href="#/live/review" data-tab="review">Week in review</a>
-        <a href="#/live/moves" data-tab="moves">Moves</a>
+        <a href="#/live" data-tab="matchup" data-copy-text="live.tab.matchup"></a>
+        <a href="#/live/startsit" data-tab="startsit"
+           data-copy-text="live.tab.startsit"></a>
+        <a href="#/live/waivers" data-tab="waivers"
+           data-copy-text="live.tab.waivers"></a>
+        <a href="#/live/teams" data-tab="teams" data-copy-text="live.tab.teams"></a>
+        <a href="#/live/review" data-tab="review"
+           data-copy-text="live.tab.review"></a>
+        <a href="#/live/moves" data-tab="moves" data-copy-text="live.tab.moves"></a>
       </nav>
 
       <div id="live-body"></div>
@@ -407,19 +255,22 @@
          live draft reads as "close this" — the one thing you never want to
          hit mid-pick. Leaving is closing the tab (or browser back). -->
     <section id="view-draft" class="view" hidden>
-      <iframe id="draft-frame" title="Draft assistant"></iframe>
+      <iframe id="draft-frame" data-copy-title="draft.frame"></iframe>
     </section>
 
   </main>
 
   <footer id="site-footer">
-    <span>FOSS Football — free and open source.
-      <a href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
-         target="_blank" rel="noopener">Code &amp; data on GitHub</a></span>
-    <span class="dim">Built on public data; each article credits its
-      sources.</span>
+    <span>FOSS Football
+      <a class="gh-link" href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
+         target="_blank" rel="noopener"
+         data-copy-title="link.github" data-copy-aria="link.github">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a></span>
+    <span class="dim" data-copy-text="footer.credit"></span>
   </footer>
 
+  <script src="copy.js"></script>
   <script src="sleeper.js"></script>
   <script src="espn.js"></script>
   <script src="provider.js"></script>

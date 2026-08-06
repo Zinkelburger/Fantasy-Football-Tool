@@ -348,8 +348,8 @@ const Live = (() => {
     const rest = remaining(p);
     const rem = el("div", "live-rem", rest > 0.05 ? `+${rest.toFixed(1)}` : "—");
     rem.title = p.why
-      ? `no points expected — ${p.why}`
-      : "expected points still to come";
+      ? Copy.fill("matchup.tip.no-remaining", { why: p.why })
+      : Copy.text("matchup.tip.remaining");
     row.append(rem);
     return row;
   }
@@ -363,9 +363,8 @@ const Live = (() => {
     pct.style.color = probColor(wp.p);
     pct.textContent = `${Math.round(wp.p * 100)}%`;
     const lab = el("div", "live-prob-label");
-    lab.append(el("div", "", "chance to win"));
-    lab.append(el("div", "dim",
-      "good to about ±4 points — least reliable when most confident"));
+    lab.append(el("div", "", Copy.text("matchup.prob.label")));
+    lab.append(el("div", "dim", Copy.text("matchup.prob.caveat")));
     head.append(pct, lab);
     root.append(head);
 
@@ -388,21 +387,19 @@ const Live = (() => {
     root.append(score);
 
     const yetToPlay = mine.filter(p => p.playable && p.secLeft >= 3600).length;
-    const note = el("p", "dim live-note");
-    note.textContent = `Week ${week}. ${yetToPlay} of your starters `
-      + `${yetToPlay === 1 ? "hasn't" : "haven't"} kicked off. `
-      + `Simulated ${SIMS.toLocaleString()} times; the middle 80% of `
-      + `outcomes lands between ${wp.lo > 0 ? "+" : ""}${wp.lo.toFixed(0)} `
-      + `and ${wp.hi > 0 ? "+" : ""}${wp.hi.toFixed(0)} points.`;
-    root.append(note);
+    const signed = (v) => `${v > 0 ? "+" : ""}${v.toFixed(0)}`;
+    root.append(el("p", "dim live-note", Copy.fill("matchup.note", {
+      week, n: yetToPlay, have: yetToPlay === 1 ? "has" : "have",
+      sims: SIMS.toLocaleString(), lo: signed(wp.lo), hi: signed(wp.hi),
+    })));
 
     /* Say out loud who the model is writing off, rather than letting a
        bye-week starter quietly count for nothing. */
     const dead = mine.concat(opp).filter(p => p.why);
     if (dead.length) {
-      const names = dead.map(p => `${p.name} (${p.why})`).join(", ");
-      root.append(el("p", "dim live-note",
-        `Counted as zero from here: ${names}.`));
+      root.append(el("p", "dim live-note", Copy.fill("matchup.dead", {
+        names: dead.map(p => `${p.name} (${p.why})`).join(", "),
+      })));
     }
 
     const cols = el("div", "live-cols");
@@ -423,12 +420,13 @@ const Live = (() => {
     const ctx = await feeds.league(cfg);
     if (!ctx.myTeam) {
       root.innerHTML = "";
-      root.append(el("p", "dim", "We couldn't work out which team is yours."));
+      root.append(el("p", "dim", Copy.text("matchup.no-team")));
       return;
     }
     if (!ctx.opponent) {
       root.innerHTML = "";
-      root.append(el("p", "dim", `No opponent set for week ${ctx.week} yet.`));
+      root.append(el("p", "dim",
+        Copy.fill("matchup.no-opponent", { week: ctx.week })));
       return;
     }
     const games = await feeds.games(ctx.season, ctx.week);
@@ -446,7 +444,8 @@ const Live = (() => {
     const tick = () => refresh(root, cfg).catch(e => {
       console.error(e);
       root.innerHTML = "";
-      root.append(el("p", "load-error", `Couldn't load your matchup: ${e.message}`));
+      root.append(el("p", "load-error",
+        Copy.fill("matchup.error", { error: e.message })));
     });
     tick();
     timer = setInterval(tick, 60000);   // a minute is plenty; the clock is the model

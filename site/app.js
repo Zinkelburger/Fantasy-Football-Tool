@@ -15,16 +15,22 @@ async function data(name) {
 }
 
 /* One banner per view: shown when that view's data fetch fails, cleared
-   on the next visit so navigation back retries the load. */
+   on the next visit so navigation back retries the load.
+
+   `:scope >` matters. We prepend the banner as a direct child, but views
+   own error slots of their own further down — My league has one inside
+   its connect form — and an unscoped query found that instead and
+   deleted it on the first navigation. Every later attempt to show a
+   connect error then threw on a missing element, which is why a wrong
+   league id used to fail in silence. */
 function loadError(viewId, on) {
   const view = document.getElementById(viewId);
-  const old = view.querySelector(".load-error");
+  const old = view.querySelector(":scope > .load-error");
   if (!on) { if (old) old.remove(); return; }
   if (old) return;
   const p = document.createElement("p");
   p.className = "load-error";
-  p.textContent = "This page didn't load — check your connection, "
-    + "then try again.";
+  p.textContent = Copy.text("error.load");
   view.prepend(p);
 }
 
@@ -39,10 +45,20 @@ function route() {
   for (const v of VIEWS) {
     document.getElementById(`view-${v}`).hidden = v !== view;
   }
+  let activeLink = null;
   document.querySelectorAll("#site-nav a").forEach(a => {
-    a.classList.toggle("active", a.dataset.route === view
-      || (view === "post" && a.dataset.route === "blog"));
+    const on = a.dataset.route === view
+      || (view === "post" && a.dataset.route === "blog");
+    a.classList.toggle("active", on);
+    if (on) activeLink = a;
   });
+  // On a phone the nav is one swipeable row, so the link for the page you're
+  // on is often off the right edge — where a highlight nobody can see is the
+  // same as no highlight. Pull it into view.
+  if (activeLink && document.getElementById("site-nav").scrollWidth
+      > document.getElementById("site-nav").clientWidth) {
+    activeLink.scrollIntoView({ block: "nearest", inline: "center" });
+  }
 
   loadError(`view-${view}`, false);
   const guard = p => p.catch(err => {
@@ -62,34 +78,10 @@ function route() {
   if (view !== "post") window.scrollTo(0, 0);
 }
 
-/* Hover copy for the weekly tables. Every number here is a measured
-   effect from the K/DST findings, not a rule of thumb — keep them in
-   sync with findings 27 and 28 if either model is refit. */
-const WHY = {
-  oppImp: "Points Vegas expects the opponent to score — lower is better. "
-    + "This one number does about 97% of the work: each point off the "
-    + "opponent's total is worth about +0.38 D/ST points (finding 27).",
-  stream:
-    "Top-3 matchup this week. Picking defenses by opponent total ranks "
-    + "them more than twice as well as going by how good the defense is "
-    + "(.30 vs .13) — so stream the matchup, don't hold a name (finding 27).",
-  ownImp: "Points Vegas expects this kicker's own offense to score — "
-    + "higher is better. Kickers score when their team moves the ball and "
-    + "wins; the kicker's own history predicts almost nothing (finding 28).",
-  dome: "Indoors: no wind, no weather. Worth about +0.7 points to a kicker "
-    + "in our model — small, but it is the second-biggest thing we can see "
-    + "after how much the offense is expected to score. Wind costs about "
-    + "−0.5 (finding 28).",
-  domeSched: "Indoor games on this team's 2026 schedule, home and away. "
-    + "Each one is worth about +0.7 kicker points, so a 10-dome schedule "
-    + "beats a 0-dome schedule by roughly 0.4 points a game (finding 28). "
-    + "A tiebreak, not a reason to reach.",
-  oppSeason: "Points this defense's opponents are expected to score, "
-    + "averaged over the whole 2026 season. Each point lower is worth about "
-    + "+0.38 D/ST points a week (finding 27). Preseason win totals are the "
-    + "best season-long signal we have — better than any stat-based one "
-    + "(finding 26).",
-};
+/* Hover copy for the weekly and draft tables lives in site/copy.md under
+   the tip.* keys, alongside the rest of the site's words. Every number in
+   it is a measured effect from the K/DST findings, not a rule of thumb —
+   keep them in sync with findings 27 and 28 if either model is refit. */
 
 /* ------------------------------------------------------------ weekly
    Rows can be marked "taken" (rostered in your league) or "mine"
@@ -135,33 +127,33 @@ async function renderWeekly() {
   const rowAttrs = (tab, r) =>
     `data-mark-key="${tab}:${r.team}"
      data-search="${`${r.team} ${r.opp}`.toLowerCase()}"
-     title="Click: taken → mine → clear"`;
+     title="${Copy.attr("tip.mark-row")}"`;
 
   const dst = document.getElementById("dst-table");
   dst.innerHTML =
     `<thead><tr><th class="rank">#</th><th>Defense</th><th>vs</th>
-     <th class="num" title="${WHY.oppImp}">Opp implied</th>
+     <th class="num" title="${Copy.attr("tip.opp-implied")}">Opp implied</th>
      <th></th><th class="mark-col"></th></tr></thead><tbody>` +
     w.dst.map((r, i) =>
       `<tr ${rowAttrs("dst", r)}><td class="rank">${i + 1}</td>
        <td><b>${r.team}</b></td>
        <td>${r.home ? "" : "@ "}${r.opp}</td>
        <td class="num ${r.imp <= 18.5 ? "up" : ""}">${r.imp.toFixed(1)}</td>
-       <td>${i < 3 ? `<span class="tag up" title="${WHY.stream}">stream</span>` : ""}</td>
+       <td>${i < 3 ? `<span class="tag up" title="${Copy.attr("tip.stream")}">stream</span>` : ""}</td>
        <td class="mark-cell"></td></tr>`
     ).join("") + "</tbody>";
 
   const k = document.getElementById("k-table");
   k.innerHTML =
     `<thead><tr><th class="rank">#</th><th>Kicker slot</th><th>vs</th>
-     <th class="num" title="${WHY.ownImp}">Own implied</th>
+     <th class="num" title="${Copy.attr("tip.own-implied")}">Own implied</th>
      <th></th><th class="mark-col"></th></tr></thead><tbody>` +
     w.k.map((r, i) =>
       `<tr ${rowAttrs("k", r)}><td class="rank">${i + 1}</td>
        <td><b>${r.team}</b> K</td>
        <td>${r.home ? "" : "@ "}${r.opp}</td>
        <td class="num">${r.imp.toFixed(1)}</td>
-       <td>${r.dome ? `<span class="tag dome" title="${WHY.dome}">dome</span>` : ""}</td>
+       <td>${r.dome ? `<span class="tag dome" title="${Copy.attr("tip.dome")}">dome</span>` : ""}</td>
        <td class="mark-cell"></td></tr>`
     ).join("") + "</tbody>";
 
@@ -226,20 +218,21 @@ async function renderBoard() {
 
   document.getElementById("pre-k-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Kicker slot</th>
-     <th class="num" title="Points Vegas expects this offense to score per game across the whole 2026 season. Kicker scoring follows the offense, not the kicker.">Own PPG</th>
-     <th class="num" title="${WHY.domeSched}">Dome games</th>
+     <th class="num" title="${Copy.attr("tip.own-season")}">Own PPG</th>
+     <th class="num" title="${Copy.attr("tip.dome-schedule")}">Dome games</th>
      </tr></thead><tbody>` +
     pre.k.map((r, i) =>
       `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b> K</td>
        <td class="num">${r.own.toFixed(1)}</td>
        <td class="num ${r.dome >= 8 ? "up" : ""}"
-           title="${r.dome} of ${r.games} games indoors — worth about
-           ${r.domeEdge.toFixed(2)} kicker points a game over the season">
+           title="${Copy.fillAttr("tip.dome-count", {
+             dome: r.dome, games: r.games, edge: r.domeEdge.toFixed(2),
+           })}">
          ${r.dome}</td></tr>`).join("") + "</tbody>";
 
   document.getElementById("pre-dst-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Defense</th>
-     <th class="num" title="${WHY.oppSeason}">Opp PPG faced</th>
+     <th class="num" title="${Copy.attr("tip.opp-season")}">Opp PPG faced</th>
      </tr></thead><tbody>` +
     pre.dst.map((r, i) =>
       `<tr><td class="rank">${i + 1}</td><td><b>${r.team}</b></td>
@@ -273,7 +266,7 @@ async function renderPost(id) {
   const posts = await data("blog");
   const p = posts.find(x => x.id === id);
   const el = document.getElementById("post-body");
-  if (!p) { el.innerHTML = "<p>Post not found.</p>"; return; }
+  if (!p) { el.textContent = Copy.text("blog.notfound"); return; }
   el.innerHTML = `<h1>${p.title}</h1>` + p.html;
   window.scrollTo(0, 0);
 }
@@ -292,16 +285,21 @@ async function renderCheat() {
 /* ==================================================================== */
 /*  My league                                                           */
 /*                                                                      */
-/*  Two ways in. Sleeper takes a username and finds your leagues, which  */
-/*  is the whole flow. ESPN has no public "which leagues am I in"        */
-/*  lookup without a login, so it takes a league id and you pick your    */
-/*  team out of the list — and private ESPN leagues route through the    */
-/*  browser extension (see site/espn.js).                                */
+/*  One box. Digits (or a URL with leagueId= in it) mean an ESPN        */
+/*  league; anything else is a Sleeper username. Sleeper then finds     */
+/*  your leagues, ESPN asks which team is yours.                        */
+/*                                                                      */
+/*  Better than either: if the browser extension is installed it can    */
+/*  read the ESPN cookies this page can't, so it just tells us which    */
+/*  leagues you're in — private ones included — and the box becomes     */
+/*  something you only need for somebody else's league.                 */
 /* ==================================================================== */
 
 const LIVE_STORE = "ff_live_v2";
 let liveWired = false;
 let liveTab = "matchup";
+let liveForce = null;      // set when you correct the ESPN/Sleeper guess
+let liveFound = null;      // cached answer to "which leagues am I in?"
 
 const liveSaved = () => {
   try { return JSON.parse(localStorage.getItem(LIVE_STORE)) || {}; }
@@ -311,6 +309,45 @@ const liveSave = (o) => {
   try { localStorage.setItem(LIVE_STORE, JSON.stringify(o)); }
   catch (e) { /* private mode */ }
 };
+
+const liveEl = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+};
+
+/* --- the extension, holding the same setting -------------------------
+   The extension can answer questions this page can't, and the draft
+   tool runs inside it, so both ends keep one copy of which league you
+   are in and you only pick it once. Writing costs nothing when no
+   extension is listening — the message goes nowhere. */
+let liveSynced = "";
+function liveSyncOut(cfg) {
+  const s = JSON.stringify(cfg && cfg.leagueId ? cfg : null);
+  if (s === liveSynced) return;
+  liveSynced = s;
+  try {
+    window.postMessage(
+      { source: "ffda-page", type: "save-league", cfg: JSON.parse(s) }, "*");
+  } catch (e) { /* nothing listening */ }
+}
+
+/* The other direction. Adopt the extension's copy only when this
+   browser has nothing saved: otherwise a stale copy would yank you out
+   of the league you just picked, and our own write above would bounce
+   straight back at us through storage.onChanged. */
+window.addEventListener("message", (e) => {
+  if (e.source !== window) return;
+  const m = e.data;
+  if (!m || m.source !== "ffda-ext" || m.type !== "state") return;
+  const lg = (m.data || {}).league;
+  if (!lg || !lg.leagueId || !lg.kind || liveSaved().leagueId) return;
+  liveSave(lg);
+  liveSynced = JSON.stringify(lg);
+  const view = document.getElementById("view-live");
+  if (view && !view.hidden) renderLive(liveTab);
+});
 
 function liveError(msg) {
   const p = document.getElementById("live-error");
@@ -336,7 +373,7 @@ function showLeagueTab(cfg) {
     box.innerHTML = "";
     const p = document.createElement("p");
     p.className = "load-error";
-    p.textContent = `Couldn't load that: ${err.message}`;
+    p.textContent = Copy.fill("error.generic", { error: err.message });
     box.append(p);
   };
   if (liveTab === "matchup") {
@@ -355,7 +392,9 @@ function showLeagueTab(cfg) {
 
 function useLeague(cfg) {
   liveSave(cfg);
+  liveSyncOut(cfg);
   Provider.invalidate();
+  document.getElementById("live-connect").hidden = true;
   document.getElementById("live-picked").hidden = false;
   document.getElementById("live-picked-name").textContent =
     `${cfg.leagueName} · ${cfg.teamName || "your team"}`;
@@ -364,117 +403,206 @@ function useLeague(cfg) {
   showLeagueTab(cfg);
 }
 
-/* A row of buttons; resolves with whichever one is clicked. */
-function chooser(box, heading, items, label) {
+/* A row of buttons; calls back with whichever one is clicked. The
+   callback is wired to each button rather than to the container,
+   because the container outlives the connection attempt — hanging
+   listeners off it meant an abandoned Sleeper search still fired when
+   you later picked an ESPN team. */
+function chooser(box, heading, items, label, onPick) {
   box.hidden = false;
   box.innerHTML = "";
-  const h = document.createElement("p");
-  h.className = "dim";
-  h.textContent = heading;
-  box.append(h);
+  box.append(liveEl("p", "dim", heading));
   for (const it of items) {
-    const b = document.createElement("button");
+    const b = liveEl("button", "btn live-league", label(it));
     b.type = "button";
-    b.className = "btn live-league";
-    b.textContent = label(it);
     b.onclick = () => {
       box.querySelectorAll(".live-league").forEach(x =>
         x.classList.toggle("active", x === b));
-      box.dispatchEvent(new CustomEvent("pick", { detail: it }));
+      onPick(it);
     };
+    box.append(b);
+  }
+  if (items.length === 1) box.querySelector(".live-league").click();
+}
+
+/* --- reading the one box --------------------------------------------
+   An ESPN league is a run of digits, or a URL with leagueId= in it.
+   Anything else is a Sleeper username. That covers everyone without
+   making people choose a provider before they've typed anything, and
+   the single real ambiguity — a Sleeper username that happens to be
+   all digits — gets a one-click correction under the box instead of a
+   permanent extra control. */
+function liveSniff(raw) {
+  const s = (raw || "").trim();
+  if (!s) return null;
+  const m = s.match(/leagueId[=/](\d+)/i) || s.match(/^(\d+)$/);
+  if (m) return { kind: "espn", leagueId: m[1] };
+  return { kind: "sleeper", name: s.replace(/^@/, "") };
+}
+
+function liveGuess() {
+  const raw = document.getElementById("live-id").value.trim();
+  const g = liveSniff(raw);
+  if (!g || !liveForce || liveForce === g.kind) return g;
+  return liveForce === "sleeper"
+    ? { kind: "sleeper", name: raw.replace(/^@/, "") }
+    : { kind: "espn", leagueId: (raw.match(/\d+/) || [""])[0] };
+}
+
+function liveHint() {
+  const box = document.getElementById("live-hint");
+  box.innerHTML = "";
+  const raw = document.getElementById("live-id").value.trim();
+  const g = liveGuess();
+  if (!g) return;
+  box.append(document.createTextNode(g.kind === "espn"
+    ? `${Copy.fill("live.hint.espn", { id: g.leagueId })} `
+    : `${Copy.fill("live.hint.sleeper", { name: g.name })} `));
+  /* Bare digits are the only input that reads two ways. A URL, or a
+     name that isn't a number, needs no second opinion. */
+  if (/^\d+$/.test(raw)) {
+    const other = g.kind === "espn" ? "sleeper" : "espn";
+    const b = liveEl("button", "linkish", Copy.text(other === "sleeper"
+      ? "live.hint.is-sleeper" : "live.hint.is-espn"));
+    b.type = "button";
+    b.onclick = () => { liveForce = other; liveHint(); };
     box.append(b);
   }
 }
 
-async function connectSleeper() {
-  const input = document.getElementById("live-username");
-  const name = input.value.trim();
-  if (!name) return;
-  const user = await Sleeper.user(name);
-  const season = (await Sleeper.state()).season;
-  const leagues = await Sleeper.leagues(user.user_id, season);
-  if (!leagues || !leagues.length) {
-    throw new Error("that account has no leagues this season");
+async function runConnect(btn, fn) {
+  liveError("");
+  /* the found-league cards have their own markup inside, so only
+     swap the label on buttons that are just a label */
+  const plain = !btn.firstElementChild;
+  const was = btn.textContent;
+  btn.disabled = true;
+  btn.classList.add("is-busy");
+  if (plain) btn.textContent = Copy.text("live.connecting");
+  try { await fn(); }
+  catch (e) { liveError(e.message); }
+  finally {
+    btn.disabled = false;
+    btn.classList.remove("is-busy");
+    if (plain) btn.textContent = was;
   }
-  const box = document.getElementById("live-leagues");
-  const pick = (lg) => useLeague({
-    kind: "sleeper", leagueId: lg.league_id, leagueName: lg.name,
-    teamKey: user.user_id, teamName: user.display_name,
-    username: user.username, season,
-  });
-  chooser(box, leagues.length === 1 ? "One league found."
-    : `${leagues.length} leagues — pick one.`, leagues, lg => lg.name);
-  box.addEventListener("pick", e => pick(e.detail), { once: false });
-  if (leagues.length === 1) box.querySelector(".live-league").click();
 }
 
-async function connectEspn() {
-  const input = document.getElementById("live-espn-id");
-  const raw = input.value.trim();
-  /* people paste the whole URL, so pull the id out of it */
-  const m = raw.match(/leagueId=(\d+)/i) || raw.match(/^(\d+)$/);
-  if (!m) throw new Error("Paste your ESPN league id, or the league URL.");
-  const leagueId = m[1];
+async function liveConnect() {
+  const g = liveGuess();
+  if (!g) return;
   const season = (await Sleeper.state()).season;
+  if (g.kind === "espn") await connectEspn(g.leagueId, season);
+  else await connectSleeper(g.name, season);
+}
+
+async function connectSleeper(name, season) {
+  const user = await Sleeper.user(name);
+  const leagues = await Sleeper.leagues(user.user_id, season);
+  if (!leagues || !leagues.length) {
+    throw new Error(Copy.text("live.err.noleagues"));
+  }
+  chooser(document.getElementById("live-leagues"),
+    leagues.length === 1 ? Copy.text("live.pick.league.one")
+      : Copy.fill("live.pick.league.many", { n: leagues.length }),
+    leagues, lg => lg.name,
+    lg => useLeague({
+      kind: "sleeper", leagueId: lg.league_id, leagueName: lg.name,
+      teamKey: user.user_id, teamName: user.display_name,
+      username: user.username, season,
+    }));
+}
+
+async function connectEspn(leagueId, season) {
+  if (!leagueId) throw new Error(Copy.text("live.err.noid"));
   const pv = await Espn.preview(leagueId, season);
-  if (!pv.teams.length) throw new Error("that league has no teams in it");
-  const box = document.getElementById("live-leagues");
-  chooser(box, `${pv.name} — which team is yours?`, pv.teams, t => t.name);
-  box.addEventListener("pick", e => useLeague({
-    kind: "espn", leagueId, leagueName: pv.name,
-    teamKey: e.detail.id, teamName: e.detail.name, season,
-  }), { once: false });
+  if (!pv.teams.length) throw new Error(Copy.text("live.err.noteams"));
+  chooser(document.getElementById("live-leagues"),
+    Copy.fill("live.pick.team", { league: pv.name }), pv.teams, t => t.name,
+    t => useLeague({ kind: "espn", leagueId, leagueName: pv.name,
+                     teamKey: t.id, teamName: t.name, season }));
+}
+
+/* --- the leagues the extension already knows about -------------------
+   Silent when there's no extension, or when it can't see an ESPN
+   login: the box below is then the only way in, which is where we
+   started. When it does answer, your leagues are one click and no
+   typing — and this is the only route that reaches a private league
+   without you going and finding its id. */
+async function liveDetect() {
+  const box = document.getElementById("live-found");
+  box.hidden = true;
+  box.innerHTML = "";
+
+  let season;
+  try { season = (await Sleeper.state()).season; } catch (e) { return; }
+  if (!liveFound) liveFound = await Espn.myLeagues(season);
+  if (!liveFound.leagues.length) return;
+
+  box.hidden = false;
+  box.append(liveEl("p", "dim", Copy.text(liveFound.leagues.length === 1
+    ? "live.found.one" : "live.found.many")));
+
+  for (const lg of liveFound.leagues) {
+    const card = liveEl("button", "live-found-card");
+    card.type = "button";
+    const nm = liveEl("span", "live-found-name",
+      lg.leagueName || `League ${lg.leagueId}`);
+    const sub = liveEl("span", "dim", lg.teamName || "…");
+    card.append(nm, sub);
+    card.onclick = () => runConnect(card, async () => {
+      if (!lg.teamId) return connectEspn(lg.leagueId, lg.season || season);
+      useLeague({ kind: "espn", leagueId: lg.leagueId,
+                  leagueName: lg.leagueName || `League ${lg.leagueId}`,
+                  teamKey: lg.teamId, teamName: lg.teamName,
+                  season: lg.season || season });
+    });
+    box.append(card);
+
+    /* The cookie fallback knows the ids but carries no names. One
+       preview call fills them in; the card works meanwhile. */
+    if (!lg.leagueName || !lg.teamName) {
+      Espn.preview(lg.leagueId, lg.season || season).then(pv => {
+        const t = pv.teams.find(x => String(x.id) === String(lg.teamId));
+        lg.leagueName = lg.leagueName || pv.name;
+        lg.teamName = lg.teamName || (t ? t.name : null);
+        nm.textContent = lg.leagueName;
+        sub.textContent = lg.teamName || Copy.text("live.pick.team.prompt");
+      }).catch(() => {
+        sub.textContent = Copy.text("live.pick.team.prompt");
+      });
+    }
+  }
 }
 
 function wireLive() {
   if (liveWired) return;
   liveWired = true;
 
-  /* the Sleeper / ESPN switch */
-  document.querySelectorAll("#live-source-tabs button").forEach(b => {
-    b.onclick = () => {
-      document.querySelectorAll("#live-source-tabs button").forEach(x =>
-        x.classList.toggle("active", x === b));
-      document.getElementById("live-form-sleeper").hidden = b.dataset.src !== "sleeper";
-      document.getElementById("live-form-espn").hidden = b.dataset.src !== "espn";
-      document.getElementById("live-leagues").hidden = true;
-      liveError("");
-    };
-  });
-
-  const run = async (btn, fn) => {
-    liveError("");
-    const was = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = "Connecting…";
-    try { await fn(); }
-    catch (e) { liveError(e.message); }
-    finally { btn.disabled = false; btn.textContent = was; }
-  };
-
-  const sBtn = document.getElementById("live-go");
-  const eBtn = document.getElementById("live-espn-go");
-  sBtn.onclick = () => run(sBtn, connectSleeper);
-  eBtn.onclick = () => run(eBtn, connectEspn);
-  document.getElementById("live-username").addEventListener("keydown",
-    e => { if (e.key === "Enter") sBtn.click(); });
-  document.getElementById("live-espn-id").addEventListener("keydown",
-    e => { if (e.key === "Enter") eBtn.click(); });
+  const input = document.getElementById("live-id");
+  const btn = document.getElementById("live-go");
+  input.oninput = () => { liveForce = null; liveError(""); liveHint(); };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+  btn.onclick = () => runConnect(btn, liveConnect);
 
   document.getElementById("live-switch").onclick = () => {
     liveSave({});
+    liveSyncOut(null);
     Provider.invalidate();
     Live.stopPolling();
+    liveForce = null;
     document.getElementById("live-picked").hidden = true;
     document.getElementById("live-connect").hidden = false;
     document.getElementById("live-leagues").hidden = true;
     document.getElementById("live-body").innerHTML = "";
     document.getElementById("league-body").innerHTML = "";
     showLeagueTabs(false);
+    liveDetect();
   };
 
   const saved = liveSaved();
-  if (saved.username) document.getElementById("live-username").value = saved.username;
+  if (saved.username) input.value = saved.username;
+  liveHint();
 }
 
 async function renderLive(tab) {
@@ -490,8 +618,16 @@ async function renderLive(tab) {
     document.getElementById("live-connect").hidden = false;
     document.getElementById("live-picked").hidden = true;
     showLeagueTabs(false);
+    liveDetect();
   }
 }
 
+/* Copy first, then the first route: every view starts hidden, so nothing
+   is on screen to flash its empty slots while copy.json is in flight. A
+   failed load leaves the words blank and logs — the tables, the draft
+   tool and the league pages still work. */
 window.addEventListener("hashchange", route);
-route();
+Copy.load().then(() => {
+  Copy.apply(document);
+  route();
+});

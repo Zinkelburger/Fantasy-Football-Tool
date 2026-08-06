@@ -1,10 +1,12 @@
-# 33 — Draft a tight end early or very late. Never in between.
+# 33 — An elite tight end is worth having, not worth reaching for
 
 **Confidence: Medium-High** (the head-to-head holds in all three scoring formats and all eight drafts but rests on 26 early picks; the round-5-to-9 warning is stronger still, from 139 picks)
 
 ## TL;DR
 
-The instinct that a receiver or running back is obviously a better use of an early pick than a tight end turns out to be wrong. From 2018 to 2025, tight ends drafted in the first four rounds returned more than the receivers and backs taken at the same picks 69% of the time, and they busted at half the rate. But the odds of getting a useful tight end fall off a cliff after round 4 — so take one of the two or three elite ones at market price, or wait until round 10 and take darts. The rounds in between charge a real pick for lottery odds.
+The instinct that a receiver or running back is obviously a better use of an early pick than a tight end turns out to be wrong. From 2018 to 2025, tight ends drafted in the first four rounds returned more than the receivers and backs taken at the same picks 69% of the time, and they busted at half the rate. And the odds of getting a useful tight end fall off a cliff after round 4, so the middle rounds are the worst place to shop.
+
+But when we tested championships instead of points, the advice narrowed: **don't plan to take a tight end at all.** Every drafter who committed to a round in advance won fewer titles than one who just took the board and let the position come to him. An elite tight end is worth having — he isn't worth reaching for.
 
 ## How you compare a tight end to a receiver
 
@@ -53,6 +55,28 @@ Past round 6, where a tight end is drafted tells you almost nothing — a round-
 So: **the elite door** (one of the consensus top few, rounds 1–4), or **the wait door** (nothing until round 10, then two darts or a streaming plan). Not the hallway between them.
 
 And do draft one. Living off the waiver wire at tight end is drying up — three, two and three top-8 tight ends went undrafted in 2020 through 2022, then zero, one and zero in 2023 through 2025.
+
+## But does any of it win championships?
+
+Everything above counts points, and points aren't trophies. So we tested the thing that actually matters: we forced a drafter to buy his tight end in a fixed round, swept that round from 2 to 12, and ran 3,600 seasons of each version against an identical league.
+
+**Nothing beat just taking the board.** A drafter with no tight-end plan at all won the title 19.8% of the time. Every version that committed in advance did worse.
+
+What decided it wasn't *which* round — it was **what you had to pay**:
+
+| How the tight end was bought | Championships |
+|---|---|
+| No plan — take the board, let him fall to you | **19.8%** |
+| Forced in round 2 (reaching ~8 picks) | 16.1% |
+| Forced in round 3 (paying his exact price) | 18.1% |
+| Forced in round 4 (slight discount) | 18.4% |
+| Forced in round 10, plus streaming | 17.6% |
+
+The more you overpaid to guarantee yourself a tight end, the more championships you gave away. And the no-plan drafter's most common tight end was Travis Kelce — taken about 15 picks *after* his going rate, because he fell.
+
+That's the whole lesson, and it's the one thing everything on this site keeps repeating: **let him come to you.** An elite tight end is worth having. He is not worth reaching for. If the best tight end on the board is also the best player on the board when your turn comes, take him. If getting him means jumping the queue, take the running back or receiver instead.
+
+(Two honest limits: any hard rule costs a drafter something, so this can't prove the elite tier is *uniquely* bad — only that planning ahead is. And championships are rare enough that this run can only see swings bigger than about 1.7 points; the smaller gaps above are too close to call.)
 
 ## Scoring format moves the dial
 

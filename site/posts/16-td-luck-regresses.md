@@ -53,6 +53,6 @@ rule that knew nothing about 2025.
 
 The misses, so you can weigh them: Drake Maye was flagged lucky and
 improved anyway (12.7 → 19.9), and buy Brian Robinson collapsed
-(9.3 → 2.8). Averages, not guarantees. This year's calls are marked on
-the [draft tool](#/draft) board — a ◆ by the player's name, his
-numbers in the note.
+(9.3 → 2.8). Averages, not guarantees. This year's calls are on the
+[draft tool](#/draft) board — hover a player's name, or open his note,
+and a line labeled "TD regression" gives you his own numbers.

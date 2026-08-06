@@ -8,6 +8,7 @@ Inputs (all tracked in the repo):
 - engine/league-sim/data/market/implied_2026.csv      -> market.json
 - engine/league-sim/data/market/games.csv (2026 wk1)  -> weekly.json (DST + K)
 - site/posts/NN-*.md                                  -> blog.json
+- site/copy.md                                        -> copy.json
 
 site/posts/ holds the reader-facing rewrites of the research findings in
 engine/league-sim/findings/ (same filenames; the research docs are the
@@ -53,6 +54,9 @@ def inline(s):
                r'<img src="\2" alt="\1" loading="lazy">', s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<!\*)\*([^*\s][^*]*)\*(?!\*)", r"<em>\1</em>", s)
+    # a link into our own SPA (#/blog/…) must not open a new tab; only
+    # links that leave the site get target="_blank"
+    s = re.sub(r"\[([^\]]+)\]\((#[^)]+)\)", r'<a href="\2">\1</a>', s)
     s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)",
                r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
     return s
@@ -569,6 +573,58 @@ def build_cheatsheet():
                 html=glossarize(md2html("\n".join(lines[1:]))))
 
 
+_TAG = re.compile(r"<[^>]+>")
+_KEY = re.compile(r"^#\s+([a-z0-9][a-z0-9.\-]*)\s*$")
+
+
+def _plain(html):
+    """The tag-free form of a copy block. Blocks used as tooltips, button
+    labels or textContent take this instead of the HTML."""
+    t = _TAG.sub(" ", html)
+    for ent, ch in (("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"),
+                    ("&quot;", '"')):
+        t = t.replace(ent, ch)
+    return " ".join(t.split())
+
+
+def build_copy():
+    """site/copy.md -> {key: {html, text}}.
+
+    Every user-facing sentence on the site lives in that one file, so the
+    prose can be edited without going near index.html or the scripts. A
+    `# key` line opens a block; everything up to the next one is its
+    markdown. Pages carry data-copy slots and the scripts ask for keys by
+    name (site/copy.js).
+
+    Text before the first key is the file's own editing instructions, so
+    it is skipped rather than published.
+    """
+    blocks, key, buf = [], None, []
+    for ln in (SITE / "copy.md").read_text().splitlines():
+        m = _KEY.match(ln)
+        if m:
+            if key:
+                blocks.append((key, buf))
+            key, buf = m.group(1), []
+            continue
+        if key is not None:
+            buf.append(ln)
+    if key:
+        blocks.append((key, buf))
+
+    # the one number in the copy that goes stale on its own
+    npos = len(list(POSTS.glob("[0-9][0-9]-*.md")))
+    out = {}
+    for k, lines in blocks:
+        md = "\n".join(lines).strip().replace("{{posts}}", str(npos))
+        html = md2html(md)
+        out[k] = dict(html=html, text=_plain(html))
+    dupes = len(blocks) - len(out)
+    if dupes:
+        print(f"  ({dupes} duplicate key(s) in copy.md — last one wins)")
+    return out
+
+
 def build_ingame():
     """Live win-probability parameters (finding 35). Fit by
     engine/league-sim/analysis/ingame_model.py; the browser runs the
@@ -590,7 +646,8 @@ def main():
     for name, data in (("preseason", build_preseason()),
                        ("weekly", build_weekly()), ("blog", build_blog()),
                        ("ingame", build_ingame()),
-                       ("cheatsheet", build_cheatsheet())):
+                       ("cheatsheet", build_cheatsheet()),
+                       ("copy", build_copy())):
         (out / f"{name}.json").write_text(json.dumps(data))
         print(f"data/{name}.json written")
 

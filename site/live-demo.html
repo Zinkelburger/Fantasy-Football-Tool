@@ -45,6 +45,7 @@
 </section>
 </main>
 
+<script src="copy.js"></script>
 <script src="sleeper.js"></script>
 <script src="espn.js"></script>
 <script src="provider.js"></script>
@@ -190,7 +191,10 @@ async function show(tab) {
 
 const current = () => (location.hash.replace("#", "") || "matchup");
 window.addEventListener("hashchange", () => show(current()));
-Live.init().then(() => show(current()))
+/* The renderers read their sentences out of copy.json, same as the real
+   site, so the fixture has to load it before anything draws. */
+Promise.all([Copy.load(), Live.init()])
+  .then(() => { Copy.apply(document); show(current()); })
   .catch(e => { document.getElementById("live-body").textContent =
     "Couldn't load data/ingame.json — serve the site directory over HTTP. " + e.message; });
 </script>

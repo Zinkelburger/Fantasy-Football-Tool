@@ -5,7 +5,8 @@
  * none of this knows or cares whether the league lives on Sleeper or
  * ESPN.
  *
- * The tone rule from the rest of the site applies: say what a number
+ * Every sentence this file shows a reader comes from site/copy.md under
+ * the league.* keys. The tone rule there applies: say what a number
  * means in plain words, and don't imply more precision than we
  * measured.
  */
@@ -33,7 +34,7 @@ const League = (() => {
   function renderStartSit(root, c) {
     root.innerHTML = "";
     if (!c.myTeam) {
-      root.append(el("p", "dim", "We couldn't work out which team is yours."));
+      root.append(el("p", "dim", Copy.text("league.no-team")));
       return;
     }
     /* Out of season, and for a week the provider hasn't projected yet,
@@ -42,9 +43,7 @@ const League = (() => {
        one available". */
     if (!c.myTeam.players.some(id => c.proj[id] > 0)) {
       root.append(el("p", "dim",
-        `Nobody on your roster has a projection for week ${c.week} yet, so `
-        + "there's nothing to compare. Weekly projections usually appear a "
-        + "few days before the games."));
+        Copy.fill("league.startsit.no-projection", { week: c.week })));
       return;
     }
 
@@ -55,20 +54,15 @@ const League = (() => {
     const actual = c.myTeam.starters.reduce((s, id) => s + (c.proj[id] || 0), 0);
     const gain = best.total - actual;
 
-    root.append(el("p", "blurb",
-      "Your best legal lineup this week against the one you've actually "
-      + "set, using this week's projections. A projection is not a "
-      + "promise — but over a season, starting the higher number wins "
-      + "more weeks than not."));
+    root.append(el("p", "blurb", Copy.text("league.startsit.blurb")));
 
     const head = el("div", "ss-head");
     const big = el("div", "ss-gain", gain > 0.05 ? `+${gain.toFixed(1)}` : "0.0");
     big.style.color = gain > 2 ? "var(--yellow)" : "var(--green)";
     head.append(big);
     const lab = el("div", "ss-gain-label");
-    lab.append(el("div", "", gain > 0.05
-      ? "projected points you're leaving on your bench"
-      : "your lineup is already the best one available"));
+    lab.append(el("div", "", Copy.text(gain > 0.05
+      ? "league.startsit.gain" : "league.startsit.nogain")));
     lab.append(el("div", "dim",
       `${actual.toFixed(1)} started · ${best.total.toFixed(1)} available`));
     head.append(lab);
@@ -95,7 +89,7 @@ const League = (() => {
     });
 
     if (!swaps.length) {
-      root.append(el("p", "dim", "Nothing to change. Go and enjoy your Sunday."));
+      root.append(el("p", "dim", Copy.text("league.startsit.nothing")));
     } else {
       const list = el("div", "lg-table");
       for (const s of swaps.sort((a, b) => b.delta - a.delta)) {
@@ -113,7 +107,7 @@ const League = (() => {
           outRow.append(el("span", "dim", `${fmt(c.proj[s.out] || 0)} proj`));
           body.append(outRow);
         } else {
-          body.append(el("div", "dim", "an empty slot in your lineup"));
+          body.append(el("div", "dim", Copy.text("league.startsit.empty-slot")));
         }
         row.append(body);
         row.append(el("span", "ss-delta", `+${s.delta.toFixed(1)}`));
@@ -132,21 +126,20 @@ const League = (() => {
       const row = el("div", "lg-row ss-row");
       row.append(el("span", "dim", slot.slot));
       row.append(el("span", "lg-player-name",
-        slot.id ? nameOf(slot.id, c) : "— nobody eligible —"));
+        slot.id ? nameOf(slot.id, c) : Copy.text("league.startsit.nobody")));
       row.append(el("span", "lg-num", fmt(slot.pr)));
       const same = slot.id && started.has(slot.id);
       row.append(el("span", same ? "dim" : "ss-diff", same ? "✓ started" : "on your bench"));
       t.append(row);
     }
-    root.append(el("h3", "", "The lineup"));
+    root.append(el("h3", "", Copy.text("league.startsit.lineup-title")));
     root.append(t);
 
     const missing = c.myTeam.starters.filter(id => c.proj[id] === undefined);
     if (missing.length) {
-      root.append(el("p", "dim lg-note",
-        `No projection for ${missing.map(id => nameOf(id, c)).join(", ")} — `
-        + "they're counted as zero here, which is usually right (a bye or "
-        + "an inactive) and occasionally just a gap in the feed."));
+      root.append(el("p", "dim lg-note", Copy.fill("league.startsit.missing", {
+        names: missing.map(id => nameOf(id, c)).join(", "),
+      })));
     }
   }
 
@@ -175,7 +168,7 @@ const League = (() => {
     const right = el("div", "lg-toolbar-right");
     const search = el("input", "lg-search");
     search.type = "search";
-    search.placeholder = "search players";
+    search.placeholder = Copy.text("league.waivers.search");
     search.value = waiverState.q;
     search.oninput = () => { waiverState.q = search.value; drawList(); };
     const lbl = el("label", "lg-check");
@@ -183,7 +176,7 @@ const League = (() => {
     cb.type = "checkbox";
     cb.checked = waiverState.hideRostered;
     cb.onchange = () => { waiverState.hideRostered = cb.checked; drawList(); };
-    lbl.append(cb, el("span", "", "only show available"));
+    lbl.append(cb, el("span", "", Copy.text("league.waivers.only-available")));
     right.append(search, lbl);
     bar.append(right);
     root.append(bar);
@@ -223,7 +216,7 @@ const League = (() => {
       listBox.append(head);
 
       if (!rows.length) {
-        listBox.append(el("p", "dim", "Nobody matches that."));
+        listBox.append(el("p", "dim", Copy.text("league.waivers.nomatch")));
         return;
       }
       for (const r of rows.slice(0, 120)) {
@@ -238,33 +231,28 @@ const League = (() => {
         const st = el("span", "lg-status",
           r.isMine ? "yours" : r.owned ? "rostered" : "available");
         if (r.pctOwned !== null && r.pctOwned !== undefined && !r.owned) {
-          st.title = `rostered in ${r.pctOwned.toFixed(0)}% of ESPN leagues`;
+          st.title = Copy.fill("league.waivers.tip.owned",
+                               { pct: r.pctOwned.toFixed(0) });
         }
         row.append(st);
         row.append(el("span", "lg-num" + (r.proj === null ? " dim" : ""),
           r.proj === null ? "—" : fmt(r.proj)));
         const up = el("span", "lg-num lg-upgrade",
           r.upgrade > 0.05 ? `+${r.upgrade.toFixed(1)}` : "—");
-        up.title = r.upgrade > 0.05
-          ? "what he'd add to your best lineup this week"
-          : "he wouldn't crack your lineup this week";
+        up.title = Copy.text(r.upgrade > 0.05
+          ? "league.waivers.tip.adds" : "league.waivers.tip.no-adds");
         if (r.upgrade > 0.05) up.classList.add("is-up");
         row.append(up);
         listBox.append(row);
       }
       if (rows.length > 120) {
-        listBox.append(el("p", "dim", `Showing the top 120 of ${rows.length}.`));
+        listBox.append(el("p", "dim",
+          Copy.fill("league.waivers.truncated", { n: rows.length })));
       }
     }
     drawList();
 
-    root.append(el("p", "dim lg-note",
-      "“Proj” is this week's projected points in your league's scoring. "
-      + "“Adds” is what he would add to your best legal lineup if you "
-      + "picked him up — a dash means he wouldn't crack it this week, "
-      + "which is the real answer to whether he's worth a waiver claim. "
-      + "It's a one-week number, so a player on a bye reads as a dash "
-      + "even when he's worth stashing."));
+    root.append(el("p", "dim lg-note", Copy.text("league.waivers.note")));
   }
 
   /* -------------------------------------------------------------- teams */
@@ -276,11 +264,7 @@ const League = (() => {
       strength: Provider.bestLineup(t.players, c).total,
     })).sort((a, b) => b.strength - a.strength);
 
-    root.append(el("p", "blurb",
-      "Teams ranked by how many points their best legal lineup projects "
-      + "for this week — not by record. A good team in a bad bye week "
-      + "will sit lower than its record suggests, and that's the point: "
-      + "this is who is dangerous on Sunday, not who has been lucky."));
+    root.append(el("p", "blurb", Copy.text("league.teams.blurb")));
 
     const t = el("div", "lg-table");
     const head = el("div", "lg-row lg-row-head lg-team-row");
@@ -312,14 +296,12 @@ const League = (() => {
      the league had played a Thursday game and the rest hadn't started. */
   async function renderReview(root, c) {
     root.innerHTML = "";
-    root.append(el("p", "dim", "Loading every week…"));
+    root.append(el("p", "dim", Copy.text("league.review.loading")));
 
     const done = c.completedWeeks;
     if (done < 1) {
       root.innerHTML = "";
-      root.append(el("p", "dim",
-        "No week has finished yet this season — there's nothing to "
-        + "compare until one has."));
+      root.append(el("p", "dim", Copy.text("league.review.no-weeks")));
       return;
     }
 
@@ -363,19 +345,14 @@ const League = (() => {
 
     root.innerHTML = "";
     if (!rows.some(r => r.w + r.l > 0)) {
-      root.append(el("p", "dim", "No finished games to read yet."));
+      root.append(el("p", "dim", Copy.text("league.review.no-games")));
       return;
     }
 
-    root.append(el("p", "blurb",
-      "All-play is the record you'd have if you played every team every "
-      + "week. It ignores who you happened to be scheduled against, so "
-      + "it's the fairer measure of how you're actually doing. "
-      + "“Luck” is your real win rate minus your all-play win rate — "
-      + "positive means the schedule has been kind."));
-    root.append(el("p", "dim",
-      `Through ${done} finished ${done === 1 ? "week" : "weeks"}. `
-      + "The week in progress isn't counted."));
+    root.append(el("p", "blurb", Copy.text("league.review.blurb")));
+    root.append(el("p", "dim", Copy.fill("league.review.through", {
+      n: done, weeks: done === 1 ? "week" : "weeks",
+    })));
 
     const t = el("div", "lg-table");
     const head = el("div", "lg-row lg-row-head lg-review-row");
@@ -393,8 +370,8 @@ const League = (() => {
         `${r.luck > 0 ? "+" : ""}${(r.luck * 100).toFixed(0)}`);
       lk.style.color = r.luck > 0.08 ? "var(--green)"
         : r.luck < -0.08 ? "var(--red)" : "var(--fg-dim)";
-      lk.title = r.luck > 0 ? "winning more than the scores deserve"
-        : "losing more than the scores deserve";
+      lk.title = Copy.text(r.luck > 0
+        ? "league.review.tip.lucky" : "league.review.tip.unlucky");
       row.append(lk);
       t.append(row);
     }
@@ -405,7 +382,7 @@ const League = (() => {
 
   async function renderMoves(root, c) {
     root.innerHTML = "";
-    root.append(el("p", "dim", "Loading recent moves…"));
+    root.append(el("p", "dim", Copy.text("league.moves.loading")));
 
     const from = Math.max(1, c.week - 3);
     const res = await c.moves(from, c.week);
@@ -416,7 +393,7 @@ const League = (() => {
       return;
     }
     if (!res.items.length) {
-      root.append(el("p", "dim", "No completed moves in the last four weeks."));
+      root.append(el("p", "dim", Copy.text("league.moves.none")));
       return;
     }
 
@@ -425,9 +402,7 @@ const League = (() => {
       return t ? t.name : `Team ${id}`;
     };
 
-    root.append(el("p", "blurb",
-      "Every completed add, drop and trade from the last four weeks, "
-      + "newest first."));
+    root.append(el("p", "blurb", Copy.text("league.moves.blurb")));
 
     const list = el("div", "lg-table");
     for (const t of res.items.slice(0, 80)) {
@@ -460,7 +435,7 @@ const League = (() => {
     const t = TABS[tab];
     if (!t) return;
     root.innerHTML = "";
-    root.append(el("p", "dim", "Loading your league…"));
+    root.append(el("p", "dim", Copy.text("league.loading")));
     const c = await Provider.load(cfg);
     await t.fn(root, c);
   }

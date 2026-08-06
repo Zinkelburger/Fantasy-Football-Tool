@@ -31,8 +31,8 @@ PUBLIC = ROOT / "public"
 # degrade -- app.js references Live and League at route time, so a single
 # missing script takes the whole site down, not just the page that needed
 # it. build_deploy checks for that below rather than trusting this list.
-SITE_FILES = ["index.html", "app.js", "style.css", "sleeper.js", "espn.js",
-              "provider.js", "live.js", "league.js"]
+SITE_FILES = ["index.html", "app.js", "style.css", "copy.js", "sleeper.js",
+              "espn.js", "provider.js", "live.js", "league.js"]
 WEBAPP_FILES = ["index.html", "app.js", "style.css"]
 
 HEADERS = """\
