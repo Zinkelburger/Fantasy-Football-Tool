@@ -57,6 +57,10 @@ class SeasonResult:
     weekly_slot_pts: dict[int, dict[int, dict[str, float]]] = field(
         default_factory=dict)
     weekly_holes: dict[int, dict[int, list[str]]] = field(default_factory=dict)
+    # team idx -> week -> pids actually in the starting lineup. Bench
+    # points never count, so this is what "was he useful" means.
+    weekly_starters: dict[int, dict[int, list[str]]] = field(
+        default_factory=dict)
 
     def team_by_strategy(self, name: str) -> list[Team]:
         return [t for t in self.teams if t.strategy.name == name]
@@ -125,6 +129,7 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
     waiver_order: dict[int, list] = {}
     weekly_slot_pts: dict[int, dict] = {t.idx: {} for t in teams}
     weekly_holes: dict[int, dict] = {t.idx: {} for t in teams}
+    weekly_starters: dict[int, dict] = {t.idx: {} for t in teams}
 
     for week in range(1, league.regular_season_weeks + 1):
         scores = {}
@@ -141,6 +146,8 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
             if track_weekly:
                 weekly_slot_pts[t.idx][week] = wk_slots
                 weekly_holes[t.idx][week] = lineup_holes(t, week, league)
+                weekly_starters[t.idx][week] = [
+                    p.pid for ps in lineup.values() for p in ps]
         for i, j in schedule[(week - 1) % len(schedule)]:
             si, sj = scores[i], scores[j]
             teams[i].points_against += sj
@@ -200,4 +207,5 @@ def run_season(pool: list[PlayerSeason], strategies: list, league: LeagueConfig,
                         wire_post=wire_post, wire_size=wire_size,
                         wire_picks=wire_picks, waiver_order=waiver_order,
                         weekly_slot_pts=weekly_slot_pts,
-                        weekly_holes=weekly_holes)
+                        weekly_holes=weekly_holes,
+                        weekly_starters=weekly_starters)

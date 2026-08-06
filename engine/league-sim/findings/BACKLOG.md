@@ -111,3 +111,23 @@ draft" (a real skill ceiling a better bot could chase) vs "pure luck."
 Machinery exists (`analysis/oracle_draft.py` — swap `board.tot`/
 `hero_eval`'s objective for a draft-time projection, keep hindsight
 scoring); the design question is which projection defines "knowable."
+
+**B16. Player props as the live projection.** Finding 35 showed the
+in-game win probability is capped by projection quality, and the
+headroom test put the gap between a crude and a decent projection at
+6 points of matchup-winner accuracy *at kickoff* (68.3% → 74.3%),
+shrinking to 0.3 points by the start of Q4. Props are the market's own
+per-player projection, and findings 26/27/28 all landed on "the
+closing line already prices what our features see" — so props are the
+obvious next rung. Test: pull Sunday-morning props (rec yds, rush yds,
+pass yds, receptions, anytime TD) from the Odds API, de-vig each pair,
+convert to expected fantasy points, and score them against Sleeper's
+free weekly projection and against actuals. Questions: (a) do props
+beat Sleeper's projection on the ~150–200 starters they cover?
+(b) does the win probability's Brier improve at kickoff, where the
+headroom actually is? (c) is a props/projection blend better than
+either — finding 25's ADP+½·model pattern suggests it might be.
+Cheapest version is paper-trading it live from week 1; a real backtest
+needs the $59 one-month historical plan. Ships as
+`site/data/props_<week>.json` behind the `projOf()` fallback chain in
+`site/live.js` (see docs/SITE_PLAN.md).

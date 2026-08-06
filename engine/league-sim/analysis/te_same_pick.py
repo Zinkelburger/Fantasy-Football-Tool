@@ -38,7 +38,6 @@ from matplotlib.patches import Patch  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-FIGS = ROOT / "figures"
 sys.path.insert(0, str(ROOT / "analysis"))
 from player_model import league_pts, weekly_raw   # noqa: E402
 from round_profile import FORMATS, YEARS, norm, roster_ids  # noqa: E402
@@ -50,11 +49,24 @@ BANDS = [(1, 2), (3, 4), (5, 6), (7, 9), (10, 13)]
 EARLY = 4             # "paying up" = ADP rounds 1-4
 BOOM, BUST = 25, -25  # season pts over/under the last-starter season
 
-# figure chrome (dataviz reference palette, light mode)
-SURFACE, INK, SEC, MUT = "#fcfcfb", "#0b0b0b", "#52514e", "#898781"
-GRID, BASE = "#e1e0d9", "#c3c2b7"
-BLUE, ORANGE, AQUA, RED = "#2a78d6", "#eb6834", "#1baf7a", "#e34948"
-FMT_COLOR = {"std": BLUE, "half": ORANGE, "ppr": AQUA}
+# Figure chrome. Two themes, each *selected* for its own surface (the
+# dark set is the same hues re-stepped for a dark background, not an
+# inverted copy): light renders into figures/ for the research doc on
+# GitHub, dark into site/figures/ for the dark-only foss.football post.
+THEMES = {
+    "light": dict(surface="#fcfcfb", ink="#0b0b0b", sec="#52514e",
+                  mut="#898781", grid="#e1e0d9", base="#c3c2b7",
+                  neutral="#e1e0d9", blue="#2a78d6", orange="#eb6834",
+                  aqua="#1baf7a", red="#e34948"),
+    # surface matches the site's --bg-panel; validated against it
+    "dark": dict(surface="#232328", ink="#ffffff", sec="#c3c2b7",
+                 mut="#898781", grid="#2f2f37", base="#45454e",
+                 neutral="#4a4a52", blue="#3987e5", orange="#d95926",
+                 aqua="#199e70", red="#e66767"),
+}
+FIG_DIRS = {"light": ROOT / "figures",
+            "dark": ROOT.parent.parent / "site" / "figures"}
+FMT_LABEL = {"std": "standard", "half": "0.5 PPR", "ppr": "full PPR"}
 
 
 def last_name(name):
@@ -223,28 +235,34 @@ def section_cliff(df):
 
 # ---------------------------------------------------------------- figures
 
-def style(ax):
-    ax.set_facecolor(SURFACE)
+def style(ax, t):
+    ax.set_facecolor(t["surface"])
     for side in ("top", "right", "left"):
         ax.spines[side].set_visible(False)
-    ax.spines["bottom"].set_color(BASE)
-    ax.tick_params(colors=MUT, labelsize=8.5, length=0)
+    ax.spines["bottom"].set_color(t["base"])
+    ax.tick_params(colors=t["mut"], labelsize=8.5, length=0)
 
 
-def fig_same_pick(te):
+def save(fig, name, t, theme, **kw):
+    FIG_DIRS[theme].mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIG_DIRS[theme] / name, facecolor=t["surface"], **kw)
+    plt.close(fig)
+
+
+def fig_same_pick(te, t, theme):
     """Fig 1 — per-pick diverging bars: TE minus same-slot WR/RB (std)."""
     te = te.sort_values(["year", "adp"], ascending=[False, False])
     delta = te.vor_std.values - te.near_std.values
     labels = [f"{r.year}  {last_name(r.name)}  pk {r.adp:.0f}"
               for r in te.itertuples()]
     fig, ax = plt.subplots(figsize=(8, 0.30 * len(te) + 1.6), dpi=120)
-    fig.set_facecolor(SURFACE)
+    fig.set_facecolor(t["surface"])
     y = np.arange(len(te))
     ax.barh(y, delta, height=0.52,
-            color=[BLUE if d > 0 else RED for d in delta])
+            color=[t["blue"] if d > 0 else t["red"] for d in delta])
     ax.set_yticks(y, labels)
     for tick, r in zip(ax.get_yticklabels(), te.itertuples()):
-        tick.set_color(INK if r.kelce else SEC)
+        tick.set_color(t["ink"] if r.kelce else t["sec"])
         tick.set_fontweight("bold" if r.kelce else "normal")
     keep = set(np.argsort(delta)[:3]) | set(np.argsort(delta)[-3:])
     for i in keep:
@@ -252,73 +270,72 @@ def fig_same_pick(te):
         ax.annotate(f"{d:+.0f}", (d, y[i]), textcoords="offset points",
                     xytext=(6 if d > 0 else -6, 0),
                     ha="left" if d > 0 else "right", va="center",
-                    fontsize=8, color=SEC)
-    ax.axvline(0, color=BASE, lw=1)
-    ax.grid(axis="x", color=GRID, lw=0.8)
+                    fontsize=8, color=t["sec"])
+    ax.axvline(0, color=t["base"], lw=1)
+    ax.grid(axis="x", color=t["grid"], lw=0.8)
     ax.set_axisbelow(True)
-    style(ax)
+    style(ax, t)
     ax.set_xlabel("season points gained by taking the TE instead "
-                  "(standard scoring)", color=SEC, fontsize=9)
+                  "(standard scoring)", color=t["sec"], fontsize=9)
     ax.set_title("Every early TE pick, 2018–2025, vs the WR/RBs drafted "
                  "at the same spot\n(Kelce seasons in bold; ADP rounds "
-                 "1–4)", color=INK, fontsize=11, loc="left", pad=12)
-    ax.legend(handles=[Patch(color=BLUE, label="TE returned more"),
-                       Patch(color=RED, label="same-pick WR/RB returned "
-                                              "more")],
+                 "1–4)", color=t["ink"], fontsize=11, loc="left", pad=12)
+    ax.legend(handles=[Patch(color=t["blue"], label="TE returned more"),
+                       Patch(color=t["red"], label="same-pick WR/RB "
+                                                   "returned more")],
               loc="lower right", frameon=False, fontsize=8.5,
-              labelcolor=SEC)
+              labelcolor=t["sec"])
     fig.tight_layout()
-    fig.savefig(FIGS / "te_same_pick.png", facecolor=SURFACE)
-    plt.close(fig)
+    save(fig, "te_same_pick.png", t, theme)
 
 
-def grouped_bars(data, ylab, title, fname, pct=False):
+def grouped_bars(data, ylab, title, fname, t, theme, pct=False):
     """Figs 2 & 3 — bands x the three formats."""
     fig, ax = plt.subplots(figsize=(8, 4.2), dpi=120)
-    fig.set_facecolor(SURFACE)
+    fig.set_facecolor(t["surface"])
     x = np.arange(len(BANDS))
     for j, fmt in enumerate(FORMATS):
         vals = [data[(lo, hi, fmt)] for lo, hi in BANDS]
         bars = ax.bar(x + (j - 1) * 0.16, vals, width=0.13,
-                      color=FMT_COLOR[fmt],
-                      label={"std": "standard", "half": "0.5 PPR",
-                             "ppr": "full PPR"}[fmt])
+                      color=t[{"std": "blue", "half": "orange",
+                               "ppr": "aqua"}[fmt]],
+                      label=FMT_LABEL[fmt])
         if fmt == "std":                      # label the league's format
             for b, v in zip(bars, vals):
                 ax.annotate(f"{v:.0%}" if pct else f"{v:+.0f}",
                             (b.get_x() + b.get_width() / 2, v),
                             textcoords="offset points",
                             xytext=(0, 4 if v >= 0 else -12),
-                            ha="center", fontsize=8, color=SEC)
+                            ha="center", fontsize=8, color=t["sec"])
     ax.set_xticks(x, [f"R{lo}–{hi}" for lo, hi in BANDS])
-    ax.axhline(0, color=BASE, lw=1)
-    ax.grid(axis="y", color=GRID, lw=0.8)
+    ax.axhline(0, color=t["base"], lw=1)
+    ax.grid(axis="y", color=t["grid"], lw=0.8)
     ax.set_axisbelow(True)
-    style(ax)
+    style(ax, t)
     if pct:
         ax.yaxis.set_major_formatter(
             matplotlib.ticker.PercentFormatter(1, decimals=0))
-    ax.set_ylabel(ylab, color=SEC, fontsize=9)
-    ax.set_title(title, color=INK, fontsize=11, loc="left", pad=12)
-    ax.legend(frameon=False, fontsize=8.5, labelcolor=SEC,
+    ax.set_ylabel(ylab, color=t["sec"], fontsize=9)
+    ax.set_title(title, color=t["ink"], fontsize=11, loc="left", pad=12)
+    ax.legend(frameon=False, fontsize=8.5, labelcolor=t["sec"],
               loc="upper right")
     fig.tight_layout()
-    fig.savefig(FIGS / fname, facecolor=SURFACE)
-    plt.close(fig)
+    save(fig, fname, t, theme)
 
 
-def fig_boom_bust(shares):
-    """Fig 4 — diverging stacked shares: boom / middle / bust."""
+def fig_boom_bust(shares, t, theme):
+    """Fig 4 — stacked shares: boom / middle / bust."""
     fig, ax = plt.subplots(figsize=(8, 2.7), dpi=120)
-    fig.set_facecolor(SURFACE)
+    fig.set_facecolor(t["surface"])
     labels = list(shares)
     y = np.arange(len(labels))[::-1]
     for i, label in enumerate(labels):
         boom, mid, bust = shares[label]
         left = 0
-        for share, color in ((boom, BLUE), (mid, GRID), (bust, RED)):
+        for share, color in ((boom, t["blue"]), (mid, t["neutral"]),
+                             (bust, t["red"])):
             ax.barh(y[i], share, left=left, height=0.5, color=color,
-                    edgecolor=SURFACE, linewidth=2)
+                    edgecolor=t["surface"], linewidth=2)
             left += share
         ax.annotate(f"{boom:.0%}", (0.01, y[i]), va="center", fontsize=8.5,
                     color="white", fontweight="bold")
@@ -326,25 +343,23 @@ def fig_boom_bust(shares):
                     fontsize=8.5, color="white", fontweight="bold")
     ax.set_yticks(y, labels)
     for tick in ax.get_yticklabels():
-        tick.set_color(SEC)
+        tick.set_color(t["sec"])
     ax.set_xlim(0, 1)
     ax.xaxis.set_major_formatter(
         matplotlib.ticker.PercentFormatter(1, decimals=0))
     ax.grid(False)
-    style(ax)
+    style(ax, t)
     ax.set_title("Early picks (ADP rounds 1–4): how often they boom or "
-                 "bust — standard scoring", color=INK, fontsize=11,
+                 "bust — standard scoring", color=t["ink"], fontsize=11,
                  loc="left", pad=12)
     ax.legend(handles=[
-        Patch(color=BLUE, label=f"boom (+{BOOM} pts or more)"),
-        Patch(color=GRID, label="in between"),
-        Patch(color=RED, label=f"bust ({BUST} pts or worse)")],
+        Patch(color=t["blue"], label=f"boom (+{BOOM} pts or more)"),
+        Patch(color=t["neutral"], label="in between"),
+        Patch(color=t["red"], label=f"bust ({BUST} pts or worse)")],
         loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=3,
-        frameon=False, fontsize=8.5, labelcolor=SEC)
+        frameon=False, fontsize=8.5, labelcolor=t["sec"])
     fig.tight_layout()
-    fig.savefig(FIGS / "te_boom_bust.png", facecolor=SURFACE,
-                bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "te_boom_bust.png", t, theme, bbox_inches="tight")
 
 
 def main():
@@ -356,16 +371,17 @@ def main():
     shares = section_boombust(boom_bust_rows(df, te))
     cliff = section_cliff(df)
 
-    fig_same_pick(te)
-    grouped_bars(deltas,
-                 "season points, TE minus same-pick WR/RB",
-                 "Net value of taking the TE over the WR/RB at the same "
-                 "pick, by ADP round", "te_when.png")
-    grouped_bars(cliff, "share finishing top-6 at TE",
-                 "The cliff: odds a drafted TE finishes top-6, by ADP "
-                 "round", "te_cliff.png", pct=True)
-    fig_boom_bust(shares)
-    print(f"\nfigures written to {FIGS}/te_*.png — feed finding 33")
+    for theme, t in THEMES.items():
+        fig_same_pick(te, t, theme)
+        grouped_bars(deltas,
+                     "season points, TE minus same-pick WR/RB",
+                     "Net value of taking the TE over the WR/RB at the "
+                     "same pick, by ADP round", "te_when.png", t, theme)
+        grouped_bars(cliff, "share finishing top-6 at TE",
+                     "The cliff: odds a drafted TE finishes top-6, by "
+                     "ADP round", "te_cliff.png", t, theme, pct=True)
+        fig_boom_bust(shares, t, theme)
+        print(f"\n{theme} figures -> {FIG_DIRS[theme]}/te_*.png")
 
 
 if __name__ == "__main__":

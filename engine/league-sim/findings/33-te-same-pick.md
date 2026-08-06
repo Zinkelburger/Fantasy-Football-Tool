@@ -143,16 +143,42 @@ move the elite TEs up about half a round to a round from where you'd
 slot them in standard; in our standard family league the elite door is
 at its least valuable — real, but a luxury, not a priority.
 
-## 2026 read (model board, not history)
+## 2026 read (where the market put the doors)
 
-The 2026 market makes the elite door unusually cheap in standard: the
-model's TE1 McBride goes at ADP 58 (round 5) and TE2 Bowers at 48 —
-the Kelce-era tax for the same tier was rounds 1–2. The model also
-disagrees with the market's order (it has McBride 1.3 PPG clear of
-Bowers; the room drafts Bowers first). Kittle at ADP ~133 is the
-model's wait-door value (its TE4 at a round-12 price). Warren (79),
-Loveland (75), and Pitts (94) sit exactly in the hallway this finding
-says not to pay for.
+Prices from the ADP snapshot the draft tool ships (Sleeper where
+available, FFC as fallback; fetched 2026-08-03), by scoring format:
+
+| TE | std | half | PPR | door |
+|---|---|---|---|---|
+| Trey McBride | 23 | 18 | 16 | **elite** |
+| Brock Bowers | 30 | 19 | 21 | **elite** |
+| Colston Loveland | 51 | 44 | 41 | hallway |
+| Tyler Warren | 59 | 51 | 50 | hallway |
+| Harold Fannin | 66 | 68 | 61 | hallway |
+| Tucker Kraft | 76 | 69 | 66 | hallway |
+| Kyle Pitts | 78 | 75 | 71 | hallway |
+| Sam LaPorta | 85 | 79 | 76 | hallway |
+| Kincaid · Gadsden · Henry · Goedert · Andrews · Ferguson | 87–105 | | | hallway |
+| George Kittle | 109 | 100 | 97 | **wait** |
+
+The elite door in 2026 is exactly two players, and it is genuinely
+early — McBride in round 2, Bowers in round 3, both inside the top 21
+picks once receptions count. Then thirteen tight ends are priced from
+pick 51 to pick 105: that entire block is the hallway this finding
+says not to buy. The wait door opens around Kittle at 109.
+
+So the 2026 decision is unusually clean: take McBride or Bowers at
+their price if you want the elite door, and if you miss both, take
+nothing at the position until round 10 and plan to stream. Note this
+is a two-day-old snapshot of a market that moves through August —
+re-check before the draft rather than trusting these exact numbers.
+
+(An earlier draft of this section ranked 2026 tight ends by the
+projection model's predicted PPG and flagged where the model
+out-ranked the market. [Finding 32](32-draft-sim.md) settled that the
+model belongs nowhere near list order — every step from ADP toward it
+made drafting worse — and the site retired the board, so this section
+is market-only.)
 
 ## Methodology
 

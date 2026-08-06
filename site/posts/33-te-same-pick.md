@@ -14,6 +14,8 @@ You need one currency. Ours is **points above the last starter at that player's 
 
 For each tight end drafted in rounds 1 to 4, we compared him to the average of every receiver and back drafted within six picks of him.
 
+![Every early tight end from 2018 to 2025, showing how many season points you gained or lost by taking him instead of the receivers and backs at the same pick. Blue bars mean the tight end returned more — 18 of the 26 picks. Travis Kelce's seasons are in bold.](figures/te_same_pick.png)
+
 | | Standard | Half PPR | Full PPR |
 |---|---|---|---|
 | Tight end beat his same-slot alternatives | 69% | 69% | 65% |
@@ -24,6 +26,8 @@ Kelce's seven seasons carry a big share of that, and it's only fair to say so. B
 
 The reason isn't that elite tight ends boom more often. It's that they almost never collapse:
 
+![How often early picks boom or bust. Early tight ends boom about as often as the receivers and backs taken at the same picks, but bust 8% of the time against their 20 to 24%.](figures/te_boom_bust.png)
+
 | Group | Boom | Bust |
 |---|---|---|
 | Tight ends, rounds 1–4 | 54% | **8%** |
@@ -33,6 +37,8 @@ The reason isn't that elite tight ends boom more often. It's that they almost ne
 Comparable upside, a third of the downside. Eight drafts produced exactly two early-tight-end wipeouts against dozens of round-2 and round-3 zeroes at receiver and back. The market lets fifteen-plus receivers and backs go in the first four rounds and only two or three tight ends — and the ones it lets through that filter are the position's sure things.
 
 ## The cliff that rules out the middle rounds
+
+![The odds a drafted tight end finishes as a top-6 tight end, by the round he was drafted in. It falls from 86% in rounds 1 and 2 to 53%, 30%, 16%, and 14% — and the drop is the same in all three scoring formats.](figures/te_cliff.png)
 
 | Drafted in | Finished top-6 | Finished outside the top 12 |
 |---|---|---|
@@ -49,6 +55,8 @@ So: **the elite door** (one of the consensus top few, rounds 1–4), or **the wa
 And do draft one. Living off the waiver wire at tight end is drying up — three, two and three top-8 tight ends went undrafted in 2020 through 2022, then zero, one and zero in 2023 through 2025.
 
 ## Scoring format moves the dial
+
+![Net season points gained by taking the tight end over the receiver or back at the same pick, split by the round he went in and by scoring format. Every bar is positive, and the blue standard bars are the smallest of the three in every round band.](figures/te_when.png)
 
 Every tight-end edge above grows as receptions get more valuable, because elite tight ends are 90-catch players while the TE12 catches about 50. The overall edge goes from +19 points in standard to +34 in full PPR. In a PPR league, move the elite tight ends up about half a round to a round from where you'd take them in standard. In a standard league the elite door is at its least valuable — still real, but a luxury rather than a priority.
 

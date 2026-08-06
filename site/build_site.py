@@ -47,6 +47,10 @@ def esc(s):
 
 def inline(s):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    # images before links — ![alt](src) would otherwise match the link
+    # rule and render as a stray "!" in front of an anchor
+    s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)",
+               r'<img src="\2" alt="\1" loading="lazy">', s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<!\*)\*([^*\s][^*]*)\*(?!\*)", r"<em>\1</em>", s)
     s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)",
@@ -108,6 +112,17 @@ def md2html(md):
         if re.match(r"^-{3,}$", line):
             flush_para(); close_lists()
             out.append("<hr>")
+            continue
+        m = re.match(r"^!\[([^\]]*)\]\(([^)]+)\)$", line)
+        if m:
+            # an image alone on a line is a figure; its alt doubles as
+            # the visible caption so the chart's point survives for a
+            # reader who can't see it
+            flush_para(); close_lists()
+            out.append(f'<figure><img src="{m.group(2)}" '
+                       f'alt="{m.group(1)}" loading="lazy">'
+                       f"<figcaption>{inline(m.group(1))}</figcaption>"
+                       "</figure>")
             continue
         m = re.match(r"^[-*]\s+(.*)", line)
         if m:
@@ -480,7 +495,8 @@ def _full_writeup(stem):
     """The engine write-up (findings/NN-*.md), prepped to sit under the
     reader-facing post: H1 dropped, TL;DR section dropped (the post
     above IS the synopsis), H2s demoted (H2->H3, H3->H4) so the page
-    keeps one outline, cross-links pointed at the site's own posts."""
+    keeps one outline, cross-links pointed at the site's own posts,
+    figure paths pointed at the site's own dark-theme copies."""
     src = FINDINGS / f"{stem}.md"
     if not src.exists():
         return ""
@@ -496,7 +512,12 @@ def _full_writeup(stem):
         if section != "TL;DR":
             out.append(ln)
     md = "\n".join(out).strip()
-    return re.sub(r"\]\((\d\d-[a-z0-9-]+)\.md\)", r"](#/blog/\1)", md)
+    md = re.sub(r"\]\((\d\d-[a-z0-9-]+)\.md\)", r"](#/blog/\1)", md)
+    # Drop figures here: the post above already shows the charts (against
+    # the site's dark surface), and the write-up sits on the same page —
+    # keeping them would render every chart twice. The research doc keeps
+    # its own light-theme copies for GitHub.
+    return re.sub(r"^!\[[^\]]*\]\([^)]+\)$\n?", "", md, flags=re.M)
 
 
 def build_blog():
@@ -548,6 +569,18 @@ def build_cheatsheet():
                 html=glossarize(md2html("\n".join(lines[1:]))))
 
 
+def build_ingame():
+    """Live win-probability parameters (finding 35). Fit by
+    engine/league-sim/analysis/ingame_model.py; the browser runs the
+    Monte Carlo off these numbers, so they ship as-is."""
+    src = MKT / "ingame_params.json"
+    if not src.exists():
+        print("warning: ingame_params.json missing — run "
+              "engine/league-sim/analysis/ingame_model.py --fetch")
+        return {}
+    return json.loads(src.read_text())
+
+
 def main():
     out = SITE / "data"
     out.mkdir(exist_ok=True)
@@ -556,6 +589,7 @@ def main():
     # builders are kept below so a future model can wire straight back in.
     for name, data in (("preseason", build_preseason()),
                        ("weekly", build_weekly()), ("blog", build_blog()),
+                       ("ingame", build_ingame()),
                        ("cheatsheet", build_cheatsheet())):
         (out / f"{name}.json").write_text(json.dumps(data))
         print(f"data/{name}.json written")

@@ -3,6 +3,19 @@
 **Confidence: High** for "don't pay up" (descriptive + sim + your own
 drafts agree). **Medium** for the trend claim (three recent seasons).
 
+> **Partly superseded (2026-08-05) by
+> [finding 33](33-te-same-pick.md).** This finding asks "was the TE
+> available late as good as the one you paid for?" and answers yes.
+> Finding 33 asks the harder question — "did the early TE beat the
+> *WR/RB you'd have taken at that exact pick*?" — and answers yes too:
+> rounds 1–4 TEs beat their same-pick alternatives 69% of the time and
+> busted at half the rate. Both findings agree that **rounds 5–9 are
+> the trap** and that the wire is thinning. Where they part: this
+> page's "never spend an early pick on one" is too strong. Read the
+> rule as *elite door (rounds 1–4) or wait door (round 10+), never the
+> middle* — the case study below is a round-6-and-later mistake, not an
+> argument against McBride at his price.
+
 ## TL;DR
 
 Every season, half or more of the year's top-8 tight ends cost a

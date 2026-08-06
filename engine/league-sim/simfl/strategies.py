@@ -701,6 +701,55 @@ for _r in (2, 3, 4, 5, 6, 8, 10, 12):
         {"target": _r, "name": f"qb_r{_r}", "label": f"QB in round {_r}"})
 
 
+class TEAtRound(DraftStrategy):
+    """Sweep family: refuse TE before round N, then take the best one
+    left. Isolates *when* to buy your starting tight end, holding
+    everything else at baseline — the title-odds version of finding 33,
+    which only measured season points.
+
+    `stream` gives the arm the TE-streaming waiver policy, so the late
+    doors can be tested as they'd actually be played (finding 05's
+    advice is explicitly conditional on streaming afterward).
+    """
+    target = 6
+    stream = False
+
+    def __init__(self):
+        super().__init__()
+        if self.stream:
+            self.waiver_policy = Streamer("TE")
+
+    def banned(self, p, rnd, team, state):
+        if p.pos == "TE" and team.count_pos("TE") == 0 and rnd < self.target:
+            return True
+        return super().banned(p, rnd, team, state)
+
+    def pick(self, state, team, rng):
+        # At the target round, buy the position outright rather than
+        # merely preferring it: "take McBride at his price" is a forced
+        # choice, not a tiebreak.
+        rnd = len(team.roster) + 1
+        if rnd == self.target and team.count_pos("TE") == 0:
+            elig = state.eligible_positions(team)
+            if "TE" in elig:
+                cands = [p for p in state.available if p.pos == "TE"]
+                if cands:
+                    return cands[0]   # board is in draft_rank order
+        return super().pick(state, team, rng)
+
+
+for _r in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12):
+    STRATEGIES[f"te_r{_r}"] = type(
+        f"TEAtRound{_r}", (TEAtRound,),
+        {"target": _r, "name": f"te_r{_r}", "label": f"TE in round {_r}"})
+# the wait door as it's actually meant to be played: late TE + streaming
+for _r in (10, 12):
+    STRATEGIES[f"te_r{_r}_stream"] = type(
+        f"TEAtRound{_r}Stream", (TEAtRound,),
+        {"target": _r, "stream": True, "name": f"te_r{_r}_stream",
+         "label": f"TE in round {_r} + stream"})
+
+
 class BenchTilt(DraftStrategy):
     """Once every starting slot is covered, tilt the remaining bench
     picks toward one position. Tests the 'bench RBs are lottery
