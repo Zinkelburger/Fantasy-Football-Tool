@@ -73,8 +73,12 @@ def md2html(md):
     def flush_table():
         if not table:
             return
+        # Drop the |---|---| separator, and only that. A deliberately
+        # blank header (| | |, used by the two-column stat tables) is made
+        # of the same characters minus the dash, and dropping it too would
+        # promote the first row of data into the header.
         head, *rows = [r for r in table
-                       if not re.match(r"^\|[\s:|-]+\|$", r)]
+                       if not re.match(r"^\|[\s:|-]*-[\s:|-]*\|$", r)]
         def cells(r):
             return [c.strip() for c in r.strip("|").split("|")]
         h = "".join(f"<th>{inline(c)}</th>" for c in cells(head))

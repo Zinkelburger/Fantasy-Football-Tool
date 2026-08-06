@@ -1,4 +1,4 @@
-# 35 — Draft order: QB timing is the only lever that matters
+# 36 — Draft order: QB timing is the only lever that matters
 
 **Confidence: High** for QB timing (monotone across four arms, 27-point
 spread). **High** for the QB2/TE2/bench nulls (tight CIs, 1,200+ paired
