@@ -6,6 +6,42 @@
 // there; Chrome MV3's `chrome.*` does the same. Alias so `await` works in both.
 const ext = typeof browser !== 'undefined' ? browser : chrome;
 
+// Pull the football leagues out of a fan-API payload.
+//
+// The shape is undocumented and has moved before, so this reads loosely:
+// walk the preferences, take anything carrying an `entry` with `groups`,
+// and keep the ones that look like football. Anything unreadable is
+// skipped rather than guessed at — the caller has a fallback.
+function fanLeagues(json, season) {
+  const out = [];
+  const seen = new Set();
+  for (const p of (json && json.preferences) || []) {
+    const e = (p && p.metaData && p.metaData.entry) || null;
+    if (!e || !Array.isArray(e.groups)) continue;
+    // gameId 1 is football. Older payloads leave it off and put the sport
+    // in the entry's URL instead.
+    const url = String(e.entryURL || e.entryLocation || '');
+    const football =
+      e.gameId === 1 || (e.gameId === undefined && /football|\bffl\b/i.test(url));
+    if (!football) continue;
+    if (e.seasonId && season && Number(e.seasonId) !== Number(season)) continue;
+    for (const g of e.groups || []) {
+      const id = g && g.groupId;
+      if (id == null || seen.has(String(id))) continue;
+      seen.add(String(id));
+      const teamId = e.entryId != null ? e.entryId : g.groupManagerTeamId;
+      out.push({
+        leagueId: String(id),
+        leagueName: g.groupName || null,
+        teamId: teamId != null ? String(teamId) : null,
+        teamName: e.name || e.abbrev || null,
+        season: String(e.seasonId || season),
+      });
+    }
+  }
+  return out;
+}
+
 // Listen for messages from content scripts or the extension's popup
 ext.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Use a modern async function to handle the request
@@ -123,6 +159,74 @@ ext.runtime.onMessage.addListener((request, sender, sendResponse) => {
         } catch (e) {
           return { error: `Couldn't reach ESPN: ${e.message}` };
         }
+      }
+
+      // Which ESPN football leagues is this browser signed in to?
+      //
+      // Same root cause as espnFetch above: the SWID that identifies you
+      // to ESPN is a .espn.com cookie, so the site can't read it and
+      // can't ask this question. We can. The answer turns the site's
+      // "paste your league id" box into a list of your leagues, private
+      // ones included.
+      //
+      // Two readers, because the good one is undocumented:
+      //   1. ESPN's fan API returns every league a SWID belongs to.
+      //      Nothing obliges its shape to hold still, so fanLeagues()
+      //      above is deliberately loose and comes back empty rather
+      //      than wrong.
+      //   2. When that comes back empty, the kona_v3_environment_season_ffl
+      //      cookie. It only remembers the last league you looked at and
+      //      carries no names, but it has been stable for years. One
+      //      league you can click beats a text box.
+      //
+      // Read-only. Nothing is stored, and no cookie reaches the page --
+      // only the league ids and names come back.
+      case "espnMe": {
+        const season = Number(request.season) || new Date().getFullYear();
+        const cookie = async (name) => {
+          try {
+            const c = await ext.cookies.get({
+              url: "https://fantasy.espn.com", name });
+            return c && c.value ? c.value : null;
+          } catch (e) { return null; }
+        };
+
+        const swid = await cookie("SWID");
+        if (swid) {
+          try {
+            const res = await fetch(
+              "https://fan.api.espn.com/apis/v2/fans/"
+                + encodeURIComponent(swid)
+                + "?useCookieAuth=true&featureFlags=expandAthlete"
+                + "&content=placeholder&showAirings=false"
+                + "&displayEvents=false&displayNow=false&displayRecs=false",
+              { method: "GET", credentials: "include",
+                headers: { accept: "application/json" } });
+            if (res.ok) {
+              const leagues = fanLeagues(await res.json(), season);
+              if (leagues.length) return { leagues, from: "fan" };
+            }
+          } catch (e) { /* fall through to the cookie */ }
+        }
+
+        const raw = await cookie("kona_v3_environment_season_ffl");
+        if (raw) {
+          try {
+            const d = JSON.parse(decodeURIComponent(raw));
+            if (d && d.leagueId) {
+              return { from: "cookie", leagues: [{
+                leagueId: String(d.leagueId),
+                leagueName: null,
+                teamId: d.teamId != null ? String(d.teamId) : null,
+                teamName: null,
+                season: String(d.seasonId || season),
+              }] };
+            }
+          } catch (e) { /* not JSON any more */ }
+        }
+
+        return { from: null, leagues: [], error: swid ? null
+          : "You're not signed in to ESPN in this browser." };
       }
 
       // NOTE: a "debugCookies" case used to live here and dumped every

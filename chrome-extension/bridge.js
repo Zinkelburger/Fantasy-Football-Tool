@@ -20,7 +20,21 @@
   // Only act on pages that identify themselves as the draft tool.
   if (!document.querySelector('meta[name="ff-draft-assistant"]')) return;
 
-  const STORAGE_KEYS = ['ffda_picked_players', 'ffda_roster_players', 'ffda_available_players'];
+  const DRAFT_KEYS = ['ffda_picked_players', 'ffda_roster_players', 'ffda_available_players'];
+  // The league the user picked, shared both ways so the site and the draft
+  // tool point at the same one. The site writes it (save-league below), we
+  // push it back on change.
+  const LEAGUE_KEY = 'ffda_league';
+  // The user's own prep: target marks, note edits, imported ranks. The page
+  // keeps it in localStorage and mirrors it here, because extension storage
+  // outlives "clear browsing data" and is shared across every origin this
+  // bridge runs on — so the marks survive, and follow the tool. We only
+  // store and hand back a blob; the page decides whose copy is newer.
+  const PREP_KEY = 'ffda_prep';
+  const STORAGE_KEYS = DRAFT_KEYS.concat([LEAGUE_KEY, PREP_KEY]);
+
+  // The last prep blob this page handed us, so we can spot its own echo.
+  let lastPrepPushed = null;
 
   function postToPage(type, data) {
     window.postMessage({ source: 'ffda-ext', type: type, data: data }, '*');
@@ -34,6 +48,8 @@
           picked_players: items.ffda_picked_players || null,
           roster_players: items.ffda_roster_players || null,
           available_players: items.ffda_available_players || null,
+          league: items.ffda_league || null,
+          prep: items.ffda_prep || null,
         });
       });
     } catch (e) {
@@ -47,10 +63,18 @@
   readAndPostState();
 
   // Live updates: draft tab writes to storage -> we push to the page.
+  // A prep write we just made on this page comes back through here too;
+  // pushing our own echo would re-render the board (and pop a status line)
+  // on every marker click, so we drop it. A prep change from any OTHER tab
+  // is still relayed — that is how two open copies of the tool stay level.
   try {
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'local') return;
-      if (STORAGE_KEYS.some((k) => k in changes)) readAndPostState();
+      const keys = STORAGE_KEYS.filter((k) => k in changes);
+      if (!keys.length) return;
+      if (keys.length === 1 && keys[0] === PREP_KEY
+          && JSON.stringify(changes[PREP_KEY].newValue) === lastPrepPushed) return;
+      readAndPostState();
     });
   } catch (e) { /* context invalidated */ }
 
@@ -65,9 +89,49 @@
       postToPage('hello', {});
       readAndPostState();
     } else if (msg.type === 'clear-state') {
+      // Only the draft scrape. The chosen league is a setting, not
+      // draft state, and "reset the board" shouldn't sign you out.
+      // Prep isn't touched here either: the page sends its own cleared
+      // copy through save-prep when the user asks for that.
       try {
-        chrome.storage.local.remove(STORAGE_KEYS);
+        chrome.storage.local.remove(DRAFT_KEYS);
       } catch (e) { /* context invalidated */ }
+    } else if (msg.type === 'save-prep') {
+      // Last write wins, and the page settles who that is: it compares
+      // timestamps before adopting, and pushes when its copy is newer.
+      try {
+        lastPrepPushed = JSON.stringify(msg.prep || null);
+        chrome.storage.local.set({ [PREP_KEY]: msg.prep || null });
+      } catch (e) { /* context invalidated */ }
+    } else if (msg.type === 'save-league') {
+      // The site telling us which league it's on, so the extension and
+      // the draft tool agree. Storing null is how it clears.
+      try {
+        chrome.storage.local.set({ [LEAGUE_KEY]: msg.cfg || null });
+      } catch (e) { /* context invalidated */ }
+    } else if (msg.type === 'espn-leagues') {
+      // "Which ESPN leagues am I in?" -- see background.js espnMe. Only
+      // league ids and names come back; the cookies stay here.
+      const reply = (payload) =>
+        window.postMessage(
+          Object.assign({ source: 'ffda-ext', type: 'espn-leagues-result', id: msg.id },
+                        payload), '*');
+      try {
+        chrome.runtime.sendMessage(
+          { type: 'espnMe', season: msg.season },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              reply({ error: chrome.runtime.lastError.message });
+            } else if (!response) {
+              reply({ error: 'the extension gave no answer' });
+            } else {
+              reply({ leagues: response.leagues || [], from: response.from || null,
+                      error: response.error || null });
+            }
+          });
+      } catch (e) {
+        reply({ error: 'the extension needs reloading' });
+      }
     } else if (msg.type === 'espn-fetch') {
       // The site is asking us to read one ESPN league endpoint for it.
       // We can do this and the page can't, because the espn_s2/SWID

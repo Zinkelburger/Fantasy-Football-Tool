@@ -107,6 +107,38 @@ const Espn = (() => {
     });
   }
 
+  /* Which ESPN leagues is this browser signed in to?
+     Only the extension can answer: the question is keyed on the SWID
+     cookie, which lives on .espn.com and is invisible from here.
+
+     Never rejects. "No extension", "not signed in" and "you're in no
+     leagues" all leave the caller doing the same thing — showing the
+     box where you type a league id — so they all resolve to an empty
+     list rather than an error somebody has to catch. */
+  async function myLeagues(season) {
+    const none = { leagues: [], from: null };
+    if (!(await extension())) return none;
+    return new Promise((resolve) => {
+      const id = `espn-me-${++reqId}`;
+      const done = (v) => {
+        window.removeEventListener("message", onMsg);
+        clearTimeout(timer);
+        resolve(v);
+      };
+      const onMsg = (e) => {
+        if (e.source !== window) return;
+        const m = e.data;
+        if (!m || m.source !== "ffda-ext" || m.type !== "espn-leagues-result"
+            || m.id !== id) return;
+        done(m.error ? none : { leagues: m.leagues || [], from: m.from || null });
+      };
+      const timer = setTimeout(() => done(none), 8000);
+      window.addEventListener("message", onMsg);
+      window.postMessage(
+        { source: "ffda-page", type: "espn-leagues", id, season }, "*");
+    });
+  }
+
   /* ---------------------------------------------------------- fetching */
 
   async function get(url, filter) {
@@ -377,11 +409,13 @@ const Espn = (() => {
             .sort((a, b) => b.when - a.when);
           return { ok: true, items };
         } catch (e) {
-          return { ok: false, why: `ESPN wouldn't give us the moves: ${e.message}` };
+          return { ok: false,
+                   why: Copy.fill("league.moves.error", { error: e.message }) };
         }
       },
     };
   }
 
-  return { preview, context, league, extension, PRO_TEAM, POSITION, SLOT };
+  return { preview, context, league, extension, myLeagues,
+           PRO_TEAM, POSITION, SLOT };
 })();

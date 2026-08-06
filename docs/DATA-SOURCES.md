@@ -137,6 +137,24 @@ tracking possible on a static site with no backend. Re-checked
   - Useful id maps (`proTeamId`, `lineupSlotId`, `defaultPositionId`)
     live at the top of `site/espn.js`, checked against
     `site.api.espn.com/.../teams`.
+- **ESPN fan / "which leagues am I in"** — `https://fan.api.espn.com/apis/v2/fans/{SWID}?useCookieAuth=true&…`.
+  Keyed on the `SWID` cookie, so only the extension can call it —
+  same third-party-cookie reason as private leagues above. Returns
+  every league a SWID belongs to, which is what lets My league show
+  your leagues instead of asking for an id.
+  - **Undocumented and UNVERIFIED as of 2026-08-06** — written from
+    the known response shape, not from a live call, because it needs a
+    signed-in ESPN session. Leagues hang off `preferences[].metaData.entry`,
+    with the league in `entry.groups[].groupId`/`groupName` and your
+    team in `entry.entryId`/`entry.name`; football is `gameId: 1`.
+    `fanLeagues()` in `chrome-extension/background.js` reads it loosely
+    and returns nothing rather than something wrong.
+  - Falls back to the `kona_v3_environment_season_ffl` cookie, which
+    carries `{leagueId, seasonId, teamId}` for the last league you
+    looked at and no names. Stable for years; the site fills the names
+    in with one `view=mTeam` preview call.
+  - Covered by the existing `https://*.espn.com/*` host permission —
+    `fan.api.espn.com` matches it, so no new permission was needed.
 - **Yahoo** needs OAuth and therefore a backend; not supported.
 
 ## 7. nflverse play-by-play (in-game model)

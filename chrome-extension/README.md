@@ -77,7 +77,8 @@ draft page).
 - `yahoo-draft.js`, `nfl-draft.js`, `cbs-draft.js` — unverified scrapers
 - `bridge.js` — relays extension storage into the web app page
   (`all_frames: true` so it works inside foss.football's Draft Tool iframe),
-  and relays the site's ESPN league reads (below)
+  stores the user's prep (`ffda_prep`, below), and relays the site's ESPN
+  league reads (below)
 - `background.js` — ESPN cookie handoff and the ESPN read proxy
   (service worker in Chrome, event page in Firefox)
 - `package.py` — emits `dist/` per-browser builds
@@ -120,3 +121,62 @@ The door is deliberately narrow:
 
 If you'd rather not grant this, don't install the extension: public
 leagues and every Sleeper league work without it.
+
+
+## Finding your leagues for you (v1.5.0)
+
+Same cookie asymmetry, put to better use. The site cannot ask "which
+leagues am I in" — the question is keyed on your `SWID`, which it
+can't see. We can, so it doesn't have to ask you for a league id at
+all: install the extension, open **My league**, and your ESPN
+leagues are already on screen as buttons. Private ones included,
+since this is the same signed-in path as above.
+
+Two readers, because the good one is undocumented:
+
+1. `fan.api.espn.com/apis/v2/fans/{SWID}` lists every league a SWID
+   belongs to. Nothing obliges its shape to hold still, so
+   `fanLeagues()` reads it loosely and returns an empty list rather
+   than a wrong one.
+2. When that comes back empty, the `kona_v3_environment_season_ffl`
+   cookie. It only remembers the last league you looked at and
+   carries no names, but it has been stable for years, and the site
+   fills the names in with one public preview call.
+
+Only league ids and names cross back to the page; the cookies stay
+here. `fan.api.espn.com` is already inside the `https://*.espn.com/*`
+host permission, so this asked for nothing new.
+
+The league you pick is also kept here, under `ffda_league`, so the
+site and the draft tool agree on which league you're in without you
+setting it twice. The page writes it and reads it back; it is a
+setting, not a credential, and "reset the board" no longer clears it.
+
+## Keeping your prep when the browser forgets (v1.5.0)
+
+The draft tool's own state — your player ratings, your note edits, the
+ranks you imported — lived only in the page's `localStorage`. That is
+the wrong place for the only copy of work you can't get back: "clear
+browsing data" wipes it, and it doesn't cross origins, so a local copy
+of the tool and foss.football each keep their own and neither can see
+the other's.
+
+So the page mirrors that prep here, under `ffda_prep`, on every change
+(`save-prep`), and gets it back with every state push. Extension storage
+survives clearing site data and is one store for every origin this
+bridge runs on.
+
+`localStorage` is still the working copy — synchronous, always there,
+and untouched when the extension isn't installed. This is a backup that
+wins only when it is newer. Conflicts are settled by the page, by
+timestamp, on the whole blob: it adopts what we hand back only if
+`savedAt` beats its own, and pushes its own up when ours is older or
+missing. Merging two edit histories player-by-player would invent a
+third state that neither browser ever had.
+
+One wrinkle worth knowing about: a write here fires
+`chrome.storage.onChanged` on the page that made it, and relaying that
+echo would re-render the board on every click. `bridge.js` remembers the
+last blob the page pushed and drops its own echo — but still relays prep
+changes from *other* tabs, which is what keeps two open copies level.
+
