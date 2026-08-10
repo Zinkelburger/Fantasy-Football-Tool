@@ -1,7 +1,21 @@
 # 09 — WRs coming off a collapse year bust more, at every age
 
-**Confidence: Medium.** n=17. Direction consistent across both age
-halves.
+**Confidence: Low.** **Retracted** — the effect does not replicate.
+See the correction below.
+
+> **Corrected 2026-08-06.** The n=17 headline was too thin to carry a
+> claim this strong. Re-run at every price across ten drafts
+> (2016–2025, `scripts/wr_archetypes.py --full`) the cohort grows to
+> 44 fallen studs, and the trap disappears: **+2 points of top-24 rate
+> [−11, +15]** against WRs costing the same pick, price-standardized.
+> The raw board-wide gap is −2 points, also indistinguishable from
+> zero. No price band shows it either — rounds 4–7, the window this
+> page was written from, is −7 points with a CI from −30 to +20.
+>
+> "A cheap price on a former star means the market knows something"
+> is the intuition. Over ten years the market simply priced him
+> correctly: he does neither better nor worse than his cost. The
+> draft tool now says that instead of calling him a trap.
 
 The "he was great two years ago, he'll bounce back" buy is a trap.
 Mid-round WRs who were top-20 two seasons ago and collapsed last

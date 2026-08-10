@@ -1,63 +1,57 @@
 name,pos,team,finding,slug,dir,note
-Carnell Tate,WR,TEN,8,08-bad-team-wr1-edge,buy,Clear WR1 on a 3-14 team.
-Marvin Harrison,WR,ARI,8,08-bad-team-wr1-edge,buy,"Clear WR1 on a 3-14 team, 18% of their targets last year."
-Terry McLaurin,WR,WAS,8,08-bad-team-wr1-edge,buy,"Clear WR1 on a 5-12 team, 23% of their targets last year."
-Brian Thomas,WR,JAC,9,09-decline-discount-trap,fade,"Top-20 in 2024, WR47 in 2025."
-Jordan Addison,WR,MIN,9,09-decline-discount-trap,fade,"Top-20 in 2024, WR43 in 2025."
-Mike Evans,WR,SF,9,09-decline-discount-trap,fade,"Top-20 in 2024, WR69 in 2025, but kept 24% of his team's targets."
-Terry McLaurin,WR,WAS,9,09-decline-discount-trap,fade,"Top-20 in 2024, WR50 in 2025, but kept 23% of his team's targets."
-Courtland Sutton,WR,DEN,10,10-wr-age-effects,watch,30 years old at a mid-round price.
-DJ Moore,WR,BUF,10,10-wr-age-effects,watch,29 years old at a mid-round price.
-Jakobi Meyers,WR,JAC,10,10-wr-age-effects,watch,29 years old at a mid-round price.
-Terry McLaurin,WR,WAS,10,10-wr-age-effects,watch,30 years old at a mid-round price.
-Alec Pierce,WR,IND,15,15-late-season-momentum-myth,watch,"Hot finish: 15.0 PPG over the last 3, 8.5 on the season."
-Ashton Jeanty,RB,LV,15,15-late-season-momentum-myth,watch,"Hot finish: 15.0 PPG over the last 3, 10.4 on the season."
-Brock Purdy,QB,SF,15,15-late-season-momentum-myth,watch,"Hot finish: 23.7 PPG over the last 3, 18.9 on the season."
-Bucky Irving,RB,TB,15,15-late-season-momentum-myth,watch,"Cold finish: 6.0 PPG over the last 3, 10.2 on the season."
-Cam Ward,QB,TEN,15,15-late-season-momentum-myth,watch,"Hot finish: 14.3 PPG over the last 3, 10.2 on the season."
-CeeDee Lamb,WR,DAL,15,15-late-season-momentum-myth,watch,"Cold finish: 3.0 PPG over the last 3, 9.4 on the season."
-Chase Brown,RB,CIN,15,15-late-season-momentum-myth,watch,"Hot finish: 22.7 PPG over the last 3, 11.6 on the season."
-Chris Olave,WR,NO,15,15-late-season-momentum-myth,watch,"Hot finish: 21.5 PPG over the last 3, 9.9 on the season."
-Chris Rodriguez Jr.,RB,WAS,15,15-late-season-momentum-myth,watch,"Hot finish: 12.5 PPG over the last 3, 6.8 on the season."
-Chuba Hubbard,RB,CAR,15,15-late-season-momentum-myth,watch,"Cold finish: 0.7 PPG over the last 3, 5.5 on the season."
-Colston Loveland,TE,CHI,15,15-late-season-momentum-myth,watch,"Hot finish: 11.0 PPG over the last 3, 6.2 on the season."
-Dak Prescott,QB,DAL,15,15-late-season-momentum-myth,watch,"Cold finish: 13.0 PPG over the last 3, 17.5 on the season."
-Dalton Kincaid,TE,BUF,15,15-late-season-momentum-myth,watch,"Cold finish: 2.0 PPG over the last 3, 6.8 on the season."
-David Montgomery,RB,DET,15,15-late-season-momentum-myth,watch,"Cold finish: 3.0 PPG over the last 3, 7.7 on the season."
-Derrick Henry,RB,BAL,15,15-late-season-momentum-myth,watch,"Hot finish: 26.3 PPG over the last 3, 14.8 on the season."
-Drake London,WR,ATL,15,15-late-season-momentum-myth,watch,"Cold finish: 5.0 PPG over the last 3, 10.6 on the season."
-Emeka Egbuka,WR,TB,15,15-late-season-momentum-myth,watch,"Cold finish: 2.0 PPG over the last 3, 7.4 on the season."
-Harold Fannin Jr.,TE,CLE,15,15-late-season-momentum-myth,watch,"Hot finish: 12.0 PPG over the last 3, 6.7 on the season."
-Jahmyr Gibbs,RB,DET,15,15-late-season-momentum-myth,watch,"Cold finish: 11.0 PPG over the last 3, 16.2 on the season."
-Jalen Hurts,QB,PHI,15,15-late-season-momentum-myth,watch,"Cold finish: 13.5 PPG over the last 3, 18.1 on the season."
-James Cook,RB,BUF,15,15-late-season-momentum-myth,watch,"Cold finish: 10.7 PPG over the last 3, 15.0 on the season."
-Javonte Williams,RB,DAL,15,15-late-season-momentum-myth,watch,"Cold finish: 7.0 PPG over the last 3, 12.2 on the season."
-Jaylen Waddle,WR,MIA,15,15-late-season-momentum-myth,watch,"Cold finish: 3.5 PPG over the last 3, 7.7 on the season."
-Jonathan Taylor,RB,IND,15,15-late-season-momentum-myth,watch,"Cold finish: 10.0 PPG over the last 3, 17.8 on the season."
-Josh Allen,QB,BUF,15,15-late-season-momentum-myth,watch,"Cold finish: 14.0 PPG over the last 3, 21.8 on the season."
-Josh Jacobs,RB,GB,15,15-late-season-momentum-myth,watch,"Cold finish: 1.0 PPG over the last 3, 12.7 on the season."
-Justin Herbert,QB,LAC,15,15-late-season-momentum-myth,watch,"Hot finish: 22.0 PPG over the last 3, 17.2 on the season."
-Kareem Hunt,RB,KC,15,15-late-season-momentum-myth,watch,"Cold finish: 2.0 PPG over the last 3, 6.8 on the season."
-Kayshon Boutte,WR,NE,15,15-late-season-momentum-myth,watch,"Cold finish: 1.5 PPG over the last 3, 6.1 on the season."
-Kenneth Walker III,RB,SEA,15,15-late-season-momentum-myth,watch,"Hot finish: 13.0 PPG over the last 3, 8.6 on the season."
-Kimani Vidal,RB,LAC,15,15-late-season-momentum-myth,watch,"Cold finish: 0.5 PPG over the last 3, 7.2 on the season."
-Lamar Jackson,QB,BAL,15,15-late-season-momentum-myth,watch,"Cold finish: 11.5 PPG over the last 3, 15.7 on the season."
-Luther Burden III,WR,CHI,15,15-late-season-momentum-myth,watch,"Hot finish: 11.5 PPG over the last 3, 4.7 on the season."
-Marvin Harrison Jr.,WR,ARI,15,15-late-season-momentum-myth,watch,"Cold finish: 0.5 PPG over the last 3, 6.8 on the season."
-Michael Pittman,WR,IND,15,15-late-season-momentum-myth,watch,"Cold finish: 1.7 PPG over the last 3, 6.8 on the season."
-Michael Wilson,WR,ARI,15,15-late-season-momentum-myth,watch,"Hot finish: 13.3 PPG over the last 3, 7.9 on the season."
-Nico Collins,WR,HOU,15,15-late-season-momentum-myth,watch,"Cold finish: 5.0 PPG over the last 3, 9.7 on the season."
-Parker Washington,WR,JAX,15,15-late-season-momentum-myth,watch,"Hot finish: 14.7 PPG over the last 3, 7.4 on the season."
-Puka Nacua,WR,LA,15,15-late-season-momentum-myth,watch,"Hot finish: 19.7 PPG over the last 3, 14.8 on the season."
-Rhamondre Stevenson,RB,NE,15,15-late-season-momentum-myth,watch,"Hot finish: 23.0 PPG over the last 3, 9.6 on the season."
-Rico Dowdle,RB,CAR,15,15-late-season-momentum-myth,watch,"Cold finish: 3.0 PPG over the last 3, 9.5 on the season."
-Stefon Diggs,WR,NE,15,15-late-season-momentum-myth,watch,"Hot finish: 11.0 PPG over the last 3, 6.9 on the season."
-Travis Etienne,RB,JAX,15,15-late-season-momentum-myth,watch,"Cold finish: 7.7 PPG over the last 3, 11.9 on the season."
-Travis Kelce,TE,KC,15,15-late-season-momentum-myth,watch,"Cold finish: 1.3 PPG over the last 3, 6.4 on the season."
-Trevor Lawrence,QB,JAX,15,15-late-season-momentum-myth,watch,"Hot finish: 25.3 PPG over the last 3, 18.9 on the season."
-Ty Johnson,RB,BUF,15,15-late-season-momentum-myth,watch,"Hot finish: 9.3 PPG over the last 3, 3.8 on the season."
-Zach Charbonnet,RB,SEA,15,15-late-season-momentum-myth,watch,"Hot finish: 17.3 PPG over the last 3, 9.5 on the season."
-Zay Flowers,WR,BAL,15,15-late-season-momentum-myth,watch,"Hot finish: 15.7 PPG over the last 3, 8.5 on the season."
+A.J. Brown,WR,NE,10,10-wr-age-effects,fade,29 years old — lower ceiling at this price.
+Calvin Ridley,WR,TEN,10,10-wr-age-effects,fade,31 years old — lower ceiling at this price.
+Chris Godwin,WR,TB,10,10-wr-age-effects,fade,30 years old — lower ceiling at this price.
+Cooper Kupp,WR,SEA,10,10-wr-age-effects,fade,33 years old — lower ceiling at this price.
+Courtland Sutton,WR,DEN,10,10-wr-age-effects,fade,30 years old — lower ceiling at this price.
+DJ Moore,WR,BUF,10,10-wr-age-effects,fade,29 years old — lower ceiling at this price.
+Davante Adams,WR,LAR,10,10-wr-age-effects,fade,33 years old — lower ceiling at this price.
+Jakobi Meyers,WR,JAC,10,10-wr-age-effects,fade,29 years old — lower ceiling at this price.
+Jauan Jennings,WR,MIN,10,10-wr-age-effects,fade,29 years old — lower ceiling at this price.
+Mike Evans,WR,SF,10,10-wr-age-effects,fade,33 years old — lower ceiling at this price.
+Terry McLaurin,WR,WAS,10,10-wr-age-effects,fade,30 years old — lower ceiling at this price.
+Alvin Kamara,RB,NO,13,13-handcuffs-are-free-insurance,watch,"Backup to Travis Etienne, 105 picks cheaper. Insurance, fairly priced."
+Blake Corum,RB,LAR,13,13-handcuffs-are-free-insurance,watch,"Backup to Kyren Williams, 87 picks cheaper. Insurance, fairly priced."
+Brian Robinson,RB,ATL,13,13-handcuffs-are-free-insurance,watch,"Backup to Bijan Robinson, 84 picks cheaper. Insurance, fairly priced."
+Chris Rodriguez,RB,JAC,13,13-handcuffs-are-free-insurance,watch,"Backup to Bhayshul Tuten, 106 picks cheaper. Insurance, fairly priced."
+Dylan Sampson,RB,CLE,13,13-handcuffs-are-free-insurance,watch,"Backup to Quinshon Judkins, 113 picks cheaper. Insurance, fairly priced."
+Isiah Pacheco,RB,DET,13,13-handcuffs-are-free-insurance,watch,"Backup to Jahmyr Gibbs, 155 picks cheaper. Insurance, fairly priced."
+Jarquez Hunter,RB,LAR,13,13-handcuffs-are-free-insurance,watch,"Backup to Blake Corum, 100 picks cheaper. Insurance, fairly priced."
+Ray Davis,RB,BUF,13,13-handcuffs-are-free-insurance,watch,"Backup to James Cook, 158 picks cheaper. Insurance, fairly priced."
+Tank Bigsby,RB,PHI,13,13-handcuffs-are-free-insurance,watch,"Backup to Saquon Barkley, 148 picks cheaper. Insurance, fairly priced."
+Tyjae Spears,RB,TEN,13,13-handcuffs-are-free-insurance,watch,"Backup to Tony Pollard, 98 picks cheaper. Insurance, fairly priced."
+Tyler Allgeier,RB,ARI,13,13-handcuffs-are-free-insurance,watch,"Backup to Jeremiyah Love, 69 picks cheaper. Insurance, fairly priced."
+Tyrone Tracy,RB,NYG,13,13-handcuffs-are-free-insurance,watch,"Backup to Cam Skattebo, 120 picks cheaper. Insurance, fairly priced."
+Woody Marks,RB,HOU,13,13-handcuffs-are-free-insurance,watch,"Backup to David Montgomery, 95 picks cheaper. Insurance, fairly priced."
+Zach Charbonnet,RB,SEA,13,13-handcuffs-are-free-insurance,watch,"Backup to Jadarian Price, 79 picks cheaper. Insurance, fairly priced."
+Drake Maye,QB,NE,14,14-qb-round-sweep,buy,Round 4 — the tested sweet spot.
+Jalen Hurts,QB,PHI,14,14-qb-round-sweep,buy,Round 5 — the tested sweet spot.
+Jaxson Dart,QB,NYG,14,14-qb-round-sweep,buy,Round 6 — the tested sweet spot.
+Jayden Daniels,QB,WAS,14,14-qb-round-sweep,buy,Round 4 — the tested sweet spot.
+Joe Burrow,QB,CIN,14,14-qb-round-sweep,buy,Round 5 — the tested sweet spot.
+Matthew Stafford,QB,LAR,14,14-qb-round-sweep,buy,Round 6 — the tested sweet spot.
+Aaron Rodgers,QB,PIT,14,14-qb-round-sweep,watch,"Round 18 — fine as your QB2, too late for your QB1."
+Baker Mayfield,QB,TB,14,14-qb-round-sweep,watch,"Round 12 — fine as your QB2, too late for your QB1."
+Bryce Young,QB,CAR,14,14-qb-round-sweep,watch,"Round 16 — fine as your QB2, too late for your QB1."
+C.J. Stroud,QB,HOU,14,14-qb-round-sweep,watch,"Round 15 — fine as your QB2, too late for your QB1."
+Cam Ward,QB,TEN,14,14-qb-round-sweep,watch,"Round 15 — fine as your QB2, too late for your QB1."
+Carson Beck,QB,ARI,14,14-qb-round-sweep,watch,"Round 24 — fine as your QB2, too late for your QB1."
+Daniel Jones,QB,IND,14,14-qb-round-sweep,watch,"Round 14 — fine as your QB2, too late for your QB1."
+Deshaun Watson,QB,CLE,14,14-qb-round-sweep,watch,"Round 27 — fine as your QB2, too late for your QB1."
+Fernando Mendoza,QB,LV,14,14-qb-round-sweep,watch,"Round 15 — fine as your QB2, too late for your QB1."
+J.J. McCarthy,QB,MIN,14,14-qb-round-sweep,watch,"Round 19 — fine as your QB2, too late for your QB1."
+Jared Goff,QB,DET,14,14-qb-round-sweep,watch,"Round 12 — fine as your QB2, too late for your QB1."
+Jordan Love,QB,GB,14,14-qb-round-sweep,watch,"Round 14 — fine as your QB2, too late for your QB1."
+Josh Allen,QB,BUF,14,14-qb-round-sweep,watch,"Round 2 — fairly priced, not a bargain."
+Justin Fields,QB,KC,14,14-qb-round-sweep,watch,"Round 21 — fine as your QB2, too late for your QB1."
+Kyler Murray,QB,MIN,14,14-qb-round-sweep,watch,"Round 12 — fine as your QB2, too late for your QB1."
+Lamar Jackson,QB,BAL,14,14-qb-round-sweep,watch,"Round 3 — fairly priced, not a bargain."
+Malik Willis,QB,MIA,14,14-qb-round-sweep,watch,"Round 15 — fine as your QB2, too late for your QB1."
+Michael Penix,QB,ATL,14,14-qb-round-sweep,watch,"Round 40 — fine as your QB2, too late for your QB1."
+Sam Darnold,QB,SEA,14,14-qb-round-sweep,watch,"Round 14 — fine as your QB2, too late for your QB1."
+Shedeur Sanders,QB,CLE,14,14-qb-round-sweep,watch,"Round 18 — fine as your QB2, too late for your QB1."
+Ty Simpson,QB,LAR,14,14-qb-round-sweep,watch,"Round 21 — fine as your QB2, too late for your QB1."
+Tyler Shough,QB,NO,14,14-qb-round-sweep,watch,"Round 13 — fine as your QB2, too late for your QB1."
 Bo Nix,QB,DEN,16,16-td-luck-regresses,buy,25 pass TDs on chances worth 29.
 Brian Thomas Jr.,WR,JAX,16,16-td-luck-regresses,buy,Only 3 TDs on chances worth 5.
 CeeDee Lamb,WR,DAL,16,16-td-luck-regresses,buy,Only 3 TDs on chances worth 8.
@@ -164,12 +158,24 @@ Rome Odunze,WR,CHI,18,18-injury-prone-is-mostly-myth,buy,Out 3 weeks in 2025.
 Tee Higgins,WR,CIN,18,18-injury-prone-is-mostly-myth,buy,Out 2 weeks in 2025.
 Terry McLaurin,WR,WAS,18,18-injury-prone-is-mostly-myth,buy,Out 7 weeks in 2025.
 Xavier Worthy,WR,KC,18,18-injury-prone-is-mostly-myth,buy,Out 2 weeks in 2025.
-Brock Bowers,TE,LV,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — the one position where that repeats.
+Brock Bowers,TE,LV,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — repeats at tight end.
 Bucky Irving,RB,TB,18,18-injury-prone-is-mostly-myth,watch,Out 7 weeks in 2025.
 Chuba Hubbard,RB,CAR,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025.
-Dallas Goedert,TE,PHI,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — the one position where that repeats.
-Dalton Kincaid,TE,BUF,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — the one position where that repeats.
+Dallas Goedert,TE,PHI,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — repeats at tight end.
+Dalton Kincaid,TE,BUF,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — repeats at tight end.
 Omarion Hampton,RB,LAC,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025.
 Rhamondre Stevenson,RB,NE,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025.
-Theo Johnson,TE,NYG,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — the one position where that repeats.
+Theo Johnson,TE,NYG,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025 — repeats at tight end.
 Tyrone Tracy Jr.,RB,NYG,18,18-injury-prone-is-mostly-myth,watch,Out 2 weeks in 2025.
+Brock Bowers,TE,LV,33,33-te-same-pick,buy,Round 2 — early tight end pays off.
+Colston Loveland,TE,CHI,33,33-te-same-pick,buy,Round 4 — early tight end pays off.
+Trey McBride,TE,ARI,33,33-te-same-pick,buy,Round 2 — early tight end pays off.
+Tyler Warren,TE,IND,33,33-te-same-pick,buy,Round 4 — early tight end pays off.
+Dallas Goedert,TE,PHI,33,33-te-same-pick,fade,Round 8 — the tight end dead zone.
+George Kittle,TE,SF,33,33-te-same-pick,fade,Round 7 — the tight end dead zone.
+Harold Fannin,TE,CLE,33,33-te-same-pick,fade,Round 6 — the tight end dead zone.
+Jake Ferguson,TE,DAL,33,33-te-same-pick,fade,Round 9 — the tight end dead zone.
+Kyle Pitts,TE,ATL,33,33-te-same-pick,fade,Round 5 — the tight end dead zone.
+Sam LaPorta,TE,DET,33,33-te-same-pick,fade,Round 5 — the tight end dead zone.
+Travis Kelce,TE,KC,33,33-te-same-pick,fade,Round 8 — the tight end dead zone.
+Tucker Kraft,TE,GB,33,33-te-same-pick,fade,Round 8 — the tight end dead zone.

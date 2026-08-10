@@ -1,0 +1,579 @@
+{
+ "meta": {
+  "seasons": [
+   2018,
+   2025
+  ],
+  "player_weeks": 24690,
+  "player_seasons": 1488,
+  "pool": "ADP-draftable, ex-ante",
+  "played_source": "snap counts (offense_snaps > 0)",
+  "injury_source": "weekly roster IR status + Out/Doubtful report"
+ },
+ "missed_by_position": [
+  {
+   "pos": "QB",
+   "n": 214,
+   "mean_missed": 2.06,
+   "median_missed": 0.0,
+   "pct_zero_missed": 58.9,
+   "pct_1plus": 41.1,
+   "pct_4plus": 21.0,
+   "pct_8plus": 9.8,
+   "pct_of_games_missed": 12.4
+  },
+  {
+   "pos": "RB",
+   "n": 529,
+   "mean_missed": 2.57,
+   "median_missed": 1.0,
+   "pct_zero_missed": 45.0,
+   "pct_1plus": 55.0,
+   "pct_4plus": 24.4,
+   "pct_8plus": 11.9,
+   "pct_of_games_missed": 15.5
+  },
+  {
+   "pos": "WR",
+   "n": 558,
+   "mean_missed": 2.28,
+   "median_missed": 1.0,
+   "pct_zero_missed": 44.4,
+   "pct_1plus": 55.6,
+   "pct_4plus": 23.7,
+   "pct_8plus": 9.3,
+   "pct_of_games_missed": 13.7
+  },
+  {
+   "pos": "TE",
+   "n": 180,
+   "mean_missed": 2.73,
+   "median_missed": 1.0,
+   "pct_zero_missed": 40.0,
+   "pct_1plus": 60.0,
+   "pct_4plus": 30.0,
+   "pct_8plus": 11.7,
+   "pct_of_games_missed": 16.4
+  }
+ ],
+ "weekly_hazard": [
+  {
+   "pos": "QB",
+   "weeks": {
+    "1": 1.4,
+    "2": 3.74,
+    "3": 8.88,
+    "4": 9.13,
+    "5": 10.71,
+    "6": 8.81,
+    "7": 8.65,
+    "8": 12.44,
+    "9": 9.63,
+    "10": 11.7,
+    "11": 11.86,
+    "12": 17.26,
+    "13": 14.29,
+    "14": 15.31,
+    "15": 17.29,
+    "16": 16.82,
+    "17": 21.23,
+    "18": 29.1
+   }
+  },
+  {
+   "pos": "RB",
+   "weeks": {
+    "1": 3.76,
+    "2": 6.79,
+    "3": 11.51,
+    "4": 11.24,
+    "5": 12.7,
+    "6": 14.76,
+    "7": 15.63,
+    "8": 16.6,
+    "9": 18.7,
+    "10": 16.67,
+    "11": 14.89,
+    "12": 17.35,
+    "13": 17.13,
+    "14": 17.94,
+    "15": 18.49,
+    "16": 20.38,
+    "17": 22.24,
+    "18": 25.83
+   }
+  },
+  {
+   "pos": "WR",
+   "weeks": {
+    "1": 5.16,
+    "2": 8.02,
+    "3": 9.98,
+    "4": 12.18,
+    "5": 12.6,
+    "6": 12.85,
+    "7": 14.34,
+    "8": 16.44,
+    "9": 12.91,
+    "10": 15.08,
+    "11": 14.6,
+    "12": 14.68,
+    "13": 13.32,
+    "14": 14.37,
+    "15": 16.28,
+    "16": 18.28,
+    "17": 19.35,
+    "18": 20.11
+   }
+  },
+  {
+   "pos": "TE",
+   "weeks": {
+    "1": 2.78,
+    "2": 9.44,
+    "3": 10.0,
+    "4": 12.0,
+    "5": 15.15,
+    "6": 12.2,
+    "7": 15.19,
+    "8": 13.25,
+    "9": 14.19,
+    "10": 15.82,
+    "11": 19.51,
+    "12": 20.0,
+    "13": 20.47,
+    "14": 22.89,
+    "15": 23.33,
+    "16": 21.67,
+    "17": 25.7,
+    "18": 23.97
+   }
+  }
+ ],
+ "hazard_by_third": [
+  {
+   "pos": "QB",
+   "span": "wk 1-6",
+   "new_absence_rate": 7.02,
+   "at_risk": 1239
+  },
+  {
+   "pos": "QB",
+   "span": "wk 7-12",
+   "new_absence_rate": 11.98,
+   "at_risk": 1144
+  },
+  {
+   "pos": "QB",
+   "span": "wk 13-18",
+   "new_absence_rate": 18.41,
+   "at_risk": 1173
+  },
+  {
+   "pos": "RB",
+   "span": "wk 1-6",
+   "new_absence_rate": 10.01,
+   "at_risk": 3077
+  },
+  {
+   "pos": "RB",
+   "span": "wk 7-12",
+   "new_absence_rate": 16.64,
+   "at_risk": 2837
+  },
+  {
+   "pos": "RB",
+   "span": "wk 13-18",
+   "new_absence_rate": 20.03,
+   "at_risk": 2906
+  },
+  {
+   "pos": "WR",
+   "span": "wk 1-6",
+   "new_absence_rate": 10.04,
+   "at_risk": 3256
+  },
+  {
+   "pos": "WR",
+   "span": "wk 7-12",
+   "new_absence_rate": 14.69,
+   "at_risk": 2982
+  },
+  {
+   "pos": "WR",
+   "span": "wk 13-18",
+   "new_absence_rate": 16.81,
+   "at_risk": 3076
+  },
+  {
+   "pos": "TE",
+   "span": "wk 1-6",
+   "new_absence_rate": 10.15,
+   "at_risk": 1044
+  },
+  {
+   "pos": "TE",
+   "span": "wk 7-12",
+   "new_absence_rate": 16.37,
+   "at_risk": 959
+  },
+  {
+   "pos": "TE",
+   "span": "wk 13-18",
+   "new_absence_rate": 22.97,
+   "at_risk": 997
+  }
+ ],
+ "season_ending": [
+  {
+   "pos": "QB",
+   "n": 214,
+   "season_ending_pct": 14.5,
+   "count": 31
+  },
+  {
+   "pos": "RB",
+   "n": 529,
+   "season_ending_pct": 11.0,
+   "count": 58
+  },
+  {
+   "pos": "WR",
+   "n": 558,
+   "season_ending_pct": 9.5,
+   "count": 53
+  },
+  {
+   "pos": "TE",
+   "n": 180,
+   "season_ending_pct": 15.0,
+   "count": 27
+  }
+ ],
+ "tag_rates": [
+  {
+   "pos": "QB",
+   "questionable_rate": 4.6,
+   "any_report_rate": 8.9,
+   "limited_practice_rate": 5.1
+  },
+  {
+   "pos": "RB",
+   "questionable_rate": 7.4,
+   "any_report_rate": 11.0,
+   "limited_practice_rate": 6.5
+  },
+  {
+   "pos": "WR",
+   "questionable_rate": 8.7,
+   "any_report_rate": 13.8,
+   "limited_practice_rate": 9.2
+  },
+  {
+   "pos": "TE",
+   "questionable_rate": 6.9,
+   "any_report_rate": 11.7,
+   "limited_practice_rate": 6.3
+  }
+ ],
+ "age_curves": [
+  {
+   "pos": "QB",
+   "age": "24-25",
+   "n": 45,
+   "mean_missed": 1.91,
+   "pct_zero": 55.6,
+   "pct_4plus": 24.4
+  },
+  {
+   "pos": "QB",
+   "age": "26-27",
+   "n": 31,
+   "mean_missed": 2.87,
+   "pct_zero": 54.8,
+   "pct_4plus": 29.0
+  },
+  {
+   "pos": "QB",
+   "age": "28-29",
+   "n": 23,
+   "mean_missed": 2.52,
+   "pct_zero": 52.2,
+   "pct_4plus": 30.4
+  },
+  {
+   "pos": "QB",
+   "age": "30+",
+   "n": 71,
+   "mean_missed": 1.77,
+   "pct_zero": 69.0,
+   "pct_4plus": 16.9
+  },
+  {
+   "pos": "QB",
+   "age": "\u226423",
+   "n": 44,
+   "mean_missed": 1.84,
+   "pct_zero": 52.3,
+   "pct_4plus": 13.6
+  },
+  {
+   "pos": "RB",
+   "age": "23-24",
+   "n": 165,
+   "mean_missed": 2.62,
+   "pct_zero": 47.3,
+   "pct_4plus": 26.1
+  },
+  {
+   "pos": "RB",
+   "age": "25-26",
+   "n": 136,
+   "mean_missed": 2.38,
+   "pct_zero": 42.6,
+   "pct_4plus": 19.9
+  },
+  {
+   "pos": "RB",
+   "age": "27-28",
+   "n": 81,
+   "mean_missed": 2.74,
+   "pct_zero": 45.7,
+   "pct_4plus": 28.4
+  },
+  {
+   "pos": "RB",
+   "age": "29+",
+   "n": 57,
+   "mean_missed": 3.35,
+   "pct_zero": 40.4,
+   "pct_4plus": 35.1
+  },
+  {
+   "pos": "RB",
+   "age": "\u226422",
+   "n": 90,
+   "mean_missed": 2.14,
+   "pct_zero": 46.7,
+   "pct_4plus": 17.8
+  },
+  {
+   "pos": "WR",
+   "age": "24-25",
+   "n": 140,
+   "mean_missed": 2.23,
+   "pct_zero": 46.4,
+   "pct_4plus": 25.0
+  },
+  {
+   "pos": "WR",
+   "age": "26-27",
+   "n": 105,
+   "mean_missed": 2.22,
+   "pct_zero": 45.7,
+   "pct_4plus": 23.8
+  },
+  {
+   "pos": "WR",
+   "age": "28-29",
+   "n": 75,
+   "mean_missed": 3.03,
+   "pct_zero": 32.0,
+   "pct_4plus": 32.0
+  },
+  {
+   "pos": "WR",
+   "age": "30+",
+   "n": 80,
+   "mean_missed": 2.92,
+   "pct_zero": 42.5,
+   "pct_4plus": 32.5
+  },
+  {
+   "pos": "WR",
+   "age": "\u226423",
+   "n": 158,
+   "mean_missed": 1.7,
+   "pct_zero": 48.7,
+   "pct_4plus": 13.9
+  },
+  {
+   "pos": "TE",
+   "age": "24-25",
+   "n": 41,
+   "mean_missed": 2.51,
+   "pct_zero": 36.6,
+   "pct_4plus": 26.8
+  },
+  {
+   "pos": "TE",
+   "age": "26-27",
+   "n": 37,
+   "mean_missed": 2.86,
+   "pct_zero": 37.8,
+   "pct_4plus": 27.0
+  },
+  {
+   "pos": "TE",
+   "age": "28-29",
+   "n": 32,
+   "mean_missed": 2.56,
+   "pct_zero": 46.9,
+   "pct_4plus": 31.2
+  },
+  {
+   "pos": "TE",
+   "age": "30+",
+   "n": 34,
+   "mean_missed": 3.12,
+   "pct_zero": 35.3,
+   "pct_4plus": 35.3
+  },
+  {
+   "pos": "TE",
+   "age": "\u226423",
+   "n": 36,
+   "mean_missed": 2.64,
+   "pct_zero": 44.4,
+   "pct_4plus": 30.6
+  }
+ ],
+ "age_slopes": [
+  {
+   "pos": "QB",
+   "n": 214,
+   "games_missed_per_year_of_age": -0.019,
+   "se": 0.046,
+   "t": -0.4
+  },
+  {
+   "pos": "RB",
+   "n": 529,
+   "games_missed_per_year_of_age": 0.074,
+   "se": 0.065,
+   "t": 1.14
+  },
+  {
+   "pos": "WR",
+   "n": 558,
+   "games_missed_per_year_of_age": 0.133,
+   "se": 0.045,
+   "t": 2.96
+  },
+  {
+   "pos": "TE",
+   "n": 180,
+   "games_missed_per_year_of_age": 0.081,
+   "se": 0.082,
+   "t": 0.99
+  }
+ ],
+ "production_when_tagged": [
+  {
+   "pos": "QB",
+   "state": "clean",
+   "n": 2780,
+   "pct_of_own_normal": 100.1
+  },
+  {
+   "pos": "QB",
+   "state": "questionable",
+   "n": 80,
+   "pct_of_own_normal": 85.2
+  },
+  {
+   "pos": "QB",
+   "state": "limited practice",
+   "n": 88,
+   "pct_of_own_normal": 92.2
+  },
+  {
+   "pos": "RB",
+   "state": "clean",
+   "n": 5532,
+   "pct_of_own_normal": 99.8
+  },
+  {
+   "pos": "RB",
+   "state": "questionable",
+   "n": 326,
+   "pct_of_own_normal": 91.0
+  },
+  {
+   "pos": "RB",
+   "state": "limited practice",
+   "n": 340,
+   "pct_of_own_normal": 93.4
+  },
+  {
+   "pos": "RB",
+   "state": "DNP in practice",
+   "n": 73,
+   "pct_of_own_normal": 86.4
+  },
+  {
+   "pos": "WR",
+   "state": "clean",
+   "n": 6222,
+   "pct_of_own_normal": 99.5
+  },
+  {
+   "pos": "WR",
+   "state": "questionable",
+   "n": 447,
+   "pct_of_own_normal": 90.0
+  },
+  {
+   "pos": "WR",
+   "state": "limited practice",
+   "n": 563,
+   "pct_of_own_normal": 92.9
+  },
+  {
+   "pos": "WR",
+   "state": "DNP in practice",
+   "n": 174,
+   "pct_of_own_normal": 85.3
+  },
+  {
+   "pos": "TE",
+   "state": "clean",
+   "n": 2034,
+   "pct_of_own_normal": 100.2
+  },
+  {
+   "pos": "TE",
+   "state": "questionable",
+   "n": 113,
+   "pct_of_own_normal": 100.2
+  },
+  {
+   "pos": "TE",
+   "state": "limited practice",
+   "n": 120,
+   "pct_of_own_normal": 98.7
+  }
+ ],
+ "first_game_back": [
+  {
+   "pos": "QB",
+   "n": 46,
+   "pct_of_own_normal": 86.0
+  },
+  {
+   "pos": "RB",
+   "n": 166,
+   "pct_of_own_normal": 89.4
+  },
+  {
+   "pos": "WR",
+   "n": 217,
+   "pct_of_own_normal": 95.4
+  },
+  {
+   "pos": "TE",
+   "n": 70,
+   "pct_of_own_normal": 103.1
+  }
+ ]
+}

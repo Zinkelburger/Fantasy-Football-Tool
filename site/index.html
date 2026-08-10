@@ -22,70 +22,72 @@
     <a class="brand" href="#/">
       <span class="brand-dot"></span> <span data-copy-text="site.name">FOSS Football</span>
     </a>
+    <!-- Three destinations, because there are three things you can be
+         doing: reading what we found, looking at your own league, or
+         drafting right now. Everything we publish is one section with
+         tabs (#section-tabs below) rather than five peer nav entries,
+         which is what this row used to be. -->
     <nav id="site-nav">
-      <a href="#/" data-route="home" data-copy-text="nav.home">Home</a>
+      <a href="#/plan" data-route="plan" data-copy-text="nav.guide">Rankings &amp; research</a>
       <a href="#/live" data-route="live" data-copy-text="nav.live">My league</a>
-      <a href="#/weekly" data-route="weekly" data-copy-text="nav.weekly">Weekly</a>
-      <a href="#/board" data-route="board" data-copy-text="nav.board">Draft K/DST</a>
-      <a href="#/blog" data-route="blog" data-copy-text="nav.blog">Research</a>
-      <a href="#/models" data-route="models" data-copy-text="nav.models">Models</a>
-      <a href="#/cheat" data-route="cheat" data-copy-text="nav.cheat">Cheat sheet</a>
       <a href="#/draft" data-route="draft" class="nav-draft"
          data-copy-text="nav.draft">Draft tool</a>
-      <a class="gh-link" href="https://github.com/Zinkelburger/Fantasy-Football-Tool"
-         target="_blank" rel="noopener"
-         data-copy-title="link.github" data-copy-aria="link.github">
-        <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-      </a>
     </nav>
   </header>
 
   <main id="main">
 
+    <!-- The tab row for the "Rankings & research" section. Hidden on
+         every view outside it; the router decides. -->
+    <nav id="section-tabs" class="section-tabs" hidden>
+      <a href="#/plan" data-sect="plan" data-copy-text="tab.plan"></a>
+      <a href="#/board" data-sect="board" data-copy-text="tab.board"></a>
+      <a href="#/weekly" data-sect="weekly" data-copy-text="tab.weekly"></a>
+      <a href="#/blog" data-sect="blog" data-copy-text="tab.blog"></a>
+      <a href="#/models" data-sect="models" data-copy-text="tab.models"></a>
+    </nav>
+
     <!-- ============================================= HOME
          Every view starts hidden: the router unhides the right one once
          copy.json has landed, so no page flashes its empty slots. -->
+    <!-- The home page's job is to say what this site is and what is on
+         it, in sentences. It used to be a headline and seven buttons,
+         which told a first-time reader nothing about any of them. -->
     <section id="view-home" class="view" hidden>
       <div class="hero">
         <h1 data-copy-text="home.title"></h1>
-        <p class="tagline" data-copy-text="home.tagline"></p>
-        <div class="hero-actions">
-          <a class="btn primary" href="#/cheat" data-copy-text="home.btn.cheat"></a>
-          <a class="btn" href="#/blog" data-copy-text="home.btn.blog"></a>
-          <a class="btn" href="#/draft" data-copy-text="home.btn.draft"></a>
-        </div>
+        <div class="lede" data-copy="home.lede"></div>
       </div>
 
-      <div class="cards">
-        <a class="card" href="#/board">
-          <h3><span class="pill pill-board" data-copy-text="home.pill.board"></span>
-            <span data-copy-text="home.card.board.title"></span></h3>
-          <p data-copy-text="home.card.board.body"></p>
-          <span class="card-stat" data-copy-text="home.card.board.stat"></span>
-        </a>
-        <a class="card" href="#/weekly">
-          <h3><span class="pill pill-weekly" data-copy-text="home.pill.weekly"></span>
-            <span data-copy-text="home.card.weekly.title"></span></h3>
-          <p data-copy-text="home.card.weekly.body"></p>
-          <span class="card-stat" data-copy-text="home.card.weekly.stat"></span>
-        </a>
-        <a class="card" href="#/blog">
-          <h3><span class="pill pill-research" data-copy-text="home.pill.blog"></span>
-            <span data-copy-text="home.card.blog.title"></span></h3>
-          <p data-copy-text="home.card.blog.body"></p>
-          <span class="card-stat" data-copy-text="home.card.blog.stat"></span>
-        </a>
-        <a class="card" href="#/draft">
-          <h3><span class="pill pill-draft" data-copy-text="home.pill.draft"></span>
-            <span data-copy-text="home.card.draft.title"></span></h3>
-          <p data-copy-text="home.card.draft.body"></p>
-          <span class="card-stat" data-copy-text="home.card.draft.stat"></span>
-        </a>
+      <h2 data-copy-text="home.whats-here"></h2>
+
+      <div class="feature">
+        <h3><a href="#/plan" data-copy-text="home.f.plan.title"></a></h3>
+        <div data-copy="home.f.plan.body"></div>
       </div>
 
-      <div class="strip">
-        <div data-copy="home.strip"></div>
+      <div class="feature">
+        <h3><a href="#/board" data-copy-text="home.f.kdst.title"></a></h3>
+        <div data-copy="home.f.kdst.body"></div>
       </div>
+
+      <div class="feature">
+        <h3><a href="#/blog" data-copy-text="home.f.research.title"></a></h3>
+        <div data-copy="home.f.research.body"></div>
+      </div>
+
+      <div class="feature">
+        <h3><a href="#/live" data-copy-text="home.f.league.title"></a></h3>
+        <div data-copy="home.f.league.body"></div>
+      </div>
+
+      <div class="feature">
+        <h3><a href="#/draft" data-copy-text="home.f.tool.title"></a></h3>
+        <div data-copy="home.f.tool.body"></div>
+      </div>
+
+      <h2 data-copy-text="home.how.title"></h2>
+      <div class="lede" data-copy="home.how.body"></div>
     </section>
 
     <!-- ============================================= WEEKLY -->
@@ -146,22 +148,20 @@
 
       <div class="blurb" data-copy="board.blurb"></div>
 
-      <div class="tabs section-tabs" id="board-sections"
-           role="group" data-copy-aria="board.tabs.label">
-        <button class="tab active" data-sec="k"
-                data-copy-text="board.tab.k"></button>
-        <button class="tab" data-sec="dst"
-                data-copy-text="board.tab.dst"></button>
-      </div>
+      <!-- Both lists at once: they are two picks made together, and the
+           tables are narrow enough to sit side by side. -->
+      <div class="board-cols">
+        <section>
+          <h3 data-copy-text="board.k.title"></h3>
+          <div class="blurb" data-copy="board.k.blurb"></div>
+          <div class="tbl"><table id="pre-k-table"></table></div>
+        </section>
 
-      <div id="board-sec-k" class="tab-pane">
-        <div class="blurb" data-copy="board.k.blurb"></div>
-        <div class="tbl half"><table id="pre-k-table"></table></div>
-      </div>
-
-      <div id="board-sec-dst" class="tab-pane" hidden>
-        <div class="blurb" data-copy="board.dst.blurb"></div>
-        <div class="tbl half"><table id="pre-dst-table"></table></div>
+        <section>
+          <h3 data-copy-text="board.dst.title"></h3>
+          <div class="blurb" data-copy="board.dst.blurb"></div>
+          <div class="tbl"><table id="pre-dst-table"></table></div>
+        </section>
       </div>
     </section>
 
@@ -244,9 +244,35 @@
       <div id="league-body"></div>
     </section>
 
-    <!-- ========================================= CHEAT SHEET -->
-    <section id="view-cheat" class="view" hidden>
-      <article id="cheat-body" class="post"></article>
+    <!-- ========================================== DRAFT PLAN
+         One plan, three scoring formats. The rules are the same
+         objects in all three; what changes is which body text each one
+         shows and whether it is flagged as changing at all. See
+         site/plan.md. -->
+    <section id="view-plan" class="view" hidden>
+      <div class="view-head">
+        <h2 data-copy-text="plan.title"></h2>
+      </div>
+      <div class="blurb" data-copy="plan.intro"></div>
+
+      <div class="scoring">
+        <span class="scoring-label" data-copy-text="plan.scoring.label"></span>
+        <div class="tabs" id="plan-formats">
+          <button class="tab" data-fmt="std" data-copy-text="fmt.std"></button>
+          <button class="tab" data-fmt="half" data-copy-text="fmt.half"></button>
+          <button class="tab" data-fmt="ppr" data-copy-text="fmt.ppr"></button>
+        </div>
+      </div>
+      <p id="plan-fmt-note" class="dim"></p>
+
+      <!-- The label carries a count, so the renderer fills it rather
+           than Copy.apply — otherwise it flashes a raw {n}. -->
+      <label class="plan-filter">
+        <input type="checkbox" id="plan-changed-only">
+        <span></span>
+      </label>
+
+      <div id="plan-body"></div>
     </section>
 
     <!-- ============================================= DRAFT -->
@@ -267,7 +293,6 @@
          data-copy-title="link.github" data-copy-aria="link.github">
         <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
       </a></span>
-    <span class="dim" data-copy-text="footer.credit"></span>
   </footer>
 
   <script src="copy.js"></script>

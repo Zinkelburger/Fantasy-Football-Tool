@@ -19,6 +19,17 @@ player finished with more points **46%** of the time (646/1414,
 2018-2025). At or below a coin flip in every position and under every
 variant tested.
 
+> **Not marked in the draft tool (2026-08-06).** It briefly was — a
+> context row on every player attached to a top-five or bottom-five
+> offense, 63 of them. The team-level half above is strong enough to
+> tempt you into showing it, but the mark would have to sit on the
+> player-level half, and that is this page's null. The row could only
+> ever end "and this is not a reason to move him", which is a
+> sentence that costs a drafter attention and buys nothing. The rule
+> we settled on: if the only honest ending is "ignore this", the row
+> should not exist. See also findings 08, 09 and 15, removed the same
+> day for the same reason.
+
 ADP already carries the team context. The offense number is real
 information about *teams* — it drives our K and D/ST boards — and zero
 information about *which of two similarly-drafted players to take*.

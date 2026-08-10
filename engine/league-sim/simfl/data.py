@@ -24,9 +24,15 @@ from .scoring import STAT_COLS, add_fantasy_points
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
 
-FFC_URL = "https://fantasyfootballcalculator.com/api/v1/adp/standard?teams=12&year={year}"
+FFC_URL = "https://fantasyfootballcalculator.com/api/v1/adp/{fmt}?teams=12&year={year}"
 FP_2025_WAYBACK = ("http://web.archive.org/web/20250903050817/"
                    "https://www.fantasypros.com/nfl/adp/overall.php")
+
+# Points-per-reception -> the draft board real drafters used in that
+# format. A PPR season simulated off a standard board measures the wrong
+# thing: half the story of PPR is that the room itself reprices
+# receivers, so the board has to move with the scoring.
+ADP_FORMATS = {0.0: "standard", 0.5: "half-ppr", 1.0: "ppr"}
 
 _SUFFIXES = re.compile(r"\b(jr|sr|ii|iii|iv|v)\b\.?$")
 
@@ -54,8 +60,8 @@ def _get(url: str) -> str:
 
 # ---------------------------------------------------------------- ADP
 
-def _fetch_ffc(year: int) -> list[dict]:
-    raw = json.loads(_get(FFC_URL.format(year=year)))
+def _fetch_ffc(year: int, fmt: str = "standard") -> list[dict]:
+    raw = json.loads(_get(FFC_URL.format(year=year, fmt=fmt)))
     out = []
     for p in raw["players"]:
         pos = {"PK": "K"}.get(p["position"], p["position"])
@@ -64,7 +70,7 @@ def _fetch_ffc(year: int) -> list[dict]:
         out.append({
             "name": p["name"], "pos": pos, "team": p["team"],
             "adp": float(p["adp"]), "stdev": float(p["stdev"]),
-            "source": "ffc",
+            "source": f"ffc-{fmt}",
         })
     return out
 
@@ -125,16 +131,37 @@ def _impute_stdev(players: list[dict], ffc_years: list[list[dict]]) -> None:
             p["stdev"] = round(max(0.5, a + b * p["adp"]), 2)
 
 
-def load_adp(year: int) -> list[dict]:
-    cache = DATA_DIR / f"adp_{year}.json"
+def load_adp(year: int, fmt: str | None = None) -> list[dict]:
+    """The preseason draft board for one season.
+
+    `fmt` is None for the historical default: FantasyFootballCalculator
+    standard, except 2025, which comes from an archived FantasyPros
+    board (~330 players deep, where FFC's 2025 standard is only ~150).
+    Every published standard-scoring finding rests on that board, so it
+    stays the default.
+
+    Pass an explicit FFC format ("standard", "half-ppr", "ppr") to get a
+    board straight from FFC. The format sweep uses those for all three
+    arms, because comparing formats needs one board source across them —
+    a deeper board in one arm changes what the late rounds even see.
+    """
+    if fmt is None:
+        cache = DATA_DIR / f"adp_{year}.json"
+        if cache.exists():
+            return json.loads(cache.read_text())
+        if year == 2025:
+            players = _fetch_fp_2025()
+            ffc = [load_adp(y) for y in range(2020, 2025)]
+            _impute_stdev(players, ffc)
+        else:
+            players = _fetch_ffc(year)
+        cache.write_text(json.dumps(players, indent=1))
+        return players
+
+    cache = DATA_DIR / f"adp_{fmt}_{year}.json"
     if cache.exists():
         return json.loads(cache.read_text())
-    if year == 2025:
-        players = _fetch_fp_2025()
-        ffc = [load_adp(y) for y in range(2020, 2025)]
-        _impute_stdev(players, ffc)
-    else:
-        players = _fetch_ffc(year)
+    players = _fetch_ffc(year, fmt)
     cache.write_text(json.dumps(players, indent=1))
     return players
 
@@ -200,11 +227,16 @@ def load_injury_reports(year: int) -> dict[str, dict[int, str]]:
     return out
 
 
-def load_expected_points(year: int) -> dict[str, dict[int, float]]:
+def load_expected_points(year: int, ppr: float = 0.0) -> dict[str, dict[int, float]]:
     """gsis player_id -> {week: expected points} from nflverse
     ff_opportunity, rescored under league rules (pass 1/25 + 4TD − 2INT,
     rush/rec 1/10 + 6TD, 2pt = 2). Opportunity-based: what the week's
-    usage was worth, before the TD/long-play dice landed."""
+    usage was worth, before the TD/long-play dice landed.
+
+    `ppr` adds the reception term. It has to be here and not only in
+    scoring.py: expected points drive the lineup and waiver projections,
+    and in a PPR league a 90-catch possession receiver's usage is worth
+    far more than the standard-scored version of the same week says."""
     df = (pl.read_parquet(DATA_DIR / "ff_opportunity_2017_2025.parquet")
           .filter(pl.col("season") == str(year),
                   pl.col("position").is_in(["QB", "RB", "WR", "TE"])))
@@ -215,6 +247,7 @@ def load_expected_points(year: int) -> dict[str, dict[int, float]]:
           + pl.col("rush_touchdown_exp") * 6
           + pl.col("rec_yards_gained_exp") / 10
           + pl.col("rec_touchdown_exp") * 6
+          + pl.col("receptions_exp").fill_null(0.0) * ppr
           + (pl.col("pass_two_point_conv_exp") + pl.col("rec_two_point_conv_exp")
              + pl.col("rush_two_point_conv_exp")) * 2)
     df = df.with_columns(ep.fill_null(0.0).alias("ep"))

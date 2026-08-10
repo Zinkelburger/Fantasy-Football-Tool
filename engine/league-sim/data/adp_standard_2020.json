@@ -1,0 +1,1674 @@
+[
+ {
+  "name": "Christian McCaffrey",
+  "pos": "RB",
+  "team": "CAR",
+  "adp": 1.3,
+  "stdev": 0.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Saquon Barkley",
+  "pos": "RB",
+  "team": "NYG",
+  "adp": 2.4,
+  "stdev": 0.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ezekiel Elliott",
+  "pos": "RB",
+  "team": "DAL",
+  "adp": 3.3,
+  "stdev": 1.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Alvin Kamara",
+  "pos": "RB",
+  "team": "NO",
+  "adp": 4.8,
+  "stdev": 1.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Derrick Henry",
+  "pos": "RB",
+  "team": "TEN",
+  "adp": 5.0,
+  "stdev": 1.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Dalvin Cook",
+  "pos": "RB",
+  "team": "MIN",
+  "adp": 6.0,
+  "stdev": 1.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Michael Thomas",
+  "pos": "WR",
+  "team": "NO",
+  "adp": 7.9,
+  "stdev": 1.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Clyde Edwards-Helaire",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 8.2,
+  "stdev": 3.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Josh Jacobs",
+  "pos": "RB",
+  "team": "LV",
+  "adp": 8.4,
+  "stdev": 1.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Nick Chubb",
+  "pos": "RB",
+  "team": "CLE",
+  "adp": 9.8,
+  "stdev": 2.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Patrick Mahomes",
+  "pos": "QB",
+  "team": "KC",
+  "adp": 10.3,
+  "stdev": 4.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Joe Mixon",
+  "pos": "RB",
+  "team": "CIN",
+  "adp": 11.1,
+  "stdev": 1.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Miles Sanders",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 13.2,
+  "stdev": 2.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Davante Adams",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 13.6,
+  "stdev": 2.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kenyan Drake",
+  "pos": "RB",
+  "team": "ARI",
+  "adp": 14.7,
+  "stdev": 2.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tyreek Hill",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 14.8,
+  "stdev": 2.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Aaron Jones Sr.",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 16.2,
+  "stdev": 3.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Lamar Jackson",
+  "pos": "QB",
+  "team": "BAL",
+  "adp": 18.1,
+  "stdev": 4.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Julio Jones",
+  "pos": "WR",
+  "team": "ATL",
+  "adp": 18.2,
+  "stdev": 2.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Austin Ekeler",
+  "pos": "RB",
+  "team": "LAC",
+  "adp": 18.2,
+  "stdev": 2.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DeAndre Hopkins",
+  "pos": "WR",
+  "team": "ARI",
+  "adp": 20.0,
+  "stdev": 3.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Travis Kelce",
+  "pos": "TE",
+  "team": "KC",
+  "adp": 21.0,
+  "stdev": 3.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "James Conner",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 22.5,
+  "stdev": 3.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chris Godwin Jr.",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 23.8,
+  "stdev": 3.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chris Carson",
+  "pos": "RB",
+  "team": "SEA",
+  "adp": 25.0,
+  "stdev": 3.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kenny Golladay",
+  "pos": "WR",
+  "team": "DET",
+  "adp": 25.6,
+  "stdev": 3.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "George Kittle",
+  "pos": "TE",
+  "team": "SF",
+  "adp": 26.5,
+  "stdev": 3.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mike Evans",
+  "pos": "WR",
+  "team": "TB",
+  "adp": 27.6,
+  "stdev": 3.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "David Johnson",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 30.0,
+  "stdev": 4.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "LeVeon Bell",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 30.1,
+  "stdev": 3.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Adam Thielen",
+  "pos": "WR",
+  "team": "MIN",
+  "adp": 30.6,
+  "stdev": 3.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Melvin Gordon III",
+  "pos": "RB",
+  "team": "DEN",
+  "adp": 31.5,
+  "stdev": 3.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Leonard Fournette",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 32.0,
+  "stdev": 4.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Todd Gurley",
+  "pos": "RB",
+  "team": "ATL",
+  "adp": 33.3,
+  "stdev": 4.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Amari Cooper",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 33.4,
+  "stdev": 3.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Cooper Kupp",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 35.0,
+  "stdev": 4.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jonathan Taylor",
+  "pos": "RB",
+  "team": "IND",
+  "adp": 36.3,
+  "stdev": 6.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mark Ingram II",
+  "pos": "RB",
+  "team": "BAL",
+  "adp": 36.8,
+  "stdev": 4.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Calvin Ridley",
+  "pos": "WR",
+  "team": "ATL",
+  "adp": 37.4,
+  "stdev": 4.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "A.J. Brown",
+  "pos": "WR",
+  "team": "TEN",
+  "adp": 38.2,
+  "stdev": 4.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "JuJu Smith-Schuster",
+  "pos": "WR",
+  "team": "PIT",
+  "adp": 38.4,
+  "stdev": 4.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Allen Robinson II",
+  "pos": "WR",
+  "team": "CHI",
+  "adp": 41.0,
+  "stdev": 4.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "David Montgomery",
+  "pos": "RB",
+  "team": "CHI",
+  "adp": 41.5,
+  "stdev": 4.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DK Metcalf",
+  "pos": "WR",
+  "team": "SEA",
+  "adp": 42.4,
+  "stdev": 4.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mark Andrews",
+  "pos": "TE",
+  "team": "BAL",
+  "adp": 42.5,
+  "stdev": 5.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Odell Beckham Jr.",
+  "pos": "WR",
+  "team": "CLE",
+  "adp": 43.6,
+  "stdev": 5.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Devin Singletary",
+  "pos": "RB",
+  "team": "BUF",
+  "adp": 44.5,
+  "stdev": 5.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Raheem Mostert",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 47.2,
+  "stdev": 5.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Robert Woods",
+  "pos": "WR",
+  "team": "LAR",
+  "adp": 48.0,
+  "stdev": 4.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DJ Moore",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 48.9,
+  "stdev": 6.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Russell Wilson",
+  "pos": "QB",
+  "team": "SEA",
+  "adp": 49.8,
+  "stdev": 7.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tyler Lockett",
+  "pos": "WR",
+  "team": "SEA",
+  "adp": 50.8,
+  "stdev": 4.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Stefon Diggs",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 52.5,
+  "stdev": 4.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Dak Prescott",
+  "pos": "QB",
+  "team": "DAL",
+  "adp": 52.6,
+  "stdev": 7.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Zach Ertz",
+  "pos": "TE",
+  "team": "PHI",
+  "adp": 53.8,
+  "stdev": 6.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DJ Chark",
+  "pos": "WR",
+  "team": "JAX",
+  "adp": 54.1,
+  "stdev": 4.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kyler Murray",
+  "pos": "QB",
+  "team": "ARI",
+  "adp": 54.7,
+  "stdev": 9.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kareem Hunt",
+  "pos": "RB",
+  "team": "CLE",
+  "adp": 54.8,
+  "stdev": 6.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "T.Y. Hilton",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 54.9,
+  "stdev": 4.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Terry McLaurin",
+  "pos": "WR",
+  "team": "WAS",
+  "adp": 57.4,
+  "stdev": 6.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "D'Andre Swift",
+  "pos": "RB",
+  "team": "DET",
+  "adp": 57.8,
+  "stdev": 6.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Keenan Allen",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 58.9,
+  "stdev": 5.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ronald Jones",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 60.6,
+  "stdev": 7.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Hollywood Brown",
+  "pos": "WR",
+  "team": "BAL",
+  "adp": 62.0,
+  "stdev": 5.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Deshaun Watson",
+  "pos": "QB",
+  "team": "HOU",
+  "adp": 62.6,
+  "stdev": 7.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Cam Akers",
+  "pos": "RB",
+  "team": "LAR",
+  "adp": 62.8,
+  "stdev": 7.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Darren Waller",
+  "pos": "TE",
+  "team": "LV",
+  "adp": 65.3,
+  "stdev": 7.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Marlon Mack",
+  "pos": "RB",
+  "team": "IND",
+  "adp": 65.4,
+  "stdev": 7.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Courtland Sutton",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 66.4,
+  "stdev": 7.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "A.J. Green",
+  "pos": "WR",
+  "team": "CIN",
+  "adp": 66.4,
+  "stdev": 5.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Rob Gronkowski",
+  "pos": "TE",
+  "team": "TB",
+  "adp": 68.3,
+  "stdev": 9.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "J.K. Dobbins",
+  "pos": "RB",
+  "team": "BAL",
+  "adp": 69.7,
+  "stdev": 6.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DeVante Parker",
+  "pos": "WR",
+  "team": "MIA",
+  "adp": 72.2,
+  "stdev": 6.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Brandin Cooks",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 74.5,
+  "stdev": 6.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Michael Gallup",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 75.5,
+  "stdev": 6.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Aaron Rodgers",
+  "pos": "QB",
+  "team": "GB",
+  "adp": 75.8,
+  "stdev": 8.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Drew Brees",
+  "pos": "QB",
+  "team": "NO",
+  "adp": 76.4,
+  "stdev": 9.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jordan Howard",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 77.1,
+  "stdev": 6.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Evan Engram",
+  "pos": "TE",
+  "team": "NYG",
+  "adp": 77.1,
+  "stdev": 6.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Will Fuller",
+  "pos": "WR",
+  "team": "HOU",
+  "adp": 77.3,
+  "stdev": 6.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Deebo Samuel Sr.",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 78.7,
+  "stdev": 6.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Sony Michel",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 79.5,
+  "stdev": 7.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Matt Ryan",
+  "pos": "QB",
+  "team": "ATL",
+  "adp": 83.7,
+  "stdev": 8.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kerryon Johnson",
+  "pos": "RB",
+  "team": "DET",
+  "adp": 83.8,
+  "stdev": 8.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jarvis Landry",
+  "pos": "WR",
+  "team": "CLE",
+  "adp": 85.1,
+  "stdev": 6.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Phillip Lindsay",
+  "pos": "RB",
+  "team": "DEN",
+  "adp": 85.3,
+  "stdev": 8.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Hunter Henry",
+  "pos": "TE",
+  "team": "LAC",
+  "adp": 85.5,
+  "stdev": 10.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tevin Coleman",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 86.6,
+  "stdev": 7.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Josh Allen",
+  "pos": "QB",
+  "team": "BUF",
+  "adp": 87.0,
+  "stdev": 8.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tyler Boyd",
+  "pos": "WR",
+  "team": "CIN",
+  "adp": 87.1,
+  "stdev": 7.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Julian Edelman",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 87.3,
+  "stdev": 7.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tom Brady",
+  "pos": "QB",
+  "team": "TB",
+  "adp": 90.7,
+  "stdev": 10.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Matt Breida",
+  "pos": "RB",
+  "team": "MIA",
+  "adp": 90.8,
+  "stdev": 8.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Marvin Jones Jr.",
+  "pos": "WR",
+  "team": "DET",
+  "adp": 92.2,
+  "stdev": 7.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mecole Hardman Jr.",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 92.4,
+  "stdev": 7.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Alexander Mattison",
+  "pos": "RB",
+  "team": "MIN",
+  "adp": 93.0,
+  "stdev": 6.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jared Cook",
+  "pos": "TE",
+  "team": "NO",
+  "adp": 93.6,
+  "stdev": 13.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Zack Moss",
+  "pos": "RB",
+  "team": "BUF",
+  "adp": 93.7,
+  "stdev": 10.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Latavius Murray",
+  "pos": "RB",
+  "team": "NO",
+  "adp": 95.2,
+  "stdev": 8.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "CeeDee Lamb",
+  "pos": "WR",
+  "team": "DAL",
+  "adp": 95.4,
+  "stdev": 8.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Carson Wentz",
+  "pos": "QB",
+  "team": "PHI",
+  "adp": 95.6,
+  "stdev": 9.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Emmanuel Sanders",
+  "pos": "WR",
+  "team": "NO",
+  "adp": 98.7,
+  "stdev": 7.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Diontae Johnson",
+  "pos": "WR",
+  "team": "PIT",
+  "adp": 100.4,
+  "stdev": 7.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "James White",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 100.5,
+  "stdev": 8.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Darrell Henderson Jr.",
+  "pos": "RB",
+  "team": "LAR",
+  "adp": 103.7,
+  "stdev": 8.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Darius Slayton",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 104.8,
+  "stdev": 7.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Matthew Stafford",
+  "pos": "QB",
+  "team": "DET",
+  "adp": 104.9,
+  "stdev": 9.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Antonio Gibson",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 105.3,
+  "stdev": 10.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Daniel Jones",
+  "pos": "QB",
+  "team": "NYG",
+  "adp": 108.3,
+  "stdev": 8.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Christian Kirk",
+  "pos": "WR",
+  "team": "ARI",
+  "adp": 109.8,
+  "stdev": 7.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jerry Jeudy",
+  "pos": "WR",
+  "team": "DEN",
+  "adp": 110.3,
+  "stdev": 8.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Austin Hooper",
+  "pos": "TE",
+  "team": "CLE",
+  "adp": 111.2,
+  "stdev": 16.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Henry Ruggs III",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 111.4,
+  "stdev": 9.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chase Edmonds",
+  "pos": "RB",
+  "team": "ARI",
+  "adp": 112.4,
+  "stdev": 9.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ke'Shawn Vaughn",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 114.4,
+  "stdev": 12.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Damien Williams",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 115.0,
+  "stdev": 16.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Damien Harris",
+  "pos": "RB",
+  "team": "NE",
+  "adp": 115.3,
+  "stdev": 11.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tony Pollard",
+  "pos": "RB",
+  "team": "DAL",
+  "adp": 115.7,
+  "stdev": 7.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tyler Higbee",
+  "pos": "TE",
+  "team": "LAR",
+  "adp": 116.2,
+  "stdev": 16.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Noah Fant",
+  "pos": "TE",
+  "team": "DEN",
+  "adp": 117.2,
+  "stdev": 15.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Adrian Peterson",
+  "pos": "RB",
+  "team": "DET",
+  "adp": 117.7,
+  "stdev": 11.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "John Brown",
+  "pos": "WR",
+  "team": "BUF",
+  "adp": 121.0,
+  "stdev": 8.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Hayden Hurst",
+  "pos": "TE",
+  "team": "ATL",
+  "adp": 121.1,
+  "stdev": 16.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Baker Mayfield",
+  "pos": "QB",
+  "team": "CLE",
+  "adp": 122.3,
+  "stdev": 11.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ben Roethlisberger",
+  "pos": "QB",
+  "team": "PIT",
+  "adp": 123.1,
+  "stdev": 9.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mike Williams",
+  "pos": "WR",
+  "team": "LAC",
+  "adp": 123.6,
+  "stdev": 9.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DeSean Jackson",
+  "pos": "WR",
+  "team": "PHI",
+  "adp": 124.9,
+  "stdev": 10.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Sterling Shepard",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 125.5,
+  "stdev": 9.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Justin Jefferson",
+  "pos": "WR",
+  "team": "MIN",
+  "adp": 125.5,
+  "stdev": 11.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tarik Cohen",
+  "pos": "RB",
+  "team": "CHI",
+  "adp": 125.6,
+  "stdev": 12.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Sammy Watkins",
+  "pos": "WR",
+  "team": "KC",
+  "adp": 128.3,
+  "stdev": 10.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "AJ Dillon",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 131.0,
+  "stdev": 13.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Justin Jackson",
+  "pos": "RB",
+  "team": "LAC",
+  "adp": 131.7,
+  "stdev": 10.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Cam Newton",
+  "pos": "QB",
+  "team": "NE",
+  "adp": 131.7,
+  "stdev": 12.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jared Goff",
+  "pos": "QB",
+  "team": "LAR",
+  "adp": 132.7,
+  "stdev": 10.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jalen Reagor",
+  "pos": "WR",
+  "team": "PHI",
+  "adp": 136.6,
+  "stdev": 12.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Alshon Jeffery",
+  "pos": "WR",
+  "team": "PHI",
+  "adp": 136.9,
+  "stdev": 12.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ryan Tannehill",
+  "pos": "QB",
+  "team": "TEN",
+  "adp": 139.2,
+  "stdev": 12.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Anthony Miller",
+  "pos": "WR",
+  "team": "CHI",
+  "adp": 139.3,
+  "stdev": 11.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Robbie Chosen",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 142.6,
+  "stdev": 12.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Justin Tucker",
+  "pos": "K",
+  "team": "BAL",
+  "adp": 143.4,
+  "stdev": 12.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jamison Crowder",
+  "pos": "WR",
+  "team": "NYJ",
+  "adp": 144.3,
+  "stdev": 14.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "N'Keal Harry",
+  "pos": "WR",
+  "team": "NE",
+  "adp": 145.4,
+  "stdev": 13.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Harrison Butker",
+  "pos": "K",
+  "team": "KC",
+  "adp": 145.5,
+  "stdev": 11.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Bryce Love",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 146.4,
+  "stdev": 18.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Preston Williams",
+  "pos": "WR",
+  "team": "MIA",
+  "adp": 147.1,
+  "stdev": 14.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ryquell Armstead",
+  "pos": "RB",
+  "team": "JAX",
+  "adp": 147.2,
+  "stdev": 27.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Carlos Hyde",
+  "pos": "RB",
+  "team": "SEA",
+  "adp": 148.4,
+  "stdev": 14.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Boston Scott",
+  "pos": "RB",
+  "team": "PHI",
+  "adp": 149.6,
+  "stdev": 17.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Eric Ebron",
+  "pos": "TE",
+  "team": "PIT",
+  "adp": 151.4,
+  "stdev": 25.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Greg Zuerlein",
+  "pos": "K",
+  "team": "DAL",
+  "adp": 151.5,
+  "stdev": 8.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "T.J. Hockenson",
+  "pos": "TE",
+  "team": "DET",
+  "adp": 151.5,
+  "stdev": 18.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mike Gesicki",
+  "pos": "TE",
+  "team": "MIA",
+  "adp": 151.8,
+  "stdev": 18.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Nyheim Hines",
+  "pos": "RB",
+  "team": "IND",
+  "adp": 152.9,
+  "stdev": 18.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chris Thompson",
+  "pos": "RB",
+  "team": "JAX",
+  "adp": 153.3,
+  "stdev": 24.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Joe Burrow",
+  "pos": "QB",
+  "team": "CIN",
+  "adp": 153.6,
+  "stdev": 15.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Bryan Edwards",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 153.6,
+  "stdev": 27.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "O.J. Howard",
+  "pos": "TE",
+  "team": "TB",
+  "adp": 154.0,
+  "stdev": 20.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Wil Lutz",
+  "pos": "K",
+  "team": "NO",
+  "adp": 154.3,
+  "stdev": 11.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Benny Snell Jr.",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 155.2,
+  "stdev": 17.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jerick McKinnon",
+  "pos": "RB",
+  "team": "SF",
+  "adp": 155.3,
+  "stdev": 17.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Kirk Cousins",
+  "pos": "QB",
+  "team": "MIN",
+  "adp": 155.7,
+  "stdev": 15.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Blake Jarwin",
+  "pos": "TE",
+  "team": "DAL",
+  "adp": 156.3,
+  "stdev": 19.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Drew Lock",
+  "pos": "QB",
+  "team": "DEN",
+  "adp": 156.6,
+  "stdev": 15.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jonnu Smith",
+  "pos": "TE",
+  "team": "TEN",
+  "adp": 156.6,
+  "stdev": 18.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chris Herndon",
+  "pos": "TE",
+  "team": "NYJ",
+  "adp": 156.7,
+  "stdev": 16.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Darrel Williams",
+  "pos": "RB",
+  "team": "KC",
+  "adp": 156.8,
+  "stdev": 25.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Golden Tate",
+  "pos": "WR",
+  "team": "NYG",
+  "adp": 157.1,
+  "stdev": 11.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Dallas Goedert",
+  "pos": "TE",
+  "team": "PHI",
+  "adp": 157.7,
+  "stdev": 17.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jack Doyle",
+  "pos": "TE",
+  "team": "IND",
+  "adp": 157.7,
+  "stdev": 16.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Gardner Minshew II",
+  "pos": "QB",
+  "team": "JAX",
+  "adp": 158.3,
+  "stdev": 24.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ito Smith",
+  "pos": "RB",
+  "team": "ATL",
+  "adp": 158.4,
+  "stdev": 22.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "LeSean McCoy",
+  "pos": "RB",
+  "team": "TB",
+  "adp": 158.5,
+  "stdev": 20.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Duke Johnson",
+  "pos": "RB",
+  "team": "HOU",
+  "adp": 158.5,
+  "stdev": 16.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Brandon Aiyuk",
+  "pos": "WR",
+  "team": "SF",
+  "adp": 159.0,
+  "stdev": 13.4,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Lamar Miller",
+  "pos": "RB",
+  "team": "WAS",
+  "adp": 159.0,
+  "stdev": 17.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Allen Lazard",
+  "pos": "WR",
+  "team": "GB",
+  "adp": 159.4,
+  "stdev": 13.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Philip Rivers",
+  "pos": "QB",
+  "team": "IND",
+  "adp": 159.8,
+  "stdev": 15.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "DeAndre Washington",
+  "pos": "RB",
+  "team": "MIA",
+  "adp": 160.4,
+  "stdev": 13.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Joshua Kelley",
+  "pos": "RB",
+  "team": "LAC",
+  "adp": 160.5,
+  "stdev": 13.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Parris Campbell",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 160.8,
+  "stdev": 14.9,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Michael Pittman Jr.",
+  "pos": "WR",
+  "team": "IND",
+  "adp": 161.2,
+  "stdev": 15.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Rashaad Penny",
+  "pos": "RB",
+  "team": "SEA",
+  "adp": 161.3,
+  "stdev": 16.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Laviska Shenault Jr.",
+  "pos": "WR",
+  "team": "JAX",
+  "adp": 161.5,
+  "stdev": 19.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Robbie Gould",
+  "pos": "K",
+  "team": "SF",
+  "adp": 161.5,
+  "stdev": 3.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Anthony McFarland Jr.",
+  "pos": "RB",
+  "team": "PIT",
+  "adp": 161.9,
+  "stdev": 14.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Teddy Bridgewater",
+  "pos": "QB",
+  "team": "CAR",
+  "adp": 162.0,
+  "stdev": 16.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jimmy Garoppolo",
+  "pos": "QB",
+  "team": "SF",
+  "adp": 162.5,
+  "stdev": 15.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Curtis Samuel",
+  "pos": "WR",
+  "team": "CAR",
+  "adp": 162.5,
+  "stdev": 15.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Derek Carr",
+  "pos": "QB",
+  "team": "LV",
+  "adp": 162.9,
+  "stdev": 7.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Breshad Perriman",
+  "pos": "WR",
+  "team": "NYJ",
+  "adp": 164.4,
+  "stdev": 11.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Younghoe Koo",
+  "pos": "K",
+  "team": "ATL",
+  "adp": 164.9,
+  "stdev": 5.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Matt Prater",
+  "pos": "K",
+  "team": "DET",
+  "adp": 164.9,
+  "stdev": 7.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jamaal Williams",
+  "pos": "RB",
+  "team": "GB",
+  "adp": 165.0,
+  "stdev": 14.5,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tua Tagovailoa",
+  "pos": "QB",
+  "team": "MIA",
+  "adp": 165.0,
+  "stdev": 9.3,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Darrynton Evans",
+  "pos": "RB",
+  "team": "TEN",
+  "adp": 165.8,
+  "stdev": 10.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Steven Hauschka",
+  "pos": "K",
+  "team": "JAX",
+  "adp": 167.8,
+  "stdev": 16.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Hunter Renfrow",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 167.9,
+  "stdev": 13.0,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Larry Fitzgerald",
+  "pos": "WR",
+  "team": "ARI",
+  "adp": 168.1,
+  "stdev": 13.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Zane Gonzalez",
+  "pos": "K",
+  "team": "ARI",
+  "adp": 168.7,
+  "stdev": 5.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jake Elliott",
+  "pos": "K",
+  "team": "PHI",
+  "adp": 170.0,
+  "stdev": 11.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Ka'imi Fairbairn",
+  "pos": "K",
+  "team": "HOU",
+  "adp": 170.5,
+  "stdev": 7.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Tyrell Williams",
+  "pos": "WR",
+  "team": "LV",
+  "adp": 171.6,
+  "stdev": 9.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Brandon McManus",
+  "pos": "K",
+  "team": "DEN",
+  "adp": 171.7,
+  "stdev": 15.7,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Matt Gay",
+  "pos": "K",
+  "team": "LAR",
+  "adp": 172.5,
+  "stdev": 5.8,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Dan Bailey",
+  "pos": "K",
+  "team": "MIN",
+  "adp": 173.1,
+  "stdev": 4.6,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Mason Crosby",
+  "pos": "K",
+  "team": "GB",
+  "adp": 173.9,
+  "stdev": 6.1,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Jason Myers",
+  "pos": "K",
+  "team": "SEA",
+  "adp": 174.2,
+  "stdev": 4.2,
+  "source": "ffc-standard"
+ },
+ {
+  "name": "Chris Boswell",
+  "pos": "K",
+  "team": "PIT",
+  "adp": 175.0,
+  "stdev": 4.7,
+  "source": "ffc-standard"
+ }
+]

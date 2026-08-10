@@ -203,11 +203,10 @@ body.dragging { cursor: col-resize; user-select: none; }
 
 td.rank-override { color: var(--accent); font-weight: 600; }
 
-/* The backup directly behind a player you already roster — the handcuff you
-   went looking for. Marked, not colored-over, so it reads at a glance
-   without competing with the position colors elsewhere. */
-#player-table td.pos-cell.is-handcuff { color: var(--accent); font-weight: 600; }
-.hc-mark { margin-left: 0.25em; font-size: 0.85em; opacity: 0.9; }
+/* The backup behind a running back you already roster. The position cell
+   keeps a quiet emphasis; the row highlight below is what actually finds
+   it while you scan. */
+#player-table td.pos-cell.is-handcuff { color: var(--green); font-weight: 600; }
 
 tr.picked td { opacity: 0.45; text-decoration: line-through; }
 tr.picked td.row-actions { text-decoration: none; }
@@ -366,6 +365,25 @@ tr.next-pick-marker.on-clock td {
 #player-table tbody tr.pred-gone td:first-child { box-shadow: inset 3px 0 0 var(--orange); }
 #player-table tbody tr.pred-gone:hover { background: rgba(217, 135, 60, 0.18); }
 #player-table tbody tr.pred-gone.selected { background: #2c3a58; }
+
+/* The handcuff to a running back you already own.
+   This gets a row treatment when findings marks deliberately do not,
+   because it is not a model opinion — it is a fact about your own
+   roster, so it belongs with the ★ "on your team" flag rather than with
+   buy/fade. Green: orange already means "about to be gone" and blue
+   means "selected". A row can be all three, so the orange background
+   still wins (it is the deadline) while the green bar keeps the first
+   cell — if he is your handcuff AND about to disappear, both are the
+   point. Rare by construction: at most one row per back you roster. */
+#player-table tbody tr.handcuff { background: rgba(63, 185, 80, 0.10); }
+#player-table tbody tr.handcuff:hover { background: rgba(63, 185, 80, 0.18); }
+#player-table tbody tr.handcuff td:first-child {
+  box-shadow: inset 3px 0 0 var(--green);
+}
+#player-table tbody tr.handcuff.pred-gone { background: rgba(217, 135, 60, 0.10); }
+#player-table tbody tr.handcuff.pred-gone:hover { background: rgba(217, 135, 60, 0.18); }
+#player-table tbody tr.handcuff.selected,
+#player-table tbody tr.handcuff.pred-gone.selected { background: #2c3a58; }
 
 #tabbed-panel {
   flex: 3;

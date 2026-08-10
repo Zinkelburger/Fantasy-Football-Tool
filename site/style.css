@@ -116,11 +116,66 @@ html, body {
 [data-copy] > :last-child { margin-bottom: 0; }
 .blurb[data-copy] > p + p { margin-bottom: 0.4rem; }
 
-/* -------------------------------------------------------------- home */
-.hero { padding: 2.6rem 0 1.8rem; max-width: 46rem; }
-.hero h1 { font-size: 2.1rem; margin: 0 0 0.6rem; letter-spacing: -0.01em; }
-.tagline { color: var(--fg-dim); font-size: 1.06rem; margin: 0 0 1.2rem; }
-.hero-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+/* ----------------------------------------------------- section tabs
+   The tab row for "Rankings & research". Sits under the header, scrolls
+   sideways on a phone rather than wrapping into two ragged rows. */
+.section-tabs {
+  display: flex;
+  gap: 0.15rem;
+  margin: -0.4rem 0 1.4rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-tabs::-webkit-scrollbar { display: none; }
+.section-tabs a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.section-tabs a:hover { color: var(--fg); }
+.section-tabs a.active {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------- home
+   A page that is nothing but prose, so it gets a single centred reading
+   column rather than #main's full 68rem — text set flush left against a
+   third of a screen of empty space reads as a layout accident. */
+#view-home { max-width: 46rem; margin: 0 auto; }
+.hero { padding: 2.2rem 0 0.6rem; max-width: 46rem; }
+.hero h1 { font-size: 2.1rem; margin: 0 0 0.8rem; letter-spacing: -0.01em; }
+
+/* Body copy that carries the page rather than decorating it: wider
+   measure than .blurb, and full-strength text, because this is what a
+   first-time reader is here to read. */
+.lede { max-width: 44rem; }
+.lede p { margin: 0 0 0.8rem; }
+.lede > :last-child { margin-bottom: 0; }
+.lede ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+.lede li { margin-bottom: 0.4rem; color: var(--fg-dim); }
+.lede li strong { color: var(--fg); }
+
+#view-home h2 {
+  font-size: 1.15rem;
+  margin: 2.2rem 0 0.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  max-width: 44rem;
+}
+
+.feature { max-width: 44rem; margin-top: 1.5rem; }
+.feature h3 { margin: 0 0 0.35rem; font-size: 1.04rem; }
+.feature h3 a { text-decoration: none; }
+.feature h3 a:hover { text-decoration: underline; }
+.feature p { margin: 0 0 0.7rem; color: var(--fg-dim); }
+.feature > div > :last-child { margin-bottom: 0; }
 
 .btn {
   display: inline-block;
@@ -172,18 +227,6 @@ html, body {
 .pill-research { background: #46333c; color: #f0a9c4; }
 .pill-draft    { background: #4a3a22; color: #ffce7a; }
 
-.strip {
-  margin-top: 1.6rem;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--yellow);
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
-  color: var(--fg-dim);
-  font-size: 0.93rem;
-}
-.strip b, .strip i { color: var(--fg); }
-
 /* -------------------------------------------------------------- tabs */
 .tabs { display: flex; gap: 0.4rem; margin: 0.8rem 0 1rem; flex-wrap: wrap; }
 .tab {
@@ -199,31 +242,6 @@ html, body {
 .tab:hover { color: var(--fg); background: var(--bg-hover); }
 .tab.active { color: #fff; border-color: transparent; background: var(--accent); }
 
-/* board: top-level switch between the four tables. Underlined rather
-   than pills so it doesn't read as a peer of the scoring/position
-   pills nested inside the players pane. */
-.section-tabs {
-  gap: 0.1rem;
-  margin: 1.2rem 0 0;
-  border-bottom: 1px solid var(--border);
-}
-.section-tabs .tab {
-  background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.98rem;
-  margin-bottom: -1px;
-}
-.section-tabs .tab:hover { background: var(--bg-hover); color: var(--fg); }
-.section-tabs .tab.active {
-  background: none;
-  color: var(--fg);
-  font-weight: 600;
-  border-bottom-color: var(--accent);
-}
-
 /* scoring-format switch above the position tabs */
 .scoring { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; }
 .scoring .tabs { margin: 0; }
@@ -237,7 +255,6 @@ html, body {
 
 /* ------------------------------------------------------------ tables */
 .tbl { overflow-x: auto; }
-.tbl.half { max-width: 34rem; }
 table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
 th, td { text-align: left; padding: 0.42rem 0.7rem; white-space: nowrap; }
 thead th {
@@ -337,6 +354,82 @@ tr.is-taken td.mark-cell { opacity: 1; }
   max-width: 44rem;
 }
 
+/* The prose views get a centred reading column. The table views (board,
+   weekly) keep #main's full width, because their tables want it. */
+#view-plan, #view-models, #view-blog, #view-post { max-width: 46rem; margin: 0 auto; }
+
+/* -------------------------------------------------------- draft plan
+   Each rule is a headline plus a body. The headline is a real heading
+   rather than a bolded first sentence, which is what it used to be —
+   the emphasis is then structural and can't drift from rule to rule. */
+.plan-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0.4rem;
+  cursor: pointer;
+}
+.plan-filter input { accent-color: var(--accent); cursor: pointer; }
+
+#plan-fmt-note { max-width: 44rem; margin: 0.7rem 0 0; }
+
+.plan-band { margin-top: 2.2rem; }
+.plan-band-title {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--fg-dim);
+  margin: 0 0 0.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  max-width: 46rem;
+}
+
+.plan-rule { max-width: 46rem; padding: 1.1rem 0 0.2rem; }
+.plan-rule + .plan-rule { border-top: 1px solid var(--bg-hover); }
+.plan-rule h4 {
+  margin: 0 0 0.45rem;
+  font-size: 1.03rem;
+  line-height: 1.4;
+}
+.plan-body p { margin: 0 0 0.7rem; color: var(--fg-dim); }
+.plan-body > :last-child { margin-bottom: 0; }
+.plan-body strong { color: var(--fg); }
+
+.plan-flag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pos-te);
+  border: 1px solid var(--pos-te);
+  border-radius: 99px;
+  padding: 0.03rem 0.5rem;
+  margin-left: 0.5rem;
+  vertical-align: 0.14em;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.plan-why {
+  margin: 0.6rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.plan-why a {
+  font-size: 0.82rem;
+  color: var(--fg-dim);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.12rem 0.5rem;
+}
+.plan-why a:hover { color: var(--fg); border-color: var(--accent); }
+
 /* ----------------------------------------- board cheat-sheet rules */
 .cheat {
   list-style: none;
@@ -357,7 +450,28 @@ tr.is-taken td.mark-cell { opacity: 1; }
 }
 .cheat b { color: var(--fg); }
 .cheat .tag { margin-left: 0; }
-#view-board .tab-pane > .blurb { margin-top: 1rem; }
+/* The kicker and defense lists, side by side; stacked on a phone. The
+   subgrid rows keep the two headings, the two blurbs and the two
+   tables level with each other even when one blurb wraps longer. */
+.board-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 1.6rem;
+  align-items: start;
+  margin-top: 1.4rem;
+}
+.board-cols > section {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+}
+.board-cols h3 { margin: 0; font-size: 1.02rem; }
+.board-cols .blurb { margin: 0.3rem 0 0.7rem; align-self: start; }
+@media (max-width: 760px) {
+  .board-cols { grid-template-columns: 1fr; row-gap: 1.8rem; }
+  .board-cols > section { grid-row: auto; grid-template-rows: none; }
+}
 
 /* ---------------------- per-player click-note (numbers + findings) */
 #board-table tbody tr[data-search] { cursor: pointer; }

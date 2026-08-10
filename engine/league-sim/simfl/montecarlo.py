@@ -11,14 +11,19 @@ from .pool import build_pool
 from .season import run_season
 from .strategies import make
 
-_POOL_CACHE: dict[int, tuple] = {}
+_POOL_CACHE: dict[tuple, tuple] = {}
 
 
-def get_pool(year: int, sc: ScoringConfig = DEFAULT_SCORING):
-    if year not in _POOL_CACHE:
-        pool = build_pool(year, sc)
-        _POOL_CACHE[year] = (pool, ProjectionTable(pool))
-    return _POOL_CACHE[year]
+def get_pool(year: int, sc: ScoringConfig = DEFAULT_SCORING,
+             adp_fmt: str | None = None):
+    """Cached (pool, projection table). The scoring config is part of the
+    key: it used to be year-only, which silently handed a second format
+    the first one's standard-scored player weeks."""
+    key = (year, sc, adp_fmt)
+    if key not in _POOL_CACHE:
+        pool = build_pool(year, sc, adp_fmt)
+        _POOL_CACHE[key] = (pool, ProjectionTable(pool))
+    return _POOL_CACHE[key]
 
 
 @dataclass
@@ -78,13 +83,14 @@ def hero_experiment(year: int, hero: str, n_sims: int = 100, seed: int = 0,
                     league: LeagueConfig = DEFAULT_LEAGUE,
                     sc: ScoringConfig = DEFAULT_SCORING,
                     hero_kwargs: dict | None = None,
-                    villain: str = "family") -> HeroStats:
+                    villain: str = "family",
+                    adp_fmt: str | None = None) -> HeroStats:
     """Hero vs 11 villain bots (default: the calibrated family room);
     hero rotates seats so draft-slot luck averages out. Same seed
     sequence for every hero -> common random numbers across strategy
     comparisons within a room. villain="bpa" gives a theoretical sharp
     room: no draft noise, hero-grade waivers."""
-    pool, table = get_pool(year, sc)
+    pool, table = get_pool(year, sc, adp_fmt)
     stats = HeroStats(year=year, strategy=hero)
     for i in range(n_sims):
         rng = random.Random((seed, year, i).__hash__() & 0x7FFFFFFF)

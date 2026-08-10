@@ -52,7 +52,10 @@ def inline(s):
     # rule and render as a stray "!" in front of an anchor
     s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)",
                r'<img src="\2" alt="\1" loading="lazy">', s)
-    s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+    # Non-greedy rather than [^*]+: a bold span may contain an italic
+    # one ("**The opening *is* the plan.**"), and forbidding every inner
+    # asterisk left those printed raw.
+    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<!\*)\*([^*\s][^*]*)\*(?!\*)", r"<em>\1</em>", s)
     # a link into our own SPA (#/blog/…) must not open a new tab; only
     # links that leave the site get target="_blank"
@@ -63,12 +66,23 @@ def inline(s):
 
 
 def md2html(md):
-    out, para, table, ul, ol, code = [], [], [], False, False, False
+    out, para, table, item, ul, ol, code = [], [], [], [], False, False, False
 
     def flush_para():
         if para:
             out.append("<p>" + inline(" ".join(para)) + "</p>")
             para.clear()
+
+    # A bullet is buffered whole and marked up once, the same way a
+    # paragraph is. Marking up each line as it arrived meant any span
+    # that wrapped — "**Never reach for a tight end, and never shop for
+    # one in rounds 5 to / 9.**" — had its opener and its closer on
+    # different lines, so neither matched and both asterisks were
+    # printed at the reader.
+    def flush_item():
+        if item:
+            out.append("<li>" + inline(" ".join(item)) + "</li>")
+            item.clear()
 
     def flush_table():
         if not table:
@@ -91,6 +105,7 @@ def md2html(md):
 
     def close_lists():
         nonlocal ul, ol
+        flush_item()
         if ul:
             out.append("</ul>"); ul = False
         if ol:
@@ -134,28 +149,28 @@ def md2html(md):
             continue
         m = re.match(r"^[-*]\s+(.*)", line)
         if m:
-            flush_para()
+            flush_para(); flush_item()
             if not ul:
                 if ol:
                     out.append("</ol>"); ol = False
                 out.append("<ul>"); ul = True
-            out.append(f"<li>{inline(m.group(1))}</li>")
+            item.append(m.group(1))
             continue
         m = re.match(r"^\d+\.\s+(.*)", line)
         if m:
-            flush_para()
+            flush_para(); flush_item()
             if not ol:
                 if ul:
                     out.append("</ul>"); ul = False
                 out.append("<ol>"); ol = True
-            out.append(f"<li>{inline(m.group(1))}</li>")
+            item.append(m.group(1))
             continue
         if not line.strip():
             flush_para(); close_lists()
             continue
-        if (ul or ol) and out and out[-1].endswith("</li>"):
+        if item:
             # a wrapped bullet continues on the next line
-            out[-1] = f"{out[-1][:-5]} {inline(line.strip())}</li>"
+            item.append(line.strip())
             continue
         para.append(line.strip())
     flush_para(); flush_table(); close_lists()
@@ -569,6 +584,75 @@ def build_blog():
     return posts
 
 
+FORMATS = ("std", "half", "ppr")
+_SECT = re.compile(r"^##\s+([a-z0-9-]+)\s*\|\s*(.+)$")
+_RULE = re.compile(r"^###\s+([a-z0-9-]+)\s*\|\s*(.+)$")
+_BODY = re.compile(r"^@(all|std|half|ppr)\s*$")
+_WHY = re.compile(r"^@why\s+(.+)$")
+
+
+def build_plan():
+    """site/plan.md — the draft plan, as rules rather than as one page
+    of prose, so the same rule can say different things in different
+    scoring formats.
+
+    A rule's headline is a field, not markdown. The old cheat sheet
+    hand-bolded each rule's lead sentence, which drifted (some rules
+    bolded a claim, some bolded a whole paragraph) and silently failed
+    wherever the bold ran across a line break. Structure fixes both.
+    """
+    sections, sect, rule, slot = [], None, None, None
+    buf: dict[str, list[str]] = {}
+
+    def close_rule():
+        nonlocal rule
+        if rule is None:
+            return
+        own = {f: "\n".join(buf.get(f, [])).strip() for f in FORMATS}
+        shared = "\n".join(buf.get("all", [])).strip()
+        # A rule that says something different in some format is flagged,
+        # so a reader can filter the page down to just those.
+        rule["changes"] = any(own.values())
+        # Each format's body is rendered whole at build time; the page
+        # swaps finished blocks rather than reassembling markdown.
+        rule["html"] = {
+            f: glossarize(md2html(shared + ("\n\n" + own[f] if own[f] else "")))
+            for f in FORMATS
+        }
+        sect["rules"].append(rule)
+        rule = None
+
+    for raw in (SITE / "plan.md").read_text().splitlines():
+        line = raw.rstrip()
+        if m := _SECT.match(line):
+            close_rule()
+            sect = {"id": m.group(1), "title": m.group(2), "rules": []}
+            sections.append(sect)
+            slot = None
+        elif m := _RULE.match(line):
+            close_rule()
+            rule = {"id": m.group(1), "title": m.group(2), "why": []}
+            buf, slot = {}, None
+        elif m := _BODY.match(line):
+            slot = m.group(1)
+            buf.setdefault(slot, [])
+        elif m := _WHY.match(line):
+            if rule is not None:
+                rule["why"] = [s.strip() for s in m.group(1).split(",")
+                               if s.strip()]
+            slot = None
+        elif slot and rule is not None:
+            buf[slot].append(line)
+    close_rule()
+
+    missing = [w for s in sections for r in s["rules"] for w in r["why"]
+               if not (POSTS / f"{w}.md").exists()]
+    if missing:
+        raise SystemExit(f"plan.md links to findings that don't exist: "
+                         f"{', '.join(sorted(set(missing)))}")
+    return {"sections": sections}
+
+
 def build_cheatsheet():
     """site/cheatsheet.md — the findings distilled to one page of
     draft-night rules, every rule linking to its finding."""
@@ -651,6 +735,7 @@ def main():
                        ("weekly", build_weekly()), ("blog", build_blog()),
                        ("ingame", build_ingame()),
                        ("cheatsheet", build_cheatsheet()),
+                       ("plan", build_plan()),
                        ("copy", build_copy())):
         (out / f"{name}.json").write_text(json.dumps(data))
         print(f"data/{name}.json written")

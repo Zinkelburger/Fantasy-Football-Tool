@@ -35,110 +35,178 @@ Source on GitHub
 Draft assistant
 
 
-# nav.home
-Home
+# nav.guide
+Rankings & research
 
 # nav.live
 My league
-
-# nav.weekly
-Weekly
-
-# nav.board
-Draft K/DST
-
-# nav.blog
-Research
-
-# nav.models
-Models
-
-# nav.cheat
-Cheat sheet
 
 # nav.draft
 Draft tool
 
 
+# tab.plan
+Draft plan
+
+# tab.board
+Kickers & defenses
+
+# tab.weekly
+This week
+
+# tab.blog
+Findings
+
+# tab.models
+How the models work
+
+
 # home.title
 Fantasy football advice you can check
 
-# home.tagline
-Every claim on this site was tested against eight seasons of real
-results before we published it. The code, the data and the methods are
-public, including the ideas that turned out to be wrong.
+# home.lede
+Most fantasy advice is somebody's opinion, and you have no way to tell
+a good one from a confident one. This site is the other thing: we
+tested the popular advice, wrote down what happened, and published the
+code and the data so you can check us.
 
-# home.btn.cheat
-The draft plan on one page
+Some of it confirmed what everyone says. Some of it didn't. And when we
+built our own player rankings and they turned out to be worse than
+simply following the draft order, we published that too — and the
+advice below tells you to follow the draft order.
 
-# home.btn.blog
-Read the research
+The rules change depending on whether your league gives points for
+catches, so the draft plan asks you which one you play before it says
+anything.
 
-# home.btn.draft
-Open the draft tool
+# home.whats-here
+What's on here
 
-# home.pill.board
-Draft
+# home.f.plan.title
+The draft plan
 
-# home.pill.weekly
-Weekly
+# home.f.plan.body
+Everything worth doing on draft night, in the order the rounds come at
+you: who to take early, when to take a quarterback, what to do about
+tight end, and which popular ideas to ignore. Pick standard, half PPR
+or full PPR at the top and the plan changes with it — about a third of
+the rules do.
 
-# home.pill.blog
-Research
+Every rule links to the write-up behind it, so you can check any of it
+rather than taking our word.
 
-# home.pill.draft
-Live
+# home.f.kdst.title
+Kicker and defense rankings
 
-# home.card.board.title
-Kickers and defenses
+# home.f.kdst.body
+These are the only two positions where a model clearly beats the draft
+order, because their points come from the schedule rather than from the
+player. A kicker's own past statistics tell you almost nothing about
+his next season; how many points his offense is expected to score tells
+you most of it.
 
-# home.card.board.body
-Rankings for the last two picks of your draft. Kickers are ranked by
-how many points their own offense is expected to score. Defenses are
-ranked by how many points their opponents are expected to score.
+So there are two lists: one for the last two picks of your draft, and a
+fresh one every week for who to start. These are the same in every
+scoring format — catches don't score for kickers or defenses.
 
-# home.card.board.stat
-2026 lists are ready
+# home.f.research.title
+The findings
 
-# home.card.weekly.title
-Defense and kicker, week by week
+# home.f.research.body
+{{posts}} write-ups, each one a question we could answer with data and
+did. Does Zero RB work? Do hot streaks carry over? Are some players
+actually injury-prone? Is a tight end worth an early pick?
 
-# home.card.weekly.body
-Which defense and which kicker to start each week, ranked the same way
-as the draft lists. Rankings for quarterbacks, running backs, receivers
-and tight ends start in September.
+Each one says how sure we are in plain words, shows the numbers behind
+it, and says what would have to be true for it to be wrong.
 
-# home.card.weekly.stat
-Defense and kicker are live
+# home.f.league.title
+My league
 
-# home.card.blog.title
-What we tested, and what we found
+# home.f.league.body
+Connect an ESPN or Sleeper league and see your live matchup odds during
+the games, whether the lineup you set is the best one your roster
+allows, which free agents would actually improve it, and how much of
+your record has been luck.
 
-# home.card.blog.body
-{{posts}} short write-ups on what wins fantasy leagues: what works,
-what doesn't, and which popular stats turn out to be noise. Each one
-shows its data and says how confident we are.
+It reads your league and nothing else. There is no account and no
+server — the league you pick stays in your browser.
 
-# home.card.blog.stat
-{{posts}} write-ups
+# home.f.tool.title
+Draft tool
 
-# home.card.draft.title
-Draft assistant
+# home.f.tool.body
+Open this during a live draft. It follows your ESPN or Sleeper draft
+pick by pick, keeps track of who is gone, and tells you who is worth
+taking next given what your roster still needs and how long the players
+you want are likely to last.
 
-# home.card.draft.body
-A draft board for draft night. It reads picks from your ESPN or
-Sleeper draft room as they happen, marks players who are going later
-than they should, and suggests who to take next.
+# home.how.title
+How to read anything on this site
 
-# home.card.draft.stat
-Opens full screen
+# home.how.body
+- **Every claim links to its write-up.** If a rule doesn't say where it
+  came from, we shouldn't have written it.
+- **Every write-up says how sure we are**, in words rather than
+  jargon, and says plainly which part of it is the shakiest.
+- **We say when we were wrong.** Several write-ups correct earlier
+  versions of themselves; those corrections are left in.
+- **All of it is public** — the code, the data and the dead ends.
 
-# home.strip
-**We publish the tests that failed.** About a third of the write-ups
-are ideas that didn't hold up, including receiver-versus-cornerback
-matchups, "injury-prone" labels, and team ratings. They go up in full,
-the same as the ones that worked. That is how you can tell the results
-that did hold up are real.
+
+# plan.title
+The draft plan
+
+# plan.intro
+Everything we have tested, reduced to what you actually do on draft
+night. Every rule links to the write-up behind it, where you can read
+the data and how sure we are.
+
+Pick your league's scoring first. Whether a catch is worth nothing,
+half a point or a full point changes what the good advice is — not for
+every rule, but for enough of them to matter.
+
+# plan.scoring.label
+Scoring
+
+# fmt.std
+Standard
+
+# fmt.half
+Half PPR
+
+# fmt.ppr
+Full PPR
+
+# plan.note.std
+Standard scoring: no points for catches. This is the format all of our
+simulations were run in, so these are the numbers we know best.
+
+# plan.note.half
+Half PPR: half a point per catch. The most common setting on ESPN and
+Sleeper, and usually your app's default even when your league isn't
+set that way.
+
+# plan.note.ppr
+Full PPR: one point per catch. Receivers and pass-catching running
+backs are worth more here than anywhere else, and tight end is the
+position that moves the most.
+
+# plan.changed-only
+Show only the {n} rules that change with scoring
+
+# plan.changes
+changes with scoring
+
+# plan.changes.tip
+This rule says something different depending on whether your league
+pays for catches.
+
+# plan.why.tip
+The write-up this rule comes from.
+
+# plan.none-changed
+Nothing on this page changes in this format.
 
 
 # weekly.title
@@ -217,28 +285,25 @@ from this season, and not before.
 2026 draft: kickers and defenses
 
 # board.subtitle
-The only two positions where a model beats the draft board.
+The only two positions worth ranking.
 [See the models](#/models)
 
 # board.blurb
-For quarterbacks, running backs, receivers and tight ends, draft in
-your platform's ADP order and don't reach. In 9,000 simulated leagues,
-drafting that way won titles 2.5 times as often as an average drafter,
-and it beat every custom ranking we could build, including our own.
+Draft everyone else in the order your app already lists them, and
+don't reach. In 9,000 practice drafts that won 2.5 times as many
+titles as an average drafter, and it beat every ranking we built,
+including our own.
 
-Kickers and defenses are different. Their points come from the offense
-and the schedule rather than from the player, and a model reads those
-better than a draft board does. The two lists below are those rankings.
+Kickers and defenses are the exception. Their points come from their
+team's offense and their schedule, not from the player, and a model
+predicts those better than the draft order does.
 [Finding 32](#/blog/32-draft-sim)
 
-# board.tab.k
+# board.k.title
 Kickers
 
-# board.tab.dst
+# board.dst.title
 Defenses
-
-# board.tabs.label
-Which table to show
 
 # board.k.blurb
 Take a kicker with one of your last two picks, off this list. A
@@ -705,6 +770,3 @@ This page didn't load. Check your connection, then try again.
 
 # error.generic
 We couldn't load that: {error}
-
-# footer.credit
-Built on public data. Every write-up credits its sources.

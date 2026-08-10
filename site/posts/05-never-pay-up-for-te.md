@@ -44,8 +44,7 @@ it's why the advice is "round 10," not "never draft one."
 We've paid the premium ourselves. Kincaid at pick 91 in 2024 finished
 as the TE27. LaPorta at pick 62 in 2025 finished TE24. Two premium
 prices, two scrub outcomes — while Jonnu Smith and Goedert, who cost
-nearly nothing, both outscored them by 50-plus points. (More of our
-own draft grades in [the audit](#/blog/11-methuen-jackels-audit).)
+nearly nothing, both outscored them by 50-plus points.
 
 ## Why the middle of the position is worthless
 

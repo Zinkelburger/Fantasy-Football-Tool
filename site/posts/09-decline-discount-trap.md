@@ -1,6 +1,21 @@
 # 09 — The bounce-back discount receiver is usually a trap
 
-**Confidence: Medium** (only 17 players fit the profile, but the pattern held in every slice we cut)
+**Confidence: Low — retracted.** We could not reproduce this. See the
+correction.
+
+> **Corrected 6 August 2026.** Seventeen players was never enough to
+> say "usually a trap", and it turns out it wasn't one. Widening to
+> ten drafts and every price brings the group to 44 receivers, and the
+> penalty vanishes: measured against receivers who cost the same pick,
+> the bounce-back buy comes out **+2 points of top-24 rate, give or
+> take about 13.** No price band shows a trap either — the middle
+> rounds this post was built from land at −7 points with a range from
+> −30 to +20, which is another way of saying we don't know.
+>
+> "A cheap price on a former star means the market knows something"
+> was the intuition. Over ten years the market just priced him
+> right: he does about as well as what he costs, no better and no
+> worse. Read the rest of this post as the case we thought we had.
 
 ## TL;DR
 
@@ -52,9 +67,7 @@ seasons get added — that's why this is Medium confidence, not High.
 And the few who did bounce back (Diggs, Keenan Allen, Higgins) share
 a tell: they kept a big share of their team's targets even during the
 down year. Volume surviving the collapse may be the real signal, and
-it's the first thing we'll test when next season's data lands. We've
-paid this tax ourselves, twice — see
-[the audit of our own drafts](#/blog/11-methuen-jackels-audit).
+it's the first thing we'll test when next season's data lands.
 
 ## The 2025 scorecard
 

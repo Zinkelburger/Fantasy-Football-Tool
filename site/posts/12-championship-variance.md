@@ -16,9 +16,8 @@ dominant roster only tilts those flips.
 loss in the final to the Bombers, who had the #3 draft haul. 2025:
 11-3, most points again, #1 seed again — and a loss in the final to
 the Bullies, who went 7-6 in the regular season and had the
-seventh-best draft. The league's two best drafting seasons
-([we checked](#/blog/11-methuen-jackels-audit)) produced two silver
-medals.
+seventh-best draft. The league's two best drafting seasons produced
+two silver medals.
 
 ## The math of a short bracket
 
