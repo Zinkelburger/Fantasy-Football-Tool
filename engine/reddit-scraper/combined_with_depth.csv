@@ -10,7 +10,7 @@ Jaxon Smith-Njigba,SEA,11,WR3,8.0,WR1,1,JSN
 Ashton Jeanty,LV,13,RB6,9.5,RB1,1,
 De'Von Achane,MIA,6,RB7,10.0,RB1,1,
 Omarion Hampton,LAC,7,RB8,13.0,RB1,1,
-Amon-Ra St. Brown,DET,6,WR4,13.5,WR1,1,Sun God
+Amon-Ra St. Brown,DET,6,WR4,13.5,WR1,1,Sun God|ARSB
 Derrick Henry,BAL,13,RB9,15.0,RB1,1,King Henry
 Saquon Barkley,PHI,10,RB10,15.0,RB1,1,
 CeeDee Lamb,DAL,14,WR5,15.0,WR1,1,
@@ -35,7 +35,7 @@ Lamar Jackson,BAL,13,QB2,33.5,QB1,1,
 Rashee Rice,KC,5,WR12,34.0,WR1,1,
 Malik Nabers,NYG,8,WR13,36.5,WR1,1,
 Bucky Irving,TB,10,RB19,37.0,RB1,1,
-Cam Skattebo,NYG,8,RB20,37.5,RB1,1,
+Cam Skattebo,NYG,8,RB20,37.5,RB1,1,Skat
 Tetairoa McMillan,CAR,5,WR14,41.5,WR1,1,
 Luther Burden,CHI,10,WR15,42.0,WR1,1,
 Garrett Wilson,NYJ,13,WR17,42.5,WR1,1,
@@ -69,14 +69,14 @@ Christian Watson,GB,11,WR29,68.0,WR1,1,
 Rico Dowdle,PIT,9,RB29,69.0,RB2,2,
 Jalen Hurts,PHI,10,QB6,69.5,QB1,1,
 Tony Pollard,TEN,9,RB30,70.0,RB1,1,
-Kyle Monangai,CHI,10,RB31,73.0,RB2,2,
+Kyle Monangai,CHI,10,RB31,73.0,RB2,2,Monan
 Carnell Tate,TEN,9,WR30,73.5,WR1,1,
 Kyle Pitts,ATL,11,TE6,74.5,TE1,1,
 Michael Wilson,ARI,14,WR31,76.5,WR1,1,
-Brian Thomas,JAC,7,WR32,77.0,WR1,1,
+Brian Thomas,JAC,7,WR32,77.0,WR1,1,BTJ
 Courtland Sutton,DEN,10,WR33,78.0,WR2,2,
 Tucker Kraft,GB,11,TE7,79.0,TE1,1,
-Chuba Hubbard,CAR,5,RB32,79.5,RB1,1,
+Chuba Hubbard,CAR,5,RB32,79.5,RB1,1,Chubb
 Jadarian Price,SEA,11,RB33,82.5,RB1,1,
 J.K. Dobbins,DEN,10,RB34,82.5,RB2,2,
 Marvin Harrison,ARI,14,WR34,84.0,WR2,2,MHJ
@@ -87,18 +87,18 @@ Caleb Williams,CHI,10,QB7,87.0,QB1,1,
 Sam LaPorta,DET,6,TE8,87.5,TE1,1,
 Chris Godwin,TB,10,WR37,90.0,WR2,2,
 Justin Herbert,LAC,7,QB8,90.0,QB1,1,
-Trevor Lawrence,JAC,7,QB9,90.5,QB1,1,
+Trevor Lawrence,JAC,7,QB9,90.5,QB1,1,TLaw
 Dak Prescott,DAL,14,QB10,92.0,QB1,1,
 Jakobi Meyers,JAC,7,WR38,92.5,WR2,2,
 Jaxson Dart,NYG,8,QB11,92.5,QB1,1,
-Parker Washington,JAC,7,WR39,93.5,WR3,3,
+Parker Washington,JAC,7,WR39,93.5,WR3,3,PW|P Wash
 Alec Pierce,IND,13,WR40,93.5,WR1,1,
 Makai Lemon,PHI,10,WR41,96.0,WR2,2,
 Kenny Gainwell,TB,10,RB36,96.0,RB2,2,
 Wan'Dale Robinson,TEN,9,WR42,97.0,WR2,2,
 Dalton Kincaid,BUF,7,TE9,103.5,TE1,1,
 Aaron Jones,MIN,6,RB37,104.5,RB1,1,
-Jacory Croskey-Merritt,WAS,7,RB38,106.0,RB1,1,
+Jacory Croskey-Merritt,WAS,7,RB38,106.0,RB1,1,JCM
 Isaiah Likely,NYG,8,TE10,107.5,TE1,1,
 George Kittle,SF,8,TE11,108.5,TE1,1,
 Travis Kelce,KC,5,TE12,109.0,TE1,1,Zeus
@@ -111,14 +111,14 @@ Mark Andrews,BAL,13,TE14,112.0,TE1,1,
 Brock Purdy,SF,8,QB13,112.5,QB1,1,
 Woody Marks,HOU,8,RB40,116.5,RB2,2,
 Tyler Allgeier,ARI,14,RB41,118.0,RB2,2,
-Quentin Johnston,LAC,7,WR45,118.5,WR2,2,
+Quentin Johnston,LAC,7,WR45,118.5,WR2,2,QJ
 Brian Robinson,ATL,11,RB42,119.5,RB2,2,
 Rachaad White,WAS,7,RB43,119.5,RB2,2,
 Matthew Stafford,LAR,11,QB14,119.5,QB1,1,
 Juwan Johnson,NO,8,TE15,119.5,TE1,1,
 Bo Nix,DEN,10,QB15,120.0,QB1,1,
 Dallas Goedert,PHI,10,TE16,120.0,TE1,1,
-Zach Charbonnet,SEA,11,RB44,121.0,RB2,2,
+Zach Charbonnet,SEA,11,RB44,121.0,RB2,2,Charb
 Tyrone Tracy,NYG,8,RB45,123.0,RB2,2,
 Jayden Reed,GB,11,WR46,125.0,WR2,2,
 Hunter Henry,NE,11,TE17,125.5,TE1,1,
@@ -148,7 +148,7 @@ Chig Okonkwo,WAS,7,TE22,150.5,TE1,1,
 Tyler Shough,NO,8,QB19,151.0,QB1,1,
 Seattle Seahawks DST   (11),,,DST3,152.0,DST0,0,
 T.J. Hockenson,MIN,6,TE23,152.0,TE1,1,
-Chris Rodriguez,JAC,7,RB50,152.5,RB2,2,
+Chris Rodriguez,JAC,7,RB50,152.5,RB2,2,CRod
 Malik Willis,MIA,6,QB20,154.0,QB1,1,
 Dylan Sampson,CLE,11,RB51,156.0,RB2,2,
 David Njoku,LAC,7,TE24,156.0,TE2,2,

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ff-reddit": {
+      "command": "/home/anbernal/Projects/Fantasy-Football-Tool/.venv-reddit-scraper/bin/python",
+      "args": ["/home/anbernal/Projects/Fantasy-Football-Tool/engine/reddit-scraper/mcp_server.py"],
+      "cwd": "/home/anbernal/Projects/Fantasy-Football-Tool/engine/reddit-scraper"
+    }
+  }
+}
