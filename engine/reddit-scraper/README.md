@@ -164,6 +164,90 @@ stealing tokens from real ones.
     python resolve_names.py --selftest
     python resolve_names.py --text "Dak, Tlaw, Purdy, Nix, Shough for me."
 
+### How good is the disambiguation, measured (Sept 2026)
+
+Audited blind: 84 confidently-resolved mentions sampled across the 47,613-comment
+corpus, stratified by how the player was reached. The token, its comment and the
+thread title were read *without* the resolver's answer, judged, and compared
+after. **81 of 84 correct — 96%.**
+
+The three misses say more than the number:
+
+| token | resolver | truth |
+|---|---|---|
+| `Chubb` | Chuba Hubbard | Nick Chubb, not in the pool |
+| `Douglas` | Caleb Douglas | Pop Douglas, not in the pool |
+| `Smith` | DeVonta Smith | Jaxon Smith-Njigba ("Jaxson Smith Injigba") |
+
+Two of three are not disambiguation failures at all. They are people outside the
+337-man pool being mapped onto whoever shares their name — the failure the
+thread-first design already anticipates and the reason the index is labelled a
+retrieval aid. **Picking the wrong player from among pool players happened once
+in 84.**
+
+### A misspelling is not a word
+
+The audit turned up one real bug. `fuzzy_alias` gated edit-distance matching on
+capitalization alone, and at the start of a sentence every word is capitalized —
+the same trap the exact-match path already knew about. Over the corpus:
+
+    'Maybe'      -> Drake Maye          336
+    'Browns'     -> Chase Brown         240
+    'Thank'      -> Tank Bigsby         186
+    'Bench'      -> Jack Bech           146   ("Bench:" in every rate-my-team post)
+    'Cleveland'  -> Colston Loveland     51
+    'McDaniels'  -> Jayden Daniels       46
+
+All false, 100% of the time. The fix is one rule: **a misspelling is not an
+English word.** This is the opposite of the call made for exact surname
+matching, where the dictionary was thrown out because it blocked Burrow, Hurts
+and Herbert — and the inversion is the point. An exact hit on "Burrow" is
+evidence; an edit-distance hop from "Maybe" to "Maye" is not.
+
+A dictionary word may still fuzzy-match if the same player is named elsewhere in
+the comment by an alias that did not need fuzzing. That keeps `Kyler Murry`,
+where "Kyler" sits right beside it, and drops "Maybe I'm just biased", where no
+Drake Maye appears anywhere. Misspellings travel with the name they misspell;
+ordinary words do not.
+
+Fuzzy matches went 2,371 -> 1,018 and confident mentions 50,595 -> 48,759 (3.6%),
+nearly all of it junk. Selftest still 22/22, including the `Murry` case. What
+survives is what fuzzy matching is for: `Charbs`, `Skatt`, `Chubba`, `Jamar`,
+`Treyveon`, `Allgier`, `Monongai`, `Ebuka`.
+
+Known residue: `Andy` still reaches Andy Borregales (a kicker, ADP 218) 17 times
+when it means Andy Reid. The abutting-capital rule catches "Andy Reid" and misses
+"Andy loves good RBs". Kickers draw no claims, so it costs nothing downstream.
+
+### Should we go back to requiring full names?
+
+No, and the numbers are not close.
+
+| | share of confident mentions |
+|---|---|
+| surname only | 55% |
+| full name | 23% |
+| first name only | 15% |
+| nickname / initialism | 7% |
+
+Full-name-only keeps 23% of mentions. More to the point, **34% of the claims
+actually stored came from threads where that player was never once named in
+full** — Chase's own "little hyperextension" quote, Saquon's 80% first-team
+snap share, Jaylen Warren's spot on the official depth chart, the entire Tee
+Higgins market read. Requiring full names does not make those claims safer; it
+deletes them.
+
+It also aims at the wrong target. Full names would have fixed all three audit
+misses, but so does reading the thread — and that is already how notes get
+written. Under thread-first the resolver does not assert anything: it says where
+to look, and the model reading the thread says what is true. A wrong index entry
+is visible and costs a moment; a missing one is invisible and costs a fact.
+
+The one place resolver output becomes a fact unread is the nominations tally,
+which is why it is capped at top-level comments, labelled as counting names in a
+nomination slot rather than agreement, and carries upvotes so a reader can see
+what the room actually endorsed.
+
 ## Adjudication (`adjudicate.py`)
 
 Anything with more than one candidate goes to an LLM rather than being settled

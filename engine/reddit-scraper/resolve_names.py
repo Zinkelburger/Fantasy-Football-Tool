@@ -289,19 +289,75 @@ def build_aliases(players):
     # Rhamondre are how people actually write those players; Matt, Adam, Mike
     # and Andy are how they write Matt Nagy, Adam Schefter, Mike McDaniel and
     # Andy Reid. scan() tells them apart by what sits next to the token.
+    # Each player carries the alias keys that reach him, so a fuzzy hit can ask
+    # whether he is also named here by a key that did not need fuzzing.
+    owned = defaultdict(set)
+    for k, ps in aliases.items():
+        for p in ps:
+            owned[id(p)].add(k)
+    for ps in aliases.values():
+        for p in ps:
+            p._alias_keys = owned[id(p)]
     return dict(aliases), cap_required, (first_names - other_names)
 
 
-def fuzzy_alias(token, raw_token, alias_keys, cutoff=0.86):
-    """Catch the misspellings the threads are full of: Mahommes, Murry, Kiddle.
+# Words a fuzzy match must never start from. The system dictionary when it is
+# there, plus a floor list so the resolver behaves the same on a machine
+# without one — resolution quality that varies by host is not worth the extra
+# recall.
+#
+# This is the opposite of the call made for *exact* surname matching, where the
+# dictionary was thrown out because it blocked Burrow, Hurts and Herbert. The
+# calculus inverts for fuzzy: an exact hit on "Burrow" is evidence, while an
+# edit-distance hop from "Maybe" to "Maye" is not. A misspelling is not a word.
+# That single rule is worth ~1,050 false positives per 47k comments.
+_FUZZY_STOP_FLOOR = frozenset("""
+maybe thank bench though christ browns cleveland randy shough tank brown daniels
+thanks thought through their there these those where when what which while
+should would could about above after again against because before being below
+between both during each further having into itself more most other over same
+some such than that then they this under until very were will with your
+""".split())
 
-    Gated on capitalization, not length alone. A misspelled player name is
-    still typed as a name ("Mahommes"), whereas lowercase near-misses are
-    ordinary words — "right" is one edit from Wright, "cook" from Cook."""
+
+def _load_dict_words():
+    for path in ("/usr/share/dict/words", "/usr/dict/words"):
+        try:
+            with open(path, encoding="utf-8", errors="ignore") as fh:
+                return {w.strip().lower() for w in fh
+                        if w.strip() and "'" not in w and len(w.strip()) >= 4}
+        except OSError:
+            continue
+    return set()
+
+
+_DICT_WORDS = _load_dict_words() | _FUZZY_STOP_FLOOR
+
+
+def fuzzy_alias(token, raw_token, alias_keys, cutoff=0.86,
+                corroborated=lambda alias: False):
+    """Catch the misspellings the threads are full of: Mahommes, Kiddle, Charbs.
+
+    Gated on capitalization, and on the token not being an English word.
+    Capitalization alone does not work, because at the start of a sentence
+    every word is capitalized: "Maybe I'm biased" resolved to Drake Maye 336
+    times, "Thank you" to Tank Bigsby 186, "Bench:" in a rate-my-team post to
+    Jack Bech 146, and "to Cleveland lol" to Colston Loveland 51.
+
+    A dictionary word can still match if `corroborated` says the same player is
+    named elsewhere in the comment by an alias that did not need fuzzing. That
+    is what keeps "Kyler Murry" — "Kyler" is sitting right next to it — while
+    dropping "Maybe I'm just biased", where no Drake Maye appears anywhere in
+    the comment. Misspellings travel with the name they misspell; ordinary
+    words do not."""
     if len(token) < 5 or not raw_token[:1].isupper():
         return None
     hit = difflib.get_close_matches(token, alias_keys, n=1, cutoff=cutoff)
-    return hit[0] if hit else None
+    if not hit:
+        return None
+    if token.lower() in _DICT_WORDS and not corroborated(hit[0]):
+        return None
+    return hit[0]
 
 
 # ------------------------------------------------------------------ resolution
@@ -552,7 +608,18 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
                 if gated and not keep_rejected:
                     continue
                 if not cands and n == 1 and fuzzy:
-                    alt = fuzzy_alias(key, words[i], alias_keys)
+                    def _corroborated(alt_key, _cn=comment_norm, _sw=sent_words):
+                        """Is this player already named here without fuzzing?
+
+                        Any other alias of any candidate the fuzzy key points
+                        at, present in the comment as an exact token."""
+                        for p in aliases.get(alt_key) or ():
+                            for a in getattr(p, "_alias_keys", ()) or ():
+                                if a != alt_key and (a in _sw or f" {a} " in f" {_cn} "):
+                                    return True
+                        return False
+                    alt = fuzzy_alias(key, words[i], alias_keys,
+                                      corroborated=_corroborated)
                     if alt:
                         cands, matched_key = aliases.get(alt), alt
                 if not cands:
