@@ -324,8 +324,11 @@ def _load_dict_words():
     for path in ("/usr/share/dict/words", "/usr/dict/words"):
         try:
             with open(path, encoding="utf-8", errors="ignore") as fh:
+                # Floor of 2, not 4: fuzzy matching only ever tests tokens of
+                # 5+, so short entries are inert there, but the surname rule
+                # needs them — "Got Herbert" turns on knowing "got" is a word.
                 return {w.strip().lower() for w in fh
-                        if w.strip() and "'" not in w and len(w.strip()) >= 4}
+                        if w.strip() and "'" not in w and len(w.strip()) >= 2}
         except OSError:
             continue
     return set()
@@ -537,6 +540,49 @@ SENT_SPLIT = re.compile(
     r"(?<!\b[A-Z]\.)(?<!\b(?:St|Jr|Sr|Mr|Dr|vs|No)\.)(?<=[.!?])\s+|\n+")
 
 
+# Tokens that legitimately sit in front of a surname without being a first
+# name. Beat reports are written this way constantly: "Bengals WR Chase",
+# "RB Hubbard (hamstring)", "Coach Campbell".
+_NAME_PREFIX = frozenset("""
+qb rb wr te k dst def ol ot og c dl de dt lb cb s fs ss ils olb edge
+coach hc oc dc gm rookie veteran star former ex sr jr saint
+""".split()) | {t.lower() for words_ in TEAM_WORDS.values() for t in words_.split()} \
+  | {a.lower() for a in TEAM_WORDS}
+
+
+def _preceded_by_other_first_name(words, normed, after_sep, i, aliases):
+    """True if a bare surname at i is preceded by somebody else's first name.
+
+    Longer n-grams match first, so reaching a bare surname at all means the
+    pair in front of it is not a name the pool owns. If that preceding token is
+    a capitalized word that is not a position, a team, or an honorific, the two
+    together are a different person's full name: "Jimmy Smith" is not DeVonta,
+    "Landon Robinson" is not Bijan, "Nick Chubb" is not Chuba Hubbard.
+
+    Sentence-initial position is excluded, because there the capital proves
+    nothing — the same rule the exact-match path already applies to ordinary
+    English words."""
+    if i == 0 or after_sep[i]:
+        return False
+    prev_raw, prev = words[i - 1], normed[i - 1]
+    if not prev_raw[:1].isupper() or not prev:
+        return False
+    if i - 1 == 0 and prev in _DICT_WORDS:
+        # The preceding word opens the sentence, so its capital proves nothing,
+        # and it is an ordinary English word: "Got Herbert in the 8th",
+        # "Assuming Bijan", "Targeting Dak". A sentence-opening token that is
+        # *not* a word is a given name — "Landon Robinson will make the 53" —
+        # and that pair is somebody else.
+        return False
+    if prev in _NAME_PREFIX or prev_raw.isupper():
+        return False              # "WR Chase", "JAX Allen"
+    if prev_raw != prev_raw.rstrip(".,;:!?)]}-–—/\\\"'’"):
+        return False              # punctuation between them: a list, not a name
+    if aliases.get(prev) or aliases.get(f"{prev} {normed[i]}"):
+        return False              # the pool knows it; existing rules handle it
+    return True
+
+
 def _adjacent_to_other_name(words, normed, after_sep, i, aliases, cands):
     """True if words[i] abuts a capitalized token belonging to someone else.
 
@@ -630,6 +676,12 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
                     # the capital is no evidence at all: "Just the waiting
                     # sucks" is not Justice Hill.
                     gated = "sentence-initial capital proves nothing"
+                elif (cands and n == 1 and key not in first_names
+                      and any(key == _key(c.player_name).split()[-1] for c in cands)
+                      and _preceded_by_other_first_name(words, normed, after_sep,
+                                                        i, aliases)):
+                    # A surname wearing somebody else's first name.
+                    gated = "surname preceded by another person's first name"
                 elif (cands and n == 1 and key in NON_PLAYER_FIRSTS
                       and key in first_names
                       and not any(a != key and (a in sent_words

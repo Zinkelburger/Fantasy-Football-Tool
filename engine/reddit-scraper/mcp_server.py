@@ -45,6 +45,8 @@ DOSSIERS = CORPUS / "dossiers"
 # write_note(publish=True) copies a finished note here.
 SHIPPED_NOTES = HERE.parent.parent / "data" / "notes"
 LEASES = CORPUS / "leases.json"
+INDEX_CACHE = CORPUS / "index_cache.json"
+SKIPPED = CORPUS / "skipped.json"
 LEASE_MINUTES = 45
 
 mcp = MCPServer("ff-reddit-scraper", version="1.0.0")
@@ -403,6 +405,18 @@ def _with_lock(fn, retries=60):
     return fn()          # lock never came free; better to race than to hang
 
 
+def _read_skipped():
+    try:
+        return json.loads(SKIPPED.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _done_threads():
+    """Threads that need no more reading: distilled, or read and found empty."""
+    return C.distilled_threads() | set(_read_skipped())
+
+
 def _read_leases():
     try:
         return json.loads(LEASES.read_text(encoding="utf-8"))
@@ -416,20 +430,63 @@ def _live_leases(now=None):
             if now - v.get("ts", 0) < LEASE_MINUTES * 60}
 
 
-def _mention_index():
+def _mention_index(rebuild=False):
     """post id -> Counter of player -> mentions, plus each player's ADP.
 
     Counts, not presence. Whether a thread is *about* a player is a question
     about concentration, and presence cannot answer it: a bust megathread names
-    forty early-round players once each and says nothing about any of them."""
-    by_name = {p.player_name: p for p in pool()[0]}
-    per = defaultdict(Counter)
-    for row, post, m in A.resolved_mentions(pool()):
-        if m.tier in ("review", "ambiguous"):
-            continue
-        per[post.get("id") or row.get("post_id")][m.player.player_name] += 1
-    return {pid: (c, {n: getattr(by_name.get(n), "player_adp", 999) for n in c})
-            for pid, c in per.items()}
+    forty early-round players once each and says nothing about any of them.
+
+    Cached per post, because this is the hot path for the whole fleet. The
+    corpus reached 116k comments and a full resolver pass crossed two minutes —
+    paid again by every worker on every next_threads call. Comments are
+    append-only and a post is fetched whole, so a post already in the cache
+    never needs rescanning; only new posts are resolved.
+
+    The cache is keyed by the alias table's own size so that editing
+    non_players.json or the player pool invalidates it. Registering a coach has
+    to change the counts, or the index would keep recommending threads on the
+    strength of mentions the resolver no longer makes."""
+    players, aliases, keys, cap, defaults, firsts = pool()
+    # The resolver's own source is part of the key: a rule change alters the
+    # counts just as surely as a pool change, and a cache that survived an edit
+    # would keep recommending threads on mentions the resolver no longer makes.
+    src = HERE / "resolve_names.py"
+    stamp = (f"{len(players)}:{len(aliases)}:{len(R.NON_PLAYER_NAMES)}:"
+             f"{int(src.stat().st_mtime) if src.exists() else 0}")
+    cached = {}
+    if not rebuild:
+        try:
+            blob = json.loads(INDEX_CACHE.read_text(encoding="utf-8"))
+            if blob.get("stamp") == stamp:
+                cached = blob.get("posts", {})
+        except (OSError, json.JSONDecodeError):
+            cached = {}
+
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    todo = {pid for pid in posts if pid not in cached}
+    if todo:
+        fresh = defaultdict(Counter)
+        for c in _read_jsonl(COMMENTS):
+            pid = c.get("post_id")
+            if pid not in todo:
+                continue
+            for m in R.scan(c.get("body") or "", aliases, keys,
+                            thread_title=posts[pid].get("title", ""),
+                            cap_required=cap, defaults=defaults, first_names=firsts):
+                if m.tier not in ("review", "ambiguous"):
+                    fresh[pid][m.player.player_name] += 1
+        for pid in todo:
+            cached[pid] = dict(fresh.get(pid, {}))
+        try:
+            INDEX_CACHE.write_text(json.dumps({"stamp": stamp, "posts": cached}),
+                                   encoding="utf-8")
+        except OSError:
+            pass
+
+    by_name = {p.player_name: p for p in players}
+    return {pid: (Counter(c), {n: getattr(by_name.get(n), "player_adp", 999) for n in c})
+            for pid, c in cached.items() if c}
 
 
 def _thread_priority(post, comment_chars, mention_index, explain=False):
@@ -855,6 +912,12 @@ Each claim is one assertion about one player:
                    This field is why whole threads are worth reading:
                    "Rodriguez is the pass-protection back" is misleading
                    without "while LeQuint Allen is out for camp".
+  supersedes       optional — the thread id of an earlier claim this one
+                   overtakes. Use it whenever you are distilling a later
+                   report on the same event: Swift leaving practice, then
+                   Schefter calling it a cramp the next day, is one story
+                   with a direction, and without this field the note reports
+                   two contradictory facts side by side.
 
 Rules that matter:
 
@@ -876,7 +939,9 @@ Rules that matter:
     call report_non_player so the next reader does not have to notice it
     again. That registry is the only part of the resolver that learns.
   - Nothing worth saying about a player means no claim for that player. An
-    empty distillation of a thin thread is a correct answer.
+    empty distillation of a thin thread is a correct answer — give it with
+    release_thread(id, reason), which frees the lease and stops the thread
+    coming back. Never invent a filler claim to have something to submit.
   - A claim is about ONE player. When a thread argues that two players
     cannibalize each other, that is two claims, and the other name belongs in
     conditional_on — each player's note has to stand on its own.
@@ -1101,7 +1166,7 @@ def next_threads(count: int = 1, worker: str = "") -> str:
     index = _mention_index()
 
     def claim():
-        done = C.distilled_threads()
+        done = _done_threads()
         live = _live_leases()
         todo = [p for pid, p in posts.items() if pid not in done and pid not in live]
         todo.sort(key=lambda p: -_thread_priority(p, chars.get(p["id"], 0), index))
@@ -1139,7 +1204,7 @@ def thread_shortlist(count: int = 25, undistilled_only: bool = True) -> str:
     for c in _read_jsonl(COMMENTS):
         chars[c.get("post_id")] += len(c.get("body") or "")
     index = _mention_index()
-    done = C.distilled_threads()
+    done = _done_threads()
     rows = []
     for pid, p in posts.items():
         if undistilled_only and pid in done:
@@ -1155,6 +1220,43 @@ def thread_shortlist(count: int = 25, undistilled_only: bool = True) -> str:
     out.append("")
     out.append("next_threads(n) claims from the top of exactly this list.")
     return "\n".join(out)
+
+
+@mcp.tool()
+def release_thread(post_id: str, reason: str = "") -> str:
+    """Mark a thread read but empty, releasing its lease without storing claims.
+
+    The brief says an empty distillation of a thin thread is a correct answer,
+    and until this existed there was no way to give that answer: submit_claims
+    rejects an empty batch, and only submitting released a lease. A worker who
+    read an offensive-line trade thread and correctly found nothing had to
+    either sit on the lease for 45 minutes or invent a filler claim. The second
+    is what a queue with no skip path quietly trains for.
+
+    Use it when the thread genuinely carries nothing about a draftable player —
+    the index found only name collisions, it is memorabilia or a game thread,
+    or the fantasy content is one passing comparison you would not read back in
+    a draft room. Threads released this way do not come back."""
+    pid = post_id.strip().rstrip("/").rsplit("/", 1)[-1]
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    if pid not in posts:
+        return f"No thread {pid!r} in the corpus."
+    if pid in C.distilled_threads():
+        return f"{pid} already has claims stored; nothing to release."
+
+    def go():
+        skipped = _read_skipped()
+        skipped[pid] = {"reason": reason.strip() or "nothing about a draftable player",
+                        "ts": time.time()}
+        SKIPPED.write_text(json.dumps(skipped, indent=1), encoding="utf-8")
+        leases = _read_leases()
+        leases.pop(pid, None)
+        LEASES.write_text(json.dumps(leases, indent=1), encoding="utf-8")
+        return len(skipped)
+
+    n = _with_lock(go)
+    return (f"released {pid} — {posts[pid].get('title','')[:60]!r}\n"
+            f"recorded as read-and-empty ({n} total); it will not be handed out again.")
 
 
 @mcp.tool()
@@ -1191,6 +1293,7 @@ def report_non_player(name: str, role: str = "", note: str = "") -> str:
     R.NON_PLAYER_NAMES, R.NON_PLAYER_FIRSTS = R.load_non_players()
     global _pool
     _pool = None
+    INDEX_CACHE.unlink(missing_ok=True)
     return (f"registered {name!r}" + (f" ({role})" if role else "")
             + f"; registry now {len(reg)} names. Resolver reloaded.")
 
@@ -1224,7 +1327,7 @@ def claims_stats() -> str:
     if not all_c:
         return "No claims stored yet. Start with distill_thread()."
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
-    done = C.distilled_threads()
+    done = _done_threads()
     todo = [p for i, p in posts.items() if i not in done]
     out = [f"{len(all_c)} claims · {len({c['player'] for c in all_c})} players · "
            f"{len(done)}/{len(posts)} threads distilled", "=" * 74, "",

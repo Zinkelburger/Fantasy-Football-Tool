@@ -80,7 +80,9 @@ suspect during August; re-fetch the morning of a draft.
   (~4 minutes, needs Reddit API creds in `.env`; see `engine/reddit-scraper/README.md`).
 - **Not committed** — Reddit's API terms don't allow republishing scraped
   comments, and this repo is public. Only the generated summaries ship.
-- **Last swept: 2026-09-04** — 285 posts, 47,613 comments, 30-day window, ~5 minutes.
+- **Last swept: 2026-09-04** — 1,392 posts, 116,219 comments. r/fantasyfootball
+  plus DynastyFF, fantasyfootballadvice, Fantasy_Football, and 20 team subreddits
+  (team subs use `require_relevance`, which skipped ~120 off-topic posts each).
 
 ## 5. nflverse / Odds API (engine/league-sim only)
 

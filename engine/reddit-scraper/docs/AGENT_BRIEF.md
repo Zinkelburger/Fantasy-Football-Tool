@@ -53,10 +53,17 @@ conditional_on.
   them rather than counting by hand.
 - conditional_on is the field whole-thread reading buys: "Rodriguez is the
   pass-protection back" is misleading without "while LeQuint Allen is out".
+- supersedes takes the thread id of an earlier claim this one overtakes. Use
+  it on any later report of the same event — a practice exit, then the beat
+  writer calling it a cramp the next day, is one story with a direction.
 - One sentence naming six players is not six copies of one claim. Split it by
   what it actually says about each.
 - Nothing worth saying about a player means no claim for him. An empty
-  distillation of a thin thread is a correct answer.
+  distillation of a thin thread is a correct answer: call
+  S.release_thread("<id>", "why") instead of submit_claims. That frees the
+  lease and retires the thread. Never invent a filler claim to have something
+  to submit — an offensive-line trade where the index found only name
+  collisions is a release, not one weak sentiment claim.
 - People not in the pool get no claims, even when the index mapped them onto
   someone who is.
 
