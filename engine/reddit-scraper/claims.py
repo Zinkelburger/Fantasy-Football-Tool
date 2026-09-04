@@ -39,7 +39,10 @@ CLAIM_TYPES = {
                   "suspension, the commissioner exempt list. The question it answers "
                   "is 'will he be on the field', not 'is he hurt'"),
     "role":      "usage, snap share, depth chart, committee split, scheme fit",
-    "market":    "ADP, where he actually goes, cost relative to ranking",
+    "market":    ("ADP, where he actually goes, cost relative to ranking. Draft "
+                  "cost only — an NFL contract is not a market claim; a holdout "
+                  "that threatens availability is an injury claim, and a "
+                  "contract story that threatens nothing is not a claim at all"),
     "sentiment": "what the community thinks, including bare-name votes",
 }
 

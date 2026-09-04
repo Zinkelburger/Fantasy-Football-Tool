@@ -424,14 +424,21 @@ def _read_leases():
         return {}
 
 
-def _live_leases(now=None):
+def _live_leases(now=None, leases=None, done=None):
+    """Leases still worth honouring: not expired, and not on finished work.
+
+    A lease on a thread that has since been distilled or released is dead
+    whatever its timestamp — an agent that crashed after submitting would
+    otherwise keep the thread out of the queue for the rest of its 45 minutes."""
     now = now or time.time()
-    return {k: v for k, v in _read_leases().items()
-            if now - v.get("ts", 0) < LEASE_MINUTES * 60}
+    done = _done_threads() if done is None else done
+    return {k: v for k, v in (_read_leases() if leases is None else leases).items()
+            if now - v.get("ts", 0) < LEASE_MINUTES * 60 and k not in done}
 
 
 def _mention_index(rebuild=False):
-    """post id -> Counter of player -> mentions, plus each player's ADP.
+    """Returns (index, chars): per post, who is mentioned how often with their
+    ADP, and how many characters of comment text the thread holds.
 
     Counts, not presence. Whether a thread is *about* a player is a question
     about concentration, and presence cannot answer it: a bust megathread names
@@ -452,7 +459,10 @@ def _mention_index(rebuild=False):
     # counts just as surely as a pool change, and a cache that survived an edit
     # would keep recommending threads on mentions the resolver no longer makes.
     src = HERE / "resolve_names.py"
-    stamp = (f"{len(players)}:{len(aliases)}:{len(R.NON_PLAYER_NAMES)}:"
+    # "v2" is the cache layout. Bump it whenever the stored shape changes: a
+    # stale cache in the previous shape reads as every post having no mentions
+    # and no text, which does not error, it just silently ranks everything zero.
+    stamp = (f"v2:{len(players)}:{len(aliases)}:{len(R.NON_PLAYER_NAMES)}:"
              f"{int(src.stat().st_mtime) if src.exists() else 0}")
     cached = {}
     if not rebuild:
@@ -466,18 +476,20 @@ def _mention_index(rebuild=False):
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
     todo = {pid for pid in posts if pid not in cached}
     if todo:
-        fresh = defaultdict(Counter)
+        fresh, size = defaultdict(Counter), Counter()
         for c in _read_jsonl(COMMENTS):
             pid = c.get("post_id")
             if pid not in todo:
                 continue
-            for m in R.scan(c.get("body") or "", aliases, keys,
+            body = c.get("body") or ""
+            size[pid] += len(body)
+            for m in R.scan(body, aliases, keys,
                             thread_title=posts[pid].get("title", ""),
                             cap_required=cap, defaults=defaults, first_names=firsts):
                 if m.tier not in ("review", "ambiguous"):
                     fresh[pid][m.player.player_name] += 1
         for pid in todo:
-            cached[pid] = dict(fresh.get(pid, {}))
+            cached[pid] = {"n": dict(fresh.get(pid, {})), "c": size.get(pid, 0)}
         try:
             INDEX_CACHE.write_text(json.dumps({"stamp": stamp, "posts": cached}),
                                    encoding="utf-8")
@@ -485,8 +497,14 @@ def _mention_index(rebuild=False):
             pass
 
     by_name = {p.player_name: p for p in players}
-    return {pid: (Counter(c), {n: getattr(by_name.get(n), "player_adp", 999) for n in c})
-            for pid, c in cached.items() if c}
+    index, chars = {}, {}
+    for pid, row in cached.items():
+        names = row.get("n") or {}
+        chars[pid] = row.get("c", 0)
+        if names:
+            index[pid] = (Counter(names),
+                          {n: getattr(by_name.get(n), "player_adp", 999) for n in names})
+    return index, chars
 
 
 def _thread_priority(post, comment_chars, mention_index, explain=False):
@@ -1159,23 +1177,21 @@ def next_threads(count: int = 1, worker: str = "") -> str:
     Pass `worker` (any string naming yourself) so a stuck lease can be traced.
     A lease expires on its own; submitting claims for a thread releases it."""
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
-    chars = Counter()
-    for c in _read_jsonl(COMMENTS):
-        chars[c.get("post_id")] += len(c.get("body") or "")
-
-    index = _mention_index()
+    index, chars = _mention_index()
 
     def claim():
         done = _done_threads()
-        live = _live_leases()
+        # Rewrite from the live set, not the stored one: dead leases otherwise
+        # accumulate in the file forever, and a reader cannot tell which of
+        # them still mean anything.
+        live = _live_leases(done=done)
         todo = [p for pid, p in posts.items() if pid not in done and pid not in live]
         todo.sort(key=lambda p: -_thread_priority(p, chars.get(p["id"], 0), index))
         picked = todo[:max(1, min(count, 25))]
-        leases = _read_leases()
         for p in picked:
-            leases[p["id"]] = {"worker": worker or "?", "ts": time.time()}
-        LEASES.write_text(json.dumps(leases, indent=1), encoding="utf-8")
-        return picked, len(todo), len(live)
+            live[p["id"]] = {"worker": worker or "?", "ts": time.time()}
+        LEASES.write_text(json.dumps(live, indent=1), encoding="utf-8")
+        return picked, len(todo), len(live) - len(picked)
 
     picked, remaining, held = _with_lock(claim)
     if not picked:
@@ -1200,10 +1216,7 @@ def thread_shortlist(count: int = 25, undistilled_only: bool = True) -> str:
     can see what the queue thinks is valuable and why before spending agents on
     it. Reasons come from the score itself, not a separate explanation."""
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
-    chars = Counter()
-    for c in _read_jsonl(COMMENTS):
-        chars[c.get("post_id")] += len(c.get("body") or "")
-    index = _mention_index()
+    index, chars = _mention_index()
     done = _done_threads()
     rows = []
     for pid, p in posts.items():

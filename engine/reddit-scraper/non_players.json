@@ -2,6 +2,10 @@
  "Aaron Donald": {
   "role": "retired"
  },
+ "Aaron Wilson": {
+  "note": "Houston beat writer; resolver was pulling Garrett Wilson off the surname",
+  "role": "reporter"
+ },
  "Adam Rank": {
   "role": "analyst"
  },
@@ -142,6 +146,10 @@
  },
  "Darwin Thompson": {
   "role": "retired"
+ },
+ "Dave Canales": {
+  "note": "Panthers head coach quoted in 1w4fy4o",
+  "role": "coach"
  },
  "Davis Mills": {
   "note": "Texans backup QB cited for Nico Collins splits",
@@ -316,6 +324,10 @@
  },
  "Jeff Stoutland": {
   "role": "coach"
+ },
+ "Jeremy Branham": {
+  "note": "Houston radio; pushed the false $70M report",
+  "role": "reporter"
  },
  "Jeremy Fowler": {
   "role": "reporter"
@@ -513,6 +525,10 @@
  "Mike Garafolo": {
   "role": "reporter"
  },
+ "Mike Kaye": {
+  "note": "Panthers beat writer who reported 1w4fy4o",
+  "role": "reporter"
+ },
  "Mike Macdonald": {
   "role": "coach"
  },
@@ -613,6 +629,10 @@
  },
  "Ryan McFadden": {
   "role": "reporter"
+ },
+ "Salvon Ahmed": {
+  "note": "Bears RB waived at 2026 cutdowns",
+  "role": "not in pool"
  },
  "Sam McDowell": {
   "role": "reporter"

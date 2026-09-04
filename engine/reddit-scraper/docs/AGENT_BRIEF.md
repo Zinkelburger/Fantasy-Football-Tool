@@ -38,6 +38,10 @@ conditional_on.
 
 - Record what the thread SAYS, not what you believe. A wrong consensus is
   still a fact about the market.
+- `market` means draft cost, not money. An NFL contract standoff is a
+  `market` claim only in the sense that it is not one: if the holdout
+  threatens availability it is `injury`, and if it threatens nothing it is not
+  a claim. Filing it under market makes it read as ADP to anything downstream.
 - An AMA host, national ranker or podcaster is basis `analyst`. He has no
   access a beat writer has, but the room weights him above one commenter.
 - Strategy is not a claim. "Punt TE", "TE1 to TE12 is four points a week",
