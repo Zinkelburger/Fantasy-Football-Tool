@@ -1,10 +1,9 @@
-**Carson Beck** (ARI, QB, bye 14) — board rank 181
+**Carson Beck** (ARI, QB, bye 14) — board rank 181 · as of 2026-09-04
 
-**Room sentiment:** Bearish, and notable because almost nobody discusses him as a fantasy asset — 13 mentions, nearly all of them citing him as a reason to downgrade *other* Cardinals.
+**Room sentiment:** Discussed as a threat to Arizona's pass catchers rather than as a quarterback anyone wants.
 
-- **The consensus expectation:** Jacoby Brissett starts, and Arizona turns to Beck at some point after the bye "to see what they drafted." That lands the switch squarely in the fantasy playoffs, which is why it keeps coming up.
-- **How it's used against teammates:** as a knock on Jeremiyah Love ("they are probably going to be playing Carson Beck after the bye week"); on Trey McBride ("could nuke McBride's value," and "a bunch of regression concerns... the biggest being we see Gardner Minshew or Carson Beck at QB"); and on the offense overall — "the team will be lucky to score 15 points a game with Carson Beck probably starting in the fantasy playoffs" (score 26).
-- **Blunt takes:** "Carson Beck is trash"; "I'd rather not have to deal with the possibility of Carson Beck at QB."
-- **Lone dissent:** "You all act like Carson Beck can't produce at a level similar to Brissett." No one engaged with it. Sleeper superflex ADP 206.3.
+- Availability: commenters listed him among Arizona's injured with a rib injury (2026-08-17), with no timeline given. Nothing since.
+- Role: named repeatedly as the quarterback who could take the Arizona job from Jacoby Brissett during the season — and cited as the reason some are fading Cardinals pass catchers for the back half of the year.
+- Sentiment: the room does not treat him as Arizona's answer. A reply naming him as the second coming of Brady reads as sarcasm to everyone in the thread.
 
-**Draft take:** Not a QB to draft in a one-QB league. The actionable content here runs the other direction — discount Arizona skill players (Love, McBride, the receivers) for a possible mid-season QB downgrade.
+**Draft take:** Do not draft him; the useful information here is the discount it puts on Arizona receivers for the second half of the season.

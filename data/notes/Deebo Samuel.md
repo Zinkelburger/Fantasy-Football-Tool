@@ -1,10 +1,11 @@
-**Deebo Samuel** (SF, WR, bye 8) — board rank 162
+**Deebo Samuel** (SF, WR, bye 8) — board rank 162 · as of 2026-09-04
 
-**Room sentiment:** High volume (98 mentions) but almost entirely reaction to one transaction, and the tone is skeptical: "Deebo has kinda washed up a bit," "I don't think Deebo is that dude," "Deebo hasn't had the juice for trad wr work for a while."
+**Room sentiment:** a cheap Shanahan utility piece the room repeatedly calls underpriced, against a louder chorus calling him washed.
 
-- The news: a one-year deal worth up to $7M to return to San Francisco, triggered by Ricky Pearsall's season-ending PCL surgery. He turned 30 in January.
-- The role is capped by reporting. 49ers writer David Lombardi says Samuel "won't have the same featured role that he muscled through in his first go-round," calling him a "secondary offense weapon." One analysis grants he "still commands targets."
-- Target order: posters put him fourth or fifth behind Mike Evans, CMC and Kittle. He is also expected to take backfield touches. One projection: "most likely by midseason he'll be the KR and WR3."
-- The bull side is scheme familiarity ("It's Deebo under Shanahan") plus SF's other pass catchers being old, hurt, or unproven. Market: ADP 169.6; 16.05 / 188.5 superflex.
+- Usage, per beat report: David Lombardi (8/11) said he never saw Samuel split the position-drill portion of practice between running backs and wide receivers in his first 49ers stint — and Samuel did exactly that on 8/11, which Lombardi read as a visualisation of a role even more versatile than last time. A commenter's camp aside a week later has him looking good, taking reps at running back, and describes him as the only 49er staying healthy.
+- What that role actually is remains unsettled. As of Sept 3 the room places him as the 49ers' WR2 and cannot agree how: one says he is more an H-back than a slot receiver, another has him starting at Z, another expects the old RB2/screen role. Several expect Shanahan to lean on him early as a trusted veteran, and back in August a commenter expected "a heavy dose of Deebo, CMC and Tonges" while George Kittle is out or limited coming off the Achilles.
+- The upside case is conditional on McCaffrey: if he misses time, commenters expect Shanahan to hand Samuel 5-10 carries a game as a hybrid, which would also eat into whichever backup back takes over. Without that he is a receiver in a run-first offense.
+- One roster-specific edge worth knowing: a commenter says Samuel has kick-return incentives written into his contract and expects him to take return work because of them, projecting near-WR2 numbers in return-yardage scoring, especially early.
+- Market and sentiment: board rank 162, and the room calls that too low for a Swiss-army piece back in a familiar system with good YAC metrics — a bare-name nomination drew 24 upvotes with nobody spelling out why. One commenter expects him to crush for five weeks and then fade, and takes him at ADP anyway. The dominant tone elsewhere is dismissive: "the corpse of Deebo," "washed 2 years ago," "hasn't been good since 2021," plus a Rams rivalry thread whose hostility carries no usage or health detail at all.
 
-**Draft take:** A late-round bet on injury attrition in a good offense, nothing more. If Evans or Kittle misses time he's a usable flex; if everyone's healthy he's a WR3 in a crowded room.
+**Draft take:** worth a late pick as a versatile Shanahan piece with return-yardage equity, and worth moving up your board the moment McCaffrey's status turns.

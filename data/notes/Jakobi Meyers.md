@@ -1,10 +1,10 @@
-**Jakobi Meyers** (JAC, WR, bye 7) — board rank 91
+**Jakobi Meyers** (JAC, WR, bye 7) — board rank 91 · as of 2026-09-04
 
-**Room sentiment:** The real argument is about Jacksonville's pecking order — 51 mentions, most inside a dedicated "BTJ vs. Washington vs. Meyers" thread where he generally lands third.
+**Room sentiment:** Split on how big his share of Jacksonville's passing game is, with the more informed take arguing he is a flex, not a starter.
 
-- Top-voted ordering runs "Washington > BTJ > Jakobi," with one high-scoring line: "anyone who watched the Jaguars last year knows Washington is their best receiver, followed by Jakobi." Even after Meyers arrived, Parker Washington posted a target share over 25%, and over 30% from Week 16 on.
-- Concrete facts cited: he **signed a $60M extension**, read as the team valuing him, and his projected target share is 17% in one of the more distributed passing games in the league (699.5 projected yards). Travis Hunter also siphons snaps.
-- Bull case is price and floor: 10th-11th round (Sleeper 11.02, 122.8), "generally seen as the floor play," and several take him purely as the cheapest ticket to the offense. Hartitz files him Tier 7, "keeping a candle lit."
-- Bear case: "in late rounds, I'm not drafting JAGs like Romeo Doubs or Jakobi Meyers" — his production is replaceable off waivers — plus "a plodder of an athlete," and the risk a four-way split leaves nobody startable.
+- Role: on 2026-09-03 a commenter answered "who eats in Jacksonville — Parker Washington or Brian Thomas?" with Meyers instead, putting him ahead of both in the target order.
+- The counterweight, from 2026-09-02, is a Jaguars fan who actually rosters him: matchup-dependent flex rather than set-and-forget, because Jacksonville has too many mouths to feed and spreads the ball around. Both are single commenters, but the second one is specific about why.
+- Both claims are about the same thing — target share in a crowded room — and they don't reconcile. There is no beat report or coaching claim in the corpus to break the tie, and no injury chatter of any kind.
+- Market: nothing in the corpus argues his board rank is wrong in either direction.
 
-**Draft take:** Deep-league and PPR depth only. If you want Jacksonville exposure at a discount he's the cheap option, but the room's consensus is that Parker Washington is the one to own.
+**Draft take:** Fine at his rank as a WR3/flex, but draft him expecting to bench him in bad matchups — nobody who watches Jacksonville is calling him a weekly starter.

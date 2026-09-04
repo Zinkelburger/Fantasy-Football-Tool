@@ -1,10 +1,8 @@
-**Pat Freiermuth** (PIT, TE, bye 9) — board rank 193
+**Pat Freiermuth** (PIT, TE, bye 9) — board rank 193 · as of 2026-09-04
 
-**Room sentiment:** Essentially forgotten — 6 mentions, and the highest-scoring one is a joke at his expense: "TIL that Pat Freiermuth is still an NFL starter" (score 12), with the reply "Freiermuth ($42M!)" (13).
+**Room sentiment:** two mentions, and the arguments for him are scheme and durability rather than targets.
 
-- The dossier is thin and there is nothing to analyze. No camp reports, no target or role discussion, no injury news, no depth-chart chatter.
-- **Where the room files him:** Hartitz's bottom TE tier ("but maybe"), in a 13-name group with Cade Otton, Evan Engram, Mike Gesicki, David Njoku and others.
-- **The only bullish line in the corpus** is a single low-score hill-to-die-on post: "Pat Freiermuth and Chig Okonkwo finish top 7-10 in TEs." No one engaged with it.
-- **Market:** ADP cited at 168.7 with no receiving-yards line posted; 15.03 (pick 172.3) in a superflex TEP sample.
+- Role (Aug 29): a commenter names him one of the four primary receiving options in the 12-personnel sets he expects Pittsburgh to run heavily. A single commenter's projection, not reporting. No injury or target claims anywhere.
+- Sentiment (Aug 27): named by an OP as a second late tight end to pair with a punt pick, and defended by a commenter on the grounds that his health track record is better than Kincaid's.
 
-**Draft take:** Undraftable in standard 12-team leagues on this evidence. The silence is not a hidden edge here — it reflects that no one sees a path to volume.
+**Draft take:** the back half of a late two-tight-end punt on durability and a 12-personnel guess; nothing here justifies taking him earlier.

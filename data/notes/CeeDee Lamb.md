@@ -1,9 +1,11 @@
-**CeeDee Lamb** (DAL, WR, bye 14) — board rank 15
+**CeeDee Lamb** (DAL, WR, bye 14) — board rank 15 · as of 2026-09-04
 
-**Room sentiment:** High-scoring comments land on both sides — 57 mentions, a dedicated "CeeDee Lamb being overhyped?" thread, and repeat appearances in fade threads.
+**Room sentiment:** The room's most-repeated label for him is "most overrated player every year," and the bull case is regression math rather than anything new.
 
-- **The fade case** (top-scored take, 270): "much rather just wait and grab Pickens in the second/third." The core objection is target competition — "No other receiver in the first round has target competition from his WR2 like CeeDee does" — plus "the lack of TDs for CeeDee was very frustrating last year."
-- **The defense:** "CeeDee Lamb is not a fade this year IMO." Supporters point to injury: he "battled thru a high ankle sprain," had "3 games where he didn't play in the second half," and still finished WR12 in PPG. One ranker expects a healthy Lamb "returns as the clear WR1."
-- **Market position:** Hartitz tier 2 (overall WR1 upside) with Jefferson, AJ Brown, Nico Collins, London. Consensus avg rank 9.67, ADP ~10.5. Reported target share 25% to Pickens' 23%.
+- Health is retrospective only: one commenter attributes last year's dip to a high ankle sprain, an injury that historically depresses production in the season it occurs, and adds that his touchdown variance was unlucky — the case for positive regression rather than decline. No current injury claim.
+- Role: the most common reason the room prefers Lamb to A.J. Brown is situation, not usage — a higher-scoring offense, an easier schedule, a weak defense forcing Dallas to keep up, a dome, and a quarterback who does not vulture rushing touchdowns (10 nominations, 35 upvotes).
+- The live disagreement is George Pickens. One argument is that Lamb and Pickens cannibalize each other's WR1-overall upside; several commenters push back hard that the offense supports two WR1s.
+- Market: he is going late first to early second in most drafts after being the second receiver off the board last year, which is roughly where his board rank of 15 sits.
+- The fade is the loudest thing on him and deserves weight: 14 top-level fades on repeated failure to return his first-round cost, injuries, perceived disengagement once Dallas falls out of contention, and the Pickens target split; separately six nominations at about 74 upvotes as the annual most-overrated pick. He also appears on safe-pick lists alongside Gibbs and Chase, so the room is genuinely split.
 
-**Draft take:** A late-first/early-second where you're explicitly buying the ankle-injury explanation. If you don't buy it, the room's own alternative — waiting on Pickens rounds later — is the cheaper route to the same offense.
+**Draft take:** Take him at the turn if he falls there, but do not reach into the top 10 for him — the positive-regression case is one commenter and the fade case is the room.

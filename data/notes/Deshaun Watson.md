@@ -1,9 +1,11 @@
-**Deshaun Watson** (CLE, QB, bye 11) — board rank 209
+**Deshaun Watson** (CLE, QB, bye 11) — board rank 209 · as of 2026-09-04
 
-**Room sentiment:** Effectively absent — 8 mentions, none of them fantasy analysis. What exists is hostile or sarcastic. The dossier is too thin to support a real read.
+**Room sentiment:** overwhelmingly negative — 76 mentions in one 1,322-point thread calling him one of the worst starting quarterbacks in the league, with no bull case anywhere in the corpus.
 
-- He turns up in "do not draft no matter what" threads ("I will never have Deshaun Watson on any of my teams"), and the two bullish-sounding lines are jokes from a "do NOT draft these players" thread and a "hill I'll die on" thread — not genuine projections.
-- The only substantive datapoint is about Cleveland's depth chart: one poster argues Watson "would be hypothetically a better QB option than Sanders and Gabriel." That's a comment on the QB room, not an endorsement.
-- No camp reports, no role news, no health information anywhere in the corpus. Superflex ADP 15.10/177.4.
+- He is the starter, and the team has said so twice. Jordan Schultz reported on Aug 24, per multiple sources, that Cleveland named Watson its Week 1 quarterback at Jacksonville, with Shedeur Sanders as the backup; on Sept 2 the room relayed that it is official and that Monken said it is not a week-to-week decision. Maher's Sept 3 read cuts the other way — the leash is short, possibly two weeks short — which makes Watson a stopgap QB3, not a superflex solution.
+- Nobody expects him to finish the season in the job. Many expect a benching by Week 3-5, one commenter puts better-than-even odds he is not the starter by season's end, and the structural argument is that starting him first is exactly what makes it easy and popular to hand the job to Sanders after a few bad games. Rival fans in August were already writing off his being there by November, and the room says he has looked horrid throughout camp coming off two Achilles tears.
+- The room reads the decision as sunk cost rather than merit — roughly $230M already paid out and about $46M owed this year — with one commenter claiming Stefanski was fired and Monken hired in January precisely because ownership wanted Watson starting.
+- Fantasy consequence: he is a drag on every Cleveland pass catcher, Harold Fannin included, and a reason to stream defenses against the Browns. Watson is the shorthand objection to every Cleveland skill player in these threads. The one prediction with real support (179 pts) is a 2022-Daniel-Jones-type season that forces an awkward extension decision, with replies noting the Browns can cut him next year and will take a rookie quarterback regardless.
+- Off-field sentiment is hostile: reaction to his late-August podium session, where the room said he showed no accountability and regretted nothing, was uniformly bad, and a Comeback Player of the Year mention drew only derision.
 
-**Draft take:** Undraftable on this evidence in any 1-QB format. The only reason to track him is if you roster Browns pass-catchers and need to know who's throwing — and the room has no answer to that question yet.
+**Draft take:** superflex-only stopgap on a two-week leash — undraftable in one-QB, and a reason to discount every Cleveland pass catcher who depends on him.

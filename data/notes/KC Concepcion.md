@@ -1,11 +1,10 @@
-**KC Concepcion** (CLE, WR, bye 11) — board rank 138
+**KC Concepcion** (CLE, WR, bye 11) — board rank 138 · as of 2026-09-04
 
-**Room sentiment:** Thin but uniformly positive — 13 mentions, all of them in the late-round-dart bucket, no detractors.
+**Room sentiment:** the room likes the player and cannot get past the quarterback.
 
-- Best concrete note: "KC Concepcion has been working as the primary slot receiver for the Browns during 11 personnel sets."
-- Hartitz lists him in tier 8, "favorite late-round sleepers," with Jayden Higgins, Rashid Shaheed, Travis Hunter and Jerry Jeudy. An analyst calls him "my favorite lottery ticket dart throw."
-- He's the name Establish The Run's Justin Herzig gives when asked for high-risk/high-reward late fliers, and he shows up in "drafting intriguing upside plays" lists next to Quentin Johnston.
-- The one bold call is a hill-to-die-on post — "KC Concepcion will be rookie of the year and finish the season as a top 20 WR" — so treat it as enthusiasm, not analysis.
-- The room raises its own caveat: "Concepcion does have a shaky QB situation" in Cleveland. ADP ~142 (12.12/140.6 in a superflex sample).
+- Role, per beat report: @AkronJackson named Concepcion the MVP of the 8/21 joint practice against Buffalo and said he is going to be a focal point of the Browns offense when the season begins. Earlier, Ben Solak of ESPN (8/11) warned not to let Cleveland's first-round receiver fade in Denzel Boston's spotlight — Concepcion also looks plenty ready for NFL action.
+- The room reads him as the de facto WR1: first preseason game usage put him ahead of Boston, with better separation, better YAC and easier manufactured touches. Hold the caveat the same commenters attach — that rests on one preseason game, and Boston was drafted only about 15 picks later. Two commenters also expect him to be the punt returner on top of offensive work, worth a round in return-yardage formats.
+- Hartitz calls him flexable in Week 1 at WR42, likes the preseason usage on the reverse and pop pass, and expects Todd Monken to scheme him roughly 8 targets and carries a game specifically to work around the quarterback play. That quarterback play is the cap on everything: every bullish mention in the corpus is hedged on it, one commenter says he is the best long-term receiver of this tier but needs a quarterback change in Cleveland first, an NC State fan expects the Browns to break him, and another says he only thrives once there is a real quarterback in 2027.
+- Market: Maher has him 78th overall and WR42, 38 spots above ECR, and uses that gap to argue a Jeanty-plus-Johnston for Hampton-plus-Concepcion trade is closer than consensus thinks. Board rank 138 sits between the analyst and the consensus, and nobody in the corpus reports an actual redraft price for him. In dynasty the room treats him and Makai Lemon as a coin flip, with Jordyn Tyson and Carnell Tate a tier above, and several say he would have gone third in class rookie drafts with a better landing spot than Cleveland.
 
-**Draft take:** A reasonable last-few-rounds swing because the role is defined, not because the production is projected. Take him at or after ADP; nobody in the corpus is forecasting volume, only opportunity, and the Browns' quarterback situation is unsettled.
+**Draft take:** a schemed-touches WR4 worth a late pick if you can absorb the quarterback — the beat writer says focal point, and that is still the highest thing anyone can honestly claim.

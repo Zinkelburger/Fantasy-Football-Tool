@@ -1,10 +1,10 @@
-**Jalen McMillan** (TB, WR, bye 10) — board rank 175
+**Jalen McMillan** (TB, WR, bye 10) — board rank 175 · as of 2026-09-04
 
-**Room sentiment:** The 10 mentions divide roughly evenly between "late-round value pick" and "one of the guys who won't work out."
+**Room sentiment:** A live camp-role story at a dart-throw price, gated entirely on his own health.
 
-- Bull case: a late-round WR article argues he "has a huge opportunity to be the primary X receiver for the Buccaneers this year." Two separate posters name him a value pick, one calling him "my late round sleeper target… dude seems poised for a breakthrough."
-- Bear case is blunt. Hartitz's WR Tier 9 is literally "won't work out, but you could imagine what it'd be like if they did," and McMillan is on that list. Another poster argues you're unlikely to get even WR30-level output (about 9.7 half-PPR ppg) from "guys like Jalen McMillan, Tre Harris, Ryan Flournoy."
-- Useful indirect read: in a Ladd McConkey thread, a commenter says McMillan and Chris Godwin worry him more as target competition than Quentin Johnston and Tre Harris do — a backhanded vote that he'll be involved.
-- ADP: Sleeper 12-man superflex 14.08 (166.4); a projections thread lists ADP 167.0 with no receiving line posted for him.
+- Availability first: he was reported hurt during camp alongside Emeka Egbuka (Sept 2) and was still described as hurt heading into Week 1 in a Sept 1 start/sit post. The room frames Chris Godwin's floor as holding "unless Egbuka and McMillan never get healthy." Commenters only — no timeline and no source.
+- Role, and the reason to care: reports through camp had him taking over the primary X job in Tampa and playing over Godwin in two-receiver sets, when healthy. Greg Auman instead has him lined up wide opposite Egbuka in three-receiver sets, and via Cooper puts him third in the Bucs pecking order behind Godwin and Egbuka with real usage available if Egbuka misses time. The room agrees he is on the field and disagrees about how high.
+- Both upside paths run through somebody else's toe. Dopp says he will not leave a draft without McMillan and sees him taking the WR2 spot, with a commenter tying that opening to Egbuka's turf toe being the real diagnosis; McMillan was also named a secondary beneficiary of the Egbuka toe news at an ADP near 190.
+- Market: one Ringer host's late-round dart throws this season are McMillan, Pat Bryant, Juwan Johnson and Ryan Flournoy.
 
-**Draft take:** A final-rounds bench flyer contingent on the X role actually being his. The discussion is too thin and too split to make him a target.
+**Draft take:** Worth a last-round pick as the cheapest way to own the Tampa target vacuum, but only if he is practising by Week 1 — the entire case is a role he cannot take while hurt.

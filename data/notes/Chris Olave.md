@@ -1,10 +1,10 @@
-**Chris Olave** (NO, WR, bye 8) — board rank 29
+**Chris Olave** (NO, WR, bye 8) — board rank 29 · as of 2026-09-04
 
-**Room sentiment:** 98 mentions, split close to even — he appears in "do not draft" and "top 5 WR" threads simultaneously.
+**Room sentiment:** the analysts are consistently ahead of the room on him, and the room's only argument back is the concussion history.
 
-- **Reported facts:** signed a four-year, $132M extension ($90M guaranteed), having sat out team drills while it was pending. Career highs last season: 156 targets, 100 receptions, 1,163 yards, 9 TDs. In Tyler Shough's nine starts he averaged 9.4 targets, 80.3 yards, 18.2 PPR points per game.
-- **Bull case:** Hartitz tier 3 ("high-volume WR1s and overqualified WR2s"). Supporters cite improved Saints pass-blocking, the 2nd-easiest projected schedule, and the Shough connection late last season.
-- **Bear case:** the top-scored fade in the corpus (270) calls his ADP "atrocious... based off one year for a player who at any given point is a concussion away from possible retirement." Others note he "ran very hot on TDs last season," and rookie Jordyn Tyson is real target competition.
-- **Price:** quoted 29-39.6, WR13 off the board; posters openly ask whether 3.01 is too high.
+- Healthy, with a history owners price themselves. Jeff Nowak reported on 2026-08-09 that Olave was busy in Saints team drills with "no sign of any ill effects from the wrist issue yesterday." Owners flag his medicals as the main risk inside their own bull case — multiple scares this preseason on top of the 2024 concussions — and one says he is shopping Olave inside larger deals rather than hold that risk.
+- Role: the unquestioned New Orleans alpha while Jordyn Tyson is on IR, on a 4yr/$124M deal at roughly $30M a year, the top of the current receiver extension market. The supporting numbers are specific to a narrow window and cited repeatedly: 19.1 PPR per game in weeks 7-18 with Tyler Shough, 20.2 from week 10 on after Rashid Shaheed was traded, 27.7 in weeks 15-17, and 100 catches on 156 targets. The skeptic's answer is that he has never dominated at that level over a full season and Tyson takes targets back on his return.
+- Market: Maher has him 18th overall and WR8 against a consensus of 24 — the player he is furthest ahead of the room on in the Pickens/Olave/Smith cluster, and one of the last receivers he is comfortable starting as a WR1. Murchison has pounded the table on him all summer as a pick to beat ADP and would take him back for Drake London; Hartitz has him WR11, same tier as Waddle; Cooper ranks him ahead of Malik Nabers; Twerski calls him a low-end PPR WR1. Drafters report taking him at the 2/3 turn over Nico Collins, Nabers and Rashee Rice, while others report him still slipping to 4.04 even after the Tyson news — a gap the room calls insane, and his board rank of 29 sits on the early side of it.
+- Sentiment: 13 top-level fades (14 upvotes), overwhelmingly concussion-driven — the history does not go away and one hit at this price ends a season. The bull rebuttal is that the offense, not the medicals, is the real downside, and that a 37-point Jets game props up the per-game numbers.
 
-**Draft take:** A risk-tolerance pick — the production and extension are real, so are the durability and TD-regression objections. In keeper/auction the room calls him a bargain at a discount, not at cost.
+**Draft take:** take him at the 2/3 turn — he is the alpha for as long as Tyson is on IR and every analyst on the page has him above his cost.

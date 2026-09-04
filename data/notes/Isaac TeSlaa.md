@@ -1,10 +1,11 @@
-**Isaac TeSlaa** (DET, WR, bye 6) — board rank 220
+**Isaac TeSlaa** (DET, WR, bye 6) — board rank 220 · as of 2026-09-04
 
-**Room sentiment:** Nearly silent — 5 mentions total. Nobody is arguing about him in either direction, so treat everything below as low-confidence.
+**Room sentiment:** He has the WR3 job by default and the room is more negative than split on whether he can do anything with it.
 
-- **The one substantive projection:** a passing-yards study assigns Detroit's unaccounted-for receiving production to him — "All 876.5 of those unclaimed yards for the Lions belong to Isaac TeSlaa." That's a modeling assumption, not a report.
-- **The role angle mentioned twice:** "TeSlaa is the endzone threat now," and a poster arguing his upside is contingent — "if DET had an injury, TeSlaa could really see an even larger red zone role which could lend itself to a lot of fantasy points."
-- **He gets one name-check as a late-round touchdown play,** answering a request for a WR going after round 8 with TD upside (ECR 189).
-- **Price:** ADP 227.5, 16.09 in a superflex sample.
+- Role (consensus, Sep 1): Detroit's WR3, behind the two star receivers and behind LaPorta and Gibbs for targets. Last year's WR3, Kalif Raymond, is gone, so the job is his by default, and commenters describe a steep dropoff after the top two.
+- Same thread, same day, and the fade is the better-argued half: critics say he is still raw, "riding off that one catch," that route running is not developing, hands are inconsistent, and that every offseason report was bad with nothing shown in preseason. Defenders only point to a third-round pick still learning the position with 6 touchdowns last year.
+- The sharpest version of the fade (Aug 8) is about the hype rather than the player — "so many people are convinced the guy is the future with 10 catches and behind three or four other guys firmly planted" — and a Sep 1 thread calls him the easiest drop of a five-player group, arguing the sub has a love affair with receivers who will sit behind two more talented teammates for at least two more years.
+- Sentiment is dynasty roster-churn: named on three taxi squads, though one manager would slot Matt Hibner in over him; another prefers Kayshon Boutte to him outright; and he turns up elsewhere as end-of-bench filler and a very late "year 2 TeSlaa?" dart.
+- No injury or availability claim, and nothing beat- or team-sourced anywhere on him.
 
-**Draft take:** Final-rounds dart in TD-heavy formats only. The corpus has no camp reports, no target projections, and no debate — do not read the quiet as a sleeper signal.
+**Draft take:** Not worth a redraft bench spot — the role is real by default, and the reports on him are not.

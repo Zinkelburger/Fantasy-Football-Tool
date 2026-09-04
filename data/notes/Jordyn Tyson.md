@@ -1,10 +1,11 @@
-**Jordyn Tyson** (NO, WR, bye 8) — board rank 83
+**Jordyn Tyson** (NO, WR, bye 8) — board rank 83 · as of 2026-09-04
 
-**Room sentiment:** Bullish, with the enthusiasm concentrated in camp reporting rather than analysis — 16 mentions, and the camp notes are consistently positive.
+**Room sentiment:** The rookie the room wanted and cannot use — the talent case is intact, the hamstring is not, and the whole discussion is now about roster mechanics.
 
-- **Camp facts (his three highest-scored lines):** full participant in practice coming off hamstring concerns in early summer; described as a standout in Saints camp after working back from an offseason hamstring that dated to early 2025; caught a TD pass from Tyler Shough in the team portion of practice.
-- **Role:** posters report Tyson works the shallower targets while Chris Olave takes the longer aDOT — a complementary split rather than a straight target fight.
-- **Bull case:** a hill-to-die-on post states flatly, "Jordyn Tyson will outscore Chris Olave." A Saints-optimism take credits a fortified offensive line, the Travis Etienne addition, and Tyson as an upgrade on Rashid Shaheed. Hartitz names him a favorite target around the WR30 line.
-- **Bear case:** Hartitz still has him only in tier 5 ("we're saying there's a change"), one projection set gives him 774.5 yards at ADP 97.0, and one poster frames him more cautiously as "a pseudo handcuff for Olave." The hamstring is a repeated, real data point.
+- On injured reserve. New Orleans officially placed him on IR with a hamstring injury on Aug 30, which costs him at least the first four games; the room reads the realistic timeline as four games to two months, with a return around mid-October. Later commenters saying "out for most of the year" are guessing past what the team announced.
+- Durability is the room's central objection, not bad luck. Commenters note he has not had a healthy season in four years, played 33 of a possible 51 college games, and is on IR before an NFL snap. The sharpest line: a player with chronically injured hamstrings injuring a hamstring in camp is an awful sign. One poster floated a Kevin White bust comp; the counter is that anyone who drafted him should have expected this kind of start.
+- What little role reporting exists is positive and pre-dates the injury. Saints beat writer Nick Underhill, telling people to stop overreacting to camp, said the only thing he knew for sure was that "Jordyn Tyson is a dawg." Jeff Nowak reported the Tyson-Shough connection building in camp.
+- His absence is being priced into teammates rather than himself: Juwan Johnson has been New Orleans' second-most-targeted pass catcher while he is out and is expected to give that back on his return, and the injury is cited as the reason Chris Olave again faces thin target competition.
+- Board and room are far apart, and the room is right. The board still has him at 83; redraft managers are taking him in the 12th or 13th round, or for $1, purely to occupy an IR slot while playing a real waiver add — named as the top priority IR stash, ahead of Charbonnet. In dynasty rookie drafts the news moved him from a top-5 pick to as late as 1.11, which buyers call a discount on a redraft-irrelevant year.
 
-**Draft take:** The best camp buzz of any rookie in this range. Take him at or slightly ahead of ADP (Sleeper superflex 97.6) as a WR3/4, but don't pay a price that requires him to beat Olave for the target lead.
+**Draft take:** Do not spend a top-100 pick on him — he is a last-round IR stash in redraft and a genuine buy in dynasty, and nothing else.

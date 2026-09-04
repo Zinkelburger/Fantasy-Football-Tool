@@ -1,10 +1,11 @@
-**Jonathan Taylor** (IND, RB, bye 13) — board rank 5
+**Jonathan Taylor** (IND, RB, bye 13) — board rank 5 · as of 2026-09-04
 
-**Room sentiment:** For a top-5 pick, short on advocates — 33 mentions, mostly risk-flagging rather than case-making.
+**Room sentiment:** priced as a top-5 back and faded for the offense around him rather than for anything about him — several of the fades are explicitly not football reasons.
 
-- Priced as a first-round RB (ADP 5.0; "Ultimate Top 350" average rank 6.67). One thread asks outright whether "the Colts second half of last season make Jonathan Taylor less appealing?"
-- Bear case is louder: Daniel Jones is coming off an Achilles tear and posters don't expect this offense to be as efficient. Age and mileage get flagged too — one notes he's now older than Todd Gurley was in Gurley's final season, another lists him as "2 years out from an ankle surgery," a third argues he was "never the same" after the 2022 injury.
-- Bull case is thin: second behind Bijan in an upvoted efficiency comparison, and one poster noting "2025 was circa 2021," the year he went nuclear.
-- Durability counterpoint: he "has never missed an entire season," though he missed the first four games of 2023. Camp note — final year of his contract, expects an extension before the season.
+- No current injury is reported. The durability note is historical: a commenter cites 6, 7 and 3 games missed in recent seasons while still holding an 80%-plus snap share when active.
+- Role is settled: the Colts extended him, with the cap cleared by moving Zaire Franklin and Michael Pittman. He is not a receiving back, and the room agrees that is the ceiling limiter — his value is a straight function of the offense working. A Colts commenter expects touchdown regression from 20 total scores (13 from inside 10 yards, 9 from inside 3), with some goal-line looks flipping to Tyler Warren now that Pittman is gone.
+- The conditional worth carrying: with the receiver room banged up, one commenter expects the offense to shrink to short passes and stacked boxes and projects a slow start — that holds only while Pierce, Downs and Warren are limited. The better-upvoted side of the Warren-absence debate says the same thing: losing the passing threat means stacked boxes, and Warren blocked on several of Taylor's biggest runs last year.
+- Market: the room pays roughly what the board says. Reported picks are 1.02 twice, 1.05, and one surprising fall to 1.12. Murchison leans Taylor over McCaffrey at pick 4 out of CMC injury fear; Twerski would swing for him at 1.04 in a first-down-scoring league; Hartitz ranks James Cook ahead of him and uses Taylor's second half last season as his proof that RB production follows the offense — "Taylor didn't get worse, his offense did." He is also a common late-first fade name, driven by fear of Colts regression rather than any committee concern.
+- Sentiment: the fade case with numbers is game-script dependence — 24.6 FPG in wins versus 13.8 in losses, 31.5 versus 12.4 in 2025, and 23.9% of his 2025 points scored while Indianapolis led by two-plus scores in the second half, against a 7.5-win team total. The rest of the 10 top-level fades are vibes and grudges. Doubts about Daniel Jones post-Achilles and the absence of a real WR2 sit underneath all of it.
 
-**Draft take:** Fine at ADP if you accept you're buying workload, not offense — the Colts/Daniel Jones risk is the whole pick. Don't reach past the other top RBs.
+**Draft take:** a fair-priced top-5 pick whose floor is the Colts' win total, not his own workload — take him at 4-6 if you want the volume, and pass if you think Indianapolis is bad.

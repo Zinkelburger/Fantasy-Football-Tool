@@ -1,10 +1,10 @@
-**Jack Bech** (LV, WR, bye 13) — board rank 272
+**Jack Bech** (LV, WR, bye 13) — board rank 272 · as of 2026-09-04
 
-**Room sentiment:** Bearish — 12 mentions, and the criticism is specific rather than generic dunking.
+**Room sentiment:** bearish and specific — an inconsistent camp behind too many mouths, with one named path forward that has not happened yet.
 
-- Reported production: 20 receptions, 224 yards, 0 TDs, quoted alongside an ADP of 215 in the Raiders/Dolphins "terrible WR room" thread.
-- Bear case with detail: the FTN Almanac line quoted says he should never have been used as an outside receiver given his lack of speed, and that he had just one target beyond 20 yards all season. A Raiders fan says flatly he doesn't have fantasy value. Another poster notes that with Bech unable to play the perimeter and Tre Tucker unable to play X, the Vegas receiver room is "as wonky as any I've ever seen."
-- Bull case, thin: the room broadly agrees the previous coaching staff misused him, and Las Vegas spent a second-round pick on him. One poster expects him to be "a popular waiver add by week 3"; a couple are taking last-round best-ball flyers.
-- Current ADP quoted at ~285.
+- Role, per beat report (8/11): Dan Graziano (ESPN) says the second-year player has been inconsistent in Raiders camp. A Raiders fan supplies the missing rookie year (9/2): Pete Carroll gave rookies essentially no playing time, so the 2025 second-round pick drew 29 total targets.
+- The target tree is the problem and it is not only receivers: one commenter has him behind Brock Bowers and Ashton Jeanty for touches, "not even the No. 2 receiver on his team" and a "far cry from remotely relevant"; another lists him third in line behind Tre Tucker and Jalen Nailor for the one usable Raiders receiver slot and calls that a long shot.
+- The one named path forward is a quarterback change: the Raiders-side expectation is that Bech carves out a role once Fernando Mendoza takes over, which would land two rookie classes at once.
+- Market and sentiment: he is named the easy cut in two separate roster-crunch questions with nobody arguing to hold him. The support is small but real — "You better put some respech on Jack Bech" at 20 points, one commenter who cannot separate him from Tucker or Nailor, one 1,000-yard prediction that was his only mention in a 218-comment thread, and one drafter who used his last pick on him specifically because he is not a rookie, has a pocket passer throwing to him and an obvious teammate defenses will double — and who expects to cut bait early anyway.
 
-**Draft take:** Not a draft pick in a 12-team league. Put him on the Week 1-3 waiver watch list — if the new staff moves him inside and the targets actually show up, add him then rather than paying for it now.
+**Draft take:** not a pick in a 12-team redraft — watch-list him against two triggers, a Mendoza start or a Tucker/Nailor injury, and add him then.

@@ -1,9 +1,11 @@
-**Chimere Dike** (TEN, WR, bye 9) — board rank 247
+**Chimere Dike** (TEN, WR, bye 9) — board rank 247 · as of 2026-09-04
 
-**Room sentiment:** Silent — 2 mentions, and neither is an evaluation.
+**Room sentiment:** the sharpest scoring-format argument on the board — he is a materially different player in leagues that count return yards, and close to nothing in leagues that do not.
 
-- One is an ADP row: Sleeper 12-man superflex 20.09 (226.8 overall).
-- The other is a throwaway line in a tight end thread — in a discussion of who might handle kick returns, a poster says "at that point I'd rather take chimere dike lol." The only implied information is that he's on the room's radar as a return-game name.
-- No camp reports, no target projections, no depth-chart discussion.
+- Role: the room's consensus (9/03) is that he is a return specialist and situational deep threat, not a rotation receiver, and would need an injury to Calvin Ridley, Carnell Tate, Elic Ayomanor or Wan'Dale Robinson to see meaningful offensive snaps — with one commenter noting the team may not be as high on him as the fans are.
+- That is a step down from last season, which is where the value case comes from: he was a starting WR for most of the year on top of returner duties, with just under 2,000 return yards plus a majority of offensive snaps, and posted 20-plus point weeks in return-yardage formats once he was in the starting lineup. He finished WR50 in standard scoring.
+- **Market, and this is the decision:** in return-yardage leagues the room reports him systematically mispriced — WR10 by total points at 1 point per 20 return yards, sixth-best position player in a 16-team superflex, ninth overall flex at 0.1 per yard, top-5 at 1 per 10 — all while sitting on waivers most of the season, because projections and rankings count receiving only and show him around WR40. His board rank of 247 is the receiving-only number; in a return-yardage league the room's own accounting says he is a starter.
+- The counterweight is from an owner who had him: return yardage "is a cheat code that could turn off at any moment with literally zero notice" because nobody reports return-game changes, and he hated starting him late in the year on a bad team. Everything above is conditional on him keeping the return job.
+- Sentiment elsewhere is a small positive minority — several commenters say he may have more left than Ridley, one calls him the most explosive Titan he has seen live — and one manager kept him over Elijah Sarratt for a taxi spot. In leagues that do not count return yards, nobody argues for him at all.
 
-**Draft take:** Nothing to act on. Waiver-wire name at best, and only in leagues that score return yardage.
+**Draft take:** In return-yardage scoring he is a genuine mispriced starter worth drafting well ahead of rank 247; in every other format leave him alone.

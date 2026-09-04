@@ -1,10 +1,12 @@
-**Dallas Goedert** (PHI, TE, bye 10) — board rank 119
+**Dallas Goedert** (PHI, TE, bye 10) — board rank 119 · as of 2026-09-04
 
-**Room sentiment:** Mildly bullish and framed almost entirely as a punt-TE endgame — 50 mentions, mostly inside TE-strategy threads where he's the benchmark for "the last acceptable tight end."
+**Room sentiment:** A steady late-round TE value case built entirely on A.J. Brown's departure, with touchdown regression as the standing objection.
 
-- The framing cuts both ways. The top TE-deadzone post (375) treats "the best option left is Dallas Goedert" as the nightmare of waiting too long; the top reply (92) inverts it: "if Goedert is the best one left, punt TE until the last few rounds," because twelve TEs off the board means eight extra RBs and WRs still there for you.
-- Bull case is concrete: drafted outside the top 130 last year and finished top 10 in total points; a career-high 12 TDs gave him his best fantasy season in a less functional offense than what's coming; and with **A.J. Brown gone** several expect more targets and red-zone work. Hartitz has him Tier 4, noting that ranking him five spots higher would be defensible.
-- Bear case is health and scheme: "his issue is more never playing a full season," plus a new offensive scheme and a "scheme dependent ceiling." Philadelphia drafted **Stowers**, though most think the rookies won't cut into his 2026 target share.
-- ADP: Sleeper 10.05 (112.7); a projections thread lists 99.6 and 574.5 yards.
+- Role: unquestioned Philadelphia TE1 and, per the room's consensus, Hurts' second read behind DeVonta Smith — conditional on A.J. Brown staying gone to New England (Aug 27). Commenters add that Hurts leans on trusted targets and should favor Goedert and Smith over the new receivers early.
+- Depth behind him is blockers only: Mundt blocks, rookie Eli Stowers is not ready. The room reads the reported Zach Ertz interest as injury insurance rather than a threat to his snaps — several say the signing only makes sense if Goedert goes down (Aug 31).
+- The bear side, and it is real: some expect the Eagles to go run-heavy, one commenter thinks Dontayvion Wicks rather than Goedert is the more likely second target, and Makai Lemon developing into target share is the other objection (Sep 3).
+- One analyst who has faded Goedert every prior year is on him this time: a clear path to top-2 target while Lemon and Wicks are unknown commodities next to Brown's absence, viable and cheap.
+- Market: board rank 119 is roughly the 10th round, but the room reports being content taking him in the last round or near it, and one drafter has pounded the ADP-value drum on him all offseason. The board is if anything the more aggressive of the two.
+- Sentiment: touchdown regression is the named reservation, and commenters treat 2026 as likely his final year in Philadelphia.
 
-**Draft take:** Best used as the tail end of a TE punt — round 10 or later, ideally paired with a second cheap TE to cover the games he misses.
+**Draft take:** Take him as your last-round TE1 on target share, not on touchdowns — the price is cheap enough that the regression case doesn't matter.

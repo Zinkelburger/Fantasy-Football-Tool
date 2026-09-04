@@ -1,10 +1,11 @@
-**Blake Corum** (LAR, RB, bye 11) — board rank 82
+**Blake Corum** (LAR, RB, bye 11) — board rank 82 · as of 2026-09-04
 
-**Room sentiment:** Quiet — 16 mentions, nearly all of them inside Kyren Williams discussions. Mildly positive on role, skeptical on standalone value.
+**Room sentiment:** One argument, unresolved — handcuff, or already half the Rams backfield.
 
-- Concrete camp note: "Blake Corum has been more involved out of the backfield so far during Rams camp." Hartitz puts him in handcuff tier 1, "FLEX with benefits."
-- Role case: the room expects a goal-line uptick — "with the emergence of Blake Corum, that goal-line role is shrinking" for Kyren. Pushback: "I still think this is fairly comfortably Kyren's backfield."
-- Bear case is last year's usage: "Blake Corum is non-existent in the passing game — 14 targets, 8 receptions." Vegas has his rushing TD total at 5.5, the same as De'Von Achane and Jeremiyah Love, which one poster calls "fairly low."
-- The room also remembers him as a prior hype miss — he's listed with rookie-year Charbonnet among sub-consensus busts, and "It's Blake Corum all over again lol" is now used as a *warning* about backup-RB hype. One bull dissents: he "literally has overall RB1 upside if Kyren gets hurt."
+- Role: he is signed for the next two years and sits clearly ahead of any other Rams back. The top Rams take (118 points, Aug 27) is that trading Hunter solidifies the Corum/Kyren Williams pairing, possibly as a clear starter/backup rather than 1a/1b; the pushback (24 points) is that Hunter was a roster-bubble zero with no role, so the trade says nothing about LA at all.
+- The size of his share is genuinely disputed, with numbers on both sides. Over the last seven games of 2025 he went 70/600/5 against Kyren's 101/502/4; in the postseason it was Kyren 44 carries and 4 TDs for 53.3 points to Corum's 26 carries, no TDs and 18.1 — posted Sept 3 specifically to call the "dead even" claim made up. Against that, an OP projects a 50% rushing snap share (38 upvotes, the highest-agreement RB item in that thread outside the Kyren debate) and one commenter predicts an in-season takeover from an aging, low-yards-per-carry Kyren; another says the takeover talk is overblown and Kyren stays a solid RB1.
+- The thing to watch is goal line and game closing. He is the back who finishes blowouts, so a dominant Rams defence building leads means more fourth-quarter work for him; an earlier claim has him in the mix without cutting into Kyren's volume or goal-line share, but only while Kyren stays healthy.
+- Analyst framing: Cooper calls him a "handcuff plus" you can start in a pinch with contingent upside if Kyren gets hurt; Twerski expects the split to frustrate owners of both and would start them together only in deeper leagues; Loza prefers him to Jacory Croskey-Merritt among late-round backs. The room also files him as a best-ball asset — his big weeks are unpredictable and he lags as a receiver.
+- Market, the only price on the page (Sept 2): a commenter takes Corum over Tony Pollard despite the higher ADP, on the logic that even a zero-production season leaves a premier handcuff tradeable while Pollard's value evaporates. Nothing else records what the room pays, so board rank 82 is otherwise unchecked.
 
-**Draft take:** A handcuff with a plausible touchdown role, not a starter. Worth a pick near ADP (~85.5) if you roster Kyren or want the cheapest access to Rams goal-line work — don't reach expecting weekly standalone production.
+**Draft take:** The highest-value handcuff on the board and worth a bench spot on its own merits, but start him only once the split visibly tips or Kyren misses time.

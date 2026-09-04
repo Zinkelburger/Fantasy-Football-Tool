@@ -1,9 +1,8 @@
-**Brenen Thompson** (LAC, WR, bye 7) — board rank 274
+**Brenen Thompson** (LAC, WR, bye 7) — board rank 274 · as of 2026-09-04
 
-**Room sentiment:** quiet. Three mentions, none of them an evaluation of him — he appears only as a name in someone else's roster or argument.
+**Room sentiment:** Discussed only as a taxi-squad name; nobody argues he plays this season.
 
-- The only substantive line is a bear point aimed at Ladd McConkey: the new Chargers scheme means McConkey "has to compete with QJ, Gadsden, Tre Harris, and Brenen Thompson now too." That places Thompson in a crowded receiver room, without any claim about his role.
-- One poster mentions picking him up for free during last season; another mentions him as a throw-in piece in a dynasty trade offer.
-- No camp reports, no depth-chart news, no ADP discussion.
+- Role: no path to snaps in 2026. A Sept 4 commenter lists him among receivers who are "behind other options but have potential", and the stash case is explicitly that he has no path this year.
+- Sentiment: named four times in that same Sept 4 taxi thread, once by a contender weighing him against Chris Brazzell and Caleb Douglas for the last spots. On Sept 1 an owner had him on a cut shortlist, with the caveat that everyone on that list had a case to be rostered; nobody replied about him.
 
-**Draft take:** Nothing to act on. He's a deep-league dart at best, and the only real information in the file is that the Chargers' receiver room is crowded.
+**Draft take:** Dynasty taxi stash only — there is nothing here for a redraft roster.

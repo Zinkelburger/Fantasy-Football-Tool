@@ -1,10 +1,10 @@
-**Bucky Irving** (TB, RB, bye 10) — board rank 36
+**Bucky Irving** (TB, RB, bye 10) — board rank 36 · as of 2026-09-04
 
-**Room sentiment:** Leaning negative — a study of 2,269 podcast hours had him 45% positive / 55% negative, and he recurs in fade and "do not draft" threads.
+**Room sentiment:** The committee argument has taken over — nobody disputes he is the lead back, everyone disputes how much of the valuable work he keeps.
 
-- Health is the pivot: offseason shoulder surgery, but he is participating in camp and HC Todd Bowles said "He's full-go right now." A July 31 report has Irving taking the most carries that morning, with Kenny Gainwell used primarily as the receiving back.
-- Bull case is simple — "A healthy Bucky Irving will look like he did his rookie year." A "Top 8 RB everyone is sleeping on" post exists and got mocked in its own comments.
-- Bear case is role, not talent: Rachaad White "quietly led the team in carries inside the 5 with Bucky Irving dealing with shoulder issues," and one poster calls him "the next talented day 3 guy to transition to a timeshare/backup job." A dead-zone study flagged him at RB21 as a trap.
-- Market: 6.03 / 62.5 superflex, around RB20-21.
+- Health: offseason shoulder surgery, fully cleared only right before camp. He played through the shoulder for much of last season and averaged 3.4 YPC down the stretch. Commenters split on whether the recovery is live risk; several say it is fine now, and one cites the healed shoulder as the reason he expects Irving rather than Sean Tucker on red-zone work.
+- Role: lead back, contested share. Bucs fans have him at 50-55% of touches and near 300 if healthy, with Kenny Gainwell taking passing downs rather than the job. Hartitz projects roughly 50% snaps for Irving, 35% Gainwell, 15% Tucker — but has the other two taking the most valuable fantasy touches, targets and goal line. The 09-04 room expects a three-man committee and one commenter estimates he loses about 40% of snaps.
+- The rebuttal is specific and worth the weight: Tucker only had goal-line work last year because Irving played through the bum shoulder, and Irving is good enough as a receiver that he does not leave on passing downs — 528 receiving YAC in 2024 on fewer catches than Gainwell, 8.3 per catch to Gainwell's 6.7. The scheme worry is that Liam Coen, the OC when he broke out in 2024, is gone.
+- Market: this is a fade the room is acting on. Board rank 36 and an ADP near 37, but the reported picks are the 4th, 5th and 6th, with a 215-point fade thread carrying the qualifier "not interested unless he falls to the 5th". Maher has him going 46-47 and ranks Bhayshul Tuten above him; Twerski has him immediately behind Tuten among low-end RB2s; Cooper was out at round 4 and is fine at the September price; Loza is fading him at his round-4/5 cost. A 12-team manager offering Nico Collins plus Lloyd for him was told flatly it is an overpay.
 
-**Draft take:** The fades are explicitly price-based — "very much out on Bucky Irving given where he's going right now." Let him go at RB20; he's interesting again if he slides toward RB25.
+**Draft take:** Let him fall — at rank 36 you are paying a bell-cow price for a back the room has already repriced into the 5th and whose goal-line and passing-down work is genuinely contested.

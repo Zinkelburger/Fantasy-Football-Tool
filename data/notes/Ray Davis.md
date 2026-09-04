@@ -1,10 +1,10 @@
-**Ray Davis** (BUF, RB, bye 7) — board rank 205
+**Ray Davis** (BUF, RB, bye 7) — board rank 205 · as of 2026-09-04
 
-**Room sentiment:** Quiet. Seven mentions, all slotting him as a cheap handcuff. No bull case, no bear case, no debate.
+**Room sentiment:** The consensus handcuff to own, with the analyst on record being the most cautious voice on him.
 
-- Positioning: Hartitz tier 3 handcuffs — "THE *backup* running back, y'all" — with Tank Bigsby, Brian Robinson and Mike Washington. That label is the whole thesis: he matters only if James Cook misses time.
-- The one ceiling data point, from the same list: "Ray Davis had 23/27 opportunities in that one MNF game" — a full workload when handed it.
-- Scouting notes are sparse and secondhand: "thats the backup RB on the bills Ray Davis - he's good hardnosed north-south RB," and "Ray Davis lost weight last offseason to be more explosive and he was less of a bruiser."
-- He appears on a late-round RB target list and in auction advice as cheap handcuff filler. Market: 19.09 / 217.7 superflex — undrafted territory in most 15-round leagues.
+- Role, Sept 1: the room has him as the clear James Cook handcuff in an elite offense and possibly holding both Buffalo return jobs — one commenter says that puts him in Jordan Mason / Blake Corum territory in return-yardage leagues.
+- Cooper, same day, is the brake: Davis is the mop-up back and needs an injury to James Cook specifically to matter — an injury to Ty Johnson does nothing for him. Even with Cook out, Josh Allen's rushing and Johnson's passing-down work stay in the equation, so it would not be a runaway workload.
+- No injury or practice claim on Davis himself anywhere.
+- Market: Hartitz (Sept 2) names him first among the handcuff backs he wants on a bench or off waivers before Week 1, ahead of Tank Bigsby, Brian Robinson and Kaelon Black. That is a ranking of stash candidates, not standalone value.
 
-**Draft take:** Only relevant to a James Cook manager, and only with a spare final pick. With six bench spots there is almost certainly a better use of the slot.
+**Draft take:** Last-round stash, and a genuinely good one if you roster James Cook — but the payoff is capped even when the injury comes, so don't pay up for return yardage.

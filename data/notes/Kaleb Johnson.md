@@ -1,10 +1,10 @@
-**Kaleb Johnson** (PIT, RB, bye 9) — board rank 244
+**Kaleb Johnson** (GB, RB, bye 11) — board rank 244 · as of 2026-09-04
 
-**Room sentiment:** bearish and dismissive. Eight mentions, and every one is either a joke or an aside — nobody is making a case for him.
+**Room sentiment:** A bust label the room applies almost unanimously, attached to a real but third-in-line Green Bay job.
 
-- The clearest read comes from the handcuff tier list: Jaylen Warren and Rico Dowdle are seen as splitting the Pittsburgh backfield roughly 50/50, each "one injury to the other away from taking over the whole backfield — sorry Kaleb Johnson truthers." He is the odd man out, not the handcuff.
-- A camp-notes thread reply on Dowdle taking the lead role is blunter: "So Kaleb Johnson is just dead."
-- Elsewhere he's used as shorthand for a bust — listed among last year's misfired RB picks, and cited as an example of an analyst's bad call ("drafting Warren over Kaleb Johnson"). One poster's sarcastic "never wrong, just early!" is the closest thing to support in the file.
-- No camp reports in his favor, no reported role, no injury news.
+- Role: Green Bay acquired him from Pittsburgh for a sixth-round pick on 08-30, minutes before the Josh Jacobs news, confirmed by Jeremy Fowler (ESPN) after it first surfaced on Johnson's own Instagram. GM Brian Gutekunst framed it as the response to losing Jacobs and said there was little on the market and nobody would trade a proven back. The room reads him as a depth piece — RB3 behind MarShawn Lloyd and Chris Brooks — who does not know the system yet, and one commenter argues the modest price signals Green Bay does not expect a long Jacobs absence.
+- Why Pittsburgh moved on, per the room: he was drafted as an outside-zone fit for Arthur Smith, and with Tomlin and Smith gone the new 11-personnel offense does not run it. He out-snapped every other Steelers back in the preseason and still never separated from Warren, Dowdle, Nichols and Homer. Cooper puts it plainly — two coaching staffs looked at him and decided he would not be active on game day — and would roster Brooks over him in a deep league. Twerski is the dissent: the best Green Bay back after Lloyd, a top prospect with talent in there somewhere, and one of his must-grab late handcuffs.
+- His path is an injury: he is the next man up only if Lloyd goes down, which the room considers likely. Jim Coventry argued he could take the early-down role with Lloyd as the pass catcher; that was dismissed in-thread.
+- Sentiment is the harshest in the queue — 10 games, 28 carries, 69 yards, 2.5 YPC, no touchdowns, fumbles and a kick-return blunder that cost a game. Suggested FAAB is $5 or less and only as a Lloyd handcuff. The one market note is a dynasty sell: a commenter says move him now while "there's some hype again".
 
-**Draft take:** Don't draft him. He's the third back in a two-back committee by the room's read; if you want Pittsburgh exposure, the discussion points at Warren and Dowdle.
+**Draft take:** Waiver-wire handcuff only, and only if you own Lloyd — at $5 FAAB the contingency is worth holding, but nothing in the corpus argues for a draft pick.

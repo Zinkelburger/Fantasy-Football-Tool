@@ -1,9 +1,9 @@
-**Christian Kirk** (SF, WR, bye 8) — board rank 266
+**Christian Kirk** (SF, WR, bye 8) — board rank 266 · as of 2026-09-04
 
-**Room sentiment:** A live contingency story rather than a real endorsement — 15 mentions, nearly all reactions to Ricky Pearsall's injury news rather than analysis of Kirk himself.
+**Room sentiment:** the argument is not about his role, it is about whether he is on the roster.
 
-- **What triggered it:** Pearsall is out of practice with a knee issue related to last year's PCL, surgery is on the table, and the 49ers "don't expect Ricky Pearsall to make any contributions in 2026." The top reactions are "Christian Kirk time!" (199) and "Christian Kirk to the moon!" (43). He also appears in a "Late-Round League-Winners to Draft" piece.
-- **Bull case:** "he is a perfect fit for this offense," and between CMC's workload, Mike Evans' age and Kittle's and Pearsall's injuries, one poster calls him "a must own in all formats." Another predicts he'll be "the #1 waiver target in week 1."
-- **Bear case:** he has a calf strain, turns 30 in November, and the room's veterans are tired of this cycle — "Am I gonna argue for a 3rd straight year about Christian Kirk being irrelevant to Fantasy?" San Francisco also added Mike Evans and spent early draft capital on De'Zhaun Stribling.
+- **Availability first: he is hurt and the room treats the 53-man cut as the live question.** Several commenters on 8/21 have him currently injured and a reasonable PUP candidate, with no injury named, and one doubting he is even a 49er in Week 1. The same thread repeats it plainly — "rumors are Kirk is probably getting cut", "Kirk is likely to be cut". None of it is beat-sourced; nobody has produced a designation either way.
+- Role, if he sticks: he is behind Demarcus Robinson on the depth chart one commenter read out (8/21), which is WR5 in a room fronted by Mike Evans, Deebo Samuel and De'Zhaun Stribling. A commenter relaying Jeff Ratliffe (8/21) says San Francisco's money forces Kirk back into Stribling's playing time once healthy; the room rejected it — "they want to win, they will find a way to get him on the field" — and that path is conditional on him being healthy and on the roster at all. One dissenter on 9/03 still expects him to out-snap Stribling in the slot.
+- Market and sentiment are the same verdict twice: he is on waivers in the one dynasty league anyone reported (9/01), and every mention of him is a dismissal — washed, old, on a one-year deal, with the room not expecting him past this season.
 
-**Draft take:** A last-round or waiver-day pickup, not a roster investment. The path to targets is real but he's third or fourth in line — let someone else pay the hype tax.
+**Draft take:** Do not draft him anywhere — he is a hurt WR5 whom the room expects to be cut or PUP'd before he is fantasy-relevant.

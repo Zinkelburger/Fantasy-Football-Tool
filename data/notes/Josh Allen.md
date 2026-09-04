@@ -1,10 +1,11 @@
-**Josh Allen** (BUF, QB, bye 7) — board rank 18
+**Josh Allen** (BUF, QB, bye 7) — board rank 18 · as of 2026-09-04
 
-**Room sentiment:** The argument is not whether he's the best fantasy QB, which nobody disputes, but the price — 145 mentions.
+**Room sentiment:** the football evaluation is unanimous and the fantasy argument is entirely about cost — the room agrees he is the best QB in the league and disagrees about whether that is worth a first- or second-round pick.
 
-- The pro case is consistency, not upside. Top-voted line: "nobody tends to regret drafting Josh Allen." Others call him "an easy 2-3 ppg above ANYONE else" and note 39% of ESPN teams reaching last year's finals rostered him.
-- The fade case is opportunity cost, argued just as well. A "do not draft" post listing him at QB1 drew 95 upvotes. The sharpest version: Baker Mayfield scored ~80% of Allen's points last year and goes roughly ten rounds later. A counter-stat: the ppg gap between Allen and the next four QBs is about two points.
-- Concrete negatives: he laid an egg in Week 16 last year (130 pass yards, no TDs, ~6.9 points) during playoff weeks, and his projected passing yardage (3,599.5) is modest — the value is rushing and goal-line TDs, which also caps Cook.
-- Cost varies wildly; posters report him going anywhere from the 1st to the late 3rd.
+- No availability concern. The one injury claim is retrospective: a commenter recounts him playing through last postseason on a foot injury from a Myles Garrett pressure, worsened in the wild-card game, plus a knee — explicitly speculative ("we can only assume") with nothing raised about 2026.
+- Role and offense: Sean McDermott is gone and Joe Brady is head coach while keeping playcalling. Fans expect a more open offense, blaming McDermott for conservative, predictable calls and a refusal to stretch the field, and note Buffalo added a receiver who can actually separate — the skeptics' answer is that Brady himself was the problem.
+- The rushing floor is the usage: he holds the all-time QB rushing TD record and had 17 carries inside the 5 last year, which the room treats as a cap on James Cook's touchdown ceiling. His edge over Lamar Jackson in rushing scores is a goal-line split, not a running-ability gap — Baltimore hands off inside the five, Buffalo sneaks.
+- **Market is where the decision is, and the room pays less than the board.** The reported real cost on 2026-09-04 is round 3 of a 12-team, not round 1-2: one drafter got him at 3.x and the room called it a steal, and several say spending pick 11 on him over the elite RB/WR still on the board is a reach. Superflex is different: 1.02 and 1.03 in two reported drafts, though in one long-running superflex league he lasted five picks. Maher is the outlier the other way: Allen is the only QB inside his top 50, at 44th overall, against a consensus that puts four QBs there. Dopp is fading him specifically in ESPN's knockout format, where Week 1 is Houston and Allen scored 8.1 fantasy points there last year.
+- Sentiment: the polls are lopsided — NFL players rank him #2 overall, and execs/coaches/scouts, AP writers and PFF all have him as the #1 QB; he is the betting MVP favorite around +550/+600. The fantasy-side fade is positional cost, not performance; the standing rebuttal is that the gap from Allen to QB6 has exceeded 50 points every year for six seasons and he has six straight 40-TD seasons.
 
-**Draft take:** Fine at the 3rd-round turn if the RB/WR tier there doesn't excite you; a real mistake in the 1st or early 2nd of a 1QB league.
+**Draft take:** let him come to you in the third where the room is actually taking him — worth every pick spent in superflex, a reach at 1.10 in single-QB.

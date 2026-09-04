@@ -1,11 +1,11 @@
-**Rico Dowdle** (PIT, RB, bye 9) — board rank 68
+**Rico Dowdle** (PIT, RB, bye 9) — board rank 68 · as of 2026-09-04
 
-**Room sentiment:** Interested and mildly bullish, but unresolved — 51 mentions, most of them a Dowdle-vs-Jaylen-Warren argument with no consensus winner.
+**Room sentiment:** the best-sourced reporting has him as Pittsburgh's RB1 in a real committee; the room's own dissent is entirely about pass protection.
 
-- Camp reporting is explicitly split: "Steelers RBs: Rico Dowdle and Jaylen Warren alternating first-team reps (each started with the 1s on different days)." Separately, "there are already beat reporters saying Dowdle has the inside track to the lead role."
-- Hartitz places him in handcuff tier 1, "FLEX with benefits," alongside TreVeyon Henderson, Blake Corum, Kyle Monangai and Jonathon Brooks.
-- Track record cited: 1,373 scrimmage yards and 7 TDs on 275 touches for Carolina in 2025, and the Panthers "leaned on Dowdle more even after Chuba's return," out-carrying Hubbard by more than 100.
-- The bear case is real-football quality and role fit: "Warren is a better real-football RB than Dowdle and I don't think it's particularly debatable," plus "Dowdle is a terrible pass blocker" — which caps his passing-down share.
-- Several posters lean Dowdle anyway on price: "Dowdle could be a league winner if Warren misses extended time," and "Why is nobody talking about Rico Dowdle?"
+- Role, best source (8/9): Mark Kaboly, answering a Steelers mailbag on the backfield split — "It's been pretty even so far in camp, but I think that Dowdle will be the RB1 and get the most snaps and opportunities. It's not going to be a 50/50 split, but 60/40 is possible." Ben Solak (ESPN, 8/11) will not pick a lean between Dowdle and Jaylen Warren but is confident both are playable in any given week, while the Steelers keep running out of heavy sets.
+- Supporting that: Pittsburgh's new head coach Mike McCarthy targeted him in free agency and paid him a contract implying a significant role, having coached him in Dallas, and he is slotted for early-down and goal-line work. One commenter reads that as roughly 65/35 in Dowdle's favour, since McCarthy leans on one back and Warren has not handled a bulk workload. Vegas has Dowdle's rushing-yards over/under above Warren's.
+- The one specific bear case, and it is the newest claim (9/3): Aaron Rodgers does not use backs who cannot block, Warren is one of the best at it and Dowdle is not, so Dowdle gets squeezed toward third downs. A separate fade prefers Warren outright for the PPR receiving role, citing what Gainwell did as Pittsburgh's primary receiving back last year. Both are commenter-level and do not outrank Kaboly, but the pass-protection knock is the concrete thing that would cap him.
+- His Carolina stretch is disputed: 473 total yards and 7.3 yards per carry on 53 carries over two starts with Hubbard hurt, then a return to earth. Critics note those two games came against the 31st- and 32nd-ranked rush defenses and that poor pass blocking is why Hubbard reclaimed the playoff workload; supporters call him the clearly better pure runner and note Pittsburgh has no true hammer back left after the Johnson trade. Twerski has him on both his sleeper list and his irrationally-confident list.
+- No market claims exist, so nothing records what the room actually pays for him.
 
-**Draft take:** Cheap enough that the ambiguity is priced in. Take him as an RB3/4 and be honest that you're buying a coin flip on the job plus a Warren-injury ticket, not a set starter.
+**Draft take:** draft him as the early-down and goal-line lead of a 60/40 Pittsburgh committee on Kaboly's read, and accept that the pass-blocking gap hands Warren the passing downs.

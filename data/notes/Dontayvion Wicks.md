@@ -1,10 +1,10 @@
-**Dontayvion Wicks** (PHI, WR, bye 10) — board rank 253
+**Dontayvion Wicks** (PHI, WR, bye 10) — board rank 253 · as of 2026-09-04
 
-**Room sentiment:** One strong camp report and one strong warning about exactly that kind of camp report — that's the whole split across a very small sample of 5 mentions.
+**Room sentiment:** three separate beat writers reported the Hurts connection unprompted, and the only real question left is whether Makai Lemon takes the job back.
 
-- **The camp note:** a 32-team training camp roundup says "it took Dontayvion Wicks approximately 10 minutes to make people forget about AJ Brown" in Philadelphia. That's the buzz, and it's the highest-scored line in his file.
-- **The counter:** in a "do NOT draft these players" thread, Wicks is named as the archetype of the camp-hype bust — "Last year it was RJ Harvey, 2024 was Dontayvion Wicks, before that it was Khalil Shakir" — with the argument that these cases run on highlights and narrative rather than role.
-- **Concrete negative:** an Eagles preview notes he may have some familiarity with Mannion from their shared Green Bay time, "but he has struggled with drops."
-- **Role guesses:** one poster expects Wicks and Makai Lemon to take the lion's share of the workload; another's hill to die on is that Wicks outproduces Lemon.
+- Role, per beat reporting (8/11): Jeremy Fowler (ESPN) says Wicks is more than a camp standout and should be a big factor in the Eagles passing game, with multiple people in the organisation bringing up his play unprompted — length, and able to high-point the ball with Hurts throwing a good deep ball. Dave Zangaro (NBC Sports Philadelphia) the same day describes one of Hurts' best throws of the practice as a perfectly timed out route to Wicks, and says the two have been impressively on time together. Brandon Lee Gowton (Bleeding Green Nation, 8/9): "It's clear that Hurts and Wicks have chemistry," which matters because Hurts leans on targets he trusts.
+- Where that has landed (9/4, consensus): the camp drum beat has consistently had him as the clear WR2 with chemistry built with Hurts, and the change of scenery should help a talented but inconsistent player who was stuck in an offense that did not throw enough. The caveat everyone attaches is the same one: if he can catch.
+- The bear case is the depth chart, not the reporting: Hartitz has a hard time seeing Wicks as more than the WR3 behind DeVonta Smith and Makai Lemon and would cut him first among deep keeper stashes; the room's counter cites film analyst Brett Whitefield arguing Lemon will have a hard time taking the role on his college tape. Note that the original 8/11 bull case rested on A.J. Brown being traded and Lemon being hurt, and the early-September threads treat Lemon as present, so that window may have closed.
+- Market: he is going very late for a WR2 on an elite offense; Twerski takes him for a final roster spot over Adonai Mitchell and Caleb Douglas. Sentiment on the 8/11 round-up was buying — "Wicks might be a late round flyer this year," "I'm in on Wicks. They traded draft capital for him and threw some money at him."
 
-**Draft take:** A last-round dart in deep leagues only. The camp line is real, but this same corpus flags his exact profile — camp hype, no established role, known drops — as the trap it has been in prior seasons.
+**Draft take:** take him a round or two before the last pick — three named beat writers on the Hurts connection is far more than board rank 253 is pricing.

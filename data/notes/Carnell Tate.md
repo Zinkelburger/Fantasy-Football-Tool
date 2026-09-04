@@ -1,10 +1,11 @@
-**Carnell Tate** (TEN, WR, bye 9) — board rank 72
+**Carnell Tate** (TEN, WR, bye 9) — board rank 72 · as of 2026-09-04
 
-**Room sentiment:** Lightly discussed (9 mentions) and unsettled — a rookie whose price is being moved by opinions of Tennessee, not of him.
+**Room sentiment:** genuinely split — the analysts have him as the top rookie WR of the class while the room's drafters keep letting him fall.
 
-- Hartitz places him in the "we're saying there's a change" tier. One projection has him at 774.5 yards against a 68.1 ADP; ranking rows put him around 73-77.
-- Bull case: the highest-upvoted take says he "is a baller" and that his ADP is being dragged down by the (legitimate) criticism of Tennessee taking him #4 overall with problems all over the roster. Another poster calls rounds 6-7 a strong price for a #1 wideout on a team that will play from behind a lot.
-- Bear case: at least two posters are actively fading him at cost — one specifically on route-depth grounds — and another lists him under "negative vs ADP" alongside the Bears skill group.
-- No camp reports, depth-chart notes or injury items on him in the corpus; the debate is entirely about price versus situation.
+- No injury or availability claim. The camp evidence is strong and it is the best-sourced thing on him: Austin Stanley of A to Z Sports reported (8/9) that Tate "dominated Titans training camp on Sunday, catching three touchdown passes from quarterback Cam Ward in a single move-the-ball period," with other media on the sideline confirming it was his best day of camp.
+- The preseason went the other way, and that is the more recent read. In the preseason opener he played 10 snaps on two drives and drew 3 targets with 0 catches; a film evaluator (8/30) says he has not been able to separate, which does not match his college tape, and that he dropped a preseason pass after not dropping one all of his final college season. No injury is cited — the concern is performance.
+- Role: commenters expect him to lead the Titans receiver room in snaps as the primary outside receiver, with one calling him the most talented offensive player on the roster. The counter is that rookies get eased in and that Wan'Dale Robinson holds the primary target share for now — the ceiling case is conditional on that changing. Murchison sets the realistic level at a second flex in a 14-team league, helped by a Titans team he expects to trail often. The bear projection on record: 1-3 catches for 35 yards a game.
+- Rankers disagree with the room. Cooper ranks him first among 2026 rookie WRs, ahead of Makai Lemon and Jordyn Tyson; Hartitz also has him highest of the rookie class, though he would trade Tate plus a late first and mid second for Malik Nabers in dynasty and picks Chris Bell as the rookie likeliest to lead in points. Loza likes the upside partly on the second-easiest strength of schedule, calling SOS only a tie-breaker.
+- Market and sentiment: a 5th-round pick in a 12-teamer drew "reach?" replies saying he is a bench stash with second-half upside, and another drafter reports him going well past ADP because managers preferred safer floors. Board rank 72 sits a round earlier than most of those prices. The room's loudest moment on him is still "Drop Tate, he's cooked" at 523 points after the 0-for-3 preseason game — hyperbole that several commenters pushed back on, but the room used it to sell.
 
-**Draft take:** A rookie WR1 on a bad team is a volume bet, not a safe one. Fine as your WR3 if he falls past pick 75; nothing here justifies reaching into round 6.
+**Draft take:** let him fall past board rank 72 and take him where the room actually drafts him — the camp report is real, but the only 2026 football anyone has watched had him unable to separate.

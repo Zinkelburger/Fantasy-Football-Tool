@@ -1,11 +1,11 @@
-**David Njoku** (LAC, TE, bye 7) — board rank 149
+**David Njoku** (LAC, TE, bye 7) — board rank 149 · as of 2026-09-04
 
-**Room sentiment:** Bearish and low-volume — 27 mentions, almost none about drafting him. He appears mostly as a name in arguments about Ladd McConkey's and Oronde Gadsden's target competition.
+**Room sentiment:** Split between "best quarterback of his career" and "30 and breaking down", with a three-tight-end room the one thing both sides agree on.
 
-- **He signed with the Chargers, and the room reads it as a role signing.** One poster frames the offseason as "Jim Harbaugh added a fullback, blocking tight end, Njoku." Los Angeles also brought in Charlie Kolar, "who they paid more than both Njoku and Gadsden are making combined, and is probably to be on the field a ton for his blocking."
-- **The direct opinions are negative:** "Njoku looked cooked last year." "Njoku is washed." Multiple posters say they're "not all that worried about Gadsden / Njoku" as competition for the Chargers' receivers — they don't expect real volume.
-- **The crowded room is the structural problem.** McConkey, Quentin Johnston, Harris, Gadsden, Kolar, plus pass-catching backs. One comment: "it's entirely possible that six different guys have 700 yard seasons and no one is top 24 for fantasy."
-- **The only bull framing is narrow:** "an extremely late-round Best Ball pick, because of his potential to randomly post a 2-TD game as a red-zone threat."
-- **Market position:** Hartitz bottom TE tier (one reader would drop him further), ADP 156.
+- Role, consensus Sept 3: he is the middle of the Chargers' three tight ends — solid as blocker and receiver, expected to play in 12 personnel. One commenter argues he is the one being slept on, now with the best quarterback of his career. The counter in the same thread: he is 30, breaking down, a big injury risk, and the three tight ends cannibalize each other until none is startable. His usable role also assumes he stays healthy and that Kolar holds the every-down blocking job ahead of him.
+- Sept 2: two nominations carrying 45 upvotes call him the Chargers tight end to own over Kolar and still available in the 4th; the counter in that thread is that he and Mike Gesicki both will not play enough to matter.
+- The room's own cautionary example is him. He was expected to be Cleveland's Week 1 starter last year and instead played blocking downs while Fannin ran the routes, and his 123 targets in 2023 came only because Cleveland had no other options (Aug 27).
+- Sentiment, Aug 18: one commenter cannot stop thinking about a comeback-player-of-the-year, top-5 tight end season. The same thread's original poster names Njoku as one of his own biggest ranking misses last year. The two are about equally informative.
+- No injury or practice claim this cycle, despite the injury-risk talk — that is an age argument, not a report.
 
-**Draft take:** Waiver-wire TE, not a redraft target. Best ball or bye-week fill only, and even there the room expects the Chargers to spread it around.
+**Draft take:** A bench dart at most — the target case requires beating out two other tight ends, and the last time the room bet on exactly that scenario for him it lost.

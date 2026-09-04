@@ -1,10 +1,11 @@
-**Kayshon Boutte** (NE, WR, bye 11) — board rank 172
+**Kayshon Boutte** (HOU, WR, bye 8) — board rank 172 · as of 2026-09-04
 
-**Room sentiment:** quiet — six mentions, all of them camp-report roundups rather than opinion. No one is arguing about him either way.
+**Room sentiment:** the trade out of New England was celebrated as an escape into opportunity, but both camps agree he is not a volume target earner.
 
-- Camp reports are positive: he has "shown flashes as the best WR in camp" and made plays downfield, with the Patriots rotating their receivers. A later roundup confirms a solid camp.
-- The situation is the problem. He is still reportedly seeking a trade from New England, a request now several months old, and the Patriots have a deep receiver room after adding AJ Brown. One writer's read is that the team simply isn't bothered by the request.
-- He's a free agent after this season, which is offered as a reason the Patriots might still move him.
-- Sleeper superflex/TEP board had him around 18.06 (pick 210) — deep-bench territory.
+- Traded from New England to Houston on 8/24 for safety Jaylen Reed and a 7th, per Pelissero with the pick confirmed by Rapoport. He steps in as the outside receiver opposite Nico Collins, filling the hole Jayden Higgins' injury left — conditional on Higgins being out for the season and Collins staying the primary X. He asked out of New England after the A.J. Brown trade left him fourth in line, and he is in a contract year at 24.
+- Role detail from the room: mostly Z with occasional X, since Collins takes X on roughly 80% of snaps. Several note he was a Z/slot at LSU and only played X in New England out of necessity, so the fit is natural rather than a demotion. Boutte himself says a large share of Houston's playbook carries over from the McDaniels offense he ran in New England; the room reads Nick Caley's system as Erhardt-Perkins, "New England lite," and splits on whether that makes him the deep/go-route guy again or a full-route-tree receiver.
+- The newest read (9/4) is firmer on the job than on the player: a 15-upvote comment calls him the clear number two in the Texans receiver room and argues Houston cannot make a playoff push leaning on Nico Collins and the run game alone, with another commenter unable to work out why his cost is so low.
+- Volume case: under 50 targets in New England last year while leading their receivers in snaps as the lone deep threat; Higgins vacates 68 targets, and Houston's higher pass volume plus lower tight end share has the room projecting 75+. The rebuttal is that a 13% target-per-route rate in a wide-open New England room indicts him, not the situation — 500-551 yards on a top-2 scoring offense, 51st in YPRR, never over 600 yards in three seasons. The quarterback is the other tax: this is a real downgrade from Drake Maye, and C.J. Stroud is the reason much of the room fades Houston pass catchers.
+- Market: thin, and dynasty-only. The room treats him as a low-end WR3 / bench dart rather than a breakout buy — one poster won't pay a 2026-currency rookie 2nd for the narrative, and several were about to cut him for roster space before the Higgins news. Nobody reports a redraft price, so board rank 172 is unchallenged.
 
-**Draft take:** Nothing here to draft on. Camp buzz behind a crowded depth chart with an unresolved trade request is a watchlist situation — if a trade happens, revisit him on waivers.
+**Draft take:** a last-few-rounds field-stretcher with a real starting job and a bad target profile — draftable in best ball, bench-only in redraft until the target share shows up.

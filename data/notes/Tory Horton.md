@@ -1,10 +1,10 @@
-**Tory Horton** (SEA, WR, bye 11) — board rank 246
+**Tory Horton** (SEA, WR, bye 11) — board rank 246 · as of 2026-09-04
 
-**Room sentiment:** Nearly silent — 3 mentions in the whole corpus, none of them a real discussion. There is not enough here to form a view.
+**Room sentiment:** the availability question is unanswered, and everything else in his file is downstream of it.
 
-- Depth chart: a Seahawks preview (9) lists the WR room as "led by JSN, Cooper Kupp, Rashid Shaheed, and Tory Horton" — he is named last of four, which puts him behind two established veterans for targets.
-- The only opinion in the dossier comes from a "do not draft these players" thread, where he appears in the WR81-90 group with the note "loads of potential as SEA WR2." That is a hedge, not an endorsement — and the surrounding names are explicitly on a fade list.
-- Sleeper superflex ADP has him at 19.12 (220.8), matching his end-of-board rank.
-- No camp reports, no target projections, no injury news anywhere in the dossier.
+- **Availability first, and it is unconfirmed.** As of 9/01 he has been held out of Seattle's camp. A self-identified Seahawks fan says there is no new injury beyond the shin issue he is working back from, and that there is smoke he was suspended by head coach Mike Macdonald; other commenters push back that none of that is confirmed and warn against acting on it. No beat report, designation or practice log exists in the corpus either way. Check his status before you spend anything.
+- The room's account of the lost season (8/14) is injury, not performance: he was on a top-five-rookie-WR trajectory and good when he played, then got hurt — which commenters read as reason he can be good again.
+- Role is the real cap. Seattle traded for and extended Rashid Shaheed, so the snaps that let Horton produce are diminished; the counter is that he was playing well on merit, not only volume. One commenter (8/11) puts him behind Jaxon Smith-Njigba, Shaheed, Cooper Kupp and AJ Barner and calls him a player you drop and re-add off waivers days later.
+- Sentiment is genuinely split and the room leans hold. The boldest Seattle call in a 9/02 predictions thread — "Tory Horton clear Seahawks WR2 by year's end. Sticking to my guns." — drew 46 points and no argument, and on 9/01 the room preferred holding him to holding Legette. Detractors call him injury-prone and a ghost in camp; one owner is shopping him for a fourth. He is still a sub-20%-rostered name, so he is available almost everywhere.
 
-**Draft take:** Undraftable in a 15-round league on this evidence. He is a watch-list name if Kupp or Shaheed misses time, not a pick you spend a roster spot on now.
+**Draft take:** Do not draft him until someone reports why he is off the practice field — the upside case is real but it is filed under an unexplained absence and unconfirmed suspension smoke.

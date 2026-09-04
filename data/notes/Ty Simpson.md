@@ -1,9 +1,11 @@
-**Ty Simpson** (LAR, QB, bye 11) — board rank 275
+**Ty Simpson** (LAR, QB, bye 11) — board rank 275 · as of 2026-09-04
 
-**Room sentiment:** Silent — 3 mentions, one of which is a ranking-table row and none of which is fantasy analysis.
+**Room sentiment:** the preseason tape genuinely impressed Rams fans, and nobody expects him to take a snap that matters in 2026.
 
-- The only informative reference implies he's a developmental project, not a 2026 starter: in a thread about McVay's future, a poster says a TV job "would hold significant appeal compared to trying to coach up Ty Simpson."
-- He's also used as a punchline for a worthless trade asset ("someone traded him to me for Jared Goff").
-- Board corroboration only: 18.12 (212.7) on a Sleeper 12-team superflex board, i.e. a last-round pick in the format that most inflates QBs.
+- Role: he is Matthew Stafford's backup, and every projection below is conditional on Stafford missing time. Commenters (Sept 4) read his preseason usage as short-to-medium designed reads — a game-manager package — and say that is the role he would play if called on. The room's baseline (Aug 30) is that the Rams' 2026 first-rounder sits all season as the quarterback of the future; one commenter thinks he could play after roughly half a season on the bench. No injury claims of any kind.
+- The pick's logic, as the room reads it: Simpson is the hedge that let the front office trade future picks aggressively for Garrett, with Stafford 38 and a chronic back. A commenter (Aug 29) expects him named starter in two or three years and argues the worst case is recouping value then — the Jordan Love pattern, where the price rose above the draft-day cost once he was named the starter.
+- Tape (Sept 4, consensus): Rams fans watching an All-22 breakdown of the preseason are cautiously optimistic — ball placement, zip, mechanics, progression reads and pocket presence all read NFL-caliber — while noting the play calling was safe and conservative, so he has not been asked to do anything hard yet. Both halves of that are the room's own words.
+- Market is dynasty-only and pulls two ways. One analyst's buy-low board (Sept 1) has him going below his 4,026 market value in 68% of 102 superflex trades — the only quarterback on the discount list — while the room itself made him the most popular pick of the 1.08 tier in superflex rookie drafts, over Stribling, Boston and Cooper, with one manager trading the pick away when he could not get him. The stated case is value insulation: nothing for a year or two, but the price holds.
+- The dissent is one voice (Aug 11): a commenter high on Denzel Boston wishes he could go back and not spend rookie picks on Simpson.
 
-**Draft take:** Superflex or dynasty stash only. There is no redraft case in a 1-QB league and nothing in the discussion suggesting a path to snaps this season.
+**Draft take:** no redraft value behind a healthy Stafford, but in dynasty superflex he is the one quarterback the trade market is actively discounting — buy him in trade rather than paying the 1.08.

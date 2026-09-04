@@ -1,9 +1,8 @@
-**Samaje Perine** (CIN, RB, bye 6) — board rank 271
+**Samaje Perine** (CIN, RB, bye 6) — board rank 271 · as of 2026-09-04
 
-**Room sentiment:** Quiet — only 4 mentions, and none of them are actually arguing for or against drafting him. This note is short because the dossier is thin.
+**Room sentiment:** The room argued this one out and settled against him.
 
-- **How he's tiered:** Hartitz places him in handcuff Tier 5, labeled "Committee szn, but we're saying there's a chance," paired with Tahj Brooks. That's the bottom handcuff bucket and it explicitly assumes a split backfield.
-- **The role he's cited for is pass protection.** In an unrelated Seahawks thread, a commenter uses him as the archetype — "Justice Hill, Samaje Perine, and any other 'just ok' rb2 on a good team that excels at pass protection and can also run well behind a competent o-line." That's the room's read on what he is.
-- **Two incidental data points:** a goal-line usage argument notes he was ahead of Bucky Irving in carries inside the 10, and a Joe Mixon thread notes "Samaje Perine was running considerably better than him for a solid stretch."
+- Role (consensus, Sept 4): an aging niche-role backup behind Chase Brown who sees real volume only if Brown misses time. Commenters say Cincinnati would be in trouble starting a Perine and Tahj Brooks combo for any length of time, and one expects him gone next offseason on age.
+- Sept 1, the minority case and its rebuttal: some argue he is again taking a real chunk of the backfield, citing a 40% snap share across about ten games last year and full recovery from his injury; the majority answers with what that produced — 3.5 yards per carry, under two catches a game, more than nine points in two games all season — and calls him a non-issue.
 
-**Draft take:** Not a draft target in a 12-team league — he's a committee back with a pass-protection role and a named competitor in Tahj Brooks. Worth knowing as a contingency name if the Bengals backfield thins out, nothing more.
+**Draft take:** Do not draft him; even the injury path to volume runs through a committee the room says would sink the offense.

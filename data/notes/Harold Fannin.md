@@ -1,10 +1,11 @@
-**Harold Fannin** (CLE, TE, bye 11) — board rank 63
+**Harold Fannin** (CLE, TE, bye 11) — board rank 63 · as of 2026-09-04
 
-**Room sentiment:** Quietly positive but thin — 19 mentions, mostly as a name inside TE-strategy threads rather than a debate of his own. Nobody argues against him.
+**Room sentiment:** A waiver-wire TE1 last year whose repeat case now rests on a bad quarterback checking down to him.
 
-- The most-upvoted reference (242) uses him as evidence for punting TE: he was drafted outside the top 130 picks last year and finished inside the top 10 in total fantasy points, alongside Goedert, Hunter Henry, Jake Ferguson and Juwan Johnson.
-- Concrete role note: his talent "led Kevin Stefanski to adopt significantly more 2WR sets to keep him on the field," from a previously 11-personnel staff — snaps are being schemed around him.
-- Hartitz files him in Tier 3, "fans, but at least one concern." One newsletter aggregate lists him TE7 and 30th overall. Sleeper 12-man superflex ADP 5.09 (58.5).
-- The only bearish framing is structural: a TE-deadzone post argues the gap from Fannin down to Goedert is roughly 17 points across a whole season in Sleeper projections, so paying up buys little. Optimists counter that he "will not take a step back and will maintain his PPG production."
+- Role: the bull case is that the pass-catcher room around him — Concepcion, Boston, Jeudy — is unproven, so he still commands a solid target share; the bear case is that Deshaun Watson historically has not used tight ends much and the added receivers cut into him. That whole split is conditional on Watson rather than Shedeur Sanders taking the snaps, and keeper and dynasty owners note he came alive during Sanders' starts last year — the Watson decision is treated as a hit to his value.
+- The named competitor is rookie KC Concepcion: both work the short-to-intermediate area, and commenters expect Fannin's usage to be the swing variable in how Browns targets split, with one expecting him to cede the short, easy targets outright and lose floor.
+- Hartitz has him TE8, ahead of Juwan Johnson, expecting Fannin and Cleveland to make the most of the Watson experience via screens and lower-aDOT targets. He is separately nominated as a safety net who can produce with any bad quarterback.
+- Market: going around TE6 in the 8th-9th round, $5-6 in auction, with one commenter expecting unease about the Browns QB room to push him down further — later than board rank 63 asks. One OP has him among his preferred mid-round TE targets with LaPorta and Kraft; on the other side, a Sept 4 trade thread prices him around round 8 and waves him off as the throw-in, and one commenter names him a TE to sell now if you do not believe the production is sustainable.
+- The evidence for him is last year: 11.7 PPR points per game after going undrafted, with a Week 1 tell of 70% of snaps, 60% route participation and all the red-zone snaps. Against it, a consensus that he will not repeat as a top-10 TE with the added competition, a Ringer host who does not want any Cleveland player at any price because the vibes are off, and one commenter calling him a Gary Barnidge one-year blip — disputed on the grounds that he was an elite college receiving tight end with a productive first NFL year.
 
-**Draft take:** A defensible mid-round TE with real reported usage behind him, but the room's own math says the edge over a round-10 tight end is small. Take him if he falls to the fifth or later; don't pay a premium.
+**Draft take:** Take him as your TE1 at the 8th-9th-round price the room is charging — that price already pays for Watson, and a Sanders return would be free upside.

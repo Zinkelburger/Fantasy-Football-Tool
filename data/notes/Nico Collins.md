@@ -1,11 +1,10 @@
-**Nico Collins** (HOU, WR, bye 8) — board rank 26
+**Nico Collins** (HOU, WR, bye 8) — board rank 26 · as of 2026-09-04
 
-**Room sentiment:** Quietly bullish, and the room knows the market isn't with it — the loudest line is "Nico Collins only trails Puka in yards per route run over the last three seasons and it's like none of you even care."
+**Room sentiment:** The unambiguous WR1 on his depth chart, discounted for a body and an offense rather than for anything he does.
 
-- Hartitz tier 2 ("overall WR1 upside") with Jefferson, AJ Brown, Lamb and London. Consensus average rank 24.67, ADP ~27.7, projected 1,074.5 yards; goes 3.05 in a 12-man superflex sample.
-- Even the fade-article writers concede the player: "elite talent and target hog," "an elite WR for three years straight, is very talented and still young."
-- The bear case is entirely C.J. Stroud. One ranker's full comment: "16 Nico Collins (no clue how Stroud will be this year)." Another explains the apathy directly: "we remember JJ McCarthy would have been an upgrade over CJ Stroud in the playoffs."
-- Secondary risk is target erosion — Jayden Higgins is drawing early camp targets and is being called Houston's clear WR2, and Tank Dell is returning.
-- Value framing recurs: "extreme value pick... could easily be better than the likes of AJ Brown." One skeptic notes that stripping his last two games leaves him WR31.
+- Health: no current injury. Durability is the standing knock — commenters say he has never played a full season and misses roughly 2-4 games a year, and that Houston as a whole cannot stay healthy. It is cited both as the reason for the discount and as the case for rostering the receiver behind him.
+- Role: unquestioned Texans alpha, and the room's target math got better, not worse. Tank Dell is out at least four games and Jayden Higgins is hurt, leaving Kayshon Boutte as the only body behind him; an 08-26 practice report has Stroud hitting him repeatedly as the passing game's focal point. He has lined up at X on about 80% of snaps and the slot 20% over three seasons, and the room's upside case is Houston moving him around more — one popular take is that ~15% more slot time puts him in overall WR1 contention.
+- The bear case is entirely environmental: a bad offensive line limiting the deep shots he is best at, a run-heavy low-play-volume offense, David Montgomery added, and Stroud regression. One thread notes his best weeks last year came with Davis Mills throwing.
+- Market: priced as a round-2 pick and a borderline WR1, going right around Chris Olave at the 2/3 turn with the room split on the order and one drafter reporting him falling to the third. In dynasty he is repeatedly bought cheap — one manager got him plus a 2nd for Marvin Harrison and a 1st — and the room calls him mispriced with top-5 upside. Twerski takes him over Olave and Jeremiyah Love with a first overall keeper pick. A commenter calls Sleeper's ADP putting A.J. Brown ahead of him backwards.
 
-**Draft take:** A late-second/early-third target where you pay for the receiver and discount the quarterback. If he slides past the other tier-2 WRs, take him.
+**Draft take:** Buy him at the 2/3 turn over the receivers going near him — the target consolidation with Dell and Higgins out is the most concrete thing on this page, and the discount is for games missed, not for talent.

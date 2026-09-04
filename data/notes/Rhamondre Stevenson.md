@@ -1,11 +1,11 @@
-**Rhamondre Stevenson** (NE, RB, bye 11) — board rank 65
+**Rhamondre Stevenson** (NE, RB, bye 11) — board rank 65 · as of 2026-09-04
 
-**Room sentiment:** Modestly bullish, but nearly all 40 mentions are really an argument about his ADP relative to TreVeyon Henderson rather than about Stevenson himself.
+**Room sentiment:** The beat has been banging his drum all month and the room has flipped to him — while shouting down the article that called him the overall RB1.
 
-- **The backfield is a confirmed split.** Camp report (score 97): Stevenson and Henderson "appear to be sharing the backfield in New England." Vrabel: "I love the way Rhamondre protects and TreVeyon continues to work on that." The room reads the blocking comment as Stevenson holding passing-down and goal-line work early.
-- **The bull argument is price, not talent.** "I don't think anyone is saying Rhamondre is great just that he will outperform his ADP." He goes two to three rounds after Henderson and the claim is he'll "average equal or slightly more PPG." Also: "being drafted right now below his floor," and "a starting running back until proven otherwise."
-- **The counterargument, from the same threads:** Henderson led the league in yards before contact per attempt (3.16), had higher YPC and explosive-run rate, and "adds an element of speed and big play potential that Rhamondre isn't capable of" (4.69 speed).
-- **Named risks:** injury history and fumbles resurfacing. New England also added AJ Brown and Doubs.
-- **Market position:** RB28-RB29, ADP 67 (9.05 in a superflex sample).
+- Role, Week 1: he is the lead back with TreVeyon Henderson not cleared off an ankle. Posters say they will start him regardless of matchup; one wants to see Henderson's Wednesday practice work before deciding. Loza says Stevenson is not going away and caps Henderson's early-season volume.
+- The camp reporting is the bull case and it is consistent: Andrew Callahan (Boston Herald) at the Patriots-Colts joint practice on 08-11 had him "still very much the leader here", taking the first two handoffs from Maye and leading all backs in catches. Later camp reports have him taking the majority of the work since day one as a three-down back with the second-most catches of any Patriot — and already ahead of Henderson with the ones before the ankle. Last season Henderson led only while Stevenson was hurt; once he returned the split went from near-even to 70-30 in the playoffs.
+- Injury is the real risk to all of it: he has played a full season once in five years and missed time last season, which is exactly the window Henderson used.
+- The ceiling argument cuts both ways. A widely-quoted article had him on a 1,600-yard, 50-catch, 15-TD full-season pace after the week-14 bye against five of the league's seven best defenses; the room's rebuttal is that the pace was inflated by one blowout against a collapsed Dolphins team, that his career best is RB7 at 249 points, and that New England adding A.J. Brown and Romeo Doubs should cut his passing volume and touchdown equity. Cooper still has him as the goal-line back and says he does all the meaningful work if Henderson cannot handle the pass-block scheme. The fumbling reputation is overblown — three all season, none after week 5.
+- Market: reported picks in rounds 6, 7 and 9, ADP around RB26, a round or two later than Henderson and repeatedly called the better value of the two. Twerski is the holdout, grouping him with dead-zone backs he would rather not draft.
 
-**Draft take:** Late RB2/flex where the entire edge is the two-round discount to his own committee-mate. Fine at cost; reaching him into Henderson's range erases the only reason to own him.
+**Draft take:** Draft him in the 6th as your RB2 — he is the Week 1 lead back with the beat behind him, and you are buying the job, not the RB1-overall fantasy the room already laughed at.

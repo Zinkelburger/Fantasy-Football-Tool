@@ -1,10 +1,11 @@
-**Tyrone Tracy** (NYG, RB, bye 8) — board rank 121
+**Tyrone Tracy** (NYG, RB, bye 8) — board rank 121 · as of 2026-09-04
 
-**Room sentiment:** Thin but consistent — only 12 mentions, essentially all framing him the same way: the Skattebo handcuff, not a standalone starter.
+**Room sentiment:** He survived the cut talk and is still the Skattebo handcuff, but the new staff spreads the work and prefers someone else.
 
-- **The one thing the room agrees on:** he's a late-round handcuff worth owning. Ian Hartitz places him in handcuff Tier 2, "one injury away from being on the cover of waiver wire articles." A late-round RB writeup: "Tyrone Tracy is definitely a handcuff to be targeting late in drafts."
-- **He gets named because of Skattebo's injury risk.** In the Skattebo analysis thread the strategic note is that "it's very easy to grab Tyrone Tracy Jr." alongside him. One poster in the "do not draft" thread: "I'm actually high on Tyrone Tracy because of this."
-- **Modest standalone case:** one ranker says he "may have some sneaky value as an RB2/flex," and he appears on a couple of dynasty-sleeper lists. That's the ceiling of the enthusiasm — nobody argues he beats out Skattebo when both are healthy.
-- **Market position:** ADP 123, 13.10 in a superflex sample.
+- Roster question, effectively answered: on Aug 23 commenters put Tracy on the Giants' chopping block ahead of Devin Singletary, and another listed him among backs Vegas could sign off waivers. As of Sept 3 a Giants fan is discussing him as one of four backs in the room, so the squeeze did not take him.
+- The role claim to read is a drift, not a reversal. Dan Duggan of The Athletic reported on Aug 11 that Tracy had taken the majority of snaps in the Giants' two-minute drives, and figured a time share with Cam Skattebo the 1-A and Tracy the 1-B. A Ringer host on Aug 26, pressed on a guest calling Tracy an injury-away guy who "is not even the backup at this point", said he still thinks Tracy is the favourite to end up ahead of Singletary and Najee Harris, but that the split is fluid. Then on Sept 3 a Giants fan says the coaches who drafted Tracy are gone and Brian Daboll's replacement staff favours Singletary — Tracy is the most explosive of the four, but the room will spread work around.
+- What he is for: insurance on Skattebo's health and three-down ability. He becomes droppable if Harris or Singletary start taking the work behind Skattebo (Sept 1). After Skattebo went down last year Tracy had 14-plus carries every week but one from Week 10 on, and the Giants want to run with Greg Roman on staff; skeptics say the volume never turned into production.
+- The knock is blocking. A missed block that got Jaxson Dart flattened is cited as part of why the Giants added a better pass protector. Against that: four rookie fumbles and only three 20-yard runs on one side, over 1,000 all-purpose yards in each of his two seasons on the other.
+- Market (Aug 7, before all of this): repeatedly called a great value at a late ADP — "such a great unsexy pick" at 409 points — and one bestball drafter's second-highest-owned player across roughly 95 drafts.
 
-**Draft take:** Draft him in the last few rounds if you own Skattebo — that pairing is the room's explicit recommendation. Without Skattebo he's a bench flier, not a target.
+**Draft take:** Still the Skattebo handcuff worth a late pick, but the new staff's preference for Singletary caps him — draft him for the injury, not for standalone work.

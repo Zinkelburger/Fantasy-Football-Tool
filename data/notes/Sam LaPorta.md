@@ -1,10 +1,10 @@
-**Sam LaPorta** (DET, TE, bye 6) — board rank 86
+**Sam LaPorta** (DET, TE, bye 6) — board rank 86 · as of 2026-09-04
 
-**Room sentiment:** Tilting bullish but far from settled — a 400-upvote thread argues he's "heavily slept on" relative to McBride, with argument on both sides across 101 mentions.
+**Room sentiment:** Practising and trending toward Week 1, priced at a discount the room cannot agree is real.
 
-- Health: fully cleared for training camp after the back surgery that ended his 2025 season. That surgery is the biggest bear point — several posters aren't confident he returns to form; others say physicians aren't concerned.
-- Bull case: top-8 TE in 2023 and 2024, attached to Goff in a high-scoring offense, an easy schedule, new OC Drew Petzing, and a red-zone role (~0.5 TDs/game). He's cheaper than either of the last two years, going around TE7 at the 7/8 turn.
-- Usage evidence: before his injury Jameson Williams averaged 4.3 targets/game and 8.3 FPG; Jamo's WR12 finish came after LaPorta went down. The room reads that as LaPorta being the clear #2 behind St. Brown.
-- Bear case: he needs TDs to be elite, he's the fourth mouth behind St. Brown, Gibbs and Williams, and blocking caps his routes — one poster counters he's had under 3 targets only 3 times in 42 games.
+- Back injury first, hip second. He had a microdiscectomy in November 2025 for a herniated disc; a physical therapist analyst notes NFL athletes typically need 4-6 months to return to contact and LaPorta will be ten months out at Week 1, is already practising, and has ramped to contact well. Dan Campbell said on 2026-08-20 that a hip injury could have him ready by the start of the season but he did not know "for sure" — a commenter who heard the full remarks read it as Campbell declining to speculate rather than a warning. The PT is not worried about the hip contusion; the practice record is the better guide than the coach's hedge here.
+- The live risk is recurrence, not availability. One commenter with the same surgery reports lingering hip tightness three months post-op and a surgeon's estimate of up to a year to resolve, and is avoiding him for that reason.
+- Role is intact and possibly larger. Tim Twentyman (DetroitLions.com) had him terrific through the start of camp — a Goff seam completion to the nine and a touchdown over the middle on the next play — showing how much Detroit missed him. Hartitz says a healthy LaPorta evens out the target distribution with Jameson Williams, and per John Daigle new OC Petzing did not install his own playbook, so the offense should look like the second half of last year.
+- Market: he is a round 6-8 target, with the room split on whether the discount is a bargain or a warning. His auction price of $6-10 runs above Kraft, which one commenter argues is backwards because a back/spinal injury is likelier to recur than an isolated ACL. Others say the discount plus streaming until he returns makes him more draftable than at his pre-injury cost.
 
-**Draft take:** The best-value middle-tier TE if you aren't paying for Bowers or McBride, especially in half-PPR and standard where his TD dependence hurts less. Take him at ADP; don't reach into round 6.
+**Draft take:** Take him at the 6/7 turn as your TE1 — he is practising and the offense did not change around him, and the recurrence risk is what you are being paid to accept.

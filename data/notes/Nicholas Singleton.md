@@ -1,10 +1,10 @@
-**Nicholas Singleton** (TEN, RB, bye 9) — board rank 184
+**Nicholas Singleton** (TEN, RB, bye 9) — board rank 184 · as of 2026-09-04
 
-**Room sentiment:** Quiet — 3 mentions, one of which is just a ranking row. There is no real debate about him in the corpus.
+**Room sentiment:** A dynasty taxi stash the room second-guesses — the only actual reporting on him is positive, and it is a month old.
 
-- The only reported evaluation comes from a training camp roundup: the rookie "is explosive and could earn a role later on, but nothing more than a bench stash for now."
-- The only opinion offered is a skeptical one — a poster who watched a lot of Penn State football doubts he takes over the Titans backfield, replying to someone who predicted exactly that (and got his first name wrong).
-- No depth-chart reports, injury notes, or ADP argument beyond the price itself.
-- ADP quoted at 197.5, with a superflex ranking row at 191.3.
+- The practice report is the best-sourced thing on his page: Jim Wyatt of TennesseeTitans.com wrote on Aug 11 that Singleton got a lot of work in the joint practice with the 49ers and continues to impress, busting into space on a number of runs just as he has in Nashville. A commenter in the same thread relays that a 49ers beat reporter said the same.
+- Against that, later but commenter-level only: a Penn State alum (Sept 3) says he is coming off an injury that will take time to get back to full strength, that he "goes down in the slightest breeze", and that he likely needs a season or two in an NFL weight room before he is more than a situational player. No designation, no missed practice, nothing from a beat writer supports it — treat it as a durability opinion, not a status.
+- Role: third in Tennessee's backfield. The same Sept 3 thread argues he would be worth more than Tyjae Spears if Tony Pollard got hurt, and might take the job with no injury at all — a split college workload with Kaytron Allen left little tread and Tennessee traded up for him. The forecast version (Sept 2) has Pollard used more early in his last year with the team, then a committee, then Singleton eating into it until he opens next season as the starter, with no Titans back holding value this year.
+- Market is the loudest block and it is negative: cited twice as a rookie-draft mistake for going ahead of De'Zhaun Stribling around 2.10, one manager glad he took Jonah Coleman instead, another asking whether Singleton is having a bad camp and getting no answer. His cost is around the early second, and two managers report putting him on taxi.
 
-**Draft take:** Last-round stash at most. The one camp report says "later on," not now — there's no reported path to touches to open the season, and nothing in the room supports drafting him ahead of ADP.
+**Draft take:** Dynasty taxi stash only — the Titans beat writer liked what he saw in August, but the Tennessee job is next season's at the earliest.

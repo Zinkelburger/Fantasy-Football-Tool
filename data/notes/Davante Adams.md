@@ -1,10 +1,10 @@
-**Davante Adams** (LAR, WR, bye 11) — board rank 56
+**Davante Adams** (LAR, WR, bye 11) — board rank 56 · as of 2026-09-04
 
-**Room sentiment:** Modest volume (31 mentions) and mildly positive, but with an explicit age-cliff question hanging over him. He is a name that gets used as a comparison for other players more than he gets debated himself.
+**Room sentiment:** The bull case is explicitly contingent on Puka Nacua missing time, and the room is not unanimous that it would even help.
 
-- **The bull case is touchdowns and red zone:** he led the league in receiving TDs last season at age 33, in what one writeup calls "the league's best red-zone offense with Stafford grading Top 10." He also sees a target bump in heavy personnel (+31.5% targets per snap in 2025, one of the largest in the sample). He is cited as the main reason Kyren Williams' fantasy value is capped.
-- **The bear case is consistency and age:** the same writeup flags him as severely matchup-sensitive — 23.8 PPG against soft coverage, 10.1 against tough. Ian Hartitz puts him in tier 4, "clear upside but we have questions." One AMA question simply asks about "Davante with the age cliff."
-- **ADP disagreement:** one poster says he "is going about 5 WRs too late," while a projections post pairs an ADP of ~46 with only 774.5 projected receiving yards. Board rank here is 56.
-- **Camp note:** one training-camp roundup references Adams' age and both his and Puka Nacua's injuries as the reason to watch a Rams sleeper WR.
+- Role: the Rams' WR2 and the current occupant of Sean McVay's X receiver job — the role Odell Beckham held before tearing his ACL in the Super Bowl and the one Allen Robinson failed in, defined, commenters stress, by red-zone production. He is named the main beneficiary if Nacua is suspended or otherwise unavailable, with Stafford still holding him plus a heavy dose of three-tight-end sets. Both the Aug 30 and Sep 2 versions of that case carry the same condition — Nacua actually missing time.
+- The standalone case is usage, not luck: he finished WR7-9 last year at 33, has been top three in targets inside the 10 nearly every year since 2020, took 25 such targets for 11 touchdowns in 2025, and the Rams ran a lot of single-WR sets with him. Commenters argue he has not lost a step because he never relied on top speed, and call him the best goal-line target in the league.
+- The dissent is specific and comes from the same threads: he is 33, he leaned heavily on touchdowns — scoring on 25% of his catches for 14 — and one commenter says he is no longer an alpha and scores mostly in the red zone, so Nacua missing time would not help him as much as advertised. The other named risk is Nacua absorbing red-zone looks if he plays.
+- Market: four top-level nominations (+19) on Sep 3, with one drafter reporting he got Adams in the 6th round twice, pointing at the WR7 finish at 33. Back in August, on the first Puka scare, the discussion was about the 3/4 turn or bumping him into rounds 2-3 as the Rams' fallback WR1. Board rank 56 sits between those; the 6th-round reports are the ones to act on.
 
-**Draft take:** A TD-dependent, matchup-swingy WR3 in a good offense. Reasonable at rank 56, but don't pay a 4th-round price expecting week-to-week stability.
+**Draft take:** A clear buy if he falls to the 6th; do not reach into round 3 for a Nacua contingency that may never happen.

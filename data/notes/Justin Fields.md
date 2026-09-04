@@ -1,10 +1,11 @@
-**Justin Fields** (KC, QB, bye 5) — board rank 226
+**Justin Fields** (KC, QB, bye 5) — board rank 226 · as of 2026-09-04
 
-**Room sentiment:** Bearish, close to unanimous — 19 mentions and almost all negative. He's mostly invoked as a cautionary tale about other players rather than as a draft target.
+**Room sentiment:** Kansas City's backup quarterback with no standalone role, and the room's verdict on him is settled and negative.
 
-- **The criticism is about his passing, repeatedly:** "GW was kneecapped by the WORST QB play I've witnessed," from a poster who admits "I look like a Justin Fields hate account." Another: "Justin Fields had a decent offensive line and refused to throw a forward pass outside of week 1." A third says he "should never be a starter."
-- **Relevant to teammates:** one poster warns he is "notoriously avoidant of RBs when passing" — worth knowing if you're valuing a pass-catching back attached to him.
-- **Role:** the corpus lists him as a KC QB2, with no camp reporting establishing a path to starting snaps.
-- **The one nuanced take:** a Hartitz QB-tiers reply argues the backlash overcorrected — "a lot of people got burned by believing in Justin Fields last year and are a little (too?) gunshy."
+- **Availability first: he is QB2 behind Patrick Mahomes and is not getting the preseason work.** Andy Reid, quoted by the Chiefs beat on 8/26, said Garrett Nussmeier may play the entirety of the preseason game against Seattle with Chris Oladokun in concussion protocol, and that Fields would only need to keep his arm loose just in case.
+- Chiefs fans read that as Fields being safely the QB2, but a loud minority wants him traded for picks so Nussmeier can back up, and several would rather use him as a gadget piece for wildcat, sneaks and two-QB packages than as a pocket backup. Nothing in the corpus gives him a path to snaps while Mahomes is healthy.
+- The strongest thing said about him is an argument for someone else: the room's 9/02 read on DJ Moore's 2023 calls Fields one of the most fantasy-friendly quarterbacks in the league — tunnel vision on his alpha, roughly a 75% catchable-ball rate to Moore — and notes Caleb Williams' career completion percentage sits 1.5 points below his.
+- Sentiment is unusually settled and bearish, and the fade case is the sharp one: "Fields just isn't gonna get any better," "a known quantity," and he is grouped with Anthony Richardson as a tier of young QBs whose first-round dynasty startup price was never going to pay. A 9/04 commenter blames "abysmal QB play from Justin Fields" for the Jets' passing offense last season. The concession is real but narrow — he is one of the best rushing quarterbacks in NFL history.
+- Market, 9/01: six top-level comments name him as the missed sell. Managers report turning down a first, two seconds, and a Breece Hall + Zay Flowers package at various points. One owner who already rosters Mahomes says he will drop Anthony Richardson for Fields as the better speculative add.
 
-**Draft take:** Don't draft him in single-QB at an ADP of 237. In deep superflex he's a last-round body whose value depends entirely on an injury ahead of him, and nothing in the corpus suggests that's coming.
+**Draft take:** A handcuff, not a quarterback — leave him undrafted in redraft, and in superflex treat him strictly as a Mahomes-injury lottery ticket.

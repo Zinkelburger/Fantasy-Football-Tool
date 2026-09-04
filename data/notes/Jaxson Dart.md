@@ -1,10 +1,10 @@
-**Jaxson Dart** (NYG, QB, bye 8) — board rank 92
+**Jaxson Dart** (NYG, QB, bye 8) — board rank 92 · as of 2026-09-04
 
-**Room sentiment:** Thin but positive. Roughly a dozen usable lines — much of the raw mention count is Jaxson Smith-Njigba name collision — and what's there is wait-on-QB strategy talk rather than analysis.
+**Room sentiment:** Polarizing well past the football — the fades are half play-caller distrust, half dislike of the player.
 
-- He is the poster child for waiting: "The fact that I didn't put a lot of draft capital in those picks allowed me to easily move on and pick up Jaxson Dart which carried my mid season." An Establish The Run analyst: "you'll be able to get the Jaxson Dart, Brock Purdy, Patrick Mahomes type guys for $1."
-- The structural concern, from a well-scored dead-zone piece: "The Giants rebuilt the offensive line, the identity of that offense is going to be the run game, and Jaxson Dart is openly telling media Skattebo is the focal point."
-- Numbers: 3,150.5 projected passing yards; 4.05 / 43.6 superflex, which overstates his redraft cost.
-- Scattered enthusiasm: he headlines a "5 Players I would Bet My Fantasy Season On" post, and one hill-to-die-on is "Jaxson Dart is a top 2 QB." One "do not draft" mention pairs him with Skattebo.
+- Health: no current injury. The room actively pushes back on the concussion narrative — he has exactly one documented concussion, and commenters blame refs sending him to the blue tent and broadcasters not correcting it. What survives is style risk: Twerski says his play style makes him a bigger injury risk than most quarterbacks and would take Caleb Williams instead if drafting only one QB, though he prefers Dart in a multi-QB build on schedule. Maher, at QB13, calls him the most volatile in the tier and the most likely injury risk.
+- Role: the starter, with a real bench-risk conversation attached — "Dart is benched at some point in the season" drew 15 points, answered with the question of whether that means injury or performance. The defence is his rookie line: 63.7% completions, 15 TD to 5 INT, a 91.7 rating, 13th in EPA/play and 17th in success rate while throwing to Jalin Hyatt and Wan'Dale Robinson. He now has Malik Nabers.
+- The offense is the standing bear case, and it came from the coach: OC Matt Nagy said on 08-13 that Dart is "super talented" but is having "struggles" in camp, a second straight year learning a new offense and his first working extensively from under center. The room expects a conservative, run-heavy, under-center RPO and short-passing attack that caps his volume, and the top comment on that thread by a wide margin (1,134 pts) was "Are the struggles named Matt Nagy?".
+- Market: the board has him at rank 92; the room is taking him later, in rounds 9-14, and calls him an easy fade at his cost — "way over its skis" on the rushing and "dawg" reputation. In dynasty he is a named sell at QB12 on KTC, likened to Anthony Richardson and C.J. Stroud. The buy side is structural: Cooper wants a mobile QB in every late build, naming Dart with Kyler Murray, since every QB averaging 5+ runs a game over a full season has finished top 10 for a decade.
 
-**Draft take:** A last-two-rounds QB, not a target. The upside needs Nabers and Skattebo healthy — and if the run-first identity holds, his ceiling is capped anyway.
+**Draft take:** A round 10-12 QB2 for the rushing floor, not a round 8 starter — the legs are the whole case and Nagy's offense is a real cap on the rest.

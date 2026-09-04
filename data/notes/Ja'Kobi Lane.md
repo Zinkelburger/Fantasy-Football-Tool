@@ -1,9 +1,12 @@
-**Ja'Kobi Lane** (BAL, WR, bye 13) — board rank 231
+**Ja'Kobi Lane** (BAL, WR, bye 13) — board rank 231 · as of 2026-09-04
 
-**Room sentiment:** Silent. Both of his two corpus mentions are ranking-table rows with no opinion attached.
+**Room sentiment:** the best-sourced camp hype of any rookie in the corpus, sitting on top of a player with zero regular-season snaps.
 
-- He appears at ADP 169.5 in one WR ADP-versus-projections post and at 19.01 (213.2) on a Sleeper superflex board. That's it.
-- Worth one note from that first post: he's listed with "no line," meaning the projection source it was built on didn't give him a receiving-yardage projection either. The silence isn't just Reddit.
-- No camp reports, role discussion, or depth chart information anywhere.
+- Camp, per beat report: Ravens beat writer Jamison Hensley said that in 27 years covering the team he is not sure he has seen a rookie have a training camp like Lane's (8/8), with near-daily circus catches that Derrick Henry and Mark Andrews were seen congratulating him for. Multiple Ravens beat writers reported another impressive practice on 8/9. Cooper adds that Lane has moved more than any non-injured player since camp opened, and is drafting him.
+- Role as of Aug 29: Ravens fans read him as the settled WR3 and the outside/X receiver, with Zay Flowers in the slot and Rashod Bateman on the other boundary — several point to him sitting the final preseason game as the sign the job is locked. Some expect big-slot usage instead, since press coverage was his draft knock.
+- The WR2 case is contingent on Bateman. The top Ravens comment on Aug 31 (41 pts) is simply "Ja'Kobi Lane WR2," with the room treating him as the direct beneficiary if Bateman's domestic violence case costs him a roster spot; the dissent says Bateman is the better player, Lane cannot separate, and projects a WR3.
+- Early usage projects situational rather than volume-driven: best hands in the room and a red-zone/50-50 target, but not a crisp route runner and short on separation, so drags and slants until that develops. One commenter expects him to absorb the targets Isaiah Likely and Hopkins vacated.
+- The sourced bear case, and it outvoted the hype in its own thread: a 202-point breakdown flags a 33% college contested-target rate — against a roughly 25% Drake London ceiling — as a separation red flag putting him in the Reagor/N'Keal Harry tier, and a 510-point comment says the real story is Baltimore's receiver draft history. A Ravens fan adds that in Lamar Jackson's highest-volume year (4,172 yards, 41 TDs) no Baltimore pass catcher came near a Puka rookie line.
+- Market: Maher calls him his favorite lottery ticket of the deep-bench group, ahead of Caleb Douglas and Keenan Allen; Twerski names him a favorite last-round or early-waiver pickup. Board rank 231 matches that — nobody is arguing for a real pick.
 
-**Draft take:** Undrafted in standard formats. There is no information here to justify a pick.
+**Draft take:** last-round flier ahead of the other deep-bench receivers, and your first waiver claim if Bateman's case or a Flowers absence opens the WR2 job.

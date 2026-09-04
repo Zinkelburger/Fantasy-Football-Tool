@@ -1,10 +1,11 @@
-**Jayden Daniels** (WAS, QB, bye 7) — board rank 64
+**Jayden Daniels** (WAS, QB, bye 7) — board rank 64 · as of 2026-09-04
 
-**Room sentiment:** Low volume — 24 mentions, no dedicated thread. He appears on both "do not draft" and "solid mid-round bet" lists, and the sharpest line in the file is skeptical.
+**Room sentiment:** the room is fading him and drafting him anyway — every objection is about Washington's offensive line, not about Daniels.
 
-- Bear case is last season, stated plainly in the Hartitz QB tiers thread: "Man Jayden daniels sure is high for someone that finished QB33 last year." Others echo the burn — "Invested in Jayden Daniels last year and it cost me," "I'm really not high on Jayden Daniels."
-- Bull case is structural, not analytical: a draft-path study groups him with Lamar, Burrow and Drake Maye as "solid bets in those mid rounds, even if you aren't able to grab a Josh Allen in round 3." One poster's hill: "Jayden Daniels finishes QB1."
-- Numbers: 3,249.5 projected passing yards; 2.07 / 22.6 superflex, which inflates QB cost well above redraft.
-- A 26-score "Do NOT draft these players" list includes him next to Josh Allen and Lamar Jackson, so read that as an anti-early-QB stance rather than a Daniels-specific fade.
+- No current injury reported. The durability worry is structural rather than a status: one commenter argues his reckless scrambling, the same trait that makes him effective, is a standing risk that keeps landing him on IR, and that coaching it out would remove what makes him valuable. The other side of that is three "too low" nominations (2026-09-03) on the argument that people have forgotten what a healthy version looks like.
+- The live variable is the offensive line, and it is conditional on **Laremy Tunsil's availability**. A bad preseason showing plus the Tunsil injury drove the worry; a commenter pushed back that the showing was unrepresentative — one starter out sick, one injured but expected back early, a rookie unlikely to start — while conceding the line probably will not be good without Tunsil. A separate commenter relayed that the word on the Commanders line is "inoperable".
+- Murchison is unenthusiastic for the same reason, and his bull case is a backhanded one: he hopes negative game scripts let Daniels compile stats late in games.
+- Market: the fade has moved the price well past his board rank. Commenters report taking him in the 7th, 8th, 9th and 10th rounds and as the 7th QB off the board at pick 89 — he is falling and getting taken anyway. A separate ranking had him QB5, which is exactly where his ADP sits, so that is the market, not a call. One manager wishes he had cashed out last year — bad line, revolving coordinators, a "toothpick-like body" — but will not sell cheap.
+- Sentiment is the negative kind worth respecting: several independent commenters name him too high on line, schedule and weapons, one calls QB3 in superflex crazy, and multiple managers said on 2026-09-02 they were weighing benching him in Week 1 — one for Kyler Murray, one for Tyler Shough. One commenter says he will not finish top-15 at QB even healthy, citing accuracy after his injuries and fewer scrambles; the rebuttal is that the injuries were not to his throwing arm and the receiver room improved.
 
-**Draft take:** A mid-round QB with real bust evidence behind him and no camp news here supporting a rebound. Fine as half of a wait-on-QB double-tap; don't reach past the other mid-round arms.
+**Draft take:** let him fall — the room is taking him two to three rounds after his board rank, and that is the price at which the rushing floor is worth the offensive line.

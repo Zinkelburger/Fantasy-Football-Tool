@@ -1,10 +1,10 @@
-**Fernando Mendoza** (LV, QB, bye 13) — board rank 199
+**Fernando Mendoza** (LV, QB, bye 13) — board rank 199 · as of 2026-09-04
 
-**Room sentiment:** Quiet and bearish on 2026 playing time — 5 mentions, all of them about whether he sees the field at all.
+**Room sentiment:** settled on the facts and split only on timing — nobody thinks he opens the season, everybody argues which week he takes over.
 
-- Depth chart: OC Klint Kubiak said plainly that Kirk Cousins is the starting QB — "he's the guy" — while wanting Mendoza and Aidan to push him. A camp roundup concludes "we may not see much of Fernando Mendoza in 2026 unless absolutely necessary."
-- The one projection cited attributes 2,399.5 passing yards to him, which by construction is a partial-season number.
-- The only dissent is a prediction, not a report: one poster argues Cousins is washed and that starting him Week 1 over Mendoza would cost the new staff credibility with the locker room.
-- His quoted price (ADP 209.5; a 10th-round superflex ranking row) reflects superflex and dynasty interest, not 1QB relevance.
+- He opens the year on the bench behind Kirk Cousins. QB coach Mike Sullivan calls his development "a long process" with "no shortcut to it"; Kubiak, GM Spytek and Brady have all said they intend to sit the rookie, and Mendoza himself said he has a lot to learn after struggling against vanilla preseason looks. r/raiders overwhelmingly wants and expects exactly that, framing it as protecting the investment on a team nobody thinks contends.
+- The takeover guesses cluster around weeks 5-9, with optimists at weeks 3-5, on the reasoning that a non-contending Raiders team flips to 2027 once it is out of the race. The dissent is that signing Cousins to a multi-year deal after attending Mendoza's pro day means Las Vegas will not rush him at all; an Aug 23 commenter said flatly he will not start a game this year if Cousins stays healthy, and was disputed in-thread on the grounds that a No. 1 overall pick plays early regardless. Every version of this runs through Cousins staying healthy and effective — one commenter thinks that is realistically five or six weeks, not eleven — and one thinks a season-ending Jeanty injury would delay the switch further.
+- On the tape, Ryan Fitzpatrick praises his reads and his willingness to make aggressive throws, and the thread notes every former-QB analyst is saying the same despite an up-and-down preseason box score, with fans blaming receiver drops. The counterweight in that same thread reads the aggression as a gunslinger streak that already produced two preseason interceptions, and points at how often he took hits behind the Raiders line. The wider preseason read is split: unpolished against vanilla looks and backups on one side, flashes of accurate starting-caliber throws in a system change on the other.
+- Market: a superflex and dynasty stash, not a startable 2026 quarterback — hold him for 2027 value or to cover an early bye. One commenter notes the Fantasy Pros dynasty crew were unanimous earlier this offseason that you take him 1.01 in superflex rookie drafts no matter what, and calls that more indefensible in hindsight than Anthony Richardson over Bijan Robinson.
 
-**Draft take:** Undraftable in a 1QB league. Stash only in superflex or dynasty, and even there the room expects Cousins to open the season starting — wait for actual news before spending a pick.
+**Draft take:** superflex stash only, on the bet that Las Vegas is out of it by midseason; in one-QB he is undraftable this year.

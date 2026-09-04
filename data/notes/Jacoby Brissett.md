@@ -1,10 +1,10 @@
-**Jacoby Brissett** (ARI, QB, bye 14) — board rank 201
+**Jacoby Brissett** (ARI, QB, bye 14) — board rank 201 · as of 2026-09-04
 
-**Room sentiment:** mentioned 46 times but almost never as a player to draft — he's an input variable in every Trey McBride, Marvin Harrison Jr. and Michael Wilson argument. Divided on quality, united on job-security risk.
+**Room sentiment:** Treated as Arizona's starter and a serviceable one, with the volume that made him fantasy-relevant last year widely expected not to repeat.
 
-- The volume case is specific: he took over for Kyler Murray in Week 6, after which Arizona threw 11 more times per game, and his passing pace was the third-highest since Stafford's record 2012 season. Ten of McBride's 11 TDs came with Brissett throwing. He re-signed for $15 million guaranteed.
-- The room splits hard on whether that repeats. "Brissett is not doing that again and he's terrible" runs against "decent enough to keep the offense moving" and "the Cardinals were one of the top offenses last year when Brissett took over."
-- The consensus risk, stated repeatedly: "Brissett will not start the whole year." Carson Beck and Gardner Minshew are named, with several posters expecting a midseason handoff or tank mode.
-- As a fantasy asset he gets one line of support: "a viable QB2 in a superflex, I guess."
+- Role, consensus across Aug 24 and Sept 3: he held the Arizona job from week 6 on last season and threw about 50 passes a game. The room does not expect that pace again, and several commenters note he may not start all year with Carson Beck behind him — job risk, not a benching anyone has reported.
+- Continuity is the argument for him: he is running the offense under new playcaller LaFleur with the reps already banked, though he won only one game as a starter last season.
+- He showed strong chemistry with Wilson, and one commenter says Cardinals pass catchers with and without him are night and day. That is the main reason his snaps matter to anyone's roster.
+- Sentiment is split as of Sept 4: one commenter calls him underrated and working with good offensive minds; others use "the No. 2 or 3 option for Brissett" as shorthand for discounting Arizona receivers outright. The room also jokes the team is a quarterback away and should tank.
 
-**Draft take:** Superflex-only, and even there a backup. His real relevance is as a discount on Arizona's pass catchers — price McBride and Wilson assuming volume regresses and a benching is possible.
+**Draft take:** Not a fantasy starter — a superflex or bye-week body only, and his real draft relevance is that the room discounts every Arizona pass catcher because of him.

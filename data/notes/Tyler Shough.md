@@ -1,11 +1,10 @@
-**Tyler Shough** (NO, QB, bye 8) — board rank 144
+**Tyler Shough** (NO, QB, bye 8) — board rank 144 · as of 2026-09-04
 
-**Room sentiment:** quietly positive, low volume — he's a name in wait-on-QB lists rather than a subject of debate. Nobody argues against him; nobody is excited either.
+**Room sentiment:** the room's favourite wait-on-QB answer, marked down because the receiver his projection was built around is on IR.
 
-- The most useful concrete line: in nine Shough starts last season, Chris Olave averaged 9.4 targets, 6.2 receptions, 80.3 yards, 0.7 TDs and 18.2 PPR points per game. That's the strongest evidence anyone offers that the Saints passing game functions with him.
-- Endorsements are casual but real: "I'd literally start Tyler Shough with confidence," "Shough is actually pretty good," and he's grouped with Kyler Murray, Baker Mayfield and Malik Willis as late-round QBs with upside by an ADP-rankings author.
-- One bold prediction has him finishing top-10 at the position. Another poster mentions winning a title last year while starting him.
-- Projected 3,649.5 passing yards, in line with Herbert's team total. Sleeper superflex/TEP board had him at 7.09.
-- Note the context: the same corpus is broadly bearish on the Saints as a team, and the running-back discussion assumes a sub-.500 season.
+- Availability of his weapons first (8/30, consensus): Jordyn Tyson is out roughly two months, and the room drops Shough a couple of ranking spots for it. The counter — that Shough proved himself last season with Tyson still in college — is answered with the point that his 2026 projection already had Tyson baked in. The Fantasy Footballers, per a commenter, have said on two or three straight episodes that Shough will not be as good until Tyson returns, while otherwise being high on him. That discount holds only while Tyson is out.
+- The case for waiting on quarterback, and the thread's most-upvoted pick at 50 points (9/4): he finished around 12th in points over the back half of last year, the schedule is soft, the offensive line is healthy and improved, the receiver room improved, and it is his and Kellen Moore's second year together.
+- Role: Jeff Nowak's Saints camp report (8/9) had Shough's connection with rookie Jordyn Tyson building — conditional on Shough holding the starting job, and now conditional on Tyson's return. One commenter says he had instant chemistry with Chris Olave in Moore's offense, which is the stated reason Olave's price rose.
+- Market and sentiment: two commenters say now is the time to cash in on him relative to where he was drafted and one has already sold, while another argues the whole New Orleans offense is going too late. A Giants fan calls his rookie advanced stats very impressive — a much better passer than Jaxson Dart — and would bet on a top-12 finish if he stays healthy; the dissent is only that a Saints quarterback will not out-score whatever else is on the board that late. Two commenters plan to start him over Jayden Daniels in Week 1.
 
-**Draft take:** A last-round QB2 or a superflex streamer. There's no roster cost in taking him, but nothing here justifies making him your only quarterback.
+**Draft take:** the QB to wait for at board rank 144, but bench him through the Tyson absence — the room discounted its own projection for exactly that reason.

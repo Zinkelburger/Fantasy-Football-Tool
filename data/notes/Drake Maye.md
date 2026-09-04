@@ -1,10 +1,11 @@
-**Drake Maye** (NE, QB, bye 11) — board rank 54
+**Drake Maye** (NE, QB, bye 11) — board rank 54 · as of 2026-09-04
 
-**Room sentiment:** Bullish on the player, but most of the 58 mentions are keeper-league advice and nostalgia for last year's price rather than fresh 2026 analysis.
+**Room sentiment:** The whole debate is schedule — an easiest-in-decades slate last year against a top-2-difficulty one now — and both sides are argued with equal force.
 
-- The story the room tells over and over: Maye was a late-round flier last season, finished as a full-season top-4 QB "only 25 points behind Josh Allen," and was second in MVP voting. He is the canonical wait-on-QB success — "getting Drake Maye in the 10th was way better" than getting Allen.
-- In Hartitz's QB tiers a commenter says "Drake Maye feels too low and it terrifies me." Keeper threads are effectively unanimous: "keep Drake Maye for an 11th holds firm pretty much regardless of any format."
-- The bear case is cost, not talent. He now goes ~53.5 ADP (1.11 in a superflex sample), and the same crowd that loved him at a 10th-round price is asking "wonder who this year's Drake Maye is."
-- Supporting cast is a positive — AJ Brown's arrival ("Maye needed an Alpha to develop further"), Romeo Doubs, an improved OL. One dissent: he's "a QB communist" who has never supported a WR1. Projected 3,799.5 passing yards.
+- Role and volume are not in question (Sep 3): New England ranked 24th in pass rate and he was still 12th in attempts and 5th in completions, with meaningful rushing usage on top — one commenter puts his playoff splits at 44.5 rushing yards a game. The line was improved and A.J. Brown and Romeo Doubs were added, and commenters expect an elite Patriots offense.
+- The regression case, argued as strongly (Aug 28): one of the easiest schedules in decades last year, a top-2-difficulty schedule now with a year of film on him, and a 2-2 record without looking good in the four competitive games. Several point to the playoffs as the exposure and call the hype unearned. Rival fans call him "Drake The Schedule Maye"; one fade adds a worse expected TD/INT rate and argues A.J. Brown may be past his peak.
+- The counterweight, also consensus: in year two he beat Jalen Hurts's career-best passing yards by over 500 and his best TD total by 6, with only two games under 200 passing yards to Hurts's eight. That is the pro-Brown-trade case in the Patriots threads and the strongest pro-Maye evidence in the corpus.
+- Vegas leaves him outside the Week 1 top-12 QBs against Seattle, which surprised the room (Sep 2). For him: Seattle's secondary is greatly diminished from the Super Bowl, with Bryant and Woolen gone in free agency and Bud Clark out for the year. Against: New England's offensive line looked sub-par over the summer.
+- Market: Maher has him 75-79 against an ECR of 44 — an analyst well below the room. The room's own fade is about price, not talent: commenters like him, one predicts a top-3 QB finish, and they still pass in the 8th round because comparable production is available much later. One dynasty commenter calls him the QB to sell right now, "not because he is bad" but because "his value is absolutely insane" (Sep 1).
 
-**Draft take:** A fine QB1, but the edge last year was the discount and it's gone. In 1-QB leagues, taking him at ADP means paying market rate at the position the room keeps proving you can wait on; in keeper formats at a double-digit round he's an automatic hold.
+**Draft take:** Good quarterback, bad price — let someone else pay for the schedule-inflated year and take your QB later unless he slides well past board rank.

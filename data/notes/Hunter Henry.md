@@ -1,10 +1,10 @@
-**Hunter Henry** (NE, TE, bye 11) — board rank 123
+**Hunter Henry** (NE, TE, bye 11) — board rank 123 · as of 2026-09-04
 
-**Room sentiment:** Quietly bullish as a punt-TE target. Only 14 mentions, but they are concentrated in the two threads that matter for him — "Punting TE?" and "TE deadzone" — and they are consistent.
+**Room sentiment:** Was a free last-pick TE in late-August drafts; the New England target picture has since gotten more crowded and the case is quieter for it.
 
-- **The core argument:** the punt-TE piece (score 242) notes that "Dallas Goedert, Hunter Henry, Jake Ferguson, Harold Fannin Jr., and Juwan Johnson were all drafted outside the top 130 picks and finished inside the top 10 in total fantasy points." A follow-up: "Hunter Henry finished as the TE9 in total fantasy points last season and he's still going around pick 176."
-- **Why it holds up, per the room:** red-zone usage. "Probably what matters most at that point is redzone usage, which is why like Hunter Henry is always a thing."
-- **Where people are taking him:** "I am getting Hunter Henry in the 10th-11th" and "I will take Hunter Henry in the 9th+ all day, everyday, fill in my starting lineup and a bench asset or two." One poster pairs him with AJ Barner extremely late while loading up on RB.
-- **The ceiling check:** Hartitz files him in tier 5, "Week 2 waiver wire cover candidates" — i.e. a replacement-level starter, not an upside play. Cited ADPs vary widely (141.5, ~176, 11.03 in a superflex sample), so his actual cost depends on your room.
+- Role as of Aug 27, and this was the consensus: repeatedly named as a free last-pick TE — the Patriots' No. 2 pass catcher last year, a top-5 or top-10 fantasy TE finish, and no competition at his own position.
+- That case is narrowing. A.J. Brown and Romeo Doubs are now in New England, and on Sept 3 one analyst expects Henry to see less action for it. Later date, weaker basis than the consensus it argues against — treat it as a live concern, not a settled downgrade.
+- He signed an extension in New England, reported Aug 28. The room raised it as target competition and immediately dismissed it: not the kind of player who takes work from a WR1. Read it as job security in a modest role, not a target bump.
+- Market: one commenter took him in the 14th round purely as Kittle insurance, with Kittle as his only other tight end. That is the shape of the demand — a backup, not a starter anyone is chasing.
 
-**Draft take:** The cleanest punt-TE option in this range. Take him in the 10th or later, never earlier, and accept a low-ceiling TD-dependent starter as the price of spending elsewhere.
+**Draft take:** Fine as a last-round TE2 or as insurance behind an elite one, but the Brown and Doubs additions took the top-10 argument off the table, so do not draft him as your starter.

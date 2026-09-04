@@ -1,9 +1,8 @@
-**Austin Ekeler** (free agent, RB, no bye) — board rank 168
+**Austin Ekeler** (FA, RB, bye ?) — board rank 168 · as of 2026-09-04
 
-**Room sentiment:** Effectively dead as a 2026 draft topic. All 11 mentions are past-tense — he is referenced as a benchmark or as the guy someone else is replacing, never as a player anyone is considering drafting.
+**Room sentiment:** one speculative thread in late August, and nothing since.
 
-- **No current role in the corpus.** He carries no team in the board data, and nothing in the dossier reports a signing, a depth chart spot, or a camp update.
-- **What the room actually says about him:** he was the Commanders' paid passing-down back for two years, and "if he hadn't gotten hurt he would have been a great PPR RB last year." Another poster notes he played 12 games with 35 receptions, in an offense that didn't crack 80 RB targets.
-- **He's now a comparison, not a player:** Rachaad White is described as "the Austin Ekeler replacement," and Kimani Vidal "gives off Ekeler vibes."
+- Unsigned free agent. A commenter notes Ekeler has said he wants to play again but that nothing has surfaced about him working out anywhere.
+- The only role talk is speculation from the same weekend: Las Vegas floated as a landing spot to complement Mike Washington if Jeanty is done, on the logic that Kubiak likes two-back backfields and the Raiders have the cap space. Nobody reported it as more than a guess.
 
-**Draft take:** Nothing here supports drafting him. Ignore unless a signing changes his situation, at which point the pass-catching role would be the only thing worth reevaluating.
+**Draft take:** he is not on a roster — leave him undrafted and revisit only if he signs somewhere.

@@ -1,9 +1,11 @@
-**Rachaad White** (WAS, RB, bye 7) — board rank 115
+**Rachaad White** (WAS, RB, bye 7) — board rank 115 · as of 2026-09-04
 
-**Room sentiment:** The high-scoring comments favor him — 47 mentions. He's the top answer (148) to "which ambiguous backfield are you targeting," and Hartitz lists him in "the 2024 Ekeler+ role," but a persistent camp says the market already told us what he is.
+**Room sentiment:** A passing-down back on a new team, banged up, with the room split on whether that is a role or a job.
 
-- Bull case is receiving volume and schedule: "averages 51 catches per season with the 6th easiest schedule and no significant competition ahead of him." He ranked 12th in PFF running back grade last year and took a 40% share of Tampa's carries inside the five. One camp report has him taking first-team snaps first.
-- Bear case is money and rushing ability. He signed for 1 year, $2M — "no one really wanted him" — while Tampa paid Gainwell 2 years/$12-14M to replace him. Blunter version: "Rachaad White absolutely stinks at running the ball and Daniels isn't a dump-off machine." His juke rate was 15%, outside the top 50.
-- The backfield is genuinely unsettled. The room's best guess: "either Rachaad as the pass-down back and JCM or Kaytron having the goal line role, or Rachaad just straight up being the guy."
+- Injury first, and it is commenter-level: on Aug 24 a commenter says White is banged up right now, citing that as why Washington makes particular sense as a landing spot for another back. No timeline, no report, and nothing since says he is over it.
+- Availability, Sept 3: a commenter has him sitting on waivers in his league and still expects he may out-touch J.K. Dobbins — in practice he is going undrafted in places well past board rank 115. He has no market claims at all, so that is the only price signal on his page.
+- Role: he is in Washington after wanting out of Tampa Bay, where he lost the RB1 job to Bucky Irving and saw a chance to reunite with Jayden Daniels. He is characterized as mostly a passing-down back who can run when needed, and two analysts on one show say he caps Jacory Croskey-Merritt's receiving work.
+- The bull case: he has already handled workhorse duties and finished top-6 PPR, ran nearly 4.5 yards per carry last year at 27, and Washington's receiver group behind McLaurin and Diggs is weak, so the dump-offs are there. One projects him for the majority of the pass-catching back work and argues the weakened offensive line may even help him, given his receiving and pass blocking.
+- The counter, and the newest role claim (Sept 2): a commenter says he "legitimately sucks outside of his receiving ability" and expects him to lose the backfield outright to Croskey-Merritt while the two compete. Others call him a JAG and say the distrust is of the scheme, his health and the line rather than his ability. Bucs fans grade him a flawed non-starter — indecisive and slow on interior runs, good in short yardage, dangerous catching in the open field — while agreeing the Irving/White rotation itself worked.
 
-**Draft take:** A rounds 10-12 PPR-specific pick — you're buying catches, not carries. In standard scoring the case is much weaker, since the goal-line work may go to JCM or Kaytron Allen.
+**Draft take:** A last-round pick or free waiver add for checkdown volume only — he is banged up and the newest reads have him losing the job to Croskey-Merritt rather than winning it.

@@ -1,10 +1,12 @@
-**Stefon Diggs** (free agent, WR, no bye) — board rank 134
+**Stefon Diggs** (WAS, WR, bye 7) — board rank 134 · as of 2026-09-04
 
-**Room sentiment:** Bearish and thin — 12 mentions, most naming him as a hypothetical fix for someone else's injured receiver room rather than a player anyone plans to draft.
+**Room sentiment:** A cheap Washington WR2 whose price has climbed since he signed, with the split between people who like the rate stats and people who see 33 years old behind a bad offensive line.
 
-- He is unsigned. The Sleeper ADP table lists him at 13.07 / 148.8 with team "FA," and he surfaces after injuries elsewhere: "Stefon Diggs come on down" (Xavier Worthy shoulder), "Stefon Diggs is still available" (Ricky Pearsall knee).
-- The one concrete report: "Stefon Diggs has been rumored to Washington," in a camp roundup describing a Commanders committee behind Terry McLaurin. The stated worry there is Chig Okonkwo losing targets, not Diggs producing.
-- Ranking: Hartitz tier 9, explicitly "won't work out, but you could imagine what it'd be like if they did." A Fantasy Life analyst groups him with Aaron Jones as players who "have dropped off recently."
-- The only positive line is an analogy someone used for a different player — Diggs was this age when he moved to Buffalo and had his career year. Nobody applies it to 2026 Diggs.
+- Did not practice for the Commanders on 8/11 per John Keim (ESPN). Nothing on his health since, in either direction.
+- Role is WR2 behind Terry McLaurin, signed at 33 off a 1,000-yard season. The room projects him for roughly half of Washington's 209 vacated targets, including 12 end zone targets, and one commenter argues he ends up the team's best fantasy receiver rather than McLaurin.
+- Early-season volume case: called the clear number two with a shot at heavy targets while Antonio Williams ramps up — only while that ramp lasts, and from a commenter who expects the offensive line to be bad.
+- The bear case in the room is the quarterback change: he moves from the best passing QB in the league with minimal target competition to a run-first offense, and several say he has lost a step. New England managed his workload last season and he still posted good efficiency numbers.
+- Market: his ADP has risen a lot since the signing — he went in the early eighth in one league, meaning a 7.01 to get him, and one thread calls him the single Washington player worth the cost, "a steal as a WR4/5 at the 9/10 turn." Board rank 134 sits behind where the room now pays. Cooper says roster him in most leagues but he is not a priority FAAB add.
+- Sentiment: framed as the safe-floor alternative in the late rounds (85/1,013 last year on a low snap share coming off injury), against skeptics who say his best days are behind him. A Ringer host "liked Diggs a lot but is worried about the Washington offense."
 
-**Draft take:** Undraftable until he signs. Watch the Washington rumor; if he lands somewhere with vacated targets he's a waiver add, not a draft pick.
+**Draft take:** Worth an eighth-round pick as a floor WR4 with target volume, but the discount is gone — pass if you need him to be more than a WR4.

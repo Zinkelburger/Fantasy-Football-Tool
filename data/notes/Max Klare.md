@@ -1,6 +1,11 @@
-**Max Klare** (LAR, TE, bye 11) — board rank 261
+**Max Klare** (LAR, TE, bye 11) — board rank 261 · as of 2026-09-04
 
-**Room sentiment:** no discussion found in the r/fantasyfootball corpus (60-day draft-season window).
+**Room sentiment:** The most-named taxi stash at tight end in the corpus, wanted for next year and expected to do nothing this one.
 
-- Nobody is talking about this player. That is itself the signal: no hype, no reported role change, no injury chatter.
-- Draft take: late-round dart or waiver-wire name; nothing in the community data argues for reaching.
+- **No year-one role, and the room is not pretending otherwise.** On 9/04 commenters group him with the class's other lottery rookie tight ends and say none of them is set up for a year-one role, which is why they park him on taxi rather than a bench spot. A 9/01 exchange about the Rams tight end room concludes he is the obvious cut of that group unless you are in a TE-premium league.
+- **The stash case is roster mechanics, not depth chart.** Colby Parkinson and Davis Allen are both free agents after this season and Higbee could retire any year; a commenter argues the Rams spent a day-two pick into a position of strength precisely because they will need cheap contributors next year against the extensions they have coming.
+- **One film evaluation, cutting both ways (8/30).** A film-focused commenter had him as his TE1 in this class before the draft: solid underneath routes — leaks, crossers, curls — with real YAC ability, surprising agility and a sneaky juke, 3-5 yards after contact. But he cannot beat man coverage at all and lacks the burst to restart after hard contact. The same evaluator, who calls this the worst tight end class in a while, still valued him only as a late-2nd or early-3rd rookie pick and puts Harold Fannin tiers above him.
+- **Sentiment:** the most-named stash in the 9/04 taxi thread at roughly 18 mentions, called "a perfect one" and "the platonic ideal" of a developmental rookie TE. The dissent is practical — asked directly whether Marlin Klein is worth a taxi spot over Klare, the answer was "absolutely," and one owner admitted he had confused the two names entirely.
+- One 9/02 comment cites him as a reason to fade Davante Adams, calling the Rams an offence "with a stud in Max Clare coming through." That is a projection about a player with no role yet, and the commenter did not know how to spell his name.
+
+**Draft take:** Dynasty taxi stash only and undraftable in redraft — and even in dynasty the room is not certain he is the best rookie tight end to hold.

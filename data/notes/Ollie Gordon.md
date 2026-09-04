@@ -1,10 +1,9 @@
-**Ollie Gordon** (MIA, RB, bye 6) — board rank 278
+**Ollie Gordon** (MIA, RB, bye 6) — board rank 278 · as of 2026-09-04
 
-**Room sentiment:** Dismissive. Twelve mentions, nearly all from one thread reacting to a coach quote, and the reaction is sarcasm.
+**Room sentiment:** Thin and negative — the only sustained conversation about him was whether he makes the roster.
 
-- The news: Dolphins HC Jeff Hafley said Gordon "can be an every-down running back." Top comment (94): "We paid Achane 10's of millions of dollars to hand the ball off to Ollie Gordon…." Another: "that's why you would pay Achane $16M every year, for Ollie Gordon to be on the field all 3 downs."
-- Context: a poster who watched it notes the reporter asked whether Gordon "could be an every down back vs just a short yardage back," so the answer was prompted. Another flags that "Mike McDaniels said the same thing about Ollie Gordon" before; a third warns "coach/media talk tricked me into buying multiple shares of Pacheco last season."
-- Thin positives: a Doak Walker winner with 2,000 yards and 22 touchdowns in 2023, and he out-carried Bucky Irving inside the 10 last season — exactly the short-yardage role skeptics call his ceiling.
-- Draft capital: "Meanwhile, Ollie Gordon went in the 6th round."
+- Roster status is the whole story. In late August the room read him as "by all accounts the cut candidate" in Miami after a disappointing camp, banged up and unimpressive, with a new staff that has no allegiance to him. The one thing that changed since: the back Miami traded for, Hunter, is gone as of Aug 30, which takes away the specific competitor the cut talk was built around. Nobody has reported him actually being cut.
+- He left a preseason game in late August but Mike McDaniel said he was cleared to return in that same game, which the room read as nothing serious.
+- The room's own summary is that neither he nor Jaylen Wright earned Miami's RB2 job, which is why the team went looking for a back at all. **Nothing new since Aug 30.**
 
-**Draft take:** Not worth a pick. Coach-speak with a documented pattern behind it, and Achane in the way — the goal-line vulture path is a waiver decision, not a draft one.
+**Draft take:** Undraftable in redraft until he has a confirmed roster spot and a role; check the waiver wire, not your bench.

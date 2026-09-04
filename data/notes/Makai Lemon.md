@@ -1,11 +1,11 @@
-**Makai Lemon** (PHI, WR, bye 10) — board rank 95
+**Makai Lemon** (PHI, WR, bye 10) — board rank 95 · as of 2026-09-04
 
-**Room sentiment:** Mildly bullish with light volume (23 mentions). The interest is real but the takes are short — this is a rookie the room likes in theory more than it has studied.
+**Room sentiment:** a rookie the Eagles are talking up on the strength of practice, because he missed everything else.
 
-- **Role:** Reported as "a very important possession receiver for the Eagles... the target on some of those short quicker routes that Hurts would target Brown on when they needed 3-4 yards." One target-share snapshot has DeVonta Smith at 24% and "rookie Makai Lemon already up to 17%." Another poster notes his ADP "shot up with AJ Brown out" but expects the Eagles to still spread the ball. Camp reads are positive but generic: he "does look solid in camp."
-- **Draft capital, per the room:** the Eagles traded up in front of the Steelers to take him while Pittsburgh was on the phone with him.
-- **The bull end:** a hill-to-die-on post calls for 80/1000/8 or better, and a bold-predictions entry has him outscoring DeVonta Smith. Hartitz lists him in tier 6 ("would WR2 numbers really surprise us?") and admits "haven't been drafting a ton of... Makai Lemon and that scares me."
-- **The bear end is tepid rather than hostile:** "are we really ranking Makai Lemon ahead of Devonta Smith?" and "I think Makai is gonna take a while to actually get going." Goedert is also mentioned as a target competitor.
-- **Market:** ADP 107.3 with 649.5 projected yards; 10.01 in a superflex TEP sample.
+- The hamstring cost him OTAs, most of training camp and the preseason games; as of 2026-09-03 he is back on the field, the article covering it has him frustrated about the layoff, and nothing suggests he misses regular-season time. No timeline was given, and one commenter expects it to linger. The room expects him to need time to get his legs under him early in the year.
+- Role is the claim that matters: on returning he immediately took all first-team reps and was the main motion man throughout practice — described as the staff's "muse" in the passing game. Commenters read the first-team usage, not the draft cost, as the real signal, though Philadelphia spent a 1st and two 4ths on him. He is the unproven WR2 opposite DeVonta Smith after A.J. Brown's departure, expected by several to take the job from Dontayvion Wicks before long; one film analyst relayed in-thread thinks the takeover will be harder than assumed. He is also on Ourlads' primary returner chart.
+- The structural caution is the quarterback, not the depth chart: Lemon's game is over the middle and Hurts has historically struggled there, with Smith remaining the primary target. The stated upside case is injury-contingent — a Smith injury opening the kind of share Cooper Kupp's opened for Puka Nacua.
+- Market: he is not cheap where he is actually being bought. One manager traded 1.10 up to 1.04 to take him, another traded 1.08 and 2.08 up to 1.06. Cooper ranks him second among rookie receivers while flagging that he is nowhere near a known commodity in Philadelphia; Twerski picks him as the rookie WR most likely to break out, on path to targets and offense alone.
+- Sentiment: the sub is encouraged that the team and team-friendly writers are actively raising expectations for a rookie who showed nothing in preseason, and compares it to Cooper DeJean's slow start before he arrived around Week 6.
 
-**Draft take:** A round-9/10 rookie flier with a defined short-area role, which is the good version of a rookie bet. Don't pay up on the AJ Brown-driven ADP bump; take him at or after his ADP.
+**Draft take:** worth his board-rank-95 price for a rookie who already owns the first-team reps, but plan on the production starting closer to midseason than Week 1.

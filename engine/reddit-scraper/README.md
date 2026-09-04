@@ -492,6 +492,37 @@ floor and then *penalises* length, and AMAs take a flat −45: they read like a
 goldmine, a named analyst answering questions all day, and produced one hard
 claim from 149k characters plus none at all from 130k more.
 
+### The exception: length is not the same as dilution
+
+The size penalty is right about opinion threads and was wrong about one class of
+post, in a way that hid the best material in the corpus for a month.
+
+`Player Updates from Beat Writers & National Reporters (8/11)` is 24k characters
+of per-team bullets, each naming a draftable player and the reporter who broke
+the item, with source links — the author says he includes the names "for clearer
+transparency". A sibling post covers 8/9. Between them they sat undistilled with
+**zero claims** while far thinner threads were read, and they later produced
+**130 claims across roughly 90 players, 111 of them `beat_report`** — the basis
+tier the backtest says is the only one that pays.
+
+Two things buried them, and the second is the real bug:
+
+- Length. They are long, so the penalty applied. But they are long because they
+  are *dense*: nearly every line is a named beat writer on a specific player.
+  Characters measure dilution only when the extra characters are argument.
+- **The index only read the first 600 characters of a post body.** Everything
+  past the lede was invisible, so a post naming 75 draftable players indexed as
+  nine — all of them from the comments. The ranking was not weighing these posts
+  and finding them wanting; it could not see them. The lede still counts double
+  as the statement of what a thread is about, and the rest of the body now counts
+  once, like a comment, with its length included in the size figure.
+
+The lesson generalises past this fix. Every signal the queue ranks on is measured
+by the resolver, so a blind spot in the resolver is invisible in the ranking
+rather than merely underweighted — it looks exactly like a thread that has
+nothing in it. When a ranking says a thread is empty, that is a claim about the
+index, not about the thread.
+
 ### An AMA has no show of hands
 
 The nominations tally was wrong on AMAs and a worker caught it. Top-level

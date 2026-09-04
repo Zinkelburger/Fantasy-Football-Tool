@@ -1,11 +1,10 @@
-**Matthew Stafford** (LAR, QB, bye 11) — board rank 116
+**Matthew Stafford** (LAR, QB, bye 11) — board rank 116 · as of 2026-09-04
 
-**Room sentiment:** quiet. Only seven mentions, and none of them are an actual argument for or against him — he shows up as an example inside other people's strategy posts.
+**Room sentiment:** Thin and mostly about respect rather than fantasy — real-life regard is high, the fantasy case is a shrug.
 
-- He is named in the "is there even an elite QB advantage" thread as part of the group one poster targets in almost every draft — the wait-on-QB pool, not the buy-early pool.
-- Same role in a separate wait-on-QB thread: "last year it was Drake Maye and Matthew Stafford," meaning he was one of the cheap QBs who paid off.
-- The one concrete number: a projections post lists the Rams at 3,949.5 passing yards, the highest team total among the quarterbacks in this range.
-- Market corroboration only — a Sleeper superflex/TEP board had him at 6.05 (pick 65.4), and he appears in a rate-my-team roster as a QB2 alongside Jaxson Dart.
-- No camp reports, no injury news, no role debate. Nobody is arguing about him.
+- No injury claim in the file. What the room does flag is age and context: he is 38 with a chronic back issue, widely expected to be in his last season, which is why Los Angeles spent a first-round pick on Ty Simpson. A commenter recalls that last year's back-problem panic proved overblown.
+- The role concern is game script, not health. Commenters expect the Rams to build early leads after the Donald signing, which means Stafford sitting in blowouts or the offense turning run-heavy by the third quarter — a modest negative.
+- Market is Week 1 only: Vegas has him as the QB3 at 19.3, which one commenter questions given the Rams do not leave for Australia until next week and he will be jet-lagged, while Brock Purdy is already there, rested, and has no posted line at all.
+- Sentiment is strong and mostly about the player rather than the fantasy asset. He came in No. 4 in a league-wide top-100 poll, is defended as genuinely MVP-level last season, and Lions fans use him as the standing example of a QB re-rated by scenery. The one fantasy-relevant read is "Stafford the Kingmaker" — the argument that he force-feeds his WR1, on the Kupp precedent, tempered by his age and a Rams defense that may cut the passing volume.
 
-**Draft take:** The corpus gives you no edge here either way. He's a late-round streaming QB1/QB2 on a high-volume passing offense; take him only after the positions you actually have to win are filled.
+**Draft take:** A late-round QB2 whose main value to you is probably the receiver you drafted ahead of him — take the streaming option with a better Week 1 script instead.

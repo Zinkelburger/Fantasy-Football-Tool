@@ -1,9 +1,10 @@
-**Chris Brazzell** (CAR, WR, bye 5) — board rank 255
+**Chris Brazzell** (CAR, WR, bye 5) — board rank 255 · as of 2026-09-04
 
-**Room sentiment:** Settled and negative — 15 mentions, entirely about a season-ending injury. There is no debate left; he's discussed mainly as an input to Tetairoa McMillan's outlook.
+**Room sentiment:** a rookie-draft pick the room has already written off, with an unexplained IR question attached.
 
-- **The injury, as it developed across camp reports:** he "had been out with some knee soreness but returned," then was "carted off after going down in one-on-ones." Wednesday's roundup called it "a moderate LCL tear / will miss up to 8 weeks (Xavier Legette will be the WR3 in place)." By Thursday: "Rookie will have season-ending surgery on torn LCL (knee)."
-- **What he was before the injury:** reporting was genuinely positive. "Word out of Carolina was that they were so excited about rookie Chris Brazzell that they were planning on utilizing Tet McMillan in the slot more this season." Another: "They drafted Brazzell to play X receiver so they could move Tmac more into the slot."
-- **The downstream read the room cares about:** losing him is a mild negative for McMillan, while the top-scored take says it cements McMillan as the "clear first read."
+- **Availability, unresolved:** a manager on 9/04 says he is "wrestling with Brazzell in IR or Taxi", treating him as currently IR-eligible. The thread never says what the designation is or how long it lasts, and nothing else in the corpus reports it. Confirm his status before rostering him.
+- Role: one commenter (8/14) disliked the landing spot because Carolina already has a couple of good young receivers, with Tetairoa McMillan ahead of him. That is the only role claim on him.
+- Market has collapsed relative to De'Zhaun Stribling: taking Brazzell over him is called a "noob pick" and a skill issue, he went 4.04 in one draft, and the room keeps citing the NFL draft slots — 83rd overall against Stribling's 33rd.
+- Sentiment matches, with a heuristic doing part of the work: "Tennessee Vols WRs are faded until further notice" (7 points) and "Stop trying to make Brazzell happen", with nobody defending him in that thread. He is still named four times as a taxi stash on 9/04, one manager holding a spot "for now" because "he seemed like he was going off".
 
-**Draft take:** Do not draft — reported out for the season after LCL surgery. The only actionable use is indirect: Legette is the stated WR3 replacement, and McMillan stays the unchallenged target hog.
+**Draft take:** Leave him undrafted — a faded rookie behind McMillan in Carolina who may currently be an IR body; taxi stash only, and only if the spot is free.

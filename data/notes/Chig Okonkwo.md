@@ -1,10 +1,10 @@
-**Chig Okonkwo** (WAS, TE, bye 7) — board rank 143
+**Chig Okonkwo** (WAS, TE, bye 7) — board rank 143 · as of 2026-09-04
 
-**Room sentiment:** Popular as a late-round punt-TE target, with a well-argued skeptical camp — 48 mentions, mostly in the "TE deadzone" and "punting TE" threads.
+**Room sentiment:** A late-round tight end the room liked considerably more before Washington signed Stefon Diggs.
 
-- Opportunity is the case. Camp notes (45 upvotes) say Chig "could see many targets with questions at WR this season" behind Terry McLaurin in a thin Commanders receiver room. Supporters expect him to finish second on the team in targets, which one poster calls "the perfect TE to wait on." Hartitz places him in tier 4. ADP ranges from 127 to 168 depending on source.
-- The cheapest-version argument shows up repeatedly: several posters prefer Chig to Isaiah Likely purely on price — "similar upside/floor and Chig can be had 2 rounds later." One rankings post pairs him with McLaurin as "likely to outperform ADP substantially."
-- Bear case has teeth. "Chig could never put it together in Tennessee." One poster who drafts this archetype yearly says the hit rate on flyer TEs like Chig and Dulcich is "remarkably low." The tempered bull view is "high floor with a high potential ceiling, just not an elite ceiling."
-- Named risk: if Washington signs Stefon Diggs, "Chig becomes the 3rd option at best."
+- Role: he has completely beaten out Ben Sinnott for the Washington job, per a self-identified Washington fan (Sep 1), so the starting tight end spot itself is not in question. Nothing here is an injury or a reported depth-chart move.
+- The Diggs signing is the fact everything turns on. Cooper had been drafting Okonkwo heavily and stopped after the signing, and now calls him a handcuff-plus type — while still rating his chance of competing with McLaurin and Diggs for targets above Terrance Ferguson's path in LA. The downgrade is a projection off a signing, not a usage report.
+- The room is split on how much Diggs actually costs him. One commenter who watched the preseason snaps says Washington will run heavily out of tight-end-friendly sets given the offensive line, and has lined Okonkwo up in unusual spots on passing downs. Another says Diggs's arrival ruins the last-round-tight-end case outright; the first replies that Diggs has lost a step, which is an opinion, not a report.
+- The ceiling is the real objection, and it predates Diggs: he is third in his team's target order and has never cleared 5 targets a game (Sep 2). A manager who held him through offers puts it as "dude is consistently TE20" — a stable low-end starter, not a breakout. The August case that he is grossly undervalued and physically better than Ertz was two years ago now looks like the high end of the range rather than the expectation.
 
-**Draft take:** If you're punting TE, he's the room's preferred late dart over Likely on cost. Do not pay up — this is a round 11-13 lottery ticket, and the Diggs rumor can kill it outright.
+**Draft take:** A defensible last-round TE1 in one-TE leagues on the preseason usage, but pay the post-Diggs price and expect TE20 rather than a breakout.

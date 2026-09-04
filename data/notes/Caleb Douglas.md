@@ -1,10 +1,10 @@
-**Caleb Douglas** (MIA, WR, bye 6) — board rank 229
+**Caleb Douglas** (MIA, WR, bye 6) — board rank 229 · as of 2026-09-04
 
-**Room sentiment:** Thin but quietly positive — 7 mentions, all favorable or neutral, with one real camp report.
+**Room sentiment:** the most-nominated Dolphins receiver in the room, though much of the nominating is sarcasm about a receiver room where three different rookies have each been declared the WR1.
 
-- The camp note is the only hard fact: "Caleb Douglas (MIA): Rookie WR has got a good run with the 1st team early in camp," carried in the August 1 training camp roundup (83 upvotes).
-- He's the top-scoring answer in a "who is your favorite rookie WR this year" thread, with a follow-up calling him "the real answer" over Chris Bell. The stated reasoning: Miami drafted him higher, he's 6'4", and he ran a 4.3.
-- One poster would "take a late shot on Tre Tucker and maybe Caleb Douglas in deeper leagues" — that's the ceiling of the enthusiasm here. Another asks an analyst which of Douglas or Malachi Fields has more juice, with no answer recorded in the corpus.
-- No target projections, no ADP figure, no depth-chart resolution beyond the first-team reps. The sample is small enough that the positive tone should not be read as consensus.
+- Miami currently lists the 6-foot-4 rookie as a starting receiver, and the camp reporting backs it: Jake Gibson (SI/OnSI) wrote on Aug 11 that Douglas had shown high levels of production through 10 practices of camp and was making his case to be a major contributor off the rip. The room's version is blunter — Miami made him out to be "the next coming of Jesus in camp," and he went from relative unknown to starter.
+- Projection: widely expected to be Miami's WR1 or WR2 by the second half of the season, ahead of Malik Washington and Jalen Tolbert, and on the field in 12 personnel on early downs. A Sept 4 commenter calls him the Dolphins' WR2 outright and the one rookie in the class worth an active roster spot over Chris Brazzell and Brenen Thompson. The August case for a Week 1 WR1 job cited almost 6'4 with a 4.39, elite RAS and early third-round capital in a wide-open room.
+- The bear case is positional, not talent: he plays outside against top corners with a run-first, unproven quarterback, so he projects as duds punctuated by spikes, where Malik Washington's slot role is scheme- and YAC-friendly. Miami is also not a winning offense. Owners who drafted him as a WR2 describe that as a problem to fix, not an asset.
+- Market: Maher makes him his favourite late-round flier — WR69 on his board, 91 spots ahead of ECR against an ADP near 224 — precisely because of the listed starting job. Cooper prefers his unknown rookie upside to Malik Washington in shallow 10-team leagues and names him a Miami waiver-wire name to watch. The room's own use is a last-pick dart: good odds one of him and Chris Bell becomes a starter, easy drop if not.
 
-**Draft take:** Deep-league last-round flier on a rookie getting early first-team work. Nothing in the corpus justifies a pick in a standard 12-team draft — track him on the wire instead.
+**Draft take:** last-round dart with an actual listed starting job — worth the final pick ahead of a known backup, but Miami has crowned three rookies already, so hold him as a waiver name rather than a roster plan.

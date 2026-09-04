@@ -1,11 +1,11 @@
-**Tyler Allgeier** (ARI, RB, bye 14) — board rank 112
+**Tyler Allgeier** (ARI, RB, bye 14) — board rank 112 · as of 2026-09-04
 
-**Room sentiment:** Heavily discussed for a late-round back (97 mentions) and divided — mostly because he is the reason people are scared of Jeremiyah Love. A real bloc likes him at cost; another says July camp reps mean nothing.
+**Room sentiment:** The room's designated Cardinals waiver add, split over whether he keeps the job once Jeremiyah Love is healthy.
 
-- **Concrete camp/depth-chart news:** Allgeier has been getting the majority of first-team reps and carries over Love, the third overall pick, and Arizona's first released depth chart lists him as RB1. Breer reports the team doesn't plan to overload Love and is "looking for the right rotation" among Love, Conner and Allgeier.
-- **The contract argument (the room's strongest evidence):** Arizona paid him over $12M with $8M guaranteed — "that is not a handcuff RB's salary." Conner is at $2.1M guaranteed and is 31 coming off season-ending ankle and knee injuries.
-- **What he actually is:** a short-yardage and goal-line specialist — "Allgeier took redzone touches from Bijan freaking Robinson," and he had 186 carries to Bijan's 214 as a rookie. He is also described flatly as "a zero in the passing game."
-- **The bear case:** the Cardinals are projected as one of the worst teams with a brutal schedule, and one poster notes this is "the 'rookie has to earn it' camp script that almost never survives Week 1."
-- **Price:** ADP ~118 (superflex table has him 14.05). "I want Allgeier at his cost on every team I have" scored 28.
+- The availability that drives everything is Love's high ankle sprain, not his own. The Sept 1 consensus treats Allgeier as the Week 1 backfield lead if Love cannot go — "totally fine with Allgeier and Bam for week 1" (22 pts) — and notes Arizona signed him to be the RB1 before they drafted Love. He is the listed RB2.
+- Only while Love is out or on a snap count: Maher (Sept 3) prefers him to Chris Rodriguez as the Arizona handcuff and says he should be the RB1 if Love misses time. The room splits on what follows — some argue a tanking team lets him out-carry Love all year, others say he loses the job the day Love is healthy.
+- The standalone case with Love back is goal line: red-zone carries and vultured touchdowns, the same thing he did to Bijan Robinson owners in Atlanta — 8 TDs on 143 carries last year, 4 from inside the 5 on 41% of the team's attempts, staying on the field for short yardage because he never fumbles. Maher includes red-zone and goal-line duty in the healthy-Love version; Murchison has him "already in line for split backfield work with Love" but only as an end-of-bench RB4/5.
+- The bear case is the offence, not the role: Cooper is not interested in a short-term committee lead on a team Vegas has winning 3.5 games, and one commenter (Aug 11) calls him a short-yardage back with zero receiving proficiency who is no threat to Love's workload. The room's own summary is boom-or-bust week to week and untrustworthy as a weekly starter. Loza still names him a late-round flier she likes.
+- Market: the board asks more than the room pays. Drafters report him in rounds 11-14 and at waiver cost in most leagues, though the price is climbing — "Allgeir is gonna be a league winner this year" drew 124 points, tempered by replies calling him a value on a bad offence rather than a league winner — and drafters are moving him up over Rachaad White, J.K. Dobbins and Tyrone Tracy.
 
-**Draft take:** A cheap TD-vulture with real early-season starter equity if Arizona slow-plays Love. Worth a last-few-rounds pick, especially as insurance if you drafted Love — but he has no passing-game floor.
+**Draft take:** Worth an 11th-round pick or a waiver claim as the Love handcuff with real goal-line work, but price him as a rental unless Love's ankle keeps costing him time.

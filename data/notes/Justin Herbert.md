@@ -1,10 +1,10 @@
-**Justin Herbert** (LAC, QB, bye 7) — board rank 88
+**Justin Herbert** (LAC, QB, bye 7) — board rank 88 · as of 2026-09-04
 
-**Room sentiment:** quietly positive and low-volume — the recurring theme is apathy rather than doubt. "No matter what context, feels like nobody is excited to draft Justin Herbert."
+**Room sentiment:** well liked, and the notable thing is that every stated fade is non-football.
 
-- He is repeatedly named as a target by people going against ADP: "Higher on Justin Herbert," "I'm super high on Herbert at ADP," and he makes one analyst's short list of favorite QBs in Rounds 8-10 on ESPN alongside Dak, Purdy, and Lawrence.
-- Concrete usage note: he had 83 rush attempts last season, 5th-most among quarterbacks (tied with Bo Nix) — the rushing floor is real but rarely mentioned.
-- Environment is the bull case, and it comes up mostly in Ladd McConkey threads: the offensive line is now healthy with real offseason improvements, McDaniels is the play-caller, and posters recommend stacking Herbert with McConkey.
-- Projected passing yardage is modest (3,650.5), and his best fantasy season was 2021 as the overall QB2. No meaningful bear case is argued anywhere in the file, which is itself worth noting.
+- Role, per beat report (8/9): Kris Rhim writes that Herbert "continues to be sharp and on target with his receivers" and looks comfortable with the timing of McDaniel's new Chargers offense, with receivers getting the ball early and in space. No injury claims anywhere in the corpus.
+- The clearest sentiment signal (9/1): he was faded about four times in one thread and every reason given was off the field — his girlfriend, one bad Week 11 against Jacksonville. No usage or scheme argument was offered against him anywhere in that thread.
+- Market: Vegas Week 1 full-PPR projections have him as the QB1 at 19.5 points, and the poster flags him as worth a pick for anyone still drafting. One commenter's preferred round 8-10 quarterback group is Herbert, Trevor Lawrence and Brock Purdy — talent with rushing upside on offenses he expects to finish top-5 in scoring; Herbert was also one of four quarterbacks with five-plus 50-yard pass attempts last season.
+- Around him: one commenter calls 2026 a "Herbert year" and endorses stacking Chargers pass-catchers, while another expects a top-5 Chargers offense but is drafting only Herbert, Quentin Johnston and Mitchell because the tight end room is too ambiguous to pay for — Herbert leaned on Kolar in preseason when pressured. The one real negative is a contract argument, not a fantasy one: $52.5M a year with one playoff win between him and Lawrence.
 
-**Draft take:** A boring, cheap QB1 in the 8th-10th round. If you're waiting on quarterback and you have McConkey, he's the natural stack — just don't expect a positional edge.
+**Draft take:** draft him — a QB1 Week 1 line at board rank 88 with a room that cannot produce a football reason to fade him is the cleanest quarterback buy on the board.

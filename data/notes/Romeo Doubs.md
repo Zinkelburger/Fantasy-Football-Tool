@@ -1,10 +1,11 @@
-**Romeo Doubs** (NE, WR, bye 11) — board rank 124
+**Romeo Doubs** (NE, WR, bye 11) — board rank 124 · as of 2026-09-04
 
-**Room sentiment:** The louder, higher-scoring side is negative — 19 mentions, with his most-upvoted appearances coming in a "do NOT draft these players" thread.
+**Room sentiment:** Firmly established as New England's WR2; the only argument is whether being the WR2 there is worth a pick.
 
-- The fade is blunt: "I say this every year but Romeo Doubs," and he's "one of like a dozen guys this sub doesn't understand has effectively no value and is a roster clogger." Also: "In late rounds, I'm not drafting JAGs like Romeo Doubs or Jakobi Meyers."
-- The bull case is modest and explicitly boring: "I prefer Romeo Doubs as the boring value play... in a better offense, with an OC with quite a strong history." Hartitz lists him in tier 8, "favorite late-round sleepers." He's also named among post-round-8 WRs with touchdown upside (ECR 129).
-- Concrete: he's in New England now, in a camp WR group with A.J. Brown, DeMario "Pop" Douglas, Mack Hollins, Kyle Williams and Efton Chism. Projection cited is 649.5 yards at ADP 146.5.
-- Baseline from last year: WR34 in standard scoring with 111.4 points, in a Green Bay role described as "the most consistent of the WRs." One correction against the value case: "Romeo Doubs isn't a slot receiver."
+- Role: the Patriots paid him — a deal reported up to 4 years/$80M — and moved Kayshon Boutte, which the room reads as locking him in as the No. 2 weapon behind A.J. Brown, with less skill-set overlap with Brown than Boutte had. Multiple Patriots fans call him the better player of the two, and one reads the signing as New England giving up on Kyle Williams. Loza notes his arrival also cuts into Hunter Henry's work.
+- The volume case: New England's offense supported a receiver at roughly 180 targets last year, so there is real secondary volume even if he is not a Tee Higgins-level partner. In Green Bay he played 832 snaps — the most of any Packers receiver — at 73% route participation and 5.3 targets a game, which the room cites as evidence he is a legitimate NFL X receiver rather than a placeholder. He also fits Maye's stated preference for big targets.
+- The bear case is equally concrete: four years without a true Packers WR1 ahead of him still produced only a WR41 season, with target-per-route-run ranks of 43rd and 60th. An earlier read (Aug 24) held that Boutte's vacated snaps go to Kyle Williams and Mack Hollins rather than Doubs, making the bump marginal; the later and better-supported case rests on the contract and the Boutte move, not on that snap math.
+- Market: going around WR52 in the 13th round, behind Higgins, Odunze, Sutton, Pittman, Brian Thomas and Tyson — later than board rank 124 asks, so the room pays less than the board. Supporters cite New England's schedule and poor rushing efficiency forcing more passing than last year's 24th-ranked pass rate; one predicts a top-30 finish against that price. The path to more than WR2 work is explicitly conditional on A.J. Brown's knee injury costing him time or effectiveness.
+- Sentiment: five top-level "too low" nominations worth 276 points, the second-highest-upvoted answer in that thread, mostly from people who like the New England move.
 
-**Draft take:** Replacement-level bench WR. The room's own argument applies — if this is the production level you need, it's usually available on waivers, so spend the late pick on something with a ceiling.
+**Draft take:** Take him at the 13th-round price as a bench WR with a defined role, and treat him as the direct beneficiary if A.J. Brown's knee costs him time.

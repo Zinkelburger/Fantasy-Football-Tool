@@ -1,11 +1,10 @@
-**Daniel Jones** (IND, QB, bye 13) — board rank 196
+**Daniel Jones** (IND, QB, bye 13) — board rank 196 · as of 2026-09-04
 
-**Room sentiment:** Discussed far more as a variable in other players' outlooks than as a QB to draft. A podcast-scraping post lists him among the ten players analysts are most split on — 46.3% positive vs 53.7% negative across 123 mentions.
+**Room sentiment:** Confirmed Colts starter coming off a torn Achilles, priced as a QB2 and doubted as one.
 
-- **What happened last year:** he was "surprisingly amazing" before the injury — the overall QB2 through roughly nine weeks — with the room specifically praising the deep ball to Alec Pierce. He then tore his Achilles and broke his fibula.
-- **Health status (concrete):** fully cleared from the torn Achilles and on the field for the start of training camp. The Colts also gave him a two-year, $88M extension, and Anthony Richardson has requested a trade in response.
-- **The skepticism:** "He's still Daniel Jones" and "I don't trust Daniel Jones, his reconstructed Achilles, or his regrown fibula" are representative. Several posters worry the plant-leg Achilles specifically damages the deep ball; the counter is that "Jones' deep ball last year wasn't that amazing pre-injury, so I'm not that concerned."
-- **Downstream effects:** his health is the stated reason people fade Jonathan Taylor and question Pierce, while a short-area passing profile is used as an argument *for* Josh Downs and Tyler Warren.
-- **Price:** ADP ~208 in 1QB (superflex tables have him ~103), so he costs essentially nothing.
+- Shane Steichen has confirmed him as the starting quarterback to open the season (9/3), with Anthony Richardson Sr. named the No. 2 ahead of Riley Leonard. Colts roster reporting (8/31) has him fully healthy after rehabbing the torn right Achilles that ended his 2025 season.
+- The room does not buy the clean bill: it expects the usual soft-tissue setback off a major injury and assumes the backup makes three or four starts at some point this year, and one commenter predicts he "pumpkins" because Indianapolis rushed him back.
+- Rushing-touchdown risk on top of that: one commenter expects Indianapolis to carve out short-yardage and goal-line packages for Richardson rather than have Jones take sneaks and tush-push carries this soon after the Achilles, which would cost him rushing scores even while he holds the job.
+- Context for the price: he was a top-5 MVP candidate before the injury, which is part of why Indianapolis is carrying a third quarterback. Off-field chatter is positive and thin — a photo of him at dinner with his top two receiving targets drew a 43-point "love him as our franchise QB" and no dissent.
 
-**Draft take:** A last-round QB2 with a proven ceiling and a real injury discount. Reasonable as the upside half of a two-QB late-round approach; don't build around him, and let his September play inform your Colts skill-position holds.
+**Draft take:** A late streaming QB2 at his board rank — the job is confirmed, but the goal-line work may not be his and the room expects him to miss starts.

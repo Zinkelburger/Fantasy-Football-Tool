@@ -1,10 +1,7 @@
-**Jerome Ford** (WAS, RB, bye 7) — board rank 279
+**Jerome Ford** (WAS, RB, bye 7) — board rank 279 · as of 2026-09-04
 
-**Room sentiment:** Effectively no discussion — 5 mentions, and none of them are about drafting him. He appears only as a roster detail in other people's arguments.
+**Room sentiment:** Named only to be crossed off a list; nothing new since 2026-09-01.
 
-- **The one concrete fact:** he left Cleveland. "Jerome Ford's departure creates 32 vacated targets" — cited in a Browns backfield breakdown, which means the mention is really about the Browns, not about Ford.
-- **His new situation is crowded.** In a Washington backfield thread the room lists the roster as "Bill, White, Kaytron Allen, and at least one of Jerome Ford and Jeremy McNichols" — he is explicitly framed as one of two guys competing for a depth spot, not a rotation piece with a defined role.
-- **The only other mentions are as an example of a low-scoring RB** in statistical population lists about backs on bad teams, grouped with names like Alexander Mattison, Dameon Pierce and Rex Burkhead.
-- **Price:** ADP 301 — undrafted everywhere.
+- On IR since August 18. He appears twice in the corpus and both times as an exclusion — ruled out as a Raiders option because of the IR stint (2026-08-23), and listed in passing while a commenter shopped cheap veteran backs at Pacheco's price point (2026-09-01). No return timeline reported. A Sleeper availability audit on 2026-08-30 listed him as an unsigned free agent at 22.1% rostered, which does not square with the pool having him in Washington; either way nobody in the corpus treats him as available.
 
-**Draft take:** Don't draft. The dossier is thin by every measure and what's in it points to a depth role behind at least three other Washington backs.
+**Draft take:** Do not draft — he is on IR with no timeline and the only thing the room says about him is that he is unavailable.

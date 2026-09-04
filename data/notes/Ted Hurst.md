@@ -1,10 +1,8 @@
-**Ted Hurst** (TB, WR, bye 10) — board rank 265
+**Ted Hurst** (TB, WR, bye 10) — board rank 265 · as of 2026-09-04
 
-**Room sentiment:** Almost no discussion — 4 mentions, all of them brief and speculative. There is not enough here to form a real view.
+**Room sentiment:** a fourth receiver with a specific role, and a small pocket of deep-league support.
 
-- **The only recurring idea:** he's a rookie whose athletic profile fits the vacated big-bodied X role in Tampa Bay. "Ted Hurst was drafted to be the big guy like Mike Evans was," and "an intriguing rookie draft pick who could potentially (at least based on his athletic profile) fill the Mike Evans role."
-- **One poster names him as their favorite rookie WR** with no supporting argument beyond "Mark my comment: Ted Hurst."
-- **No camp reports, no depth-chart reporting, no target projections** appear in the corpus. The receiver room is discussed elsewhere with Egbuka, Godwin and McMillan mentioned ahead of him.
-- **Price:** ADP 274, 18.07 in a superflex sample — undrafted in most 12-team leagues.
+- Role: per Greg Auman via Cooper (9/1), Hurst is fourth in the Bucs receiver order and is being used early as a part-time field-stretcher rather than a full-time receiver. Adam Slivon (PewterReport, 8/9) wrote that after a couple of quiet practices Hurst "looked like the kind of X receiver that can be an X-factor this season." A commenter noted him running with the backup-quarterback group in the 8/28 preseason game against Jacksonville.
+- The room is split on whether to hold him: one commenter calls Tampa Bay's receiver room crowded and files him as a year-two guy, while another, asked which stash to activate, names Hurst as one who should be on the active roster. Two top-level nominations at 42 upvotes had him as a Bucs deep sleeper boosted by injuries around him, with one saying he is not a WR1 this season but is a must-hold in keeper leagues.
 
-**Draft take:** A final-pick or waiver-wire name. The only argument for him is a role-profile comp with nothing reported to back it up yet, so wait for actual camp or preseason news before spending a pick.
+**Draft take:** a keeper-league hold and a best-ball dart, not a redraft pick while he is the fourth receiver on part-time snaps.

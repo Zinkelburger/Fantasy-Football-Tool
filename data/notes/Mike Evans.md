@@ -1,10 +1,10 @@
-**Mike Evans** (SF, WR, bye 8) — board rank 62
+**Mike Evans** (SF, WR, bye 8) — board rank 62 · as of 2026-09-04
 
-**Room sentiment:** Bullish and getting louder — 87 mentions, most piled into the 49ers injury threads. The dissent is about age and durability, not role.
+**Room sentiment:** San Francisco's clear WR1 whenever he plays, and the room is unanimous that he will not play a full season.
 
-- The catalyst is Ricky Pearsall going on season-ending IR for PCL surgery. The reaction thread's top comment (351) is literally "Mike Evans to the moon," with "Mike Evans time!" (199) behind it. NBC's Matt Maiocco says San Francisco's top two receivers should be "Mike Evans and De'Zhaun Stribling."
-- The bear case is age and health: he turns 33 in August, coming off an injury-riddled 2025. The argument is live — one poster mocks "Mike Evans the ironman?" and the reply (41) counters he has missed less than a season total in 12 years. A report has him out of practice with a quad strain, which skeptics seized on.
-- Competition isn't trivial: Deebo Samuel is back, Christian Kirk was signed, Kittle is coming off an Achilles, and CMC absorbs volume.
-- Price is the argument. A projection post has him at ADP 88.6 for 824.5 yards; "Mike Evans is two rounds too low" (27) is the popular take.
+- Hurt as of 9/1: Cooper tells an owner to prepare for Evans opening the season on his bench and says it changes roster construction, though he would still draft him. That is newer than the 8/11 beat note from Nick Wagoner (ESPN) that Evans was back from the quad injury at practice but "didn't do much beyond individual drills," and newer than the 8/21 thread in which a commenter reports he strained his hamstring while the thread was being written.
+- The room treats the missing games as a certainty rather than a risk: "It's not IF with the combination of Deebo and Evans, it's WHEN" (45 points), with an offer to donate $500 to a children's hospital if Evans and Deebo combine to start 26 games, and jokes about him being questionable every week at 188 and 114 points. Nobody argues he is durable.
+- Role: the clear WR1 at X for as long as he plays, with Stribling described as his understudy or handcuff — "simply the Evans handcuff, nothing more."
+- Market: drafters got him in the 8th round in the thread where the room called him forgotten after one down season and in a better offense. The board rank of 62 is three rounds ahead of that. The counter to the buy: essentially no WR has been fantasy-relevant after age 33 in the last decade except Fitzgerald in 2016, and the soft-tissue injuries have already started.
 
-**Draft take:** Good value in the 5th-7th as a WR3 with red-zone-driven WR2 upside now that Pearsall is out. Take the discount; don't reach.
+**Draft take:** Do not pay the board's fifth-round price for a 33-year-old who may miss Week 1 — he is worth the eighth, where the room actually drafts him.

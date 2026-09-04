@@ -1,10 +1,10 @@
-**Jayden Reed** (GB, WR, bye 11) — board rank 122
+**Jayden Reed** (GB, WR, bye 11) — board rank 122 · as of 2026-09-04
 
-**Room sentiment:** Quiet and lukewarm — 15 mentions, most of them ranking rows or one-word list entries. One poster names him as a "wildly different against ADP" pick and the only reply is "Why Jayden reed?" Nobody made the case at length.
+**Room sentiment:** an efficient receiver Green Bay will not put on the field in two-receiver sets, and that is the whole argument.
 
-- **Role risk is the core issue.** Green Bay's passing game is described as a true committee: Christian Watson 21% target share, Tucker Kraft 19%, Reed 18%, rookie Matthew Golden 16%. He's grouped with Khalil Shakir and Josh Downs as the "part-time guy" archetype whose upside is capped.
-- **Concrete bear data:** a usage study ("Going Heavy: The WR3 Tax") lists Reed among receivers who "finished poorly, in no small part due to their lack of involvement in their team's best offensive looks," and another comment flags his heavy-vs-spread splits as a red flag.
-- **Bull case, such as it is:** Hartitz puts him in tier 6 ("would WR2 numbers really surprise us?"), one poster expects a healthy Reed to out-produce Watson, and another lists him among late-round WRs with a legitimate TD-upside case.
-- **Market:** ADP 137.3 with a 649.5-yard projection.
+- Health: the only report is Mike Spofford (Packers.com) having Reed (ankle) out of practice on 2026-08-09, and nothing since. He missed most of last season with a collarbone injury, and health is the stated concern even inside the bull case.
+- Role is the fight. Commenters cite 8% career participation in two-WR sets and say Green Bay has played him only in three-wide looks, producing single-digit-snap games and capping how much of the Doubs/Wicks vacancy he can absorb. Cooper wants him to be the second full-time receiver but says he has mostly been confined to 3-WR sets, which caps him the way it caps Khalil Shakir. Albert Breer (SI, 08-11) does list him in the Packers' top three with Christian Watson and Matthew Golden, while picking Golden as the likeliest to break through. The holder's counter: he has the highest fantasy points per target in the NFL, the two-WR worry is overblown for this team, and he should get 2-3 carries a game now that Josh Jacobs is gone. His own fanbase brings up drops at the worst times, including a bricked long touchdown in the playoff loss with his defender beaten.
+- Market: he goes around WR50, roughly where his board rank of 122 sits, and the analysts are all above it. Maher has him 83rd overall against a consensus of 105, part of a Green Bay skill group he ranks about 170 spots ahead of the room in aggregate. Hartitz has him WR37 and takes him as the fallback if he misses on Watson. Twerski names him one of the two best early-season starts out of a weak bench group, matchups permitting. Dynasty: below his market value in 68% of 254 superflex trades.
+- The blunt view from the same threads: one commenter would start MarShawn Lloyd in the flex over him in Week 1, and another says Tucker Kraft's return and Golden's second year leave him no path to weekly relevance.
 
-**Draft take:** A round 11-12 dart in a four-way target split. Only after your starters are set, and prefer him in PPR — the committee math means he needs an injury ahead of him to be startable weekly.
+**Draft take:** a WR50-priced bench dart whose fringe top-24 case requires Green Bay to start playing him in two-receiver sets, which they never have.

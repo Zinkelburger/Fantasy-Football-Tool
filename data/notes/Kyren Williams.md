@@ -1,10 +1,12 @@
-**Kyren Williams** (LAR, RB, bye 11) — board rank 23
+**Kyren Williams** (LAR, RB, bye 11) — board rank 23 · as of 2026-09-04
 
-**Room sentiment:** Leaning positive across 117 mentions — the recurring framing is "boring, proven, ranked too low," countered by a dedicated "3 RBs We Are Fading At Current ADP" writeup.
+**Room sentiment:** Lead back on the league's best offence, and every live argument about him is really an argument about how much Blake Corum takes.
 
-- **The production case** (top-scored bull post, 51): three straight seasons of 1,300 scrimmage yards / 13 TDs / 30 catches / 260 touches, 68% of red-zone touches, finishes of 7th, 7th and 9th. "How many years does Kyren have to finish as a back-end RB1 before this sub realizes he'll finish as a back-end RB1 again?"
-- **The Corum question:** bulls note he got an extension, is 25-26, and played ~70% of snaps including passing downs and 70% of red-zone snaps last year. Bears say even a 55/45 split "will cap his ceiling without a doubt."
-- **Concrete bear points:** no explosive-play ability, receiving production down two straight years vs 2023, and fantasy points inside the 10-yard line at a three-year low (5.0 FPG). One fader argues the real threat is Davante Adams taking short red-zone targets, not Corum.
-- **Market position:** ADP 21.5, third round in most formats (4.09 in a superflex sample). Room ranks him RB9-RB17.
+- No injury or availability claim. His hold on the job firmed up in late August: commenters say his extension settled the Rams backfield and made Hunter's path impossible, and the Aug 27 Hunter trade is read as tightening it further — conditional on that contract keeping him ahead of the Rams' other backs.
+- The strongest defence is the Sept 2 top comment (162 points): a top-10 RB three straight years who should hold the job over Corum, citing a multi-year second contract, a team captaincy, Corum under 38% of snaps across the last five games including the playoffs, and no decline on tape.
+- The split is still the whole question. Hartitz could see it erring toward 50/50 and would be really surprised if Kyren returned to 2023-24 form without Corum going down; Cooper says Corum has come on recently, which caps the upside; Twerski expects a frustrating split and does not want Kyren as his RB1; one commenter says Corum is the guy by midseason. The most upvoted dissent from the bear thread (37 points, Aug 18) argues he still beats Breece Hall and Josh Jacobs on the easiest RB schedule in the league behind the best offence, projecting 10-14 TDs even in a split.
+- The bear case is numeric, not vibes: only 11th in RB fantasy points per game (15.6) despite the No. 1 scoring offence (30.0 PPG) and No. 1 run-blocking line, with rushing FPG inside the 10 falling 7.7 to 5.9 to 5.0 across three seasons and receiving FPG down from 5.9 to 4.4. One OP adds that a dominant Rams defence means leads, and leads mean McVay resting him and using Corum.
+- Market: he is the 14th RB off the board in Sleeper PPR, and was sent as the round-2 centrepiece of a Derrick Henry swap the room called close to even. Maher has him only 1-2 spots ahead of consensus, so no edge at cost. Board rank 23 is about what the room pays.
+- Sentiment cuts both ways in the same week: named too low several times as the lead back on a great offence, and faded by commenters who say plainly that he is objectively fine — high floor, good ADP, contender that scores — and still cannot get excited.
 
-**Draft take:** High floor, capped ceiling, fine at cost if you want stability. If your build needs a league-winner from that pick, the room's own upside complaint is the reason to take WR instead.
+**Draft take:** Take him as a stable RB2 rather than the RB1 you build around — the touches are safe, but Corum's goal-line and closing work caps the ceiling and even his backers are bored.

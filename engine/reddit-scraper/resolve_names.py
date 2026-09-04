@@ -252,7 +252,36 @@ def build_aliases(players):
         # parens became an alias, and the city alone matched any mention of the
         # city. Register the full string only.
         if str(p.player_depth or "").startswith("DST"):
-            add(_key(re.sub(r"\s*\(\d+\)\s*$", "", p.player_name)), p)
+            # The pool name is "Green Bay Packers DST   (11)". Registering only
+            # that full string meant NO comment could ever match one: nobody
+            # types it. All 32 defenses drew zero claims for a whole season, and
+            # a thread reporting Aaron Donald's return on a 1yr/$20M deal, per
+            # Rapoport and Schefter, was invisible to a writer working on the
+            # Rams DST.
+            #
+            # The city alone stays banned — it matches every mention of the
+            # city. What makes a defense unambiguous is the defense token beside
+            # it: "Packers" is the team, "Packers D" is the unit. So pair each
+            # way of naming the team with each way of saying defense, and
+            # register nothing bare.
+            full = _key(re.sub(r"\s*\(\d+\)\s*$", "", p.player_name))
+            add(full, p)
+            words = full.split()
+            if words and words[-1] == "dst":
+                words = words[:-1]
+            if words:
+                # "green bay packers" -> the whole thing, and the nickname
+                # ("packers") which is how people actually write it. A
+                # two-word city ("green bay", "new england") is kept whole;
+                # a one-word city ("denver") is fine too.
+                team_forms = {" ".join(words), words[-1]}
+                if len(words) > 1:
+                    team_forms.add(" ".join(words[:-1]))
+                for form in team_forms:
+                    if not form:
+                        continue
+                    for tag in ("d", "dst", "d st", "def", "defense", "dline"):
+                        add(f"{form} {tag}", p)
             continue
         toks = _tok(p.player_name)
         if len(toks) < 2:

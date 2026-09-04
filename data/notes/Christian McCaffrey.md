@@ -1,10 +1,12 @@
-**Christian McCaffrey** (SF, RB, bye 8) — board rank 4
+**Christian McCaffrey** (SF, RB, bye 8) — board rank 4 · as of 2026-09-04
 
-**Room sentiment:** A dedicated "case for CMC repeating as the RB1" thread ran alongside multiple "never drafting him again" posts — lower-volume than you'd expect for a top-5 pick.
+**Room sentiment:** Split down the middle and nervous — nobody disputes the ceiling, everyone argues about whether he survives another 450-touch year.
 
-- Role is the cleanest argument for him. One well-upvoted reply calls San Francisco "as unambiguous a backfield as you could possibly find in the NFL," and the receiving work is treated as the reason he scores. Backup Jordan James, described in camp reports as the clear No. 2, suffered broken ribs early in 49ers camp.
-- Market: consensus average rank 6.00, ADP cited around 4.5-6.3, and one projection puts him at 574.5 receiving yards.
-- Bull-side data point (score 29): of 24 instances since 2014 where an RB hit 370+ touches, only 4 improved in PPG the next year — and every one was either Derrick Henry or McCaffrey.
-- Bear case is age and durability, nothing else. He turned 30 in June and headlines the "biggest risk/reward options" list; multiple posters put him on do-not-draft lists purely on injury history.
+- **Availability: nothing currently reported.** He sat out in August with what Rapoport confirmed on 8/18 was genuine tightness rather than a contract hold-in (one dissenting commenter insists it is contractual, noting the timing against the Robinson and Gibbs extensions). Nick Wagoner (ESPN) had him watching practice in street clothes on 8/11 with Shanahan saying there was no worry and that he would be more concerned if McCaffrey tried to play through it and made it worse. He went through drills on 9/01 and the room mocked the update as non-news.
+- **The durability case against him is workload history, not a current injury:** 337 carries and 113 receptions — 450 touches — last season at age 30. Twerski's number is that since 2010, backs with 330+ touches averaged over 100 fewer PPR points the following year, and that McCaffrey himself played three and four games in the seasons after his two previous 330-touch years. Murchison leans Jonathan Taylor over him at pick 4 on the same fear.
+- **Role is unambiguous.** Shanahan's bell cow, with commenters arguing he has never used a committee when his lead back is healthy, and the most lucrative receiving role of any back — assumed first in the target queue ahead of Kittle. San Francisco does not ease returning players back; the room's own example is McCaffrey being listed a game-time decision and then taking 33 touches.
+- **George Kittle's return is read as a small net positive** — his blocking helps the run game and pulls linebackers — with the dissent being slightly fewer but better touches.
+- **Market: he is sliding.** Drafters report getting him at 1.07, 1.08, 1.09, 1.10, 1.12 and 9th in a 10-teamer, while Hartitz has him third overall and has taken him at 1.03 on structural grounds, and Cooper takes him at 6 over Amon-Ra St. Brown on last year's 417 PPR points. The room's rule is that a fall past 5 is a value take on its own.
+- **Sentiment:** 19 top-level fades (185 upvotes) on injury history and workload, against a 338-point reply calling him a league-winner too good to pass at the fallen cost. The near-universal condition attached to buying him is rostering the handcuff.
 
-**Draft take:** The room's disagreement is about health, not opportunity. If you take him you are paying full first-round price for a 30-year-old, so plan on spending a real pick on a 49ers backfield contingency.
+**Draft take:** If he falls out of the top five take him and draft his handcuff in the same league — the ceiling is unmatched and the price has already moved to pay you for the risk.

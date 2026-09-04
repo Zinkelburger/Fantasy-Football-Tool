@@ -1,10 +1,9 @@
-**Jahan Dotson** (ATL, WR, bye 11) — board rank 259
+**Jahan Dotson** (ATL, WR, bye 11) — board rank 259 · as of 2026-09-04
 
-**Room sentiment:** Quiet and dismissive — 3 mentions, none of which is a fantasy argument in his favor.
+**Room sentiment:** Purely a price story — nobody in the corpus argues about his role, only about how worthless he became.
 
-- One concrete fact: he signed with Atlanta at $7.5M APY per Spotrac, with a 2026 cap hit almost certainly under $5M — cited in passing in a thread about a different player's contract.
-- The only fantasy-adjacent mention is skeptical framing of the Falcons' supporting cast: a poster asks why anyone worried about "Zachariah Branch and Jahan Dotson being a problem for Pitts" would draft any other TE, i.e. the room treats that WR group as weak competition.
-- He otherwise appears only in a throwaway list of low-value names.
-- No camp reports, target projections or depth chart detail.
+- No role, injury or usage claim anywhere in the distilled corpus. Everything recorded about him is market.
+- Market, 9/01: three managers say they were offered a first-round rookie pick for him after his rookie year — one says the offer on the table was Jared Goff — got greedy, and the value never came back. A 9/02 dynasty cut thread has a manager reporting he dropped Dotson and nobody in his league claimed him.
+- The one usable number, 8/30: 33.2% rostered on Sleeper in a commenter's sub-40% availability audit, grouped with Tyquan Thornton, Xavier Hutchinson and Malik Benson as the receivers still gettable in most leagues.
 
-**Draft take:** No draft case here. Deep-league dart at most, and there's nothing reported that would make him a target over other late fliers.
+**Draft take:** Leave him on waivers — the corpus records no role for him at all, only managers trying to get rid of him.

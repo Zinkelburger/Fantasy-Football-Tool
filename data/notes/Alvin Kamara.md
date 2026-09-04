@@ -1,10 +1,10 @@
-**Alvin Kamara** (NO, RB, bye 8) — board rank 129
+**Alvin Kamara** (NO, RB, bye 8) — board rank 129 · as of 2026-09-04
 
-**Room sentiment:** Bearish on Kamara himself, but heavily discussed — 82 mentions, nearly all of them arguments about what he does to Travis Etienne's value rather than about drafting Kamara.
+**Room sentiment:** hurt and widely called finished — the only reason he is still discussed is what a return would do to Travis Etienne.
 
-- The news driving it: New Orleans restructured his contract (one poster says it's a straight pay cut) to keep him, and camp reports (245 upvotes) have him taking first-team reps with Etienne. A second camp roundup says the two "may share the Saints backfield more equally than expected."
-- Bear case dominates the high-score lines: "I think Kamara is more of a mascot than anything" (69), "Kamara looked quite cooked most of last year" (40), "Kamara is finished." Structural knocks include Kellen Moore's offense not throwing to running backs, Vegas projecting the Saints sub-.500, his age (31), and a long history of missed games.
-- The contrarian case is not nothing: Hartitz has him in handcuff tier 2 and notes he's "one season removed from being the PPR RB5." One poster argues at RB50 he isn't as washed as advertised, with 2025 success rate, EPA/att, YPC and explosive run rate all close to Etienne's.
-- The room is explicitly split on whether the timeshare is real: several posters say "I'm worried 0 about Kamara," others say "I reallyyyy think Kamara is going to make things more interesting for ETN."
+- **Out for Week 1 with an MCL sprain** (named as out on 2026-09-03). The room describes it as his third MCL sprain and the second in that same knee inside a year, and commenters expect him to open the season injured or on limited snaps; one doubts he finishes the year at all.
+- Return timing is unknown and unsourced. Murchison expects him back at some point in the season, at which point — **and only if he gets healthy** — he takes third-down work from Etienne. That is the entire live question on him.
+- How much of a threat that is depends on who you believe: one side argues a healthy Kamara is still the better receiver out of the backfield and would meaningfully cut Etienne's receiving upside, the other that he is a spell back now, citing bottom-of-the-league advanced-stat finishes last season and saying he looked completely washed.
+- Nothing in the corpus touches his own draft price. Every claim about him is really a claim about the Saints backfield.
 
-**Draft take:** Last-pick dart at RB50, not a target. The actionable use of this news is discounting Etienne, not rostering Kamara.
+**Draft take:** do not draft him — he is out for Week 1 on a third MCL sprain with no return timeline, and his only remaining value is as a mid-season risk to Etienne's third-down work.

@@ -1,10 +1,10 @@
-**Brenton Strange** (JAC, TE, bye 7) — board rank 132
+**Brenton Strange** (JAC, TE, bye 7) — board rank 132 · as of 2026-09-04
 
-**Room sentiment:** Quiet and lukewarm — only 13 mentions, almost none enthusiastic. He is discussed as a punt-TE option, not as a target.
+**Room sentiment:** Jacksonville spreads the ball too widely for him to hold a weekly starting spot, and the room prices him accordingly.
 
-- Hartitz's TE tiers (135) put him in tier 5: "Week 2 waiver wire cover candidates." That is the highest-quality signal in the dossier, and it is not flattering.
-- The main bear case is target competition. A commenter (12) says the Jacksonville situation "has me completely out on Brenton Strange — how many WR injuries/busts is he away from meaningful consistency or upside?"
-- There is also snap-share risk: he "might be the only guy safe at his position, but even he might lose time to newly drafted Nate Boerkircher, who has been brought in as a blocking TE."
-- The mild positive: he "got paid and was solid when healthy last year," and appears on punt-TE shortlists with Juwan Johnson and Mark Andrews. One user projects roughly 46-540-3. He goes in the same range as Isaiah Likely, AJ Barner and Kenyon Sadiq.
+- Did not practice for the Jaguars on 8/11 per John Shipley (SI/OnSI); nothing on it since.
+- Role: likely third at best in Jacksonville's pecking order. A Jaguars fan who rosters him says he is playable only when the matchup says so, because the offense spreads the ball too widely for any of the secondary pieces to start weekly. Cooper has him off his board entirely — he'd need multiple WR injuries to become a top-2 target.
+- The case for him is positional rather than personal: Hartitz says a Juwan Johnson plus Strange tight end room can still eke out low-end TE1 production, since there's only about 1.1 PPR points per game between TE9 and TE16.
+- Sentiment: a recurring 15th-round sleeper pick on the grounds that Jacksonville paid him and he can run block, with one outlier prediction of a top-three finish.
 
-**Draft take:** Only worth a pick if you are deliberately punting TE, and only in the last few rounds. Nothing in the corpus argues for taking him ahead of the other late TEs at identical cost.
+**Draft take:** Last-round tight end only — the room's own argument for him is that the position barely matters, which is no reason to spend a real pick.

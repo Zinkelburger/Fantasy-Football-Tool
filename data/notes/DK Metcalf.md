@@ -1,10 +1,9 @@
-**DK Metcalf** (PIT, WR, bye 9) — board rank 84
+**DK Metcalf** (PIT, WR, bye 9) — board rank 84 · as of 2026-09-04
 
-**Room sentiment:** Quiet and lukewarm (16 mentions). The single highest-scored line about him is a joke fade in the "do not draft no matter what" thread — "DK Metcalf because fuck that guy" (756) — which is personal antipathy, not analysis, but several other posters independently list him as a permanent avoid.
+**Room sentiment:** A settled, one-sided fade, with one stale practice report and nothing else on the health side.
 
-- **Role:** he is the established WR1 in Pittsburgh, with Michael Pittman arriving as "the clear complement to DK Metcalf" per a well-received writeup. Nobody in the corpus argues his target share is at risk.
-- **Expectation level:** Ian Hartitz files him in tier 6, "would WR2 numbers really surprise us?", alongside MHJ, Brian Thomas and Courtland Sutton. Another poster puts his per-game production around WR21, in a tier with Jameson Williams and Tetairoa McMillan.
-- **Price and projection:** ADP ~84-86 (superflex table has him 9.03). A projections post pairs that ADP with 824.5 projected receiving yards, which is not an argument for reaching.
-- **Dissent:** one poster names him as their biggest "wildly different against ADP" pick, without elaborating on the direction.
+- Injury: Brooke Pryor (ESPN) had him out of Steelers practice for a second straight day on 2026-08-11. Nothing since — no return report, no designation, no follow-up in the corpus.
+- Role: unchallenged Pittsburgh No. 1 and the player the room says the season turns on — "we really need DK and Pittman to be good". Commenters note defenses could bracket him last year because he was the only real option, with WR3s and 4s playing WR2.
+- Sentiment is uniformly negative: a 600-point thread on 2026-09-01 with roughly a dozen mentions, all panning him — cannot catch with his hands, looks slow in Pittsburgh, gets no separation, mid his whole career despite the physical gifts. A separate, downvoted minority is on the off-field material (punching a fan, berating a grocery store employee); the room shouts that down as a one-off but it is being aired.
 
-**Draft take:** A stable but capped WR3 in the 8th-9th round range. Take him as a floor play when you've already got upside elsewhere; there's no case in this corpus for paying up.
+**Draft take:** The volume is real and the room is wrong to be this unanimous, but with a two-day practice absence never resolved, treat rank 84 as the ceiling of what you pay, not a discount.

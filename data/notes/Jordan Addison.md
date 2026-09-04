@@ -1,10 +1,11 @@
-**Jordan Addison** (MIN, WR, bye 6) — board rank 105
+**Jordan Addison** (MIN, WR, bye 6) — board rank 105 · as of 2026-09-04
 
-**Room sentiment:** Quiet — only 16 mentions, most of them list entries rather than arguments. There is no real debate here in either direction.
+**Room sentiment:** The room's clearest value name, held back only by doubt about whether the quarterback supports a second receiver.
 
-- Hartitz files him in WR Tier 7, "keeping a candle lit." One aggregate lists ECR 106; Sleeper 12-man superflex ADP 11.04 (123.5).
-- The one repeated positive is touchdown equity: he's the name offered when someone asked for a WR going after round 8 with real TD upside, "especially in PPR." A separate post floats him "potentially being a top 20 WR because Kyler is now throwing to him."
-- The negatives are equally thin: one "do not draft no matter what" vote with no reasoning attached, and one ranker who left him off a top-100 list entirely, which a commenter flagged.
-- A few posters list him among their half-PPR movers and one says "I'm also all in on Jordan Addison this year," but none of these lines carry meaningful upvotes.
+- Worked back into team drills on 8/8 after a minor thumb issue for a couple of days and was expected close to full participation, per Will Ragatz. Nothing since.
+- The role debate is entirely about the quarterback. The bear case is that Kyler Murray never supports a second receiver behind Justin Jefferson; the bull case is that Addison is exactly the check-down target Murray throws to, that he has been unguardable in Vikings camp two preseasons running, and that he is a Kevin O'Connell favourite the team would keep over the QB.
+- Contract context: the room expects him paid next offseason, possibly by another team, which would move him into a clear WR1 role.
+- Market: third-most-nominated undervalued name in its thread (48 points), going around the 9th round in redraft — board rank 105 is a round ahead of that — and named elsewhere as basically free at his current cost. Buyable in dynasty for something like Stribling or Golden plus a 2027 second, with several stressing he is only 24.
+- The supporting case: two top-24 finishes in his first two years and four straight double-digit games with Wentz before McCarthy returned; the poster making it ranks him WR30-34.
 
-**Draft take:** The dossier is too thin to build a case on. Treat him as a late-round WR flyer whose entire argument rests on a quarterback change the room mentions but never actually examines.
+**Draft take:** Buy him at the ninth-round market price — two top-24 seasons at 24 years old is worth betting that Minnesota feeds a second receiver.

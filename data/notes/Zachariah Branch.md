@@ -1,9 +1,9 @@
-**Zachariah Branch** (ATL, WR, bye 11) — board rank 221
+**Zachariah Branch** (ATL, WR, bye 11) — board rank 221 · as of 2026-09-04
 
-**Room sentiment:** No sentiment to report. Two mentions in the entire corpus, neither an opinion about drafting him. This note is short because the dossier is essentially empty.
+**Room sentiment:** discussed as a returner and a dynasty stash, essentially never as a 2026 receiver.
 
-- **Mention one** is a ranking-table row: Sleeper 12-man superflex redraft ADP of 17.06 (196.6). That corroborates the price and nothing else.
-- **Mention two** is a rhetorical aside in a thread about fading Kyle Pitts: "if you are worried about Zachariah Branch and Jahan Dotson being a problem for Pitts, which TE are you drafting that is going up against a worse WR2?" The only takeaway is that at least one poster considers Atlanta's WR2 spot weak enough to be a point in Pitts' favor.
-- No camp report, no depth-chart note, no target projection, no advocate.
+- Role, from the 9/01 return-yardage thread: the premise is that he is "lightning fast and could carve out a small gadget role". One commenter warns rookies lose return duties as soon as they earn offensive snaps; another concludes he "will probably not have enough of an offensive role" to be a difference-maker but should be rostered where return yards score. A 9/04 reply does put him among the players to keep active rather than stashed, so the room is not unanimous on that.
+- Sentiment is dynasty-only and explicit about the timeline: five separate managers name him as a taxi stash, one on the reasoning that he will not produce fantasy points "until at least halfway through the season". He gets a hedged nomination as Atlanta's most-disrespected asset — "maybe Zachariah Branch but probably Kyle Pitts again" — and two late-dart nominations on the theory that day-three rookies who break through were top high-school recruits.
+- Market: taken 3.10 in one rookie draft ahead of Chris Brazzell, and named among the rookies the room now thinks it wrongly took ahead of De'Zhaun Stribling.
 
-**Draft take:** Not draftable on the strength of this discussion. If you want Atlanta exposure, the room is talking about Drake London and the quarterback situation — leave Branch on the wire unless real camp reporting emerges.
+**Draft take:** Not a redraft pick unless return yards score in your league; in dynasty he is a taxi stash whose owners are already telling you not to expect anything before midseason.

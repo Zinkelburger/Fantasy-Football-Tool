@@ -1,10 +1,12 @@
-**Michael Wilson** (ARI, WR, bye 14) — board rank 74
+**Michael Wilson** (ARI, WR, bye 14) — board rank 74 · as of 2026-09-04
 
-**Room sentiment:** He appears on both "hill I'll die on" and "do not draft" lists — the room genuinely can't agree on him.
+**Room sentiment:** the price is popular and the whole argument is whether Marvin Harrison Jr.'s health caps him.
 
-- The catalyst is a beat report that Marvin Harrison Jr. is "being treated as the main WR1, not Michael Wilson." That thread is where most of the argument lives.
-- Bull case: he had an extended burner stretch last season, and supporters cite 8.0 yards per target versus McBride's 7.3, plus a claim he's playing the Z role. Several predict he's Arizona's true WR1.
-- Bear case, and it's better supported: he only produced when Brissett was throwing ~40 times a game and Wilson was seeing roughly 16 targets a game, with Harrison hurt. "That was a 99th percentile outcome," and "I cannot see him playing a Puka type role with everyone back healthy." A rankings author asked which players he felt strongest about answered "Negative — Michael Wilson."
-- Tiered near the bottom of the useful WRs ("keeping a candle lit"). One poster prefers Harrison in Round 7 to Wilson in Round 8.
+- No injury or availability issue, and the one live risk is gone: Schefter and Rapoport reported on 2026-09-03 that Arizona and Wilson agreed to a three-year extension through 2029 — reported at roughly $75M with $47M guaranteed, about $25M a year, short of the $30M AAV his side wanted — signed the same day. Josh Weinfuss had the movement first. Commenters had spent the week on "no way they reach a deal by week 1"; that is settled.
+- Role: the Z receiver in new head coach Mike LaFleur's McVay-style offense — the Robert Woods/Puka Nacua job, a comparison LaFleur has made himself, and LaFleur was Wilson's former position coach. Camp and preseason had him moving all over the formation with motion, blocking and screen work, so he rarely leaves the field, and a weak Arizona defense should keep forcing pass-heavy scripts.
+- The ceiling condition is Harrison, and the most recent read (2026-09-04) is the sober one: with Harrison healthy the room treats Wilson as Arizona's No. 2 or No. 3 receiving option in a Brissett-led offense. He was the overall WR2 across the last eight games of 2025 with Brissett throwing about 50 times a game, but his splits are far worse when Harrison plays — one commenter calls him "light years better" without him. Trey McBride is the unquestioned first read either way, with Jeremiyah Love also drawing receiving work.
+- The Cardinals sub calls him the best receiver on the team; the dissent from those same fans is that he is that by default, would be a WR2/3 elsewhere, and that last year was garbage time from a team that trailed constantly behind an RB5 backfield.
+- Market: he goes around the 7th/8th turn — later than board rank 74 implies — and the room mostly calls that a steal, "priced at his floor", with ADP expected to rise on the extension. The one fade, heavily downvoted, is a commenter out because the contract removes his contract-year motivation.
+- Sentiment: repeatedly named as going far too late off a WR11 finish with the same quarterback, but the newest read is boom-bust and too inconsistent to trade for.
 
-**Draft take:** You're betting on Arizona's pass volume repeating, which most of the room does not expect. Fine as a bench swing in the 9th-10th; a mistake anywhere near Round 7-8.
+**Draft take:** take him at the 7th-8th turn as Arizona's clear second target behind McBride — the contract risk is gone, and the only thing that caps him is a Harrison season the room is not betting on.

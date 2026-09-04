@@ -1,10 +1,11 @@
-**Garrett Wilson** (NYJ, WR, bye 13) — board rank 40
+**Garrett Wilson** (NYJ, WR, bye 13) — board rank 40 · as of 2026-09-04
 
-**Room sentiment:** 48 mentions and no middle ground — the top comment in the "do not draft no matter what" thread is just "Garrett Wilson," while other posters call him their flag plant of the year.
+**Room sentiment:** a discount priced entirely on the Jets, with the loudest voices saying the fade has gone too far and the analysts quietly on the other side.
 
-- The fade is about the Jets, not the player. The sharpest specific objection is coaching — an OC "who was fired in each of his last two seasons because he couldn't keep up with the modern NFL," and who may also "see his attention split after becoming interim head coach halfway through the season."
-- The bull case is per-game production: he "averaged 19.1 FPG (WR5) through his 5 healthy games last season," and even in a lost year led the Jets in receiving with ~395 yards in 7 games. Hartitz has him tier 4, "clear upside but we have questions."
-- Price: ADP ~42.5 (5.01 in a superflex sample). "Garrett Wilson in the mid 4th feels like an absolute bargain on a player who I think is just as talented as someone like Chris Olave" — Olave goes late round 2.
-- Structural counterargument: last year it was better to own "a WR2 on a great offense... than a WR1 on a bad offense (Garrett Wilson, DK, Jefferson, McLaurin)."
+- Healthy again as of 2026-09-04, and named as one of the reasons the Jets passing game should be better than last year, when he played only 5-7 games.
+- **Role is settled at the top.** Jeremy Fowler (ESPN, 8/11) reported he is the Jets' clear-cut No. 1 receiver and is cooking with Geno Smith in camp. One commenter says everything out of camp points to roughly 14 targets a game and treats Geno as a clear upgrade on last year's Justin Fields and Tyrod Taylor arrangement — with the stated counters being that Geno gets hurt or the Jets tank late and change quarterbacks.
+- The bear case: an unsustainable TD rate, garbage-time bombs from Fields inflating last year's run, and a flat "nobody thrives with the Jets," with one commenter putting him on a do-not-draft list.
+- Market: Maher has him 31st overall against an ADP of 44 and an ECR of 35-38, grouping him with Waddle and McConkey as round-3 values going in round 4, and commenters find it odd he goes a full round later than Chris Olave despite being the more durable and arguably better receiver. The room is taking him behind his board rank, not ahead of it. Twerski is the analyst dissent: Wilson is on his ADP fade list, he has not been willing to draft him at cost, and he frames that as a read on Geno Smith rather than on Wilson.
+- Sentiment: the highest-upvoted answer in one thread (439 points) is that he was crushing last year in a much worse offensive environment and the fade has overshot, and several argue he should be a consensus top-8 receiver rather than going behind Zay Flowers, Collins, Pickens, A.J. Brown and Olave — he was WR5 before the injury. Against that, Cooper names him the receiver he is least confident in inside his own WR13-24 range, and a Ringer host is "personally very very low" on him, arguing models miss how bad the vibes get if the Jets start badly with Glenn on the hot seat.
 
-**Draft take:** Round 4 is exactly the price of the disagreement. If the fade crowd pushes him past ADP he's the cleanest talent discount on the board; otherwise Egbuka/McMillan/Waddle come from the same tier without the Jets tax.
+**Draft take:** buy the Jets discount in round 4 — the target volume is the best-sourced thing on his page and the fade is about the franchise, not the player.

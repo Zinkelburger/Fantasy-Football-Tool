@@ -1,10 +1,11 @@
-**Dalton Schultz** (HOU, TE, bye 8) — board rank 141
+**Dalton Schultz** (HOU, TE, bye 8) — board rank 141 · as of 2026-09-04
 
-**Room sentiment:** Quiet — only 8 mentions, almost all of them ranking-list placements rather than discussion. Nobody is arguing about him in either direction.
+**Room sentiment:** Deep-league starter whose case is entirely Houston's thinned-out receiver room, with the team's own tight end depth as the counterweight.
 
-- Hartitz has him in TE tier 6, a bucket the author labels with a shrug ("maybe this works!") alongside TJ Hockenson, Greg Dulcich, Terrance Ferguson, Gunnar Helm and AJ Barner — i.e. explicitly the dart-throw tier.
-- The one substantive stat anyone cites: "Dalton Schultz got 106 targets last year." That volume is the entire bull case as presented in the corpus.
-- He surfaces as a named punt-TE option — "Dalton Schultz is my target" in a thread about cheap tight ends — and in two anecdotes about picking him up as a late-season streamer, including one poster who started him in a league final.
-- **Price:** ADP quoted 147-167.8; 12.08 (139.3 overall) in a superflex TEP sample.
+- Role: Houston's TE1 and the room's designated beneficiary of a decimated receiver group — one host put it that with the receiving room thinned out "realistically the biggest boost is to Dalton Schultz," explicitly conditional on Tank Dell and Jayden Higgins being out for the season (Aug 26). He is also named a deep TE target on that basis alone.
+- Cutting the other way, from the same week: Houston now has four healthy tight ends, where injuries last season left Schultz as the only real one and forced OC Nick Caley to abandon 12 and 13 personnel for a six-lineman package. Commenters expect plenty of two-TE sets this year, which restores Caley's preferred structure but spreads tight end snaps beyond Schultz.
+- How real the competition is depends on who you ask (Aug 30): commenters call him a decent pass catcher who is not much of a blocker and describe the room behind him as wide open — Brevin Jordan often injured and a poor blocker, Cade Stover coming off a knee injury with little receiving production — while one says rookie Marlin Klein is already the TE2 and fighting Schultz for the job. That is the only claim that puts his starting role itself in question, and it is a single commenter.
+- Usage detail: he occupies roughly 30% of the Texans' slot snaps, which one commenter uses to argue the room is overvaluing Houston's slot receiver job. The same fact caps how much of the vacated receiver work can actually reach him.
+- Analysts split on how much of a starter he is: Cooper calls him the deepest tight end he would be comfortable starting Week 1, and only in 14-16 team or two-TE leagues, noting two more touchdowns would have moved him from about TE10 to TE4 and that he is usually still available when you need him. Loza takes him over Hunter Henry for floor while flagging Houston's pecking order behind Nico Collins as a massive question mark.
 
-**Draft take:** A punt-TE body, nothing more — the target volume is the only reason to care, and the room isn't betting on more than that. Take him in the last few rounds if you skipped tight end entirely; there's no reason to spend earlier and no discussion suggesting a role change.
+**Draft take:** A 14-team-and-deeper starter — in a 12-team league let him go and revisit once Houston's receiver picture resolves.

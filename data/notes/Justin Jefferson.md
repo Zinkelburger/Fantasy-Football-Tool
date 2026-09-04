@@ -1,10 +1,11 @@
-**Justin Jefferson** (MIN, WR, bye 6) — board rank 16
+**Justin Jefferson** (MIN, WR, bye 6) — board rank 16 · as of 2026-09-04
 
-**Room sentiment:** Unusually sour for a player this good — 41 mentions put him near the top of the "WR1 upside" tier and simultaneously in the "do not draft no matter what" and "early-round fades" threads.
+**Room sentiment:** Every fade in the corpus is about the Minnesota quarterback, and none of them is about him.
 
-- The bear case is entirely QB. He finished WR34 last season behind what posters call historically bad quarterback play, and Minnesota is running a Kyler Murray / JJ McCarthy competition. A camp roundup has Murray pulling away with "few, if any, incompletions" and connecting with Jefferson.
-- A well-upvoted line frames the upgrade honestly: he's going "from the worst passing QB in the league to like, a bottom 5 one" — better, but not good.
-- Bull case: he's the cheapest he's ever been (ADP ~15-18; average rank 11.00 in one aggregate), was a top-10 pick with a rotating cast of QBs before, and several posters call him to reclaim WR1.
-- Bear counter: last year proved even Jefferson isn't QB-proof, and "you can get similar value from people around him."
+- Role is unchanged: he is the target hog, and the 2026 variable is Kyler Murray replacing J.J. McCarthy. Twerski expects a bounce-back, calling McCarthy "a special kind of bad" last year and noting Jefferson has produced with a wide range of QBs; Dopp is buying him everywhere on the grounds that alphas eat and he stayed a top-10 WR through bad QB play before.
+- The specific cap the room puts on him: Murray has never eclipsed 4,000 passing yards or 26 passing TDs and runs a lot near the goal line, so several expect volume without the touchdowns — a target hog whose ceiling stays out of the top 3, unlike Lamb with Dak or Brown with Maye. Three commenters add that Murray does not throw well over the middle or deep, and that his career No. 1 receivers topped out near 1,400 yards.
+- The QB-proof label gets picked apart: his good seasons came with Kirk Cousins and Sam Darnold, both of whom produced elsewhere, so 2025 with McCarthy is treated as the exception rather than proof. He still averaged 95 yards a game with a replacement-level passer, and the OP of a separate thread argues his WR25 half-PPR finish was entirely quarterback-driven with his route grades fine.
+- Market: Yahoo ranks him WR6, behind Chase, Nacua, St. Brown, Smith-Njigba and Lamb, and the room takes him around pick 14 as a clear tier above the receivers left — board rank 16 is where he goes.
+- The fade is wide but shallow: nominated as "too high" 15 times in one thread for about 20 total upvotes, faded six times in another with the quarterback given as the reason every time, and several commenters call the fade indefensible. Murchison is the substantive bear — he names Jefferson one of two early-round players he most expects to miss expectations and would shop him for RB help, expecting a bounce-back but not the top-3 finish people are used to. One commenter notes he is one Kyler injury from repeating last season.
 
-**Draft take:** A round-2 price on a player the room agrees is elite but can't project. If you take him, accept that your WR1's ceiling is capped by Minnesota's QB — don't pay a first-round price.
+**Draft take:** Buy the quarterback discount at the end of round 1 — even the bears are projecting a bounce-back, just not a WR1 overall one.

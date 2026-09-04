@@ -1,10 +1,11 @@
-**Terry McLaurin** (WAS, WR, bye 7) — board rank 59
+**Terry McLaurin** (WAS, WR, bye 7) — board rank 59 · as of 2026-09-04
 
-**Room sentiment:** Quietly bullish — 27 mentions, low volume for a player this highly ranked. The people who mention him mostly want him; the pushback is limited to a couple of dissenting votes.
+**Room sentiment:** The room believes the target share and does not believe the offense around it.
 
-- Depth chart is the entire case. Camp notes from July 31 (45 upvotes): the Commanders run a "committee" behind McLaurin — Treylon Burks looked to be the WR2 before foot soreness after Day 1, with Luke McCaffrey, Van Jefferson and Antonio Williams rotating. As one poster put it, "Scary Terry is alone in the Commander receiver room, a must target for me."
-- ADP 60.3 with a 949.5-yard projection; Sleeper superflex has him at 6.08. One poster insists he "is not making it past the 6th in even the most uninformed leagues," so expect him to go ahead of board rank.
-- Hartitz files him in tier 4 — "clear upside but we have questions." He's grouped with Ladd McConkey as a bounce-back candidate after a disappointing 2025, and named repeatedly as a TD-upside value target.
-- Bear case is thin but real: one poster lists fading him last season as a "good call," and he appears once on the do-not-draft list. The live risk is the camp rumor that Stefon Diggs signs in Washington.
+- Did not practice for the Commanders on 8/11 per John Keim (ESPN); no follow-up in the corpus. The standing worry is the line with Laremy Tunsil out, which matters for a deep threat playing with a scrambling Jayden Daniels — conditional on Tunsil getting back.
+- Role is the best thing here: new Commanders OC David Blough has said he wants McLaurin fed 10-plus targets a game as the focal point, in an offense with 209 vacated targets.
+- The room is split on what that produces. One camp calls him a locked-in WR1 flying under the radar; the other calls him a mid-tier WR2 who will never beat about 85 catches, 1,100 yards and 6 TDs, notes his touchdown spike two seasons ago already regressed, and ranks him behind DJ Moore as a flex. An OP's efficiency case: highest FP/RR on catchable 15-plus yard targets over two seasons.
+- The sharpest signal is negative. The most upvoted fade in a whole-thread fade post was "any and all Washington Commanders" (1,035 points) — the offensive line, Dan Quinn's job security, his age — and several managers who drafted him call him their biggest regret.
+- Market: reported going in rounds 6-7, used as the main add-on in a package for Derrick Henry and Rashee Rice, with commenters saying he'd be a third-rounder without the injury reputation. Twerski lists him among his ADP fades. Board rank 59 is right on top of that price.
 
-**Draft take:** Round 5-6 target-share bet on the only established receiver in the room. Check the Diggs rumor before you draft him.
+**Draft take:** Take him in the seventh or later where the injury discount actually pays you; at his board rank you are buying the offense the room fades hardest.

@@ -1,10 +1,9 @@
-**Jordan James** (SF, RB, bye 8) — board rank 208
+**Jordan James** (SF, RB, bye 8) — board rank 208 · as of 2026-09-04
 
-**Room sentiment:** Actively discussed for a late-round back (11 mentions, including a dedicated handcuff thread), and the news moved against him during camp.
+**Room sentiment:** thin and split — a waiver-wire name whose case rests entirely on his ribs healing and CMC not lasting.
 
-- **The concrete news:** early camp reports had him as "RB2 in camp" and "the clear backup behind Christian McCaffrey." Then he suffered a rib fracture — "expected time depending on severity is 2-3 weeks (Kaelon Black is the clear RB2 while he's out)."
-- **The competition is unresolved.** A dedicated thread asks "Kaelon Black vs Jordan James: who is the Christian McCaffrey handcuff to draft?" Zain Dhanani had posted "Jordan James is clearly ahead of Black right now" shortly before the injury, while another poster reports "Kaelon is RB2 in SF (everyone, no idea where he got James from)." The room's summary: "either Jordan James or Kaelon Black will depend on the preseason."
-- **Tier placement is unfavorable:** Hartitz's handcuff tier 5, "Committee szn, but we're saying there's a chance," pairing James with Black rather than naming one.
-- **Market:** RB62, 226 overall; 20.01 (pick 221.3) in a superflex TEP sample. One poster gripes that drafting CMC "almost requires" spending an 8th/9th-round pick on the handcuff — a price no one here endorses for James.
+- Cracked/broken ribs in camp; he only got healthy roughly a week or two before 2026-09-02, returned in preseason week 3 and looked solid, but a commenter making his case on 9/2 concedes he is still playing with a cracked rib.
+- He was in pole position for the 49ers' RB2 job before the injury and lost it to Kaelon Black while out. A minority still argues James is the better back and the real CMC insurance; one floats a split with Black on pass work and James on early downs — all of it conditional on James getting fully healthy before San Francisco actually needs a lead back. Twerski sees him as the other half of a committee if CMC goes down but owns fewer James shares than Black.
+- Availability note for redraft: as of 2026-08-31 the room called him the best running back sitting on waivers and told an owner who had him available to add him immediately, ahead of the Saints backfield names.
 
-**Draft take:** A final-round dart only, and only if you own McCaffrey. The rib injury handed the job to Black for now, so watch preseason before spending anything real — this is a wait-and-claim situation, not a draft-day one.
+**Draft take:** free CMC insurance rather than a standalone play — add him where he is unrostered, but Black is ahead of him until the ribs are a non-story.

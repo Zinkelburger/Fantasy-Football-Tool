@@ -1,10 +1,11 @@
-**Mark Andrews** (BAL, TE, bye 13) — board rank 109
+**Mark Andrews** (BAL, TE, bye 13) — board rank 109 · as of 2026-09-04
 
-**Room sentiment:** Quietly positive as a cheap TE, not as an upside play. 24 mentions, most of them in "punting TE" and "TE deadzone" threads where he shows up as the late-round answer.
+**Room sentiment:** Thin and negative — no injury or role reporting at all, and the discussion that exists treats him as a nostalgia play.
 
-- **The pitch is price.** "Mark Andrews is cheap right now but could easily score a dozen touchdowns this year." The punt-TE thread lists him bluntly: "past his prime, but goes late, the Ravens paid him and let Likely leave in FA." Another: "old but he still has something left in the tank with minimal target competition outside of Flowers." A team preview expects "the two primary pass catchers in this offense will be WR Zay Flowers and TE Mark Andrews once again."
-- **Red zone is the whole case.** In a thread about Baltimore not using Flowers near the goal line, the answer was "that's what 6'5" 250lb Mark Andrews is for" — with a follow-up calling him "the real danger" for Flowers' touchdowns.
-- **The pushback:** "Mark Andrews is not going to be the focal target in the red zone, and I'm willing to bet one of the rookie TEs drafted will be worked into that offense," with Hibner named as gaining a role.
-- **Market:** ADP 120.1 with just 524.5 projected yards — the projection agrees he is a touchdown-dependent TE. Hartitz tier 4 ("top-5 upside after a Kona Big Wave or 3"); one newsletter has him TE11; 9.10 in a superflex sample. Bye 13 collides with Bowers and Tyler Warren.
+- Nothing in the corpus on health, snaps or route share. Every claim is price or opinion, so nobody is telling you his role has changed.
+- The closest thing to a role fact is the contract sequence (Sep 2): commenters say Baltimore offered Isaiah Likely a deal first, Likely wanted more, and the Ravens went back to Andrews — a 30-year-old who got paid and kept drawing heavy targets even with Likely on the roster. One reads that as the front office knowing something; another says it only explains why Likely never got a chance. Against that, he has not cleared 70 targets in either of the last two seasons.
+- The fade case is the loudest thing here (Sep 4): three commenters name him as the correct drop to hold Josh Jacobs in a 10-team league, arguing better tight ends come off the waiver wire most weeks. Earlier and consistent (Aug 27): a nostalgia gamble worth a 10th-round pick at most, with warnings against punting TE and hoping Andrews or Kelce turn back the clock, and one Aug 23 report of a rough camp and "absolutely toast" with the old regime gone.
+- Market: Maher has him TE15, a spot below Juwan Johnson at TE14, yet Andrews goes nearly three rounds earlier — he prefers Johnson at cost. Board rank 109 is on the expensive side of that.
+- The one buy: Cooper drafts him late as the safe-but-boring half of a two-TE build, arguing he could flat-out be elite in this scheme and noting he is six years younger than Kelce and four younger than Kittle.
 
-**Draft take:** A legitimate last-TE-off-the-board target if you punt the position — pair him with waivers rather than treating him as a set starter. Yardage floor is low, so he only pays off in TD weeks.
+**Draft take:** Let someone else pay for the name — take him only if he falls past the 10th, and take Juwan Johnson instead at the cheaper cost.

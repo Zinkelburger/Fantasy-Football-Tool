@@ -1,10 +1,11 @@
-**Jahmyr Gibbs** (DET, RB, bye 6) — board rank 1
+**Jahmyr Gibbs** (DET, RB, bye 6) — board rank 1 · as of 2026-09-04
 
-**Room sentiment:** Quiet by consensus — only 11 mentions, mostly ranking tables rather than debate. The only argument is about the contract.
+**Room sentiment:** the most one-sided bull case in the corpus, and the dissent is entirely about workload durability rather than talent or role.
 
-- Ranking aggregates have him at a literal 1.00 average rank in a top-350 consensus thread, ADP quoted 1.5-1.7. One AMA reply: "Jahmyr and Bijan will rightfully go 1 and 2."
-- The one live news item, appearing in three separate camp roundups: Gibbs is on a **contract hold-in**, not practicing while awaiting a new deal, alongside Bijan Robinson. One writeup frames it as him "holding your top two selection for ransom."
-- A projection thread pegs him at 449.5 receiving yards — the room still models a full-workload pass-catching back.
-- Only pushback is indirect: a commenter flagged a ranker taking CeeDee Lamb at 3 over Gibbs as "certainly a choice." The dissent is about who goes ahead of him, not about him.
+- **The backfield is his.** David Montgomery was traded to Houston and Pacheco went on IR on 2026-09-01, leaving only unproven bodies — Jacob Saylors, Sione Vaki — behind him. The room expects his snap share to climb from about 65% toward 75%-plus, with some arguing 90% of the workload; the top comment on the IR news (790 points) is "congrats on 30 touches a game." That holds only while Pacheco is out — he can return after the four-game IR minimum — and only while Detroit does not sign a veteran back.
+- Detroit has so far not added one. As of 2026-09-03 Dopp expects a practice-squad-level back to be the nominal RB2, no threat to the workload. Commenters flag that the remaining backs cannot pick up a blitz or handle short yardage, so Gibbs also inherits the goal-line touches Pacheco would have taken — and gets fewer rest snaps.
+- The one role caveat inside the bull case: a commenter calls him a weak pass protector, which he argues makes Gibbs harder to keep on the field on obvious passing downs. Holders counter that Amon-Ra St. Brown, Jameson Williams, LaPorta and Goff stop defenses selling out against him. His extension — commenters say he is now the highest-paid RB in the league — is cited as why Detroit let Montgomery go and as proof holdout risk is gone.
+- Market: the consensus 1.01. Twerski has him alone at No. 1 "comfortably" over Bijan Robinson; Hartitz calls him the clear 1.01 and would take him over Bijan even to diversify across leagues, citing doubt about the Atlanta offense. In a $200 auction the room's suggested price is about $75. One report of him falling to 1.06 and one of "taking Gibbs at 4" are the outliers.
+- Sentiment, with the usual discount: comps to prime LaDainian Tomlinson and Marshall Faulk, talk of the touchdown record, "injury is literally the only way he doesn't finish top-3 RB." The fade side is about nine managers who hold the 1.01, would still take him, and simply doubt he holds up as a bell cow; dissenters also note two clear weak links at guard and center.
 
-**Draft take:** He's the consensus 1.01/1.02 and the room gives no reason to look elsewhere. Check his practice status the morning of your draft — a hold-in dragging into September is the only risk anyone has flagged.
+**Draft take:** take him 1.01 without deliberating — the Pacheco IR and the Montgomery trade removed the only real cap on his usage, and the sole argument against him is that the workload itself might break him.

@@ -1,9 +1,10 @@
-**Shedeur Sanders** (CLE, QB, bye 11) — board rank 240
+**Shedeur Sanders** (CLE, QB, bye 11) — board rank 240 · as of 2026-09-04
 
-**Room sentiment:** Essentially silent. Three mentions in the entire corpus, none of them analysis. There is no reported camp news, depth chart information, or projection for him here.
+**Room sentiment:** the room expects him to start at some point and nobody argues he is actually good.
 
-- **No role information.** The dossier contains nothing about whether he is starting, competing, or backing up in Cleveland.
-- **The only sentiment on record is dismissive, and it's a joke:** in a thread about a manager missing the playoffs, the explanation offered was "bro was starting shedeur sanders." One other line lists him alongside Deshaun Watson in a QB argument with no reasoning attached.
-- **Price:** board rank 240; one superflex ADP table has him at 15.08 (pick 176), which is the only concrete market data available.
+- Availability and job, per an 8/24 report: Sanders is Cleveland's QB2 and the Week 1 backup behind Deshaun Watson, not the starter, which surprised commenters who assumed the Browns would look at him first. He has no fantasy value while Watson holds the job.
+- The room widely expects him to take over in-season once Watson struggles — one commenter predicts by Game 5, others joke about halftime of Week 1 — and frames the Watson start as a delay rather than a verdict. The less flattering read, also in the room: losing the job to Watson at all is evidence Sanders was worse in camp than assumed. Of 49 mentions, one camp says he looked better than Watson in camp and has upside a 30-year-old does not; the other calls him one of the league's worst quarterbacks last year.
+- Context on the whole offense: commenters say the Browns deliberately left the quarterback room barren ahead of a loaded 2027 draft class, which caps every Cleveland pass catcher this season.
+- Market: one commenter calls him a "tinfoil ticket" — his favourite long shot is Sanders taking the job before October — while another is helping a friend sell Sanders shares while waiting for a start. Nothing has changed on the depth chart since 8/24.
 
-**Draft take:** Nothing in the discussion supports drafting him in a 1QB league. Treat him as a superflex-only name and revisit if the starting job is reported as his.
+**Draft take:** not draftable in single-QB leagues — a waiver name the week Watson gets benched, nothing before that.

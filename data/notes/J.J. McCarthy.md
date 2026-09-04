@@ -1,10 +1,11 @@
-**J.J. McCarthy** (MIN, QB, bye 6) — board rank 252
+**J.J. McCarthy** (MIN, QB, bye 6) — board rank 252 · as of 2026-09-04
 
-**Room sentiment:** Bearish — 12 mentions, and the dominant use of his name is as a reason to fade Vikings pass-catchers rather than as a quarterback anyone plans to draft.
+**Room sentiment:** Uniformly negative and, unusually for a player this cheap, settled — the room has written him off after 2025 and there is no injury or role claim on the other side of it.
 
-- The biggest camp item: "Vikings QB: Both Kyler Murray and JJ McCarthy see even split of snaps." The job is genuinely open, and one write-up frames the competition as deciding "which QB will disappoint fans and Justin Jefferson owners the most."
-- The stat the room repeats: "JJ McCarthy finished 42 out of 43 qualified passers with a 52% accurate pass percentage."
-- In Hartitz's QB tiers, a commenter says flatly "I don't think JJ McCarthy should be included in this list." Another: "I have zero faith in Kyler Murray and even less in JJ McCarthy."
-- The mitigating context, such as it is: he "was essentially a rookie QB that fell on his face in the wake of all of those expectations." Downstream effect flagged explicitly: "Addison is being priced like he still has JJ McCarthy throwing to him."
+- Role, Sept 2, and it is the only role claim he has: the only path to McCarthy seeing the field is Kyler Murray playing badly or getting hurt, and the commenter doubts he would hold the job even then. The one rebuttal is that he looked halfway decent late last year, is still very young, and that Murray is neither a sure thing nor durable. Nothing on health, snaps or first-team reps has been reported at all.
+- The fade carries weight of numbers rather than one loud poster. On Aug 28 a thread's highest-agreement line was "the argument is that JJ McCarthy wasn't a QB" — five top-level mentions carrying 260 upvotes — citing an overthrown five-yard wide-open preseason touchdown and a college profile as a handoff merchant with no touch on layered throws. The next day he was the counterexample in a "let rookies sit" thread, dismissed as bad regardless of his lost rookie year in a 50-point comment; the only pushback noted his career start total is still tiny.
+- Sept 4: the room's framing is now that he was a disaster in 2025, one of the worst quarterbacks the poster has seen relative to expectation, blamed for a run-heavy plan defenses could sit on. Cooper named him his own miss from last year — the scheme and opportunity were there, the talent wasn't, "and might never be."
+- Dynasty holders are out. Sept 2 was the most discussion he has drawn and it was mostly sell: managers report cutting him, and in one league nobody claimed him. By Sept 3 the speculative stashes say he is their first drop the moment anything appears on waivers, since the Colts backup situation is settled and they would rather hold that arm.
+- Market, and this is the one number worth keeping: managers report turning down a 2026 1st for him going into Week 1 last year, a 2026 2nd four to six weeks in, and Jaxon Smith-Njigba straight up in superflex before last season. That is the size of the fall.
 
-**Draft take:** Don't draft him in 1-QB leagues. His practical value to your draft is negative — treat him as a reason to discount Jefferson and Addison against ADP until Minnesota resolves the camp battle.
+**Draft take:** Leave him undrafted in redraft and sell for anything in dynasty — the fade is unanimous, he is behind Murray, and nothing on health or reps argues the other way.

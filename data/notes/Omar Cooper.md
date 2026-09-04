@@ -1,9 +1,10 @@
-**Omar Cooper** (NYJ, WR, bye 13) — board rank 164
+**Omar Cooper** (NYJ, WR, bye 13) — board rank 164 · as of 2026-09-04
 
-**Room sentiment:** Thin — 7 mentions total, no back-and-forth. A sleeper tag from a couple of credible sources, one flat dissent, and nothing else.
+**Room sentiment:** the role talk is negative and the market talk is positive, and they are not about the same season.
 
-- **Where he's endorsed:** Hartitz lists him in tier 8, "favorite late-round sleepers," alongside KC Concepcion, Jayden Higgins, Rasheed Shaheed and Travis Hunter. In an AMA, Establish The Run's Justin Herzig named him when asked about high-risk/high-reward late-round rookie prospects.
-- **The dissent:** "Of the rookie WRs, I think Omar Cooper and Chris Bell are busts."
-- **Context:** one poster frames the Jets adding Cooper (plus Adonai Mitchell) under Reich as a solid supporting-cast move. In a rookie-WR thread the only comment is "Nobody believes in Omar Cooper eh?" — itself a signal about how little he's discussed. Sleeper superflex ADP 15.01, essentially matching his board rank.
+- Role: on 9/02 a thread's OP says Cooper has yet to stand out for the Jets and a commenter answers that the clear WR2 out of camp is a different receiver entirely. Elsewhere he is counted among the supporting cast that makes the offense functional — "Geno Smith can actually throw it and he'll have Wilson, Hall, Cooper and Sadiq around him" — and named as one of the weapons added around Adonai Mitchell rather than as a target-earner in his own right. A separate 9/02 prediction has Mitchell taking the No. 2 target role over him. No injury, practice or snap-count claim exists anywhere.
+- **Market is the strongest thing in his file and it is a dynasty signal, not a 2026 one.** A 9/01 buy-low board has him as the single steepest discount on it: acquired below his 3,737 market value in 75% of 117 superflex trades. In one league he went 1.12 in this offseason's rookie draft and was already dropped to waivers before playing a game, with the claiming manager committing his entire FAAB budget plus Oronde Gadsden to get him.
+- The room is genuinely split on the player. In his favour: a manager holding 1.12 took him over Jonah Coleman on draft capital, and one commenter still prefers him to Denzel Boston and De'Zhaun Stribling in the late-first tier on pre-draft priors. Against: another manager at 1.08 is not interested, the OP of that thread is not drawn to him, one film evaluator lists him among rookies he does not like alongside Kenyon Sadiq and Eli Stowers, and an Indiana fan calls him super athletic but extremely unrefined as a route runner. The bear framing on the FAAB spend is the franchise — "has barely produced a fantasy-relevant skill player for most of the last decade".
+- Three managers have him on taxi, one saying he only taxis players he genuinely expects to keep another year — which is how the room prices him: a long-term hold, not a 2026 starter.
 
-**Draft take:** A final-rounds rookie dart with analyst backing but zero camp reporting to confirm a role. Fine as your last bench pick in a deep league; nothing in the corpus justifies taking him earlier.
+**Draft take:** Buy him in dynasty where the discount is real and documented, but do not spend a redraft pick on a rookie the Jets' own camp reports have behind the WR2.

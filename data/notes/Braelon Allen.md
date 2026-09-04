@@ -1,9 +1,10 @@
-**Braelon Allen** (NYJ, RB, bye 13) — board rank 160
+**Braelon Allen** (NYJ, RB, bye 13) — board rank 160 · as of 2026-09-04
 
-**Room sentiment:** Bearish on him as a player, but the room takes him seriously as a threat to Breece Hall's touches. 24 mentions, most inside Breece Hall ADP threads rather than about Allen himself.
+**Room sentiment:** Agreed to be a handcuff and nothing more, with a live minority that thinks the handcuff is worth real money.
 
-- The strongest signal is indirect. In "Understanding Breece Hall's ADP" (62), the top-cited concern is Allen — "he apparently put on huge amounts of muscle and is 250 right now; there is a fear regarding his red-zone work." Another notes that when Allen was healthy, "Breece didn't sniff goal-line touches." Allen missed almost all of last season.
-- On his own merits the room is dismissive. A Jets watcher (16): "I've watched every single Jets game for the last 20 years — I'd say Braelon Allen sucks." Another: "Isaiah Davis has been better; I'm not interested in drafting the RB3 on most teams, especially not the Jets."
-- The committee is unresolved. Hartitz files Allen and Davis together in tier 5, "committee szn." One reply leans Allen for early downs with Davis on pass downs; another cites reports Davis will be featured more.
+- Role, most recent, Sept 4 consensus: he needs an injury ahead of him to matter, but the room thinks the upside is genuinely there if he gets one.
+- Sept 1: an owner who has waited on him since Wisconsin says that if Allen ever gets an extended run, Breece Hall will be finding a new team. In the same thread two top-level comments have Allen on the chopping block. This is opinion on both sides, not a report.
+- Aug 17, and still the only injury-adjacent claim: Allen was named the immediate beneficiary if Hall misses time with his groin injury. One poster argued it would be a messy two-man committee with Isaiah Davis on one of the worst offenses in football rather than a clear lead job.
+- Nothing sourced above commenter level anywhere — no beat report on Hall's groin, no practice claim, no depth-chart update.
 
-**Draft take:** Draft him as insurance if you own Breece Hall — the goal-line vulture role is the one real path to value. Otherwise he is a late dart in a committee nobody likes.
+**Draft take:** A Breece Hall handcuff only, worth a late pick if you own Hall and nothing if you don't.

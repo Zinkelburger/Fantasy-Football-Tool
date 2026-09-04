@@ -1,10 +1,9 @@
-**Justice Hill** (BAL, RB, bye 13) — board rank 170
+**Justice Hill** (BAL, RB, bye 13) — board rank 170 · as of 2026-09-04
 
-**Room sentiment:** Quiet — only 4 mentions, and none of them are actually analysis of his 2026 outlook. The dossier is thin.
+**Room sentiment:** Two commenters, opposite directions, and the sub itself picked a side — the bear case got downvoted repeatedly.
 
-- The one concrete role note: he's the receiving back in Baltimore, with Derrick Henry's work described as almost entirely rushing.
-- Otherwise he's used as a reference point for other players — the archetype of a "just ok RB2 on a good team that excels at pass protection and can also run well behind a competent o-line," and a comp for how the Giants might use Tyrone Tracy.
-- One poster asked directly whether he's fantasy viable. The corpus contains no answer.
-- No camp reports, no injury news, no depth-chart items, no ADP debate.
+- Role, most recent: on 2026-08-31 a commenter (7 points, agreed with in replies) expects Hill to benefit from new coordinator Doyle's scheme, where screens and throws to the running back are a big part of the system, citing D'Andre Swift's receiving usage in that system as the template. Scheme inference, not a reported usage change.
+- Against it, from 2026-08-29: one commenter argues Hill loses the third-down job to Adam Randall by Week 4 because he is a known quantity who tips the play when he lines up in the backfield. That take is described as repeatedly downvoted in the sub — worth knowing, but the room rejected it.
+- Both are single commenters. Nothing from a beat writer or the coaching staff on the pass-down job either way, and no injury claims at all.
 
-**Draft take:** The community isn't discussing him, which is itself information — no hype and no reported role change. Waiver-wire name in a 12-team league; only worth a final pick if you roster Henry and want the pass-down back in case Henry misses time.
+**Draft take:** Late-round pass-catching dart with a real scheme case behind him; take him after your bench is otherwise set, not before.

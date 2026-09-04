@@ -1,10 +1,11 @@
-**Baker Mayfield** (TB, QB, bye 10) — board rank 139
+**Baker Mayfield** (TB, QB, bye 10) — board rank 139 · as of 2026-09-04
 
-**Room sentiment:** Quiet and mildly positive, with one dedicated skeptic thread — 14 mentions, mostly inside late-round QB strategy lists.
+**Room sentiment:** Bucs fans treat him as the unreplaceable starter and expect a healthy season; nobody is arguing he is a target, and nobody is arguing he is finished.
 
-- **Concrete offseason facts:** Mayfield claims the Buccaneers offered a two-year extension worth over $100M this offseason but says the guaranteed money was not suitable. A camp roundup adds that he "feels insulted by the lack of commitment," alongside Vita Vea demanding a trade.
-- **Bear case:** the thread "Maybe we're expecting a bit too much out of Baker and this Bucs offense" notes he "had about 8 different injuries last season" and that 2026 is yet another first-year offense for him. One projection set puts Tampa at 3,599.5 passing yards — solid, not elite.
-- **Bull case:** the counterpoint in that same thread is that unlike his previous first-year situations, he now has established rapport with his receivers. A hill-to-die-on post says "Baker Mayfield is a top 8 fantasy QB," a bold-predictions entry has him balling out to earn a 2027 deal elsewhere, and he appears repeatedly on lists of cheap late QBs worth chasing alongside Kyler Murray, Tyler Shough and Malik Willis.
-- Sleeper superflex ADP 70.1.
+- Enters 2026 healthy, per commenters. The late-2025 collapse is attributed to him playing through a knee bone bruise and then an AC joint injury while the offensive line was also hurt; the same commenters note he stayed a full practice participant through all of it. The open question raised is whether he stays on the field a full season, not whether he starts.
+- The starting job has no competition. Rick Stroud's and Jordan Schultz's reporting through late August is entirely about who wins QB2 — Tampa handed it to UDFA rookie Jalon Daniels over Jake Browning. That leaves Mayfield with nothing behind him but an inexperienced rookie, and the room's line is blunt: the season is over if the 31-year-old goes down.
+- The rookie is not pressure. One poster framed the Daniels hype as heat on Mayfield in a contract year; the higher-upvoted pushback is that Mayfield has been openly mentoring him and that nobody thinks a UDFA is at his heels.
+- Bucs fans say he scrambled on seemingly every play last season and kept doing it even after the line solidified mid-year — they read it as a habit from early-season pressure rather than a protection problem now.
+- Market is Week 1 only: he sits 13th on the full Vegas board, just outside the posted top 12, which one commenter calls low for a Bucs-Bengals game with a 50.5 total. Room sentiment leans the same way, citing his career numbers against Cincinnati.
 
-**Draft take:** A fine last-QB-off-the-board target, or the steadier half of a two-cheap-QBs build. The injury history is the only substantive objection anyone raised; the contract friction is motivation speculation, not a projection input.
+**Draft take:** Stream-tier QB2 you take late and start in Week 1 at Cincinnati — the offense and the health are pointed the right way, but there is no argument here for paying above his current price.

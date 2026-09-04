@@ -1,10 +1,11 @@
-**Saquon Barkley** (PHI, RB, bye 10) — board rank 14
+**Saquon Barkley** (PHI, RB, bye 10) — board rank 14 · as of 2026-09-04
 
-**Room sentiment:** 175 mentions, and the argument runs both ways — a dedicated "case for Saquon finishing as the RB1" thread (score 210) sits alongside repeated appearances in fade and "heavy workload" threads.
+**Room sentiment:** the room agrees on the workload and argues only about the ceiling — age, the Tush Push and a down 2025 against a new scheme and stated intent to use him more.
 
-- **The bounce-back case (the louder side):** last year's collapse is blamed on a "revolving door" offensive line and OC Kevin Patullo, who is now gone. Posters expect Sean Mannion's zone/lateral scheme plus Hurts under center more to restore explosive runs. Volume is the anchor — "nearly 300 rush attempts and 57 targets over the last four years." "I'm surprised the FF community is so low on Saquon" scored 155.
-- **The fade case:** age 29 coming off a 480-touch season including playoffs; the room's workload thread lists him with CMC, Henry and JT as backs to avoid. He went RB1 to roughly RB12 (322 to 195 points) without getting hurt, with poor yards-after-contact. Hurts also vultures goal-line TDs.
-- **Camp noise:** a report of a ~50/50 camp split with Tank Bigsby. The room largely discounts it (the author is called biased), but Bigsby is named the cleanest handcuff in the class.
-- **Price:** ADP ~15, ranked RB9-RB10 by consensus; several posters would take him over Hampton, Jeanty or Chase Brown at that cost.
+- Role is settled: about 80% of first-team RB work in camp per beat report, with heavy pass-game usage under new OC Sean Mannion, and Lane Johnson saying they will flex him wide and feature him in the screen game. Nobody expects a Tank Bigsby committee. Dopp says Philadelphia wants to lean on him more this season.
+- The specific structural knock is goal-line: one commenter's number has him at the lowest TD rate in the league on rush attempts inside the 5 over the last two seasons (16.1%) because of the Tush Push. The pushback is that the Bears broke the play and Philadelphia's usage of it dropped sharply after that.
+- Bull case as the room states it: healthy line, a new scheme that fits his run style, 80-90% of the carries, a favorable regular-season schedule, and receptions climbing from his usual 30-35 toward 40-50 if Hurts dumps off more. Bear case: he turns 30 in February off a heavy 2024, 2024's explosive-run rate looks unrepeatable, receiving FPG has fallen two straight years, OL coach Jeff Stoutland has left, and the fantasy-playoff schedule (SEA and HOU, weeks 15-16) is rough.
+- Analysts split hard. Murchison ranked him last of five backs — Achane, Hampton, Jeanty, Walker, Saquon — and sees him and James Cook heading in opposite directions. Twerski has him first in his hero-RB order at the 1/2 turn, ahead of Walker, Hampton, Achane, Jeanty and Henry.
+- Market: going roughly 10th to 16th overall, $59 in an auction where top-tier RBs go 65-70. Six top-level nominations (+189) argue he should be a top 6-10 pick rather than a mid-second, and several posters call him under-discussed next to Jeanty and Taylor — the room is paying about what the board says, with the pressure on the up side.
 
-**Draft take:** A 2nd-round RB where you are buying the coordinator change and OL health, not a new profile. Fair value at ADP if you accept the age/mileage risk — and if you take him, spend a late pick on Bigsby.
+**Draft take:** take him at the 1/2 turn as the safest workload in that range, but price in the goal line and the age rather than paying for a 2024 repeat.

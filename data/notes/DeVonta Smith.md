@@ -1,10 +1,11 @@
-**DeVonta Smith** (PHI, WR, bye 10) — board rank 44
+**DeVonta Smith** (PHI, WR, bye 10) — board rank 44 · as of 2026-09-04
 
-**Room sentiment:** Bullish with a visible dissent — 63 mentions make him one of the most-cited round 3-4 WR targets, but a real group thinks the price has already moved too far.
+**Room sentiment:** Heavily discussed and genuinely two-sided: everyone agrees he is the WR1 now that A.J. Brown is a Patriot, and the argument is whether that helps or hurts him.
 
-- Role: AJ Brown is gone and the room expects Smith to absorb most of those vacated targets. Sirianni said he's "excited for the extra opportunities" Smith will see. One aggregate has Smith pacing Eagles receivers at a 24% target share, with rookie Makai Lemon already at 17%.
-- Bull case: Hartitz tiers him with the high-volume WR1s; multiple posters call him "this year's JSN" and float a top-5 finish. His ADP has climbed since the trade — "typically gone by middle of rd 3."
-- Bear case: "can't handle being a WR1 and is a bust at cost" drew real support; another says he's simply going too high, and some expect Lemon to outscore him. One flags his frame as a durability concern.
-- Context: 7/7/8 TD seasons with Brown on the roster, before last year's offensive collapse.
+- Role: with Brown gone to New England, consensus (Sep 4) has Smith as Philadelphia's unquestioned WR1 with a large block of vacated targets — one commenter notes over 25% of Hurts' career attempts went to Brown, and those 50/50 looks have no obvious home. His nearest competition for targets is rookie Makai Lemon, with Dontayvion Wicks as the other outside receiver.
+- The condition that decides it: whether a reliable WR2 emerges. The bear case, stated plainly (Sep 1), is that without Brown drawing coverage Smith gets bracketed all season by the opposing No. 1 corner on a run-first team that plays ahead. The direct rebuttal is that he has already dominated on roughly 200 routes without Brown, grading near WR5 by several metrics, and Eagles commenters say he drew the game-critical targets last season as the trusted set of hands.
+- Maher (Sep 3) expects him to be fed as the WR1 but worries the offence is more run-heavy and will spread the ball around; he ranks Smith 26th, WR13, against an ECR of 27 — explicitly no edge at cost. Skeptics separately cite his size and durability over 17 games.
+- Market: the board and the room are close. Commenters group him with Waddle as the WR2-inheriting-WR1 archetype around pick 27 and project roughly 270 points, which they call extremely likely to hit against Brown's higher-variance line; one would rather have Smith at pick 40 than Brown in round 2. The Sep 2 thread drew 8 nominations and ~189 upvotes arguing he is a top-12 pick waiting to happen on the $75M extension, his production whenever Brown missed time, and a JSN-style target consolidation.
+- Sentiment: an automatic keeper at a 6th-round cost with no dissent, and Murchison would be fine with him as a WR1 in a heavy-RB build. The counterweight is that the same room warns Hurts has been reluctant to build chemistry outside Brown, Smith and Goedert, and that Wicks, Lemon and Brown's replacement targets may not concentrate the way the bull case assumes.
 
-**Draft take:** A solid WR2 in rounds 3-4, and the target-vacancy case is the cleanest in the corpus. If he's going in the back half of round 2, let someone else pay.
+**Draft take:** Take him at his round-4 cost as a stable WR2 with WR1 volume, but the analyst ranking says you are paying market price, not buying a discount.

@@ -1,9 +1,11 @@
-**Travis Kelce** (KC, TE, bye 5) — board rank 103
+**Travis Kelce** (KC, TE, bye 5) — board rank 103 · as of 2026-09-04
 
-**Room sentiment:** The 70 mentions overstate his relevance — most invoke prime Kelce as a benchmark for Bowers/McBride rather than discussing him now.
+**Room sentiment:** Priced as a fading veteran, with one concrete counterargument — last year's TE4-5 finish is going at TE11.
 
-- Decline is the baseline assumption: "now that Kelce is in decline," "old man Kelce," soon-to-be-37, and a camp roundup noting "a post honeymoon gut." Hartitz Tier 4.
-- Bull case is opportunity, not talent: "Kelce has no competition other than Rice, and if Rice gets into any more off the field trouble then Kelce is really a focal point of the passing game." Xavier Worthy left practice with a shoulder injury (January surgery for a dislocation/torn labrum) and rookie Cyrus Allen was carted off with a knee injury; posters expect that to push Kelce up boards.
-- Bear case is scoring: "probably a TD or bust option every week" and "Kelce scored 13 TDs in the past 3 seasons COMBINED." He's on several do-not-draft lists, and Mahomes wearing a clunky brace is another reason he's falling. One poster argues the Worthy injury "likely increases Rice's stock more than Kelce."
+- Role: still Kansas City's starter, and a commenter notes the Chiefs kept four tight ends with Kelce the best blocker of the group (Sep 1) — a usage note, not a receiving one. No injury or availability claim.
+- The bear case is coverage and age: fans describe an offense forced to "treat old man Kelce like prime Kelce" last year, with defenses jamming and blanketing him and Kelce dropping a lot of passes. Several say tight end alongside receiver has to be Kansas City's next offseason priority, and one raises the possibility he retires (Aug 20). By Sep 4 he is dismissed in passing as "pretty much washed" in an argument for taking a late Chiefs receiver instead.
+- Market is where the room argues with itself: he finished TE4-TE5 on 108 targets, 76 catches and 851 yards but is going as TE11, around picks 117-120 with Yahoo ADP near 94, and multiple drafters call that clear value over the scrubs in that range (Sep 3). Board rank 103 sits inside that window, so the board and the room price him the same.
+- Against that: in the big tight end thread he was named nine times with almost no support (about 14 upvotes), reported drafted in the 10th and 13th rounds and in a $6 auction pair with Kittle, and cited mostly as the historical example of a tight end worth an early pick rather than as a 2026 target. Asked about a roster crunch, the room said it would start Juwan Johnson over Kelce, that reply drawing 18 points against the original's 5.
+- Murchison expects Kansas City's production spread out and inconsistent enough that no Chief is pinpointable as the guy week to week, which cuts against Kelce specifically as the one to own.
 
-**Draft take:** A round 8-ish volume TE for punt-TE builds, not a weekly edge — expect catches without touchdowns. The KC injuries make him a cheap beneficiary, but if his ADP climbs the case weakens.
+**Draft take:** Take him around the 10th as a volume-based TE1 floor and no higher — the room is right that the ceiling is gone.

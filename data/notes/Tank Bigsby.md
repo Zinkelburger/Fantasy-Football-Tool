@@ -1,10 +1,11 @@
-**Tank Bigsby** (PHI, RB, bye 10) — board rank 158
+**Tank Bigsby** (PHI, RB, bye 10) — board rank 158 · as of 2026-09-04
 
-**Room sentiment:** bullish as a handcuff, divided on the camp news — the thread reporting a near-50/50 Barkley split drew 1,444 upvotes, and its top comment dismisses it: "If you think Barkley is splitting 50/50 with Tank Bigsby I got a bridge to sell you."
+**Room sentiment:** A pure handcuff and nothing else; the room agrees on what he is and splits only on whether that is worth a bench spot.
 
-- Camp reports are consistently good: a "standout at Eagles camp," sharing some first-team reps behind Barkley, "an impressive day according to multiple beats," and called one of the better handcuffs available. Coaches have also said they want to manage Barkley's workload.
-- Tiered as a straight backup RB, and his value is conditional — you'd rather start other backups in a healthy week, but he leaps them the moment Barkley is out.
-- Pro case: one of the more explosive backs last year, and at 25-30% of touches he's one injury from a starting job on a good offense.
-- Bear points: the Eagles like Will Shipley, so he may not be a bellcow if Barkley misses time; and the honest base case — "he produces nothing of value the first few weeks and you cut him."
+- Role settled Sep 1: commenters place him as Philadelphia's clear RB2 behind Saquon Barkley, with Will Shipley third and a complementary special-teams role, and they do not read the Blue practice-squad signing as a threat to it. No injury or availability claim.
+- What separates him from the other late stashes is certainty of succession, not projection — "we know he's the guy if Saquon gets hurt" (Sep 3), which the room contrasts with Emmett Johnson's undefined path. Everything above a bench spot is conditional on Barkley missing time.
+- Murchison (Sep 2) would hold Bigsby over Kaleb Johnson and calls him a potential league-winner in that event; Cooper (Sep 1) groups him with Kaelon Black as the highest pure-upside handcuffs because the team he would inherit is good, while ranking him low on standalone value. The room's Aug 26 read is the same: pure handcuff, no committee expected, still one of the better cuff plays.
+- The dissent is about the path, not the talent: Dopp (Sep 3) says Bigsby technically has the most upside of the late stash options but the least direct path to opportunity, and ranks him behind Chris Rodriguez.
+- Market and sentiment: Twerski (Sep 3) names him among his must-grab handcuffs and favorite late-round or early-waiver backs; elsewhere he is cited as the archetype of a handcuff worth cutting for a target-getting WR, with a reply noting the strong likelihood these handcuff RBs do not do much this year.
 
-**Draft take:** Worth a final-round pick or an early waiver claim, especially if you own Barkley. Don't spend a mid-round pick chasing the 50/50 camp story.
+**Draft take:** Last-round Barkley insurance with no standalone value — draft him if you own Barkley, otherwise leave him for the waiver wire.

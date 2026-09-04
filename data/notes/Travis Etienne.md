@@ -1,10 +1,12 @@
-**Travis Etienne** (NO, RB, bye 8) — board rank 32
+**Travis Etienne** (NO, RB, bye 8) — board rank 32 · as of 2026-09-04
 
-**Room sentiment:** bearish and trending worse — the Kamara contract news reset the discussion, and the highest-scoring line in his file is the pessimistic one.
+**Room sentiment:** both one of the strongest "too low" consensuses in the corpus (11 nominations, ~652 upvotes) and its most-objected-to fade, aimed at the same player.
 
-- The killer take (score 145): with Alvin Kamara restructured to stay in New Orleans, "Etienne is the early down back with Kamara there, for an OC that already doesn't like throwing to RBs, on a team Vegas predicts to be sub-.500." Camp reporting backs the split — Etienne and Kamara "may share the Saints backfield more equally than expected."
-- Nobody knows the plan. One camp roundup writer admits to "yoyoing back and forth" on how much he likes Etienne versus how much Kamara's return will hurt.
-- Talent isn't the question: he was RB10 last year and RB3 in 2023, and he's flagged as an RB20 dead-zone name. One poster attributes past down years to playing hurt.
-- Dissent exists but it's quieter and lower-scored: a few call him a top-10 finisher or an acceptable RB1, while another says he was "one of the most overpriced RBs all offseason."
+- Role: New Orleans gave him a four-year deal and the room treats him as the bell cow with essentially no competition, behind a line it rates well under Kellen Moore, with commenters expecting Tyler Shough to feed him dump-offs constantly.
+- The one beat-level datapoint is a mild caution, not a threat: Jeff Nowak reported (8/11) that Etienne had a few nice moments in Saints practice including an effective 10-plus-yard screen in the final red-zone set — on the same day Audric Estime got his first extended run with the 1s. Worth watching, nothing more; no later claim says Estime took anything.
+- Every version of the bell-cow projection carries the same condition: Alvin Kamara. The clean workload assumes Kamara opens the season out or on limited snaps. Murchison says Etienne only looks intriguing right now because the backs behind him are hurt, that the original worry returns once Kamara is back and the third-down role shrinks, and that he has not been drafting him. Kendre Miller is the other named piece, and one counter notes Moore's offenses target backs at a lower rate than Coen's.
+- His Jacksonville exit is not a signal: a heavily upvoted correction says the Jaguars were already over next year's cap and could not carry a premium RB contract, so the departure says nothing about how that staff rated him or Tuten.
+- Market is where he stands out. He is the round-5 RB that WR-heavy drafters fall back on, taken at or just after pick 32 and through the 45-63 range as an RB2/RB3 — a touch later than board rank 32. Twerski names him the RB13-24 pick with the most likely upside at ADP, the mid-round back he is most confident in, ahead of Swift and Tuten. Dopp says the Skattebo/Etienne/Swift range is the latest he will wait for an RB1; Hartitz wants him as his floor RB2 in a hero-RB build.
+- The fade, which drew a 382-point objection calling it incomprehensible: he has been one of the least efficient rushers in the league over two seasons, less efficient than Kamara, and his 2025 value rested on receiving with 6 of 13 TDs through the air. A Jaguars fan adds he was good mostly on volume and that Tuten is the more explosive runner.
 
-**Draft take:** The room is pricing a lead role he may not have. Let someone else pay the 3rd/4th-round tag; if he slides a round past ADP the committee risk becomes tolerable.
+**Draft take:** take him as your RB2 at the round-3/4 turn, eyes open that the bell-cow price is really a bet on Kamara being unavailable.

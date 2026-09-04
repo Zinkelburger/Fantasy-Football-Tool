@@ -1,10 +1,11 @@
-**Kenyon Sadiq** (NYJ, TE, bye 13) — board rank 137
+**Kenyon Sadiq** (NYJ, TE, bye 13) — board rank 137 · as of 2026-09-04
 
-**Room sentiment:** A rookie TE with decent volume (33 mentions) and no consensus, including a dedicated news thread — "Aaron Glenn said Kenyon Sadiq is going to be 'a huge weapon' for the offense."
+**Room sentiment:** A first-round rookie tight end who lost camp to an injury and whom the room mostly does not believe in.
 
-- **The bull case:** "Sadiq is practically free upside" (score 14). Punt-TE drafters name him unprompted — "at TE, I'm intrigued by Sadiq and Mark Andrews is low too" (35) — and he is the most-cited rookie TE in that thread. One reason given: the Jets' draft investment "makes me think he'll have his role early on," and "after Garrett Wilson their receivers completely drop off."
-- **The bear case is equally direct:** "Kenyon Sadiq will be a waiver wire tight end," "just don't see a path to relevance with Sadiq," and the fade-the-Jets position ("you will NOT catch me with anyone led by Frank Reich and Geno Smith"). Target competition is the specific worry: "the Jets have more mouths to feed than people realize, Sadiq and Taylor at TE… 3-headed RB tandem… Cooper and Mitchell." Mason Taylor is named as pushing him down.
-- **An unresolved argument** over his college production runs through the Glenn thread, with one side saying he "did not produce" and the other calling that "objectively not true." Nobody settles it.
-- **Market:** Hartitz tier 5, "Week 2 waiver wire cover candidates." One poster pegs him TE23; 11.12 in a superflex TEP sample. Dynasty opinions range from a 1.08 pick to "Sadiq is a fade here, more in the 6-9 range."
+- Sidelined throughout Jets camp per beat reporting; the setback left him behind Mason Taylor on the team's first unofficial depth chart as of 9/2. That is the availability fact the board rank does not know.
+- Role: commenters expect the Jets to force him onto the field anyway on his first-round draft capital, giving him most of the move-TE reps regardless of camp. Cooper names him a "pure upside" late TE — one who could become a top-2 target on his team without needing a WR injury — and one of his favourite late-round swings.
+- The case against is specific film work: he cannot break tackles, much of his college production was schemed block-and-leaks or wheel routes against busted coverage, and he has real trouble running a route tree.
+- Sentiment is skeptical. Two separate predictions have Taylor and Michael Mayer outscoring him this year, and a commenter listing the ten players drafted ahead of Jordyn Tyson says Sadiq is the only one he cannot defend. The defence is the athletic profile and a Vernon Davis arc — nothing for three seasons, then a year-four breakout.
+- Market: in TE-premium rookie drafts he is the clear pick of the 1.08 tier; in redraft he is a wildcard second TE taken around 12.7.
 
-**Draft take:** A last-round dart, not a starter. He is only worth a pick if you have already punted TE and can afford to drop him in week 2.
+**Draft take:** Dynasty swing only — behind Taylor and coming off a lost camp, he is not a tight end to start this season.

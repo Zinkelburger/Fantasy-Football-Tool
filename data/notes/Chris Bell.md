@@ -1,10 +1,12 @@
-**Chris Bell** (MIA, WR, bye 6) — board rank 267
+**Chris Bell** (MIA, WR, bye 6) — board rank 267 · as of 2026-09-04
 
-**Room sentiment:** Thin but genuinely split — 9 mentions, almost all inside the "favorite rookie WR" thread, where the same name draws both a vote and a shrug.
+**Room sentiment:** A last-pick darkhorse with an unusually clean path to snaps, held back by conditioning rather than by the depth chart.
 
-- **The bull side:** "The real answer is Chris Bell" in the rookie-WR thread, and a hill-to-die-on post claims "Chris Bell will be the #1 Rookie WR... finish Top 10 at [his] position in Yards and TDs." One poster reports actually drafting him alongside Malik Benson.
-- **The bear side is more specific and more credible:** "Chris Bell is coming off an ACL tear, he'll probably have hamstring issues rushing back." Another lists him among rookie WR busts: "Of the rookie WRs, I think Omar Cooper and Chris Bell are busts." A third notes he and Malachi Fields are "past WR90."
-- **The middle position** is probably the most useful: "Chris Bell is a tank on Miami, may not be draftable but by the end of the year he'll be a guy" — an in-season watch, not a draft pick.
-- **Market:** 20.03 (pick 222) in a superflex TEP sample. No camp reports or depth-chart detail in the corpus beyond the ACL note.
+- Available, and ahead of the schedule people had for him. Miami activated him off the non-football injury list on 2026-08-17 — the knee was hurt in college, so he was never PUP-eligible and activation was simply the step that let him practise. He was cleared for full practice the week of 8/24 and played 14 offensive snaps in the preseason finale, catching 2 of 5 targets for 22 yards.
+- The current caveat is conditioning, from the coach himself: Jeff Hafley said on 2026-09-02, per Joe Schad of the Palm Beach Post, that Bell is still working into football shape after the ACL rehab. Hartitz, who had projected a PUP-then-ramp recovery with a mid-October return, says he is now practising and will be out there Week 1 — way ahead of that. Read the mid-August "may not see meaningful snaps for weeks" line as history, not as a live status.
+- Path to snaps is real but not settled. Per Barry Jackson (2026-08-30), Miami is also moving on from Jalen Reagor, leaving three rookie draft picks, Malik Washington, Tolbert, Henning and newcomer Ryan Miller — with Jackson adding more moves at the position are still expected, so the opening can narrow if Miami signs outside receivers. Room's stash case is weeks 4-8, not Week 1: they expect him to take over the depth chart once ramped, projected as an outside starter opposite Caleb Douglas.
+- The dissent is hands, not opportunity: one commenter says he drops too many easy catches and gets benched for it, rating Pat Bryant far more reliable; another calls him still very raw as a route runner.
+- Sentiment runs hot for a WR4 and it is Bell-specific — the same threads call Miami's receiver room the league's worst. Hartitz calls his film against Miami "A.J. Brown-esque", projects 100+ targets and names him the rookie most likely to lead the class in scoring outside Love and Price; Murchison is a "BIG fan" and wants him rostered as the year goes on. Dolphins fans point to chunk yardage against Falcons starters while roughly 70% healthy.
+- Market: he goes at or near the last pick — a 17th-round keeper in one .5 PPR league, a 20th-round dart in another — and the room expects him to beat that badly.
 
-**Draft take:** Leave him undrafted in a 12-team league. The ACL recovery is the reason to wait — put him on your watch list and let the wire tell you when the role arrives.
+**Draft take:** Spend your last pick here instead of a kicker: he is practising, plays Week 1, and the only thing between him and the league's thinnest receiver room is game conditioning.

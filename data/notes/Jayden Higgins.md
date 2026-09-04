@@ -1,10 +1,9 @@
-**Jayden Higgins** (HOU, WR, bye 8) — board rank 140
+**Jayden Higgins** (HOU, WR, bye 8) — board rank 140 · as of 2026-09-04
 
-**Room sentiment:** Quiet but consistently positive — only 12 mentions, and every one of them is neutral-to-favorable. There is no bear case being argued in this corpus, mostly because nobody is discussing him at length.
+**Room sentiment:** settled and no longer debated — the room treats him as gone for the year and argues only about where his targets go.
 
-- **Role is the selling point:** a training-camp roundup reports that both C.J. Stroud and DeMeco Ryans "talk highly of Higgins going into Year 2," and calls him the "clear WR2 for HOU heading into the season" behind Nico Collins.
-- **Where analysts have him:** Ian Hartitz lists him in tier 8, his "favorite late-round sleepers" group with KC Concepcion, Rashid Shaheed, Travis Hunter and Khalil Shakir.
-- **Modest projection:** the passing-yards analysis pairs an ADP of 158.5 with 574.5 projected receiving yards — real but not startable-by-default production.
-- **How people are drafting him:** "I've been grabbing some Jayden Higgins late hoping his role grows," and he's named in a "wildly different against ADP" list. Superflex tables have him around 13.04 (pick 144).
+- **Out for the season with a torn ACL**, suffered in camp and reported as season-ending on 2026-08-24. Every mention since is consistent with it: dynasty managers are moving him to taxi to free an IR spot (2026-09-04), one says he was already done for the year before their league drafted, and commenters date their reads on Nico Collins to "before the Higgins injury". The room expects him back in 2027.
+- Houston's reaction is the corroboration: Sterling Shepard and Zay Jones signed and Boutte traded for within 72 hours, which commenters read both as evidence a substantial role was planned for him and as the reason Boutte is only a one-year rental. Others treat the injury as opening snaps for Tank Dell.
+- The lesson the room keeps repeating: the injury was first downplayed as "should be back on the field soon" before the ACL came out — a 294-point comment cites it as the case against believing early optimism.
 
-**Draft take:** A cheap late-round WR bench stash with a defined WR2 role in a good passing offense. Draft him as a bye-week/upside flier in the 12th-14th, not as a starter.
+**Draft take:** undraftable in redraft at any price — he is out for 2026, and the only reason to hold him is a 2027 dynasty stash.

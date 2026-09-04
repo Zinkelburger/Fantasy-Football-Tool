@@ -1,10 +1,11 @@
-**Calvin Ridley** (TEN, WR, bye 9) — board rank 176
+**Calvin Ridley** (TEN, WR, bye 9) — board rank 176 · as of 2026-09-04
 
-**Room sentiment:** Bearish, and thin — 7 mentions total. The most visible one is his name posted flatly in the "Who is your 'do not draft no matter what' player this year?" thread, which is the highest-scoring thread in his file.
+**Room sentiment:** A near-unanimous fade — roughly 25 comments on Sept 3 and the only dissent is one person.
 
-- Where the room ranks him: Hartitz tier 9, labeled "won't work out, but you could imagine what it'd be like if they did," in a bucket with Stefon Diggs, Cooper Kupp, Tre Harris and Jalen Nailor.
-- Concrete numbers: ADP 167.5 against 574.5 projected receiving yards. Superflex Sleeper ADP is 18.04 / 207.7, i.e. effectively undrafted in a standard 15-round league.
-- The one qualified mention treats him as a lottery ticket with a health caveat — he's slotted at WR81-90 as "Calvin Ridley (if not completely toast)."
-- Another poster uses him as a punchline for stubbornly holding a dead pick: "My Calvin Ridley pick is gonna breakout any week now." There are no camp reports, depth-chart notes, or injury updates in the dossier at all.
+- Health is not the question. Per the beat report behind the Sept 3 thread, he has recovered from both a hamstring injury and a fractured fibula.
+- Role is live but not won. That same beat report has him in contention for a starting outside job opposite Carnell Tate, with Wan'Dale Robinson working primarily from the slot — contention, not the job.
+- The room does not think the role matters. The top reply (532 upvotes, a self-identified Titans fan) calls him "beyond cooked" and says Ayomanor passes him; the next two most-upvoted comments (186 and 133) treat him as a settled bust whose hype can finally be laid to rest. The lone dissent notes 31 is not old and that he played under Brian Callahan.
+- The Sept 2 thread lists him among seven players trending down on Sleeper and a live cut candidate; two managers had him on cut shortlists and nobody argued to hold. On Sept 1 an owner's entire take was hoping Ridley "will surprise me and actually have some good weeks".
+- Market: commenters call him undraftable in redraft and only a reasonable end-of-draft best-ball flier, on the theory Tennessee trails often enough to hand him spike weeks. That is a lower price than board rank 176 implies.
 
-**Draft take:** Nothing here argues for drafting him in a 15-round league. Leave him on the wire and revisit only if a Titans depth-chart report shows up that this corpus doesn't have.
+**Draft take:** Healthy and possibly starting, but the room has already buried him — leave him undrafted in redraft and take him only as a last-round best-ball flier.

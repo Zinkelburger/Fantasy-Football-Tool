@@ -1,9 +1,11 @@
-**J.K. Dobbins** (DEN, RB, bye 10) — board rank 80
+**J.K. Dobbins** (DEN, RB, bye 10) — board rank 80 · as of 2026-09-04
 
-**Room sentiment:** Mildly bullish but thin — only 17 mentions, and almost all are list entries rather than argument. He shows up as a "target," not as a debate.
+**Room sentiment:** Denver's lead back with the room's least controversial injury reputation — every plan around him assumes he misses time.
 
-- **Where he appears:** the targets group of a "6 Running Backs to Target or Avoid" piece (with Chase Brown and Javonte Williams), a "Late-Round League-Winners to Draft" article, and a "Four late round RBs you should be drafting" list. From an ambiguous-backfield thread: "I'd take any of JK Dobbins, Rachaad White, or Chris Rodriguez."
-- **Bull case, such as it is:** "JK Dobbins is such a great mid/late round pick because there's no reason he should be there." Several posters list him as the lowest-ranked RB they'd accept as an RB1 — as much a comment on the mid-round RB pool as on him.
-- **Bear case:** one line, repeated. "JK Dobbins is injury prone." His name is used elsewhere as shorthand for a career derailed by injuries. The handcuff math confirms it: "If JK Dobbins stays healthy for most of the season (pretty big if), I don't see Harvey as much more than a mid-tier handcuff."
+- Returned to Broncos practice on 8/11 doing individual drills, per Ryan Edwards. Cooper notes he has been hurt every year and was hurt again this summer; no current 2026 injury is described in anything newer than that, and the September mentions are reputation, not a report.
+- The room treats him missing time as the base case rather than a risk — "Coleman's screwed then, no way Dobbins gets hurt!" (31 points) — and his injury is the stated trigger for Jonah Coleman's value.
+- Role while healthy: the lead back who takes the goal-line touchdowns, established ahead of both RJ Harvey and Coleman. He was the first Denver runner since Payton took over in 2023 to rush for 100 yards in a game, and a Broncos fan says the offense got significantly worse after he went down last year. Consensus is that Coleman, not Harvey, is who benefits if he goes down.
+- One dissent goes further and calls him a clear third fiddle behind Coleman and Harvey even when healthy.
+- Market: an 8.06 ADP the room calls a startable flex or RB2, with three separate nominations as undervalued; Dopp ranks him second in the late-round RB group behind Brooks. Board rank 80 matches where the room drafts him.
 
-**Draft take:** ADP ~82 is fair for a starter's workload with an availability discount. Take him as your RB3 and spend a late pick on Harvey — the room treats that pairing as the actual play.
+**Draft take:** Fine as an eighth-round flex with genuine lead-back weeks, but only if you take Jonah Coleman in the same draft.

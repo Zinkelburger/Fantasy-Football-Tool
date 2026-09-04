@@ -1,9 +1,10 @@
-**Jerry Jeudy** (CLE, WR, bye 11) — board rank 167
+**Jerry Jeudy** (CLE, WR, bye 11) — board rank 167 · as of 2026-09-04
 
-**Room sentiment:** Bearish. A podcast tracker labels him "divided" (47.7% / 52.3% over 44 mentions), but every high-scoring human reply in this corpus is a fade.
+**Room sentiment:** actively negative — managers are cutting him, and the one bull case is a scheme change nobody has reported.
 
-- **The fades, by score:** "Why is anyone optimistic about Jerry Jeudy. Bro should be target No. 4 in one of the worst offenses in the league" (119); "the one I am certain I will have 0 exposure to is Jerry Jeudy" (51); "Jeudy is a dud" (20); "Jeudy is an NPC."
-- **Concrete facts cited:** he led Cleveland with 602 yards and 2 TDs last year. He's the highest-paid pass catcher on the Browns but expected to be the 3rd or 4th option, and the team drafted two receivers early this year. His 1,200-yard 2024 with Jameis Winston is repeatedly called the obvious non-repeat.
-- **The pro side, such as it is:** Hartitz lists him in tier 8, "favorite late-round sleepers." A best-ball argument holds he could hit a couple of lineups, especially with a worse Browns defense forcing volume, and one poster drafts him on the theory he gets traded midseason.
+- Role (Sept 2): a commenter says Jeudy is moving to Z receiver under Monken, is not fit to play X, and has reportedly had a good attitude about the change; the mini-bounce-back case is that scheme change plus Monken maxing out talent. Single commenter with no reporting attached, and it is the only role claim in the corpus. No injury claims.
+- The room has already moved on (Sept 2, consensus): one manager dropped him weeks ago and felt "a thousand pound weight lifted," saying he cannot catch a football; two more have him as the first man off the bench for any waiver add with a heartbeat; asked to name two cuts from a five-man group, another replied he'd drop Jeudy for sure (Sept 1). One lone prediction still has him finishing above KC Concepcion and Denzel Boston. Earlier (Aug 24) a commenter wrote off any bounce-back with Watson under center.
+- Trade chatter is speculation only. A Jeudy-for-Mac Jones swap was floated (Aug 21) given Cleveland's crowded receiver room, countered on the grounds that the acquiring side would value the quarterback more this close to the season. Hartitz (Sept 2) jokes about a Week 6 "Jerry Jeudy traded to the Chiefs" notification and a commenter says Hartitz gave him 100% Jeudy exposure — the only buyer named, with no reason given.
+- The one defence of him is retrospective: the room's standing rebuttal to Steve Smith Sr calling him a JAG is "1200 yard stud Jerry Jeudy" (Aug 14). Nothing on snaps or route share in a receiver room everyone agrees is crowded.
 
-**Draft take:** Best-ball or deep-bench only, and the room would rather you skipped him. In standard redraft he's a roster clog — a WR58-ish price isn't cheap enough to buy the No. 4 target share on that offense.
+**Draft take:** let someone else buy the Monken-scheme lottery ticket — at board rank 167 he is priced above a room that is actively dropping him.

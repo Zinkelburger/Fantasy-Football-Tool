@@ -1,10 +1,10 @@
-**Colby Parkinson** (LAR, TE, bye 11) — board rank 217
+**Colby Parkinson** (LAR, TE, bye 11) — board rank 217 · as of 2026-09-04
 
-**Room sentiment:** Essentially no discussion — 3 mentions in the entire corpus, none of them an argument for or against him. Treat everything below as thin.
+**Room sentiment:** A cheap bet on last year's second-half usage, with an obvious threat from the rookie behind him.
 
-- The one concrete item is a camp note (83): "Rams TEs: Colby Parkinson is leading the room, with Terrance Ferguson expected to be used in multiple spots in the formation." So he is the nominal starter, but the room is describing Ferguson as the versatile piece.
-- Ian Hartitz's TE tiers include him in a large low tier alongside Cade Otton, Evan Engram, Mike Gesicki, Michael Mayer, Pat Freiermuth, David Njoku and others — a group, not a recommendation.
-- Sleeper superflex ADP shows 16.04 (184.1), which matches his board rank as an end-of-draft name.
-- No projections, target-share chatter, or injury news appear anywhere in the dossier.
+- Role, Sept 1 consensus, and the advice is explicitly to wait: despite McVay spamming 13 personnel, Parkinson still got good usage and especially touchdowns over the back half of last season, and looked like the tight end targets funnel to behind Puka Nacua and Davante Adams — in a room that also holds Tyler Higbee and Terrance Ferguson.
+- The dissent, Aug 30: one commenter ranks Ferguson as the Rams' most relevant third option this year with Parkinson second, Higbee third. He also notes Parkinson is a free agent after this season.
+- No injury, practice or coaching claim on him at all — nothing here is sourced above the commenter level.
+- Market: called perennially disrespected and free off waivers in a lot of leagues; on Aug 27 a commenter named him a 15th-round flyer he takes in every league. So the room's price is the last round or the wire, not a pick.
 
-**Draft take:** Nothing here justifies a pick in a 15-round league. He is a waiver-wire name if the Rams' passing game funnels to the TE early in the season; leave him undrafted.
+**Draft take:** Last-round flyer or an early wire add, and only if Terrance Ferguson does not take the job first.

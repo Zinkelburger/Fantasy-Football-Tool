@@ -1,9 +1,9 @@
-**Kyle Williams** (NE, WR, bye 11) — board rank 241
+**Kyle Williams** (NE, WR, bye 11) — board rank 241 · as of 2026-09-04
 
-**Room sentiment:** Silent — 2 mentions in the entire corpus, neither carrying an opinion. This note is short because there is almost nothing to report.
+**Room sentiment:** Buried in the New England receiver room, and the room has already moved on.
 
-- The only concrete appearance is a camp roundup listing him as one name among the Patriots receiver group, alongside Romeo Doubs, DeMario "Pop" Douglas, Mack Hollins and Efton Chism. That establishes he's in the room and nothing more — no snap counts, no reported reps, no depth-chart position.
-- The other mention is an offhand joke comparison in an unrelated Chiefs thread and carries no information.
-- No camp buzz, no injury news, no ADP debate, no one defending or fading him.
+- Sixth or seventh on the Patriots' receiver depth chart as of 8/9 per Andrew Callahan (Boston Herald), who adds that he does not seem to be a cut candidate for the 53 — a roster spot, not a role.
+- Role: behind A.J. Brown, Romeo Doubs and Mack Hollins, and he could not win snaps over Kayshon Boutte before Boutte was traded. Commenters call that trade only a nominal opening for him, since the player it removed is the one most similar to him. The stated case against: 10 catches for 209 yards on a 30% snap share last year, most of it in two blowouts, from a team that traded for Brown and signed Doubs.
+- Sentiment has soured hard — "from everyone's favorite sleeper to absolutely buried on the depth chart" (21 points) — with several saying they have already dropped him and that he is a hold only because nobody would trade for him. Smith had him as his favourite receiver in last year's class, ranked around fifth overall; the room calls that a miss and asks outright whether he is a bust.
 
-**Draft take:** Not on the board in a 12-team league. He's a crowded-depth-chart name with zero community signal; if you want Patriots receiver exposure, the corpus points at other names entirely.
+**Draft take:** Undraftable in redraft and a free drop in dynasty — the depth chart in front of him has not moved.

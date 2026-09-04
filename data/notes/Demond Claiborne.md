@@ -1,10 +1,10 @@
-**Demond Claiborne** (MIN, RB, bye 6) — board rank 214
+**Demond Claiborne** (MIN, RB, bye 6) — board rank 214 · as of 2026-09-04
 
-**Room sentiment:** Quiet and, where anyone bothers to evaluate him, negative — 6 mentions total.
+**Room sentiment:** A depth-chart bet, not a player bet — the case for him is who is ahead of him, and the pushback is his own tape.
 
-- The one real analytical take carries weight by score: in the Hartitz handcuff-tiers thread (94 upvotes), a poster says "not really sold on Demond Claiborne — was the second-worst of the top-14 RBs in the class" in a study grading career drop %, pressure % allowed, and fumble %. That is the only scouting input in the corpus and it is unfavorable.
-- The soft bull case is situational, not about him: in the ambiguous-backfield thread he's described as "the only unknown variable" in a Minnesota backfield where Aaron Jones is "another year past expiration," with a more mobile QB in a Kevin O'Connell offense — "there's at least potential there."
-- One poster has written a full Claiborne writeup elsewhere, so he has a small following, but a separate comment name-drops him as an example of the sub's habit of over-hyping unproven backs (compared to last year's Croskey-Merritt).
-- ADP is 19.06 in Sleeper superflex — effectively a final-round pick.
+- Role: he is the Vikings' RB3 behind Jordan Mason and Aaron Jones, and nobody claims he has a role now. Two commenters expect him to start taking touches around midseason — one names Week 7, another thinks sooner — turning the backfield into a three-way split and capping Mason's value (Sep 4). That is conditional on him earning the work; an earlier version of the same idea makes it conditional on Jones or Mason missing time.
+- The best-supported argument for him is the depth chart: a 28-upvote comment likes him because Aaron Jones is washed and Mason "was never that great," he looked good in camp, and he landed in a good spot. The 8-upvote rebuttal in the same thread is the more specific one — the only thing going for him is an uninspiring depth chart, and he is small with a fast 40 but a low big-play rate, mediocre-to-bad college receiving metrics, and he looked terrible in preseason.
+- The one camp report on him is negative: a commenter says he cannot hold on to the ball in camp, pairing that with Aaron Jones's age as a reason Minnesota could still add a back — though a Vikings fan replies the room is healthy and likelier to cut a back than add one (Aug 24). No injury or availability claim.
+- Market and sentiment are dynasty-side and lukewarm: taken at 4.01 in a rookie draft and dropped immediately for roster space, named about seven times as a taxi stash alongside Tahj Brooks and LeQuint Allen, and still sitting on waivers in at least one league.
 
-**Draft take:** A last-pick or waiver-wire name. The only case for him is Aaron Jones breaking down, and the one talent evaluation in the corpus argues against him.
+**Draft take:** A last-pick or taxi stash on the depth chart in front of him, not on anything he has shown — in redraft he is a Week 6 waiver name, not a draft pick.

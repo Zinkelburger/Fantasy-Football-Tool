@@ -329,15 +329,26 @@ def roster_context(team: str = "", position: str = "", name_contains: str = "") 
     For checking a hunch while adjudicating — whether a candidate is actually
     on the team the comment is discussing, or who a thread's other names are."""
     players = pool()[0]
+    # `team` is the first positional parameter, so roster_context("Jordan Mason")
+    # asks for a team called "Jordan Mason" and truthfully answers "No players
+    # match" — which a writer reasonably read as "this player is not in the pool"
+    # and used to discard a real claim. A team is a short code; anything with a
+    # space or longer than four characters is somebody's name.
+    if team and not name_contains and (" " in team.strip() or len(team.strip()) > 4):
+        team, name_contains = "", team
     t, pos, frag = team.strip().upper(), position.strip().upper(), name_contains.strip().lower()
+    # A free agent and every DST carry a NaN team_name — 36 of the 337. That is
+    # a float, so .upper() threw and any team lookup at all died on it.
+    def _team(p):
+        return "" if not isinstance(p.team_name, str) else p.team_name
     hits = [p for p in players
-            if (not t or p.team_name.upper() == t)
+            if (not t or _team(p).upper() == t)
             and (not pos or str(p.player_depth).upper().startswith(pos))
             and (not frag or frag in p.player_name.lower())]
     if not hits:
         return "No players match."
     hits.sort(key=lambda p: p.player_adp)
-    return "\n".join(f"{p.player_name:26s} {p.team_name:4s} {str(p.player_depth):6s} "
+    return "\n".join(f"{p.player_name:26s} {_team(p) or '—':4s} {str(p.player_depth):6s} "
                       f"ADP {p.player_adp:6.1f}" for p in hits[:60])
 
 
@@ -379,7 +390,7 @@ def write_note(player_name: str, markdown: str, publish: bool = False) -> str:
     if publish:
         SHIPPED_NOTES.mkdir(parents=True, exist_ok=True)
         (SHIPPED_NOTES / f"{canon}.md").write_text(markdown, encoding="utf-8")
-        msg += f"\npublished to data/notes/{canon}.md"
+        msg += f"\npublished to {(SHIPPED_NOTES / f'{canon}.md')}"
     if "as of" not in markdown[:300]:
         msg += "\nwarning: no 'as of <date>' in the header — readers cannot tell how stale it is"
     return msg
@@ -464,10 +475,14 @@ def _mention_index(rebuild=False):
     append-only and a post is fetched whole, so a post already in the cache
     never needs rescanning; only new posts are resolved.
 
-    The cache is keyed by the alias table's own size so that editing
-    non_players.json or the player pool invalidates it. Registering a coach has
-    to change the counts, or the index would keep recommending threads on the
-    strength of mentions the resolver no longer makes."""
+    The cache is keyed by the player pool and the resolver's own source, so
+    editing either invalidates it. The non-player registry deliberately does
+    NOT invalidate it — see the comment on `stamp` below for why, and note the
+    consequence: a coach registered mid-run keeps his stale mentions in the
+    index until someone rebuilds. That is survivable only because the index is
+    a retrieval aid and the thread is the truth. A reader who sees the index
+    map "Brian Branch" onto a receiver should believe the thread, not the
+    index."""
     players, aliases, keys, cap, defaults, firsts = pool()
     # The resolver's own source is part of the key: a rule change alters the
     # counts just as surely as a pool change, and a cache that survived an edit
@@ -483,7 +498,7 @@ def _mention_index(rebuild=False):
     # counts; the index is a ranking aid, and a ranking does not need to be
     # exact. Force a refresh with _mention_index(rebuild=True) or by deleting
     # the file.
-    stamp = (f"v3:{len(players)}:{len(aliases)}:"
+    stamp = (f"v4:{len(players)}:{len(aliases)}:"
              f"{int(src.stat().st_mtime) if src.exists() else 0}")
     cached = {}
     if not rebuild:
@@ -516,13 +531,31 @@ def _mention_index(rebuild=False):
         # same shape independently. A title mention counts double — a beat
         # report names its subject once and the room then argues about
         # somebody else.
+        # The lede gets the double weight; the REST of the body gets counted
+        # once, like a comment. Capping the whole selftext at 600 characters
+        # made the densest posts in the corpus invisible: "Player Updates from
+        # Beat Writers & National Reporters (8/11)" is a 24k-character per-team
+        # list naming 65 draftable players with the reporter named for each, and
+        # the index saw nine of them — all from the comments — so the ranking
+        # buried it and it sat undistilled with zero claims while thinner
+        # threads were read. It later yielded 83 claims, 68 of them beat_report.
+        # A long body is not noise; it is sometimes the whole point of the post.
         for pid in todo:
-            head = f"{posts[pid].get('title', '')}\n{posts[pid].get('selftext', '')[:600]}"
+            body = posts[pid].get("selftext", "") or ""
+            head = f"{posts[pid].get('title', '')}\n{body[:600]}"
             for m in R.scan(head, aliases, keys,
                             thread_title=posts[pid].get("title", ""),
                             cap_required=cap, defaults=defaults, first_names=firsts):
                 if m.tier not in ("review", "ambiguous"):
                     fresh[pid][m.player.player_name] += 2
+            rest = body[600:]
+            if rest:
+                size[pid] += len(rest)
+                for m in R.scan(rest, aliases, keys,
+                                thread_title=posts[pid].get("title", ""),
+                                cap_required=cap, defaults=defaults, first_names=firsts):
+                    if m.tier not in ("review", "ambiguous"):
+                        fresh[pid][m.player.player_name] += 1
         for pid in todo:
             cached[pid] = {"n": dict(fresh.get(pid, {})), "c": size.get(pid, 0)}
         try:
@@ -675,6 +708,7 @@ _REPORTING = re.compile(
 
 
 _BOARD = {}
+_TEAM_BYE = {}
 
 
 def _board_row(name):
@@ -689,7 +723,16 @@ def _board_row(name):
             with open(f, encoding="utf-8") as fh:
                 for row in csv.DictReader(fh):
                     _BOARD[row["Player"]] = (row.get("Rank"), row.get("Bye"))
-    return _BOARD.get(name, (None, None))
+                    # Bye is a property of the team, not the player, and this
+                    # file goes stale on trades while the pool is refreshed
+                    # against live rosters. Najee Harris moved to the Giants and
+                    # kept the Chargers' bye 7 against NYG's 8. Keep a team map
+                    # so the bye follows the player's current team, and so
+                    # kickers — absent from this board entirely — still get one.
+                    if row.get("Team") and row.get("Bye"):
+                        _TEAM_BYE.setdefault(row["Team"], row["Bye"])
+    rank, bye = _BOARD.get(name, (None, None))
+    return rank, bye
 
 
 def _names_in(text, title=""):
@@ -1075,6 +1118,45 @@ def submit_claims(claims_json: str) -> str:
               f"{len(C.distilled_threads())} threads")
 
 
+# A DST pool row carries its team in the display name and its bye in a trailing
+# paren, and carries NaN in the team column — so the generic path printed
+# "**Houston Texans DST   (8)** (FA, DST, bye ?)", asserting a defense is a free
+# agent with an unknown bye two words after printing the bye.
+_NICK_TO_CODE = {
+    "cardinals": "ARI", "falcons": "ATL", "ravens": "BAL", "bills": "BUF",
+    "panthers": "CAR", "bears": "CHI", "bengals": "CIN", "browns": "CLE",
+    "cowboys": "DAL", "broncos": "DEN", "lions": "DET", "packers": "GB",
+    "texans": "HOU", "colts": "IND", "jaguars": "JAX", "chiefs": "KC",
+    "raiders": "LV", "chargers": "LAC", "rams": "LAR", "dolphins": "MIA",
+    "vikings": "MIN", "patriots": "NE", "saints": "NO", "giants": "NYG",
+    "jets": "NYJ", "eagles": "PHI", "steelers": "PIT", "49ers": "SF",
+    "seahawks": "SEA", "buccaneers": "TB", "titans": "TEN", "commanders": "WAS",
+}
+
+
+def _note_header(canon, p):
+    """The one line every note starts with. Built in exactly one place so the
+    zero-claim branch and the normal branch cannot drift apart."""
+    rank, bye = _board_row(canon)
+    team = p.team_name if isinstance(p.team_name, str) and p.team_name else "FA"
+    bye = _TEAM_BYE.get(team, bye)
+    pos = re.sub(r"\d+$", "", str(p.player_depth)) or "?"
+    display = canon
+    if str(p.player_depth or "").startswith("DST"):
+        m = re.search(r"\((\d+)\)\s*$", canon)
+        if m:
+            bye = m.group(1)
+        display = re.sub(r"\s*\(\d+\)\s*$", "", canon).strip()
+        words = display.lower().replace(" dst", "").split()
+        if words:
+            team = _NICK_TO_CODE.get(words[-1], team)
+        pos = "DST"
+    today = datetime.now().date().isoformat()
+    rank_txt = f"board rank {rank}" if rank else "unranked on the board"
+    return (f"**{display}** ({team}, {pos}, bye {bye or '?'})"
+            f" — {rank_txt} · as of {today}")
+
+
 @mcp.tool()
 def player_claims(player_name: str) -> str:
     """Everything distilled about one player, newest first, grouped by type.
@@ -1089,18 +1171,57 @@ def player_claims(player_name: str) -> str:
     if not canon:
         return f"{player_name!r} is not in the player pool."
     grouped = C.for_player(canon)
-    if not grouped:
-        return (f"No claims for {canon} yet. Distil the threads that mention "
-                f"him first:\n" + player_threads(canon))
-
     p = {x.player_name: x for x in pool()[0]}[canon]
-    rank, bye = _board_row(canon)
+    if not grouped:
+        # Zero claims is TWO different states and a writer could not tell them
+        # apart: the outputs were byte-identical. "Nobody discusses him" and
+        # "nobody has distilled him yet" call for opposite notes, and writers
+        # published "no discussion found in the corpus" over players with a
+        # hundred mentions because this branch did not say which it was. Say it,
+        # and hand back the header too — a zero-claim player needs one just as
+        # much, and hand-building it is how a wrong bye reaches a published file.
+        threads = player_threads(canon)
+        mentions = _mention_index()[0]
+        # Deliberately "raw name matches", not "mentions". The index scores a
+        # title mention double, so this is a weight and not a count, and the
+        # resolver matches a first name OR a surname — Riley Patterson collected
+        # nine of these from Jarrett Patterson, Cordarrelle Patterson and Riley
+        # Leonard, and none of them were him. A number here means "worth looking
+        # before you claim nobody is talking about him", never "he is discussed".
+        seen = sum(c.get(canon, 0) for c, _adp in mentions.values())
+        head = _note_header(canon, p)
+        if seen:
+            verdict = (f"MAYBE DISCUSSED, NOT YET DISTILLED — {seen} raw name "
+                       f"matches (unverified).\n  That is a weighted count of a "
+                       f"first name OR surname matching, so some of it may be a\n"
+                       f"  different person entirely. It is still enough that you "
+                       f"must NOT write\n  'no discussion found in the corpus' "
+                       f"without looking. Read the threads\n  below; then either "
+                       f"write from what they actually say, or say plainly that\n"
+                       f"  the matches turn out to be other people.")
+        else:
+            verdict = ("GENUINELY SILENT — the corpus never mentions him. The "
+                       "silent-player\n  template in the note brief is the right "
+                       "answer here.")
+        return (f"No claims stored for {canon}.\n\n"
+                f"Header line for the note, ready to paste:\n  {head}\n\n"
+                f"  {verdict}\n\n" + threads)
+
     today = datetime.now().date().isoformat()
-    header = (f"**{canon}** ({p.team_name}, {str(p.player_depth)[:2]}, bye {bye or '?'})"
-              f" — board rank {rank or '?'} · as of {today}")
-    out = [f"{canon} — {p.team_name} {p.player_depth} — ADP {p.player_adp}", "=" * 74,
+    # An unsigned free agent has a NaN team and every DST has one too; printing
+    # the float put a literal "nan" in published notes. Depth is a slot, not a
+    # position — "RB1" trims to "RB" but "K1" kept its digit, so strip digits
+    # rather than truncating to two characters.
+    header = _note_header(canon, p)
+    team = p.team_name if isinstance(p.team_name, str) and p.team_name else "FA"
+    out = [f"{canon} — {team} {p.player_depth} — ADP {p.player_adp}", "=" * 74,
            "", f"Header line for the note, ready to paste (the date is today, "
-           f"generated now):", "  " + header]
+           f"generated now):", "  " + header,
+           "",
+           "  (The ADP above and the board rank in the header are the same input on",
+           "   two scales — a pick number and a position in the 337-man pool — not two",
+           "   opinions. Never report the gap between them. The comparison worth making",
+           "   is the board rank against what the MARKET claims say the room pays.)"]
     for t in C.CLAIM_TYPES:
         rows = grouped.get(t)
         if not rows:
@@ -1131,7 +1252,9 @@ def player_claims(player_name: str) -> str:
             "    the wording is the evidence. No invented stat ranges.",
             "  **Draft take:** one sentence. The site previews a note by its last",
             "  line, so this is the line people see on the board.",
-            "  Say 'nothing new since <date>' rather than padding a thin player.",
+            "  Length follows the claim count. One or two claims is a two-line",
+            "  note and that is the correct answer — padding a thin player means",
+            "  inventing, which is the one thing you must never do.",
             "", "Undistilled threads that mention him are listed by player_threads."]
     return "\n".join(out)
 
@@ -1349,7 +1472,16 @@ def release_thread(post_id: str, reason: str = "") -> str:
     Use it when the thread genuinely carries nothing about a draftable player —
     the index found only name collisions, it is memorabilia or a game thread,
     or the fantasy content is one passing comparison you would not read back in
-    a draft room. Threads released this way do not come back."""
+    a draft room. Threads released this way do not come back.
+
+    NOT a way to hand back a lease you took and did not finish. This is a
+    permanent verdict on the thread's content, not a lease operation: it retires
+    the thread for everyone, and a partially-read thread released this way takes
+    every player in it down with the one you were looking at. A note-writer who
+    opened three threads to check one player released all three and had to undo
+    it by hand in corpus/skipped.json. If you claimed a thread and are not going
+    to read it, submit nothing and let the 45-minute lease expire — that returns
+    it to the queue, which is what you actually want."""
     pid = post_id.strip().rstrip("/").rsplit("/", 1)[-1]
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
     if pid not in posts:

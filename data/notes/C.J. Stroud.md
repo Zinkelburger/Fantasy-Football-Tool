@@ -1,10 +1,11 @@
-**C.J. Stroud** (HOU, QB, bye 8) — board rank 166
+**C.J. Stroud** (HOU, QB, bye 8) — board rank 166 · as of 2026-09-04
 
-**Room sentiment:** Quiet and negative — only 7 mentions, and none of them argue for drafting him. Thin dossier; treat everything below as low-volume.
+**Room sentiment:** Texans fans are lukewarm and the fantasy room fades Houston pass catchers because of him — the defense of him is statistical, not vibes-based.
 
-- The one substantive knock: "Anthony Richardson having more top 5 fantasy finishes than CJ Stroud should be cold water for Stroud." A separate poster says the reason nobody cares about Nico Collins is "we remember JJ McCarthy would have been an upgrade over CJ Stroud in the playoffs."
-- The only positive is a camp line: "CJ Stroud has impressed with improved mechanics."
-- He and DeMeco Ryans "talk highly of [Jayden] Higgins going into Year 2 / clear WR2 for HOU" — useful for valuing Houston pass-catchers, not for Stroud himself.
-- He appears in a "do not draft no matter what" thread, and in one low-score prediction that he'll "be pulled by week 8."
+- No injury or job issue; the news is the contract. Per Jeremy Fowler of ESPN (9/3), Stroud will not sign an extension before the season: Houston offered north of $50M per year, he is holding out for close to $60M and betting on himself. Houston beat writer Aaron Wilson confirmed both numbers. An earlier report of a $70M offer is called false in the thread. Houston has already exercised his 2027 club option, so they can hold him two more seasons without the franchise tag.
+- The bounce-back case is context plus camp. Aaron Wilson reported him sharp at the 8/26 practice, with multiple connections to Nico Collins and touchdowns to Jaylin Noel, rookie TE Marlin Klein and Lewis Bond. He is in year two of Nick Caley's offense with a new quarterbacks coach, the line was addressed in the offseason, and last year's supporting cast was a bottom-five line, a rookie back, Tank Dell out and Collins banged up.
+- The statistical defense, the most upvoted line of its thread: weeks 4-18 last season he was 4th in adjusted EPA per play, 5th in EPA per play, 11th in success rate, 17 TD to 5 INT and a 97.2 rating behind a line ranked 32nd and 31st in pass and rush block win rate — with year 3 beating year 2 in TDs, INTs, yards, completion percentage, yards per attempt and rating.
+- The bear case, loud but outvoted: he collapses under pressure, threw four first-half interceptions with the season on the line, and was not the same after his concussion; that camp wants a franchise tag rather than a market-topping deal. Texans fans themselves temper the camp hype — the reports are only that the offense is not getting its ass kicked as badly as last year — and read GM Caserio calling a rookie guard the team's best offensive lineman both ways. Kayshon Boutte is meant to restore the deep threat lost when Tank Dell went down, but Patriots fans caution Stroud does not have Drake Maye's arm strength.
+- No redraft price appears anywhere in the corpus, so board rank 166 stands unchallenged; the only market talk about him is the contract.
 
-**Draft take:** No bull case exists in the community data. Leave him undrafted in 1-QB leagues at ADP ~177; he's a bench arm in superflex only. His main draft relevance is as the discount you accept when taking Nico Collins.
+**Draft take:** a late-round QB2 whose whole case is a line that was actually rebuilt — stream him rather than start him until Houston shows an offense in a real game.

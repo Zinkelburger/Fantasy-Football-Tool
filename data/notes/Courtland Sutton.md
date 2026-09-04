@@ -1,9 +1,11 @@
-**Courtland Sutton** (DEN, WR, bye 10) — board rank 76
+**Courtland Sutton** (DEN, WR, bye 10) — board rank 76 · as of 2026-09-04
 
-**Room sentiment:** Quiet and mildly bearish — only 22 mentions, and the dominant tone is apathy. One commenter captures it: "I'm just NEVER excited to click the dude."
+**Room sentiment:** The room buys the touchdowns and discounts the targets; the fade case has quietly grown a second leg in Pat Bryant.
 
-- The key item is a concrete report: Sutton "could see load management" this season (DNVR's Zach Stevens, 121). The Athletic separately quotes him saying he would sacrifice targets "if it's what the offense needs." Neither is what you want from a WR you plan to start.
-- Denver added Jaylen Waddle and the room is split. One side notes Sutton "is going 3-4 rounds later and is more of a #1 receiver than Waddle." The other points out he turns 31 and that the offense also feeds Evan Engram and RJ Harvey — "too many mouths to feed."
-- The bull case is boring and cheap: an undervalued-WR list calls him "seemingly completely forgotten about and always reliable," he keeps the red-zone role, and one poster cites rapport with Bo Nix. Hartitz files him in tier 6, "would WR2 numbers really surprise us?" A projection post has ADP 85.9, 774.5 yards.
+- Role, consensus Sept 3: everyone agrees Jaylen Waddle's arrival cuts his target volume. The bull case — four separate nominations — accepts that and argues the trade is worth it: he now draws CB2s, he is still Denver's biggest red-zone threat with double-digit touchdown range, and that is top-24 upside at a WR3/4 price.
+- The fade, Sept 1: he is roughly co-number-one with Waddle rather than the clear lead, one commenter has him a drop candidate by week 8 in competition with Pat Bryant, and others write off the whole Denver receiver room from last year.
+- Older and weaker, Aug 11: a commenter relayed an unnamed camp report that Bryant may be passing Sutton for the WR2 job. Nobody in that thread defended Sutton's hold on it, though a Broncos fan doubted the report. No beat writer or coach has said this, and the Sept 3 consensus still treats Sutton as the red-zone piece — so treat Bryant as a live threat, not a settled one.
+- No injury or availability claim on him anywhere.
+- Market is one line: a commenter names him among receivers he likes relative to current ADP. Nothing says where the room actually drafts him, so there is no board-versus-room price gap to report.
 
-**Draft take:** A round 8-10 flex body, not a starter you build around. The load-management report is reason enough to let someone else take him at ADP.
+**Draft take:** Draft him as a WR3 who pays in touchdowns, accept a co-number-one target floor, and watch Pat Bryant's snap share in September before you pay more than that.

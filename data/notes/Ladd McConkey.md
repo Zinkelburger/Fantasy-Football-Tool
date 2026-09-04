@@ -1,10 +1,11 @@
-**Ladd McConkey** (LAC, WR, bye 7) — board rank 50
+**Ladd McConkey** (LAC, WR, bye 7) — board rank 50 · as of 2026-09-04
 
-**Room sentiment:** 91 mentions across two dedicated threads ("Have we overcorrected on Ladd McConkey?" 271; "Popper: McConkey 'the No. 1 option' in Chargers O" 313). Both "a MUST grab at his ADP" (224) and "McConkey is a bad pick" appear.
+**Room sentiment:** Well liked and moving up; the only organised objection is price, and it lost its own thread.
 
-- Situation change is the argument: Keenan Allen, who out-targeted him last year, is gone, and new play-caller Mike McDaniel's 2023 Miami offense supported two 1,000-yard receivers. He missed offseason time with a hamstring strain but is now "a full-go at Chargers training camp."
-- Bull case: FantasyPros has him around WR23, and "if McConkey gets back near 80 catches, he does not need a massive statistical explosion to outperform WR23." His 9.8 aDOT fits a historically bottom-5-aDOT scheme.
-- Bear case is competition — Quentin Johnston, Tre Harris, Gadsden, Brenen Thompson — plus heavy 12-personnel. At 69% and 63% slot rates, "either McConkey starts playing more on the outside, or others will benefit." Johnston reportedly "outscored McConkey in PPG and had better YPRR" last year.
-- Market: ADP 54.3, 899.5 projected yards; 5.08 / 56 superflex; Hartitz tier 3.
+- No injury or availability claim on him. The role change is the whole case: Keenan Allen (777 yards, team-leading 81 receptions) is gone and the Chargers replaced him with tight ends rather than receivers, so McConkey moves back to the full-time slot role Allen took from him last year. Two of the league's best tackles also return from injury.
+- "Ladd and QJ are safe" was the second-biggest comment in the Aug 18 thread (600 points) that killed the widely-held belief — pushed by some Chargers beat reporters — that Allen would return to LA. The room expected his ADP to rise from around 49 on that news; some argued it was already priced in.
+- Quentin Johnston is the named risk and the room mostly dismisses it. One camp expects Johnston to outproduce him; the Aug 11 poster's answer is that Johnston is a different type of receiver in a different role and that Allen, not Johnston, was the cap on McConkey's ceiling. Several commenters call the roughly six-round gap between the two indefensible.
+- Market — the room pays well ahead of board rank 50. He goes at the 3rd-4th turn; Maher (Sept 3) has him 30th overall against an ADP of 40 and an ECR of 35-38, making any 4th-round pick a discount on his card; Hartitz ranks him second in the round 3-4 receiver tier behind Waddle and ahead of Flowers, Egbuka and Rice — prioritised over Egbuka because of the toe — and wants him around $30 in auction. If your league still lets him reach the 4th, that is the edge.
+- Sentiment: Loza calls him a breakout candidate and this year's Jaxon Smith-Njigba; six top-level predictions on Sept 2 have him a top-five or overall WR1; a "do not draft after last year" reply on Sept 3 was downvoted and mocked. The fade side is 15 cost-based top-level fades on Sept 1 — "not interested at cost", "not very fun to own". The honest framing came from one commenter: he is a bet on the Chargers offense hitting the way everyone expects, and the inverse is also possible.
 
-**Draft take:** A round 4-5 bounce-back bet on "no Allen plus new scheme." If you doubt it, Quentin Johnston is the cheaper way into this offense.
+**Draft take:** Take him in the 4th wherever he lasts that long — the Keenan Allen vacancy is a real, dated role change and the board rank has not caught up to what the room pays.

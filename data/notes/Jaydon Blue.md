@@ -1,10 +1,11 @@
-**Jaydon Blue** (DAL, RB, bye 14) — board rank 225
+**Jaydon Blue** (PHI, RB, bye 10) — board rank 225 · as of 2026-09-04
 
-**Room sentiment:** Thin coverage (9 mentions) and mildly positive — no one argues against him, but no one is making a real case either. He's treated as a last-pick name, not a debate.
+**Room sentiment:** the practice-squad landing ended the conversation — dynasty threads call him droppable and he was the most-upvoted cut in two separate threads.
 
-- **Camp reports are the only substance:** his "speed has been on display so far in Cowboys camp as he appears to be the handcuff to Javonte Williams," and a separate roundup says he "has broken off a couple big runs with the 1st team / Seems to be the RB2 early in camp (has good contingent value)."
-- **The specific path to targets:** one poster notes Javonte was "slowly losing his receiving usage toward the end of the season, and the Cowboys have been very vocal this offseason about Jaydon Blue or Malik Davis stepping into that pass-catching role in 2026." Davis is real competition for that job.
-- **Analyst placement:** Ian Hartitz puts him in handcuff tier 4, "There's a favorite, but we have questions," with the comment "Maybe Jaydon Blue is a thing this year."
-- **Price:** ADP ~227-233 — the 20th round in superflex tables. Named by an Establish The Run analyst as a last-pick dart throw.
+- **He is on a practice squad, not an active roster.** Schefter reported on 9/1 that Blue signed with the Eagles after failing to make the Cowboys' 53. Philadelphia also stashed Carson Steele and Dameon Pierce, and he sits behind Saquon Barkley, Tank Bigsby and Will Shipley.
+- No path to snaps short of an injury call-up. The room reads him as functionally Will Shipley's backup, elevated only **if Shipley misses time**, and several doubt he plays a down for the Eagles this season. A minority argues he is the more talented back and only lacks trust and experience; another expects him to fizzle out of the league without a real chance.
+- Cowboys fans explain the cut: he lost the RB2 job to Malik Davis, still fumbles, and grades poorly on vision between the tackles, patience, power, pass protection and receiving, with work-ethic and film-study concerns and camp time missed to blisters from custom cleats. Elite speed is the only asset anyone cites. He was cut from one of the league's weakest backfields and then cleared waivers without an active-roster offer.
+- For the record, Dan Graziano (ESPN) reported on 8/11 that Dallas liked him but that he was no threat to Javonte Williams' workload; the cut three weeks later settled that.
+- Sentiment: two top-level drops for 95 combined upvotes, "Farewell, Jaydon Blue" as the single most-upvoted cut in one thread, and the top reply (45 pts) in another cut thread naming him first — including from an owner who spent a 2.11 rookie pick on him.
 
-**Draft take:** Pure final-pick handcuff. Worth the roster spot if you drafted Javonte Williams; otherwise a preseason watch-list name for the pass-catching role.
+**Draft take:** undraftable, and a drop in dynasty — a practice-squad body two injuries from a call-up, cut loose by the people who watched him every day.

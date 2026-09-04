@@ -1,10 +1,11 @@
-**Jared Goff** (DET, QB, bye 6) — board rank 126
+**Jared Goff** (DET, QB, bye 6) — board rank 126 · as of 2026-09-04
 
-**Room sentiment:** Modest volume (17 mentions) but favorable — he has his own thread, "Jared Goff, the epitome of waiting on drafting QB" (score 208), and he is the named example whenever someone argues the late-QB strategy.
+**Room sentiment:** The room's agreed-upon late QB — productive, cheap, and capped by having no legs at all.
 
-- **The case:** "I feel like Jared Goff is being slept on a bit too much," plus durability — "hasn't missed a game in 4 seasons." He also appears in the target group for the widely-upvoted "Is there even an elite QB advantage in 2026?" post, which argues the top QBs aren't worth their premium.
-- **Projection:** 4,099.5 passing yards in the corpus's team-by-team projections post.
-- **The counterpoint:** the top reply in his own thread opens "here's the biggest problem with drafting Jared Goff, despite him always being a good 'value pick' and outperforming his ADP" (score 96) — the dossier doesn't capture the reasoning, but the objection is on the record. Separately, the room's read is "Goff isn't elite" even while his WR1 finishes top 3 every year, i.e. he's a passing-volume QB without rushing upside.
-- **Strategy fit:** cited as the "rock-solid" half of the wait-and-take-two-QBs approach, paired with a high-variance younger arm.
+- No injury or role question. Commenters describe the Detroit offense as extremely QB-proof, arguing a swap to Jordan Love would not be noticeably better and that Goff would look far worse behind Green Bay's setup. The Lions' win total is set at 10.5 with the room projecting eight to twelve.
+- The knock is variance, not baseline: commenters say he can go half a season without a turnover and then hand over four or five in one game, and point to three interceptions and a fumble in the divisional loss to Washington as why he is not treated as elite.
+- Price and board line up. He is falling to the 12th round in competitive 12-team leagues, taken after five running backs, which the room calls poetic — roughly where the board has him. One warning worth carrying: if several managers start rostering backup quarterbacks, the Goff tier becomes the Bryce Young tier.
+- Hartitz is the outlier and the interesting one: he ranks Goff ahead of both Matthew Stafford and Patrick Mahomes and calls him a darkhorse MVP at about 35-1, citing three straight 4,500-yard passing seasons when the rest of the NFL has six total in that span, an easy schedule, and a defense that should be mediocre again. The standard ranking is around QB16, because he has zero rushing upside and is rarely among the top-50 rostered players on championship teams; he gains real value in 6-point passing-TD leagues.
+- Sentiment in Detroit is that he is underrated nationally — an ESPN top-100 piece has him the No. 3 QB in the NFC — while the fantasy pushback is that he has finished top-10 by points per game only once in four years among QBs with 12-plus games, and that his 2025 QB8 came partly from playing Week 18. Vegas has him as the Week 1 QB2 at 19.5, and the most upvoted comment in that thread (+131) is "Goff is gonna be a Top-10 QB for the fifth year in a row and nobody cares."
 
-**Draft take:** The archetypal QB you take after everyone else has one. Fine as a set-and-forget QB1 in the double-digit rounds; don't expect ceiling weeks without rushing production.
+**Draft take:** The right QB to wait on in a 6-point-passing-TD league and a fine last-resort starter anywhere else — just do not expect the finish to win you a week.

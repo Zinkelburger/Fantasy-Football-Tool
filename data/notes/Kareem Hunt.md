@@ -1,10 +1,9 @@
-**Kareem Hunt** (free agent, RB, no bye) — board rank 258
+**Kareem Hunt** (FA, RB, bye ?) — board rank 258 · as of 2026-09-04
 
-**Room sentiment:** not a live fantasy topic. He has 22 mentions but every one is historical context inside Kansas City discussions — the room's position is that he's unsigned.
+**Room sentiment:** a speculative name only — everything about him is conditional on a signing that has not happened.
 
-- Explicit on roster status: "Kareem Hunt isn't riding his couch?", "Kareem Hunt, who is currently not on their roster?", and "I will cry real tears if they re-sign Kareem Hunt, but pretty sure that's not happening."
-- The one number worth carrying forward is about the Chiefs, not him: since rejoining the team in Week 4 of 2024, he commanded 78.2% of Kansas City's rush attempts inside the 5-yard line. That vacated goal-line work is the reason he keeps coming up in Kenneth Walker threads.
-- His cited finishes trend down hard: RB4 in 2017, RB12 in 2018, RB26 in 2024, RB29 in 2025.
-- He is also grouped with Kamara, Aaron Jones and James Conner as aging backs still playing, with the note that only McCaffrey is still producing at a high level.
+- **Unsigned free agent.** No contract is reported anywhere in the corpus. As of 2026-09-03 the room's expectation is Kansas City: the thread's top comment (1,146 points) is that Andy Reid has Hunt's number pre-dialed for the moment Kenneth Walker goes down. A reply says Hunt visited Detroit after Isiah Pacheco went on IR and that contract talks are the delay; another says he nearly retired two years ago and is done.
+- The Detroit thread (2026-09-01) is the same shape: commenters relayed that the Lions worked him out and that he would fit as the short-yardage complement to Jahmyr Gibbs, vulturing touchdowns as he did in Kansas City — but no agreement was reported, and Detroit used the Pacheco IR move to sign a tight end instead. Counterpoint from the room: any signing mostly watches Gibbs from the sideline, and one commenter calls him "fantasy cancer."
+- Also named on 2026-08-23 as the most likely veteran the Raiders dust off for pass protection alongside a rookie QB — commenter speculation, no reported contact.
 
-**Draft take:** Do not draft a player with no team. The actionable takeaway from his file belongs to whoever inherits Kansas City's goal-line carries.
+**Draft take:** undraftable until he signs — set a waiver alert for Kansas City or Detroit and nothing more.

@@ -1,10 +1,10 @@
-**Bijan Robinson** (ATL, RB, bye 11) — board rank 2
+**Bijan Robinson** (ATL, RB, bye 11) — board rank 2 · as of 2026-09-04
 
-**Room sentiment:** Bullish on the player, nervous about the team — 268 mentions, with the Bijan-vs-Gibbs 1.01 argument running through a dozen threads.
+**Room sentiment:** A top-two lock whose only real debate is how much a bad Atlanta offense costs him.
 
-- Usage: reported 366 touches last season, 79 catches for 820 yards, an RB3 finish. Tyler Allgeier, who took red-zone and goal-line work off him, is now in Arizona; Brian Robinson Jr. is the listed backup.
-- Bull case: the room treats him as the best pure RB in football — better than Gibbs against stacked boxes, as a receiver, and breaking tackles — and expects Atlanta to funnel the offense through him. Several want the checkdown volume Tua gave Achane.
-- Bear case: the Falcons QB room is a mess (Tua's back, Penix's knee, Cooper Rush signed) and multiple posters are "completely out on this team." Back-to-back 360+ touch seasons draw regression warnings, and one flags Kevin Stefanski as a volume risk.
-- Contract: he and Gibbs are both holding in awaiting new deals; consensus is both get done without moving his stock. The split is explicit — Hartitz and others rank Gibbs first on situation, an equal group takes Bijan on talent.
+- Health: none to report, and that is the point — commenters note he has never missed a game and reject the "due for injury regression" argument outright. The only blip anyone can name is a game he played and finished with 0.9 half-PPR points.
+- Role: bell cow with no age or durability question. Tyler Allgeier is gone, and the room dismisses the vulture worry with numbers — Bijan has been the second-best RB on rush attempts inside the 5 over the last two seasons, and his touchdown total was suppressed by an offense that scored 350 points against 480+ for the top teams. He also out-carried and out-targeted Jahmyr Gibbs.
+- The caveat is the quarterback. Last year's 103 targets and 79 catches were partly Kirk Cousins checkdowns; one commenter's realistic floor without him is around 65 catches, 9 TDs and 1,500+ total yards, and defenses can stack the box given how little help he has. Hartitz is the sharpest bear: his rule is not to draft RBs from likely bottom-10 scoring offenses — only 14 such backs have posted top-12 PPR-per-game numbers in a decade — and it is part of why he has Gibbs as the clear 1.01. Murchison's answer is that Bijan flourished on a terrible team last year and now has a coach who will lean on him.
+- Market: going 1.02-1.03 almost everywhere, with Gibbs, Bijan and Chase the near-universal top three. Multiple managers report him falling to 1.03-1.04, once 1.06. The room prefers Gibbs at 1.01 and Bijan drafters call themselves the consolation prize. A 35-comment, 1,358-upvote thread on the goal-line report left him a top-2 pick for nearly everyone; the top reply (2,753 pts) was that the Falcons' QB play limiting goal-line trips at all is the bigger worry.
 
-**Draft take:** Top-two pick either way — take him at 1.01/1.02 without overthinking. In full PPR the room's tiebreaker leans Gibbs, but nobody calls Bijan a mistake.
+**Draft take:** Take him at 1.02 without hesitation, and take him at 1.01 if you value the workload floor over Gibbs's offense — the Atlanta quarterback question is priced in and has never actually stopped him.

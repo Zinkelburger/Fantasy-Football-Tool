@@ -1,10 +1,12 @@
-**Emmett Johnson** (KC, RB, bye 5) — board rank 155
+**Emmett Johnson** (KC, RB, bye 5) — board rank 155 · as of 2026-09-04
 
-**Room sentiment:** Thin and mildly dismissive — 11 mentions, and the highest-scoring one is a shrug: "This Emmett Johnson discourse is so stupid to me."
+**Room sentiment:** a rookie handcuff the room likes more than handcuffs usually get liked, now with the head coach on record about why he has the job.
 
-- **Reported role:** described as a 5th-round rookie drafted by Kansas City "to compete with Jaydn Ott for RB2 and RB3." The same comment notes the Chiefs also signed Emari Demercado and expects "Demercado or whoever lands at RB2 to spell K9 considerably" — so the room does not have Johnson as the backup in line for work.
-- **Bull case:** he appears on a "Four late round RBs who you should be drafting" list alongside Rachaad White, RJ Harvey and Keaton Mitchell, and one poster says "I'm going to keep a close eye on Emmett Johnson this preseason." That's the extent of it.
-- **Bear case:** he's used as a punchline elsewhere — a poster complaining about Travis Hunter's draft price wrote "he went behind Emmett Johnson for crying out loud!!!" A separate comment slots him below Charbonnet, Woody Marks and Tyrone Tracy.
-- **Price:** ADP 160.5.
+- Role, best-sourced first: Andy Reid says pass protection is what won the fifth-rounder the No. 2 job — "We knew he could run the ball, but the thing we had to see was pass protection. For him to be that No. 2 back, you have to be able to do that. He's a smart kid and willing to stick up in there." Kansas City waived Emari Demercado at the end of camp, leaving Johnson behind Kenneth Walker and splitting backup work with Brashard Smith.
+- The preseason backs it up: 26 carries for 123 yards (4.73 a carry) and a touchdown with another wiped out by penalty, 6 catches on 7 targets, and zero pressures allowed. Hartitz, citing PFF, had him leading all players in preseason Week 1 with 10 missed tackles forced and nobody else over 5 — with the caveat that few backs got as many carries, and a skeptic who watched every touch counts four real ones.
+- Only while Walker is healthy: the room splits on whether he plays. Backers project roughly 8-12 touches a game, Chiefs fans earlier put it at a 30-40% touch share, and several read him as Kansas City's receiving back rather than a pure handcuff — Reid throws to his backs, and Johnson was the No. 10 RB in the country in receiving yards at Nebraska. Others hold him purely as a handcuff with no standalone expectation.
+- The real objection is process, not talent: commenters say Kansas City signs a veteran within a day of a Walker injury — Kareem Hunt is named repeatedly — and that all Chiefs backs just mix in, leaving Johnson as the pass-blocking back in a committee.
+- Market: rostered in about 5% of leagues (15% on Yahoo; the 94% figure quoted in-thread is dynasty, not redraft), taken in the 13th and 14th rounds or claimed off waivers the day Demercado was cut. Twerski would keep him over Woody Marks as the Walker handcuff. Hartitz picks him as the best stash among Braelon Allen, Jonah Coleman and Chris Brooks, but prefers Ray Davis, Tank Bigsby, Brian Robinson and Kaelon Black to all of them.
+- Sentiment: a 396-point thread largely agrees he should be rostered, comping the profile to Kyren Williams and Bucky Irving. The loudest dissent calls him a low-RAS back with one productive college season whom a prospect model ranks 112th.
 
-**Draft take:** A last-round or waiver name, not a target — the room has him third in his own backfield pecking order behind a veteran signing. Revisit only if the preseason depth chart shifts.
+**Draft take:** draft him in the last two rounds as the Walker handcuff with a receiving kicker — Reid has said on the record why he has the job, but Kansas City signs a veteran the day Walker gets hurt.

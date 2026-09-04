@@ -1,10 +1,10 @@
-**Breece Hall** (NYJ, RB, bye 13) — board rank 30
+**Breece Hall** (NYJ, RB, bye 13) — board rank 30 · as of 2026-09-04
 
-**Room sentiment:** 173 mentions split between "do not draft, ever" (the top-voted comment in that thread) and a dedicated "Are we missing something with Breece Hall at RB16?" pushback.
+**Room sentiment:** Broadly faded, and the stated reason is almost always the Jets rather than Hall — which the contrarians have noticed.
 
-- Bear case: RB19 last season with 5 total TDs. Posters count half his games under 10 points and only one 20+ game. He didn't get goal-line work when Braelon Allen was healthy, coaches keep describing a committee, and last year already had best-case injury luck (Allen out early, no O-line games missed).
-- Bull case: he's 25, just got paid like a top back, and averages roughly 1,500 scrimmage yards and 57 catches per 17 games. The usage argument is sharper than the talent one — Aaron Glenn refused to use him on third downs, and a third-stringer logged as many third-down plays.
-- What changed: Geno Smith at QB, Frank Reich calling plays. Posters note Reich funneled volume to Jonathan Taylor and uses backs on screens and checkdowns.
-- Price: RB15-16 (ESPN ADP ~32.6). Many say they'd take him at RB17+ but not at cost.
+- The August groin scare resolved. He came up limping after a screen and left Jets practice on 2026-08-17; HC Aaron Glenn downplayed it the same day — "I don't think it was a big deal" — and a later commenter relayed that MRI reports had him fine for Week 1. No outlet was named on the MRI and nothing has been reported since, so treat him as healthy going into the opener.
+- Role is secure on money if not on usage: he signed a big-money Jets contract and commenters call it an insulated deal. The case for him is a solid run-blocking line, a more pass-heavy quarterback in Geno Smith and an offense at least marginally better than 2025. He has averaged 56 catches for 475 yards over the last three seasons, though Dopp's knock is that the Jets do not use him as a pass catcher as much as they should, which caps him at RB2 — and one dissenter expects a 60/40 timeshare with no new contract.
+- Market vs the board: the board has him at 30, and the room now pays later than that. He had been going at the 2-3 turn; after the scare the consensus is that a solid third round is his ceiling, and managers report taking him in the 5th or 6th and being happy there. Twerski does not want him as his RB1 outside a zero-RB build. One commenter still expects him to beat pick 29.
+- The fade is price-sensitive rather than absolute, which is the useful part: an okay RB2 two years running, a trap-door floor on a bad offense, distrust of the staff, and inside a 327-point "all Jets" comment. The counter-argument the buyers keep making is that the only thing anyone says against him is "but it's the Jets" — and one manager traded Quinshon Judkins straight up for him on the pass-catching history.
 
-**Draft take:** Don't reach at RB15. If he slides to round 4 or later, the receiving-usage rebound is a real edge — and grab Braelon Allen late as the pair.
+**Draft take:** Do not pay the board's 30 — let him come to you at the 4/5 turn, where the Jets discount is already in the price and the profile is still a three-down back.

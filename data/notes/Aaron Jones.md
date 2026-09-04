@@ -1,9 +1,10 @@
-**Aaron Jones** (MIN, RB, bye 6) — board rank 99
+**Aaron Jones** (MIN, RB, bye 6) — board rank 99 · as of 2026-09-04
 
-**Room sentiment:** Bearish — 18 mentions, several in "do not draft no matter what" threads. The few defenders are conditional, not confident.
+**Room sentiment:** the room likes the role and distrusts the body — nobody argues he has lost the job, they argue he will not hold up to it.
 
-- **Projected role:** Hartitz has him in handcuff Tier 2 ("one injury away from being on the cover of waiver wire articles") with an explicit note: "Expecting Jordan Mason to lead the way in Minnesota and Aaron Jones to be a lesser 1.B/pass-down back."
-- **Bear case:** named outright multiple times as a do-not-draft. The sharpest framing: "Once Aaron Jones is the best RB available ADP wise, I'm out," plus a positional-value argument calling his range "RB40+ dust."- **Bull case (thin, hedged):** "I think Aaron Jones has the opportunity to outplay Mason if KOC gets that offense back on track," and "I've been a believer that it will be Aaron Jones but if training camp and/or preseason points to Jordan Mason he will be someone worth having."
-- **Price:** ADP 104.5; 12.01 (134.1 overall) in a superflex TEP sample.
+- No current injury reported. The bear case is age and attrition: he is 31, among the ten oldest active NFL backs, with a long injury history and visible decline that commenters say already explains the dial-back in his early-down work. Jordan Mason drafters say plainly they are buying the chance Jones misses time.
+- Role intact as of 2026-09-04: he was the first back on the field with Minnesota's starting offense in their brief preseason appearance and is expected to keep the passing-down and pass-protection work, with one commenter projecting 200-plus touches if he stays healthy. That is conditional on **Mason's pass protection not improving enough to take third-down reps**; others argue the Vikings will keep feeding a face-of-the-franchise veteran even as Mason takes early downs, and that Minnesota leans run partly because Jones is older and more injury-prone than when the offense threw heavily.
+- The dissent is blunter than the consensus: one commenter calls him flatly washed in the course of arguing the backfield is open enough for a rookie, and a former backer says he is finished as a runner and will matter only as a receiver — the stated basis for the Mason bets.
+- Market: no consistent price signal, only Loza reporting he keeps ending up with Jones because he falls to her at the right spot, in a backfield commenters call a mess.
 
-**Draft take:** The room expects Jordan Mason to lead this backfield with Jones as a pass-down complement — a bench body, not a flex you start. Only worth a late pick if Mason's camp status changes, and nothing in the corpus says it has.
+**Draft take:** a discounted pass-catching floor with miss-time risk already priced in — fine at his cost, but pair him with Mason or skip him.

@@ -1,9 +1,8 @@
-**Isaiah Davis** (NYJ, RB, bye 13) — board rank 280
+**Isaiah Davis** (NYJ, RB, bye 13) — board rank 280 · as of 2026-09-04
 
-**Room sentiment:** The room agrees he's been used and disagrees about whether that means anything — 12 mentions, almost all inside Breece Hall and Braelon Allen threads.
+**Room sentiment:** raised once as a Breece Hall contingency and talked down in the same breath.
 
-- **The usage is real and reported.** The Jets went to him "extremely often" late last season, and a Hall analysis notes Hall "fell to a career-low 2.3 catches/game in 2025 as Isaiah Davis ate into third-down work." One poster cites reports that "Isaiah Davis is going to be featured more than braelon Allen."
-- **Bull case versus Allen:** "Isaiah Davis has looked better whenever they called his number," and he's "a better complimentary back to Breece Hall" — though that same comment adds "and he sucks too."
-- **Bear case:** the thesis assumes Hall keeps ceding work, which the room disputes: "This notion that they're going to spend $15M/yr on a star running back and then play Isaiah Davis and Braelon Allen for all the valuable touches is just cope." Hartitz files the pair in handcuff tier 5, and one poster is blunt: "I'm not very interested in drafting the RB3 on most teams but especially not on the Jets."
+- Role, conditional (Aug 17): Davis was raised as the other candidate for Hall's work while Hall is out with a groin injury, and the thread's own answer was that neither Jets backup is worth chasing because it would be a committee split between two mediocre backs. Nothing since — no beat report, no practice claim, no depth-chart update, and no injury claim on Davis himself.
+- Sentiment (Sept 1, consensus): three top-level comments cut him, 4 upvotes. His owner still argues he is better than Braelon Allen; the replies say that in any deep-bench format the "any RB on a 53" rule applies, so hold unless waivers offer obvious upside.
 
-**Draft take:** Waiver-wire material in a 12-team league. If you roster Breece Hall and want the handcuff, the reporting favors Davis over Braelon Allen — that's the one actionable takeaway.
+**Draft take:** skip him — even the thread that named him as the Hall contingency said the job would not be worth chasing, and he is a bench-depth hold, not a pick.

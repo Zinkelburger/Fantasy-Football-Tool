@@ -1,9 +1,11 @@
-**Kaelon Black** (SF, RB, bye 8) — board rank 203
+**Kaelon Black** (SF, RB, bye 8) — board rank 203 · as of 2026-09-04
 
-**Room sentiment:** Modest, specific interest — 15 mentions, almost entirely as "which 49ers back handcuffs Christian McCaffrey." He is the mild favorite in that debate, but nobody is excited about him independent of a CMC injury.
+**Room sentiment:** he won the 49ers' RB2 job and the room is clear-eyed that it is worth nothing while Christian McCaffrey is healthy.
 
-- The opening came from injuries ahead of him. A camp roundup (245) reports Jordan James with a rib fracture, out an expected 2-3 weeks, and notes "Kaelon Black is the clear RB2 while he's out." Hartitz flags his "chance to run away with the job while James and Guerendo are both out."
-- The complication is his own health: a later camp roundup (178) reports the 49ers rookie RB "is now dealing with an injury," with no detail on severity anywhere in the corpus.
-- The room is not unanimous. A Roto Street Journal handcuff thread draws "it will be Kaelon Black without a doubt, using both stats and logic" (35), but others say it "will depend on the preseason," and Hartitz files Black and James together in tier 5, "committee szn." Cost is negligible — cited elsewhere as RB67, 242 overall.
+- Role, per beat reporting relayed 9/2: Black is listed the No. 2 back behind McCaffrey on the depth chart and camp backs it up — Jordan James opened as the 2 then broke ribs, Black missed two weeks himself, came back and showed out in preseason week 2, and beat reporting since has said Black took the job. He is also a capable blocker, which the room reads as the tiebreaker. Conditional: James is back to full health and Isaac Guerendo returns Week 3 at the earliest, so the job is not locked.
+- Standalone value is zero. Cooper rates him among the highest pure-upside handcuffs because San Francisco is actually good, but puts the odds of him taking work from a healthy McCaffrey at zero. Murchison lists him as a deep stash explicitly as the McCaffrey injury handcuff. Twerski expects a split backfield rather than a bell cow even if McCaffrey goes down, which blunts the payoff — though he holds more Black shares than Jordan James.
+- The handcuff argument is the loudest thing on him (9/4, four top-level comments, the most in that thread): anyone rostering McCaffrey needs him or the season is toast, and one drafter takes him only because San Francisco plays Wednesday and he can be dropped straight after.
+- Market: taken in the 12th-13th round of 12-team redraft, around RB59, with one drafter getting him at pick 153 in a guillotine league — later than board rank 203 implies, and several say openly they will drop him by Week 1-2 if McCaffrey is healthy. A Ringer host listed him among deep sleepers for an 18-team slow draft.
+- Sentiment: a 329-point thread is broadly positive — the room says he is at worst the 1a if McCaffrey misses time — but its top comment at 505 points jokes the 49ers' league-winning back will be their seventh, not yet signed, and a minority calls him a borderline JAG behind James.
 
-**Draft take:** A last-round pick, mainly if you drafted CMC. Watch preseason: if Black wins the RB2 job outright, he becomes one of the highest-leverage handcuffs on the board.
+**Draft take:** a McCaffrey-only handcuff — worth the 12th round if you own McCaffrey, and an immediate drop if you don't.

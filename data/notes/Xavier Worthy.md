@@ -1,10 +1,11 @@
-**Xavier Worthy** (KC, WR, bye 5) — board rank 128
+**Xavier Worthy** (KC, WR, bye 5) — board rank 128 · as of 2026-09-04
 
-**Room sentiment:** Bearish — 17 mentions, and most of them use him as the cautionary comp for other speed receivers rather than as a target.
+**Room sentiment:** Post-hype and cheap — healthy again after a shoulder-wrecked season, but the room caps him for as long as Rashee Rice plays.
 
-- Injury: he exited Chiefs camp with a shoulder injury. Both camp roundups say it isn't believed to be serious, and per Rapoport he's "believed to be OK."
-- Bear case: he's repeatedly paired with Gabriel Davis as the archetype of a hyped athlete who doesn't produce — "a better athlete than a football player." A route-depth analysis flags him as a stretch/short-area guy whose profile produces fewer fantasy points per game than true deep threats, and he appears on a list of failed Kansas City receiver hype cycles alongside Skyy Moore and Kadarius Toney.
-- Bull case, such as it is: target competition in Kansas City is thin — a soon-to-be 37-year-old Kelce, Rashee Rice, and Tyquan Thornton — and Hartitz tiers him with players where "WR2 numbers wouldn't surprise us." At least one poster pushes back on the criticism directly.
-- ADP quoted at 131-137.
+- Health: he hurt the shoulder on the first series of Week 1 last year and played the season with it. On 8/11 he was still in "some sort of load-management ramp-up" at camp per Charles Goldman (A to Z Sports), and he picked up a second camp issue in mid-August. As of 9/3 the room says he is fully healthy and being wrongly written off as fragile — that is the newest word, but it is commenters, not a beat report.
+- Role: a secondary piece in an offense that spreads targets. Hartitz notes he looks healthy enough to contribute more underneath, something Andy Reid has talked about, and cites it as a risk to Rashee Rice's target volume. The counter is that his upside is capped only while Rice is healthy and available — his best game last season was 17.1 points, which one commenter says makes him a fringe WR3.
+- The deep role others sketch for him is conditional on the Kansas City line holding up long enough for the shots to develop.
+- Market: priced round 10-11, and undrafted entirely in one commenter's league — the stated reason is boom/bust weekly output behind a quarterback who spreads it thin. Board rank 128 is about where the room pays. Dopp calls him a post-hype sleeper who keeps falling to him; Murchison only wants him in best ball.
+- Sentiment is negative: one thread grouped him with Skyy Moore and Mecole Hardman as bad Chiefs receiver picks and expected Cyrus Allen to take his spot, and a question about a bounce-back drew no support.
 
-**Draft take:** Bench WR at cost. The defensible read is a volatile deep/gadget piece in a concentrated offense — fine as a WR4/5 dart, not a starter you plan a roster around.
+**Draft take:** A round-10 dart on a healthy speed WR whose starting weeks require a Rice absence — take him there, never earlier.

@@ -1,9 +1,9 @@
-**Emanuel Wilson** (SEA, RB, bye 11) — board rank 212
+**Emanuel Wilson** (SEA, RB, bye 11) — board rank 212 · as of 2026-09-04
 
-**Room sentiment:** Essentially absent — 4 mentions, none of them substantive. This note is short because the dossier is nearly empty.
+**Room sentiment:** The room has given up on him, and Seattle has said nothing all offseason to argue otherwise.
 
-- The only real data point: in a goal-line usage argument about Bucky Irving, a commenter notes that 6 carries inside the 10 "puts Irving behind Emanuel Wilson, Samaje Perine, Tank Bigsby, Ollie Gordon" — a passing reference to Wilson having had short-yardage volume, not an argument for him.
-- One poster asked "Thoughts on Emanuel Wilson?" in a rankings thread and got no substantive reply in the corpus.
-- Remaining mentions are a superflex ADP row (19.03, 214.8 overall) and a keeper-list entry. No camp reports, no role reporting, no injury news.
+- Roster risk, unresolved: one commenter named him a possible Seattle release around final cuts who could then sign elsewhere (Aug 23). That is speculation, not a report, and nothing since records how cuts went.
+- Role: the third piece in Seattle's committee. One commenter argues he is the underrated one — already in the building, knows the system, plays special teams, can work third downs — while conceding there has been nothing about him out of Seahawks camp all offseason. Another (Sept 1) puts it plainly: the Packers used him well but the Seahawks "don't seem to give a damn about him", and the one owner still holding through Week 1 on the chance the role is bigger than it looks calls his own reasoning cope.
+- Sentiment is uniformly negative: commenters say he gets zero respect, call him droppable, and report cutting him for a starting defense. The kindest thing said about him came from Green Bay — a 66-upvote comment saying he "would have eaten" in that spot and was better than Jacobs last year.
 
-**Draft take:** Undrafted in standard 12-team formats on this evidence. Nobody in the community is making a case for him; treat him as a waiver name if the Seattle backfield situation changes.
+**Draft take:** Waiver name only — nothing out of Seattle supports drafting him, and the owners who still have him are talking themselves into it.

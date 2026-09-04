@@ -1,10 +1,11 @@
-**Khalil Shakir** (BUF, WR, bye 7) — board rank 135
+**Khalil Shakir** (BUF, WR, bye 7) — board rank 135 · as of 2026-09-04
 
-**Room sentiment:** Quiet and mildly bearish — only 14 mentions, several of which use his name as shorthand in arguments about other players.
+**Room sentiment:** Buffalo's target leader, carrying an undisclosed injury and a role the room keeps arguing about.
 
-- **The bear case gets repeated:** volume without fantasy payoff. "Shakir has been the undisputed wr1 the last couple years — what has that done for his fantasy production." He finished WR36. A snap-share study notes his 13.9% share in heavy sets sits in only the 35th percentile, and files him with Josh Downs and Jayden Reed as part-time slot types with structurally capped upside.
-- **The mild bull case:** Ian Hartitz lists him in tier 8, "favorite late-round sleepers." One comment sketches a Buffalo alignment of "DJ Moore, Diggs, and Shakir in the slot" — he keeps the slot job, but the target competition around him just got heavier.
-- **One health flag, indirect:** a ranker notes DJ Moore's upside would rise "if Khalil Shakir isn't ready to go Week 1." The corpus doesn't say what the issue is.
-- **Market position:** ADP 133-140, 649.5 projected yards (13.05 in a superflex sample).
+- The Bills are optimistic he will be available for Week 1 despite an undisclosed issue, per Matt Zenitz (9/2). The nature of the injury is not stated anywhere in the threads — no timeline, no practice detail — and he is separately described as coming back from tightrope ankle surgery, which one owner thinks alone makes him a cut candidate. Take the Week 1 optimism as the best-sourced word available and confirm it before you start him.
+- Role: Buffalo's target leader at 20% last season, a slot player who does not overlap with DJ Moore's skill set. He told Bills beat reporters in camp that Moore "has the juice" and that he views him as elite. The room expects Moore's vertical threat to open more downfield routes for him than he ran in 2025 — conditional on Moore drawing that coverage attention.
+- The inside is crowded: Shakir and Dalton Kincaid already occupy it, which is the room's own argument against adding anyone else there. Others push back that Buffalo moves him around the formation rather than boxing him into the slot.
+- Market: DraftKings set his receptions line at 62.5, and Cooper cites him as the example of a slot player capped by three-WR-set deployment.
+- Sentiment: "Shakir is excellent, he's been a top 5 YAC receiver for years" (6 upvotes). A downvoted contrarian argues he and Moore are redundant and Buffalo still lacks a true WR1.
 
-**Draft take:** Last-few-rounds bench WR, not a starter you plan around. The room's own evidence says the slot role caps him even when he leads the team in targets.
+**Draft take:** A PPR WR4 worth taking around his board rank on target share, provided you check the Week 1 status first.
