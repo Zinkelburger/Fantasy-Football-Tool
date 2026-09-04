@@ -462,7 +462,14 @@ def _mention_index(rebuild=False):
     # "v2" is the cache layout. Bump it whenever the stored shape changes: a
     # stale cache in the previous shape reads as every post having no mentions
     # and no text, which does not error, it just silently ranks everything zero.
-    stamp = (f"v2:{len(players)}:{len(aliases)}:{len(R.NON_PLAYER_NAMES)}:"
+    # The non-player registry is deliberately NOT in the key. Workers register
+    # dozens of coaches and linemen while reading, and rebuilding a 95-second
+    # index after each one made next_threads block for minutes — the exact
+    # stall the cache was added to remove. Registering shifts a handful of
+    # counts; the index is a ranking aid, and a ranking does not need to be
+    # exact. Force a refresh with _mention_index(rebuild=True) or by deleting
+    # the file.
+    stamp = (f"v3:{len(players)}:{len(aliases)}:"
              f"{int(src.stat().st_mtime) if src.exists() else 0}")
     cached = {}
     if not rebuild:
@@ -488,6 +495,20 @@ def _mention_index(rebuild=False):
                             cap_required=cap, defaults=defaults, first_names=firsts):
                 if m.tier not in ("review", "ambiguous"):
                     fresh[pid][m.player.player_name] += 1
+        # The title is the most authoritative statement of what a thread is
+        # about, and it was not being read at all: "Ravens WR Zay Flowers
+        # didn't practice today" indexed as Ja'Kobi Lane and Mark Andrews,
+        # because those are who the comments mention. Two workers reported the
+        # same shape independently. A title mention counts double — a beat
+        # report names its subject once and the room then argues about
+        # somebody else.
+        for pid in todo:
+            head = f"{posts[pid].get('title', '')}\n{posts[pid].get('selftext', '')[:600]}"
+            for m in R.scan(head, aliases, keys,
+                            thread_title=posts[pid].get("title", ""),
+                            cap_required=cap, defaults=defaults, first_names=firsts):
+                if m.tier not in ("review", "ambiguous"):
+                    fresh[pid][m.player.player_name] += 2
         for pid in todo:
             cached[pid] = {"n": dict(fresh.get(pid, {})), "c": size.get(pid, 0)}
         try:
@@ -882,7 +903,8 @@ def thread_digest(post_id: str = "", max_chars: int = 60000,
 
 
 @mcp.tool()
-def distill_thread(post_id: str = "", max_chars: int = 60000, page: int = 1) -> str:
+def distill_thread(post_id: str = "", max_chars: int = 60000, page: int = 1,
+                   prune: bool = True) -> str:
     """Hand over one thread plus the contract for turning it into claims.
 
     This is step one of the two-step note pipeline: distil each thread into
@@ -925,7 +947,7 @@ def distill_thread(post_id: str = "", max_chars: int = 60000, page: int = 1) -> 
                 f"the exact\n    claim text, so a reworded version of the same fact is "
                 f"stored twice. Only\n    continue if you are deliberately adding what "
                 f"the first pass missed.\n")
-    body = warn + thread_digest(pid, max_chars=max_chars, page=page)
+    body = warn + thread_digest(pid, max_chars=max_chars, page=page, prune=prune)
     types = "\n".join(f"      {k:<10} {v}" for k, v in C.CLAIM_TYPES.items())
     basis = "\n".join(f"      {k:<18} {v}" for k, v in C.BASIS.items())
     return f"""{body}
@@ -949,12 +971,14 @@ Each claim is one assertion about one player:
                    This field is why whole threads are worth reading:
                    "Rodriguez is the pass-protection back" is misleading
                    without "while LeQuint Allen is out for camp".
-  supersedes       optional — the thread id of an earlier claim this one
-                   overtakes. Use it whenever you are distilling a later
-                   report on the same event: Swift leaving practice, then
-                   Schefter calling it a cramp the next day, is one story
-                   with a direction, and without this field the note reports
-                   two contradictory facts side by side.
+  supersedes       optional — what this claim overtakes. A thread id when the
+                   earlier report is its own thread, or a short phrase when
+                   the correction sits inside this one ("the practice-exit
+                   report earlier in this thread"). Swift leaving practice and
+                   Schefter calling it a cramp the next day is one story with a
+                   direction; without this the note reports both as live. You
+                   will sometimes read the later thread first — say so in the
+                   phrase rather than leaving the pair unordered.
 
 Rules that matter:
 
@@ -1325,7 +1349,6 @@ def report_non_player(name: str, role: str = "", note: str = "") -> str:
     R.NON_PLAYER_NAMES, R.NON_PLAYER_FIRSTS = R.load_non_players()
     global _pool
     _pool = None
-    INDEX_CACHE.unlink(missing_ok=True)
     return (f"registered {name!r}" + (f" ({role})" if role else "")
             + f"; registry now {len(reg)} names. Resolver reloaded.")
 

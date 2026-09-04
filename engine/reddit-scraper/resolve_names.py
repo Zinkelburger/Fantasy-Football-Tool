@@ -369,6 +369,18 @@ def load_non_players(path=NON_PLAYERS_FILE):
 
 NON_PLAYER_NAMES, NON_PLAYER_FIRSTS = load_non_players()
 
+# Team cities and abbreviations that are also somebody's first name. Two
+# players in the 2026 pool are named for the team they are not on — Dallas
+# Goedert plays in Philadelphia, KC Concepcion in Carolina — so "Dallas cut
+# him" resolved to Goedert and "KC games" to Concepcion. The registry cannot
+# express this, because the token really does belong to a real pool player;
+# what is wrong is the *sense*, and only context can settle that. So the bare
+# token demands corroboration, exactly as a non-player's first name does,
+# while the full name goes on matching as a longer n-gram.
+TEAM_SENSE_TOKENS = frozenset(
+    [w for words in TEAM_WORDS.values() for w in words.split()]
+    + [a.lower() for a in TEAM_WORDS])
+
 
 def fuzzy_alias(token, raw_token, alias_keys, cutoff=0.86,
                 corroborated=lambda alias: False):
@@ -696,17 +708,19 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
                                                         i, aliases)):
                     # A surname wearing somebody else's first name.
                     gated = "surname preceded by another person's first name"
-                elif (cands and n == 1 and key in NON_PLAYER_FIRSTS
+                elif (cands and n == 1
+                      and (key in NON_PLAYER_FIRSTS or key in TEAM_SENSE_TOKENS)
                       and key in first_names
                       and not any(a != key and (a in sent_words
                                                 or f" {a} " in f" {comment_norm} ")
                                   for c in cands
                                   for a in getattr(c, "_alias_keys", ()) or ())):
-                    # A bare first name shared with a known non-player, with
-                    # the pool player nowhere else in the comment. "Andy loves
-                    # good RBs" is Andy Reid; the adjacency rule below misses
-                    # it because no capitalized surname follows.
-                    gated = "first name of a known non-player, uncorroborated"
+                    # A bare first name shared with a known non-player or with
+                    # a team, and the pool player nowhere else in the comment.
+                    # "Andy loves good RBs" is Andy Reid; "Dallas claimed him"
+                    # is the Cowboys. The adjacency rule below misses both,
+                    # because no capitalized surname follows.
+                    gated = "first name of a non-player or a team, uncorroborated"
                 elif (cands and n == 1 and key in first_names
                       and _adjacent_to_other_name(words, normed, after_sep, i,
                                                   aliases, cands)):

@@ -18,6 +18,9 @@
  "Alaric Jackson": {
   "role": "not in pool"
  },
+ "Alex Smith": {
+  "role": "retired"
+ },
  "Allen Robinson": {
   "note": "used as the WR age-cliff comparison",
   "role": "retired"
@@ -31,6 +34,9 @@
  },
  "Andy Reid": {
   "role": "coach"
+ },
+ "Anthony Richardson": {
+  "role": "not in pool"
  },
  "Antonio Brown": {
   "role": "retired"
@@ -50,6 +56,9 @@
  "Ben McAdoo": {
   "role": "coach"
  },
+ "Ben Niemann": {
+  "role": "retired"
+ },
  "Bill Belichick": {
   "role": "coach"
  },
@@ -59,6 +68,9 @@
  "Brad Holmes": {
   "role": "not in pool"
  },
+ "Brandon Allen": {
+  "role": "not in pool"
+ },
  "Brandon Beane": {
   "note": "Bills GM in 1w5e2ap",
   "role": "not in pool"
@@ -66,6 +78,9 @@
  "Brandon Murchison": {
   "note": "RotoBaller analyst hosting the AMA; 'Hey Brandon' resolved onto kicker Brandon Aubrey (thread 1w5cn8y)",
   "role": "reporter"
+ },
+ "Brett Veach": {
+  "role": "not in pool"
  },
  "Brian Gutekunst": {
   "role": "front office"
@@ -86,12 +101,18 @@
  "Cadillac Williams": {
   "role": "retired"
  },
+ "Calvin Austin": {
+  "role": "not in pool"
+ },
  "Carson Wentz": {
   "note": "listed among QBs who declined after a good year",
   "role": "not in pool"
  },
  "Charlie Kolar": {
   "note": "Chargers TE asked about in a dynasty 2TE question",
+  "role": "not in pool"
+ },
+ "Chase Bisontis": {
   "role": "not in pool"
  },
  "Chip Kelly": {
@@ -101,6 +122,9 @@
  "Chris Harris": {
   "note": "fantasy analyst cited on A.J. Brown",
   "role": "reporter"
+ },
+ "Chris Jones": {
+  "role": "not in pool"
  },
  "Chris T Jones": {
   "note": "1990s Eagles WR; mapped onto Aaron Jones in 1w3isp0",
@@ -120,6 +144,9 @@
  },
  "Daejon Love": {
   "note": "fictional player invented as a joke in r/fantasyfootball thread 1w4ei8c; 332-point comment inflates Jeremiyah Love mention counts",
+  "role": "not in pool"
+ },
+ "Damien Pierce": {
   "role": "not in pool"
  },
  "Dan Campbell": {
@@ -144,11 +171,17 @@
   "note": "Giants WR named in the WR2 discussion",
   "role": "not in pool"
  },
+ "Darren Waller": {
+  "role": "not in pool"
+ },
  "Darwin Thompson": {
   "role": "retired"
  },
  "Dave Canales": {
   "note": "Panthers head coach quoted in 1w4fy4o",
+  "role": "coach"
+ },
+ "Dave Toub": {
   "role": "coach"
  },
  "Davis Mills": {
@@ -165,6 +198,9 @@
  "DeAndre Hopkins": {
   "note": "used in the Osweiler QB-proof comparison",
   "role": "retired"
+ },
+ "DeMarcus Robinson": {
+  "role": "not in pool"
  },
  "Declan Doyle": {
   "role": "coach"
@@ -187,6 +223,12 @@
   "role": "reporter"
  },
  "Diego Pavia": {
+  "role": "not in pool"
+ },
+ "Diego Pounds": {
+  "role": "not in pool"
+ },
+ "Donovan Edwards": {
   "role": "not in pool"
  },
  "Doug Pederson": {
@@ -260,6 +302,12 @@
  "Greg Van Roten": {
   "role": "not in pool"
  },
+ "Hayden Conner": {
+  "role": "not in pool"
+ },
+ "Hayden Large": {
+  "role": "not in pool"
+ },
  "Howie Roseman": {
   "role": "not in pool"
  },
@@ -272,6 +320,12 @@
  "Irving Fryar": {
   "note": "1990s Eagles WR; mapped onto Bucky Irving in 1w3isp0",
   "role": "retired"
+ },
+ "Isaiah Adams": {
+  "role": "not in pool"
+ },
+ "Ja'Tavion Sanders": {
+  "role": "not in pool"
  },
  "Jabrill Peppers": {
   "role": "not in pool"
@@ -299,6 +353,9 @@
  },
  "Jalen Carter": {
   "role": "not in pool"
+ },
+ "Jamaal Charles": {
+  "role": "retired"
  },
  "Jamaal Williams": {
   "role": "not in pool"
@@ -331,6 +388,9 @@
  },
  "Jeremy Fowler": {
   "role": "reporter"
+ },
+ "Jerick McKinnon": {
+  "role": "retired"
  },
  "Jerry Rice": {
   "note": "cited on age-33 production; collides with Rashee Rice",
@@ -382,6 +442,9 @@
   "note": "Eagles blocking TE in 1w3gwzg",
   "role": "not in pool"
  },
+ "Jon Gaines": {
+  "role": "not in pool"
+ },
  "Jonathan Cooper": {
   "role": "not in pool"
  },
@@ -394,6 +457,9 @@
  "Jordan Meredith": {
   "role": "not in pool"
  },
+ "Jordan Schultz": {
+  "role": "reporter"
+ },
  "Josh Gordon": {
   "role": "retired"
  },
@@ -402,6 +468,9 @@
   "role": "coach"
  },
  "Josh Weru": {
+  "role": "not in pool"
+ },
+ "Joshua Weru": {
   "role": "not in pool"
  },
  "Julian Edelman": {
@@ -413,6 +482,9 @@
  },
  "Kellen Moore": {
   "role": "coach"
+ },
+ "Kenny Golladay": {
+  "role": "retired"
  },
  "Kevin Patullo": {
   "role": "coach"
@@ -457,6 +529,9 @@
  "Liz Loza": {
   "role": "reporter"
  },
+ "Louis Moore": {
+  "role": "not in pool"
+ },
  "Luke McCaffrey": {
   "note": "Commanders WR, outside the 337-man pool; collides with Christian McCaffrey",
   "role": "not in pool"
@@ -470,6 +545,9 @@
  "Marcus Bryant": {
   "role": "not in pool"
  },
+ "Marcus Davenport": {
+  "role": "not in pool"
+ },
  "Mark Ingram": {
   "note": "cited in the Payton/Kamara RB-committee comparison",
   "role": "retired"
@@ -479,6 +557,9 @@
  },
  "Marshall Faulk": {
   "role": "retired"
+ },
+ "Mason Murphy": {
+  "role": "not in pool"
  },
  "Matt Barrows": {
   "role": "reporter"
@@ -501,6 +582,9 @@
  },
  "Matthew Berry": {
   "role": "analyst"
+ },
+ "Melvin Smith": {
+  "role": "not in pool"
  },
  "Micah Parsons": {
   "note": "defensive player named as a Packers defense downgrade",
@@ -555,6 +639,9 @@
  "Milton Williams": {
   "role": "not in pool"
  },
+ "Monti Ossenfort": {
+  "role": "not in pool"
+ },
  "Moro Ojomo": {
   "role": "not in pool"
  },
@@ -588,6 +675,9 @@
  "Oliver Vernon": {
   "role": "retired"
  },
+ "Paris Johnson": {
+  "role": "not in pool"
+ },
  "Paul Dehner": {
   "note": "Bengals beat writer (Athletic)",
   "role": "reporter"
@@ -612,6 +702,9 @@
  },
  "Ricky Pearsall": {
   "note": "49ers WR named on a commenter roster",
+  "role": "not in pool"
+ },
+ "Riley Leonard": {
   "role": "not in pool"
  },
  "Robert Griffin": {
@@ -687,6 +780,12 @@
  "Terrell Owens": {
   "role": "retired"
  },
+ "Terrell Smith": {
+  "role": "not in pool"
+ },
+ "Theo Wease": {
+  "role": "not in pool"
+ },
  "Todd Bowles": {
   "role": "coach"
  },
@@ -737,8 +836,17 @@
  "Will Campbell": {
   "role": "not in pool"
  },
+ "Will Kunkel": {
+  "role": "reporter"
+ },
  "Willie Lampkin": {
   "role": "not in pool"
+ },
+ "Xavier Nwankpa": {
+  "role": "not in pool"
+ },
+ "Zac Taylor": {
+  "role": "coach"
  },
  "Zach Ertz": {
   "note": "used as a career comparison for Isaiah Likely",
