@@ -224,9 +224,11 @@ Registered in `.mcp.json` at the repo root. Tools:
 | `thread_digest` | one whole thread — reply tree + player index |
 | `distill_thread` | a thread plus the contract for turning it into claims |
 | `submit_claims` | validate and store typed claims |
-| `player_claims` | one player's claims, newest first, grouped by type |
+| `player_claims` | one player's claims, newest first, grouped by type, plus the note format |
+| `player_threads` | every thread mentioning one player, and which are still undistilled |
+| `note_queue` | players whose note is missing, undated, or older than their newest claim |
 | `claims_stats` | what is distilled, what is left, where claims came from |
-| `write_note` | save a finished markdown note |
+| `write_note` | save a finished markdown note; `publish=True` also writes `data/notes/` |
 
 ### Thread-first is the path to prefer (`thread_digest`)
 
@@ -269,6 +271,72 @@ retrieval aid, because a single thread shows why it cannot be trusted as truth:
 A model reading the thread gets both right without being told. That is the
 argument for the whole design: the index says where to look, the thread says
 what is true.
+
+### Counting is not a model's job
+
+"Call your shot: who will be the biggest bust" drew 821 comments, 305 of them
+top-level and 186 of those naming exactly one player. That is a show of hands,
+and the contract asks for one sentiment claim per player *with a count* — but
+a model reading a digest that had to stop at 60k characters cannot count what
+it did not see, and counting is the one thing the resolver does better than a
+reader anyway. So `thread_digest` now prepends a tally of top-level comments
+per player with their upvotes, whenever a thread has one. The upvotes are the
+half a count hides:
+
+    Jeremiyah Love         x14   ↑1324
+    Christian McCaffrey    x18   ↑29
+
+Eighteen people nominated McCaffrey and the room shrugged; fourteen nominated
+Love and the room agreed. The tally counts a name in a nomination slot, not
+agreement — "not Achane" still counts for Achane — and says so.
+
+### Paging and pruning
+
+A long thread is paged rather than truncated: the bust thread is five calls of
+40k characters, the footer says which page you are on, and the distill
+contract says to read them all before submitting. Pruning drops downvoted
+comments and short leaves that name nobody ("water is wet", "who?", the
+187-downvote joke chain) while keeping any comment with a substantive reply
+under it. Measured over the first 15 threads it removes 10-20% of characters
+depending on the length threshold; it is a convenience, not a saving, and
+`prune=False` shows everything. Token cost was never the constraint — reading
+labour is, and that is what the fan-out below is for.
+
+### Refreshing notes without rewriting all of them
+
+Injury and role facts change daily in late August, and they are exactly the
+claims the backtest says carry signal. The shipped notes were written from an
+August 3 sweep; by September 4 the Chase note did not know about a knee, and
+the Tuten note said to "check Rodriguez's foot" when the live question was
+LeQuint Allen's camp. A note that cannot say how old it is cannot be trusted
+on anything time-sensitive, so the header carries `as of YYYY-MM-DD` and
+`note_queue` flags every note that is missing, undated, or older than the
+newest claim about its player. File mtime is not used: it is a git checkout
+time, and the Chase note's mtime was two days *after* the injury it knew
+nothing about.
+
+The refresh loop is `sweep_subreddit` -> `claims_stats` (undistilled
+threads) -> `distill_thread` each -> `note_queue` -> `player_claims` ->
+`write_note(publish=True)` for the players it lists. Only threads and players
+with something new get touched.
+
+### Fan-out: one thread per subagent
+
+A 30-day sweep in draft week is ~150 threads. One session reading them in
+sequence is hours of context churn; the same session handing each thread to a
+subagent is minutes. Each subagent needs only the working directory, the venv
+python, its thread ids, and these three steps:
+
+    S.distill_thread(id)            # read every page
+    write the claims JSON to a file
+    S.submit_claims(open(f).read()) # fix validation errors, resubmit
+
+`submit_claims` rejects a malformed batch whole and names the problem, so a
+subagent can converge on a valid batch without supervision, and `claims.append`
+dedupes so a retried thread stores nothing twice. The parent session then only
+reads `note_queue` and writes notes. Have subagents call the Python module
+directly rather than the MCP tools: a server started before an edit still runs
+the old code.
 
 ## Claims, not prose (`claims.py`)
 

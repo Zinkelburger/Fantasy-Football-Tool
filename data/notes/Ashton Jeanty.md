@@ -1,10 +1,11 @@
-**Ashton Jeanty** (LV, RB, bye 13) — board rank 9
+**Ashton Jeanty** (LV, RB, bye 13) — board rank 9 · as of 2026-09-04
 
-**Room sentiment:** He appears in both "do not draft no matter what" and "hill I'll die on" threads — 231 mentions, with high-scoring comments on each side.
+**Room sentiment:** Split, and honestly split — an ankle with no confirmed grade, priced at a real discount. Both sides argue it well and neither has won.
 
-- **The fact both sides argue over:** as a rookie he finished RB11-RB15 (cited variously) at ~14.3 PPG with 55 receptions, behind what the room calls a historically bad line — "second to last over the past fifteen years." Bulls call that a proven floor in a disaster; bears call it "the worst season in 15 years for a rookie RB taken inside the top 10."
-- **The bull case is volume plus environment:** no competition "aside from Mike Washington Jr., a fourth round pick," with one claim of 75/80% of touches. Adds Linderbaum at center, Klint Kubiak, Cousins over Geno. "3 Down volume is King and Jeanty will get it."
-- **The bear case:** the top-scored take (270) is "people are over estimating on the Oline improvements imo." Others note Kubiak split Walker/Charbonnet in Seattle, the WR room is bare, and "If Mendoza starts the majority of the season, fade Jeanty."
-- **Market position:** ADP 9.5, roughly 1.10-2.03.
+- **Injury, in order.** Aug 23: left practice after landing awkwardly, could not put pressure on the leg, team took a knee to pray — read that day as season-ending (beat report). Aug 24: Schefter, it is a sprained ankle, length unknown, "not considered long-term." Sept 1: still not practising per Ryan McFadden, but out on the field for the first time doing stretches off to the side, never in a boot or on crutches, brace only. **Not on PUP, not on IR, week 1 not ruled out.**
+- **The open question is high vs low.** Rapoport's wording was "more low than high," which the room read as *both* ligaments involved. Nobody in the corpus has a team-issued grade or timeline, and the team's silence is what the bears point at. A high-ankle component lingers for months; a clean low sprain could still play week 1.
+- **Usage risk beyond the ankle.** One commenter reports a coach describing the backfield as a committee, and Mike Washington has flashed in his absence. Unverified and uncorroborated, but the bellcow projection is less certain than it was in July.
+- **Price.** Slid from a late first to the 2/3 turn, going behind Kyren Williams and Javonte Williams and often behind Breece Hall. Reported landings: 2.08, third round in 12-team, fourth in superflex, $32-41 in auction. The room's own advice is that the 2/3 turn is right *until positive news*.
+- **Bear case, most-upvoted form (256):** an already-injured back on a poor offense when Chase Brown, Henry, Kenneth Walker and Barkley go in the same range. **Bull case:** healthy he is a borderline first-rounder and the discount is real.
 
-**Draft take:** A 1/2-turn RB with a real floor and top-3 upside, but you're paying for the line and coaching change to be real. If you don't buy that, the room's alternatives at similar cost are Hampton, Chase Brown, or Cook.
+**Draft take:** Fine at the 2/3 turn, not above it, and pair him with Mike Washington if you take him — the ankle has no grade attached yet, so you are buying an unpriced range, not a known dip.

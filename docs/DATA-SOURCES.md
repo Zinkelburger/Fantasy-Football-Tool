@@ -76,11 +76,11 @@ suspect during August; re-fetch the morning of a draft.
 ## 4. r/fantasyfootball corpus
 
 - **Gives us:** the per-player draft notes in `data/notes/*.md`.
-- **Refresh:** `cd engine/reddit-scraper && python fetch_corpus.py && python match_players.py`
+- **Refresh:** `sweep_subreddit` from the MCP server (or `python -c "import mcp_server as S; print(S.sweep_subreddit(top=120, hot=120, new=250, days=30, min_comments=15))"` in `engine/reddit-scraper`), then distil and rewrite notes per the README there
   (~4 minutes, needs Reddit API creds in `.env`; see `engine/reddit-scraper/README.md`).
 - **Not committed** — Reddit's API terms don't allow republishing scraped
   comments, and this repo is public. Only the generated summaries ship.
-- **Last swept: 2026-08-03** — 280 posts, 22,878 comments, 60-day window.
+- **Last swept: 2026-09-04** — 285 posts, 47,613 comments, 30-day window, ~5 minutes.
 
 ## 5. nflverse / Odds API (engine/league-sim only)
 

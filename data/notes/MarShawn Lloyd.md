@@ -1,11 +1,10 @@
-**MarShawn Lloyd** (GB, RB, bye 11) — board rank 189
+**MarShawn Lloyd** (GB, RB, bye 11) — board rank 189 · as of 2026-09-04
 
-**Room sentiment:** Bemused rather than bullish — 18 mentions, and most are jokes about his availability. "Packer fan here — the consensus is that Marshawn Lloyd doesn't exist."
+**Room sentiment:** The pickup of the week, and the room says so loudly — 94 top-level comments carrying 1,173 upvotes — with a real warning attached about health.
 
-- The one real news item: a camp roundup states **"MarShawn Lloyd is expected to assume the RB2 role if he can finally stay healthy,"** and a follow-up comment adds "he has been staying healthy so far."
-- Hartitz places him in handcuff Tier 4, "there's a favorite, but we have questions," accompanied by "damnit do I love drafting me some MarShawn Lloyd" and "let's just draft MarShawn Lloyd and see what happens."
-- Bull case, such as it is: with Lloyd healthy, one poster wouldn't be surprised to see him take passing downs from Josh Jacobs, and another says "if (huge if) Marshawn Lloyd can actually stay healthy, Jacobs could lose half his carries."
-- Bear case is his availability record, and the room expresses it entirely through jokes — the running gag about him missing time is the dominant tone. He also shows up on at least one best-ball underweight list.
-- ADP: Sleeper 12-man superflex 20.12 (227.3), and $4 in an auction example. He costs essentially nothing.
+- **Role.** With Josh Jacobs on the commissioner exempt list, consensus is Lloyd gets first crack at the lead job. Green Bay traded for Kaleb Johnson the same day, which the room read as depth rather than a challenge. Some expect a three-way committee with Chris Brooks and Johnson; one Week 1 guess is a 65/35 Lloyd/Brooks split. Several expect the Packers to pass more without Jacobs.
+- **Conditional on three things**, all live: Jacobs staying on the exempt list, Lloyd staying healthy, and Green Bay not adding a veteran back. James Conner is the name the room keeps guessing at.
+- **The caveat is his career.** About six NFL snaps in three seasons and IR-eligible for most of that time. He is reported fully healthy this year and camp reports have been good, though one commenter says he did not look good in preseason games. The running joke in both threads is that he gets hurt the moment the good news lands.
+- **Price moved in a day.** Rounds 13-15 or $1-2 in auctions before the news; rounds 9-11 and $28 in one auction the same day. The most upvoted forecast is that he settles around round 6, near Bhayshul Tuten; skeptics say round 7-8 at the earliest.
 
-**Draft take:** Best-ball or last-round redraft material as a Jacobs contingency. The room likes the price, not the player — do not plan around him.
+**Draft take:** Worth a round 7-9 pick as the clearest path to lead-back volume on the board, but he is one hamstring from being nothing, so do not pay the round 6 price the hype is pushing.

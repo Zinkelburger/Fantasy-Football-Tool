@@ -25,7 +25,9 @@ not be republished, and this repo is public.
 
 import json
 import pathlib
-from collections import Counter
+import re
+from collections import Counter, defaultdict
+from datetime import datetime
 
 from mcp.server.mcpserver import MCPServer
 
@@ -37,6 +39,9 @@ HERE = pathlib.Path(__file__).resolve().parent
 CORPUS = HERE / "corpus"
 POSTS, COMMENTS = CORPUS / "posts.jsonl", CORPUS / "comments.jsonl"
 DOSSIERS = CORPUS / "dossiers"
+# Where the site actually reads notes from. corpus/dossiers is a staging area;
+# write_note(publish=True) copies a finished note here.
+SHIPPED_NOTES = HERE.parent.parent / "data" / "notes"
 
 mcp = MCPServer("ff-reddit-scraper", version="1.0.0")
 
@@ -324,11 +329,12 @@ def resolve_text(text: str, thread_title: str = "") -> str:
 
 
 @mcp.tool()
-def write_note(player_name: str, markdown: str) -> str:
-    """Save a finished draft note. This is where your summary of a dossier goes.
+def write_note(player_name: str, markdown: str, publish: bool = False) -> str:
+    """Save a finished draft note written from player_claims.
 
-    Writes corpus/dossiers/<Player Name>.md — the same layout the draft tool
-    reads from the season's analysis directory."""
+    Writes corpus/dossiers/<Player Name>.md as a staging copy. With
+    publish=True it also overwrites data/notes/<Player Name>.md, which is the
+    file the site bundles — build_deploy.py picks it up on the next build."""
     names = {p.player_name.lower(): p.player_name for p in pool()[0]}
     canon = names.get(player_name.strip().lower())
     if not canon:
@@ -336,7 +342,80 @@ def write_note(player_name: str, markdown: str) -> str:
     DOSSIERS.mkdir(parents=True, exist_ok=True)
     path = DOSSIERS / f"{canon}.md"
     path.write_text(markdown, encoding="utf-8")
-    return f"wrote {path.relative_to(HERE)} ({len(markdown)} chars)"
+    msg = f"wrote {path.relative_to(HERE)} ({len(markdown)} chars)"
+    if publish:
+        SHIPPED_NOTES.mkdir(parents=True, exist_ok=True)
+        (SHIPPED_NOTES / f"{canon}.md").write_text(markdown, encoding="utf-8")
+        msg += f"\npublished to data/notes/{canon}.md"
+    if "as of" not in markdown[:300]:
+        msg += "\nwarning: no 'as of <date>' in the header — readers cannot tell how stale it is"
+    return msg
+
+
+_BOARD = {}
+
+
+def _board_row(name):
+    """Bye week and board rank, read from the half-PPR board the site ships.
+
+    The note header carries both, and looking them up by hand is a step that
+    invites a wrong number in a file nothing validates."""
+    if not _BOARD:
+        import csv
+        f = HERE.parent.parent / "data" / "ranks" / "0.5_ppr_with_depth.csv"
+        if f.exists():
+            with open(f, encoding="utf-8") as fh:
+                for row in csv.DictReader(fh):
+                    _BOARD[row["Player"]] = (row.get("Rank"), row.get("Bye"))
+    return _BOARD.get(name, (None, None))
+
+
+def _names_in(text, title=""):
+    """Confidently resolved player names in one piece of text."""
+    players, aliases, keys, cap, defaults, firsts = pool()
+    return {m.player.player_name
+            for m in R.scan(text or "", aliases, keys, thread_title=title,
+                            cap_required=cap, defaults=defaults, first_names=firsts)
+            if m.tier not in ("review", "ambiguous")}
+
+
+def _vote_tally(post_id, title):
+    """Per-player count of TOP-LEVEL comments naming them, plus their upvotes.
+
+    "Call your shot" threads are show-of-hands threads: 305 top-level replies
+    to the biggest-bust prompt, 186 of them naming exactly one player. A model
+    cannot count those from a digest that had to truncate at 60k chars, and
+    counting is not a job that needs a model anyway. Upvotes are the part the
+    count alone hides — Jeremiyah Love drew 14 nominations carrying 1,324
+    upvotes, McCaffrey 18 carrying 29. The room agreed with one and shrugged at
+    the other.
+
+    It is a tally of *mentions in a nomination slot*, not of agreement: a reply
+    that says "not Achane" counts for Achane. Label it as such."""
+    votes, ups = Counter(), Counter()
+    for c in _read_jsonl(COMMENTS):
+        if c.get("post_id") != post_id or not (c.get("parent_id") or "").startswith("t3_"):
+            continue
+        for n in _names_in(c.get("body") or "", title):
+            votes[n] += 1
+            ups[n] += max(c.get("score") or 0, 0)
+    return [(n, k, ups[n]) for n, k in votes.most_common()]
+
+
+def _threads_for(player_name):
+    """Threads mentioning one player: (post, confident mentions, uncertain)."""
+    per = {}
+    for row, post, m in A.resolved_mentions(pool()):
+        if m.player.player_name != player_name:
+            continue
+        pid = post.get("id") or row.get("post_id")
+        sure, unsure = per.get(pid, (0, 0))
+        if m.tier in ("review", "ambiguous"):
+            per[pid] = (sure, unsure + 1)
+        else:
+            per[pid] = (sure + 1, unsure)
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    return [(posts.get(pid, {"id": pid}), k, q) for pid, (k, q) in per.items()]
 
 
 def _thread_tree(post_id):
@@ -355,7 +434,8 @@ def _thread_tree(post_id):
 
 @mcp.tool()
 def thread_digest(post_id: str = "", max_chars: int = 60000,
-                  min_score: int = None) -> str:
+                  min_score: int = None, page: int = 1,
+                  prune: bool = True) -> str:
     """One whole thread — title, body, and the full reply tree — plus the
     resolver's index of which players appear in it.
 
@@ -372,7 +452,13 @@ def thread_digest(post_id: str = "", max_chars: int = 60000,
 
     Call with no post_id to list what the corpus holds. Reading whole threads
     costs about twice what the sentence extracts do and reads each comment
-    exactly once, versus once per player mentioned in it."""
+    exactly once, versus once per player mentioned in it.
+
+    A thread longer than max_chars is paged: page=2 returns the next slice of
+    the same reply tree, and the footer says how many pages there are. prune
+    drops downvoted comments and short nameless leaves — joke chains, "water
+    is wet", "who?" — but keeps any comment with a substantive descendant. On
+    this corpus that removes 10-20% of characters and almost no claims."""
     posts = {p["id"]: p for p in _read_jsonl(POSTS)}
     if not post_id:
         counts = Counter(c.get("post_id") for c in _read_jsonl(COMMENTS))
@@ -422,41 +508,80 @@ def thread_digest(post_id: str = "", max_chars: int = 60000,
     only_q = [n for n in uncertain if n not in seen]
     if only_q:
         out.append("  -- uncertain only, treat as unconfirmed: " + ", ".join(sorted(only_q)))
+    tally = _vote_tally(post_id, post.get("title", ""))
+    if len(tally) >= 5 and sum(k for _, k, _ in tally) >= 20:
+        out += ["", "TOP-LEVEL NOMINATIONS (player · top-level comments naming him · their upvotes)",
+                "-" * 74,
+                "  Counted by the resolver, not read. A reply saying 'not X' still counts",
+                "  for X. Use these as the counts for bare-name sentiment claims instead of",
+                "  tallying by hand; use the upvotes to tell what the room agreed with."]
+        out += [f"  {n:26} x{k:<4} ↑{u}" for n, k, u in tally[:25]]
+
     out += ["", "The index is a retrieval aid, not an answer. It is about 98% right on",
             "which player a name refers to, but it cannot tell whether a sentence is",
             "*about* that player, and it silently maps players outside the 337-man",
             "pool onto whoever shares their name. Trust the thread text over it.",
             "", "=" * 74, "", "COMMENTS", "-" * 74]
 
-    used = len("\n".join(out))
-    truncated = [0]
+    # Which comments survive pruning: a comment stays if it is not downvoted
+    # and either names a player or has something to say (length), or if any
+    # reply under it stays — context for a kept reply is worth keeping.
+    keep = {}
+    title = post.get("title", "")
+
+    def decide(c):
+        body = (c.get("body") or "").strip()
+        own = (c.get("score") or 0) >= 1 and (len(body) >= 100 or bool(_names_in(body, title)))
+        kids_kept = [decide(k) for k in tree.get(c["id"], [])]
+        keep[c["id"]] = own or any(kids_kept)
+        return keep[c["id"]]
+
+    if prune:
+        for c in tree.get(None, []):
+            decide(c)
+
+    blocks = []
 
     def walk(parent_key, depth):
         for c in tree.get(parent_key, []):
-            nonlocal used
+            if prune and not keep.get(c["id"]):
+                continue
             if min_score is not None and (c.get("score") or 0) < min_score:
                 continue
             pad = "  " * depth
             head = f"{pad}[{c['id']} · {c.get('score', 0)} pts]"
             body = "\n".join(pad + "  " + ln
                              for ln in (c.get("body") or "").strip().splitlines())
-            block = f"{head}\n{body}\n"
-            if used + len(block) > max_chars:
-                truncated[0] += 1
-                continue
-            out.append(block)
-            used += len(block)
+            blocks.append(f"{head}\n{body}\n")
             walk(c["id"], depth + 1)
 
     walk(None, 0)
-    if truncated[0]:
-        out.append(f"... {truncated[0]} further comments omitted at max_chars="
-                   f"{max_chars}; raise it or set min_score to prune.")
+
+    # Page the reply tree by character budget, header excluded, so a 117k-char
+    # thread is three calls rather than one truncated one.
+    budget = max(max_chars - len("\n".join(out)), 5000)
+    pages, cur, used = [], [], 0
+    for b in blocks:
+        if cur and used + len(b) > budget:
+            pages.append(cur); cur, used = [], 0
+        cur.append(b); used += len(b)
+    if cur:
+        pages.append(cur)
+    n_pages = max(len(pages), 1)
+    page = min(max(page, 1), n_pages)
+    if pages:
+        out += pages[page - 1]
+    dropped = sum(1 for c in tree.values() for x in c) - len(blocks)
+    foot = [f"-- page {page} of {n_pages} · {len(blocks)} comments shown"
+            + (f" · {dropped} pruned (prune=False to see them)" if dropped else "")]
+    if page < n_pages:
+        foot.append(f"   call again with page={page + 1} for the rest before distilling.")
+    out += [""] + foot
     return "\n".join(out)
 
 
 @mcp.tool()
-def distill_thread(post_id: str = "", max_chars: int = 60000) -> str:
+def distill_thread(post_id: str = "", max_chars: int = 60000, page: int = 1) -> str:
     """Hand over one thread plus the contract for turning it into claims.
 
     This is step one of the two-step note pipeline: distil each thread into
@@ -488,7 +613,18 @@ def distill_thread(post_id: str = "", max_chars: int = 60000) -> str:
     if not post:
         return f"No thread {pid!r} in corpus. Call distill_thread() to list, or fetch_thread first."
 
-    body = thread_digest(pid, max_chars=max_chars)
+    already = [c for c in C.load() if c.get("thread") == pid]
+    warn = ""
+    if already:
+        who = Counter(c["player"] for c in already)
+        warn = (f"\n*** ALREADY DISTILLED: {len(already)} claims from this thread are "
+                f"stored, covering {', '.join(n for n, _ in who.most_common(8))}"
+                + ("..." if len(who) > 8 else "") + ".\n"
+                f"    Distilling it again produces near-duplicates — the dedupe key is "
+                f"the exact\n    claim text, so a reworded version of the same fact is "
+                f"stored twice. Only\n    continue if you are deliberately adding what "
+                f"the first pass missed.\n")
+    body = warn + thread_digest(pid, max_chars=max_chars, page=page)
     types = "\n".join(f"      {k:<10} {v}" for k, v in C.CLAIM_TYPES.items())
     basis = "\n".join(f"      {k:<18} {v}" for k, v in C.BASIS.items())
     return f"""{body}
@@ -522,7 +658,11 @@ Rules that matter:
     claim about three players being safe and a different claim about three
     others being risks — never the same claim six times.
   - Bare-name votes ("Jeremiyah Love." in a bust thread) are ONE sentiment
-    claim per player with a count, not one claim per comment.
+    claim per player with a count, not one claim per comment. The TOP-LEVEL
+    NOMINATIONS block above has the counts and upvotes; cite them.
+  - If the footer says there are more pages, read every page before
+    submitting — the second half of a thread is where the replies to the
+    prompt turn into arguments.
   - People who are not in the pool — Pop Douglas, Calvin Austin, Matt Nagy,
     Andy Reid — get no claims. The index will sometimes have mapped them onto
     a pool player who shares a name; ignore it when the thread disagrees.
@@ -585,10 +725,15 @@ def player_claims(player_name: str) -> str:
     grouped = C.for_player(canon)
     if not grouped:
         return (f"No claims for {canon} yet. Distil the threads that mention "
-                f"him first — corpus_stats or thread_digest will point you at them.")
+                f"him first:\n" + player_threads(canon))
 
     p = {x.player_name: x for x in pool()[0]}[canon]
-    out = [f"{canon} — {p.team_name} {p.player_depth} — ADP {p.player_adp}", "=" * 74]
+    rank, bye = _board_row(canon)
+    today = datetime.now().date().isoformat()
+    header = (f"**{canon}** ({p.team_name}, {str(p.player_depth)[:2]}, bye {bye or '?'})"
+              f" — board rank {rank or '?'} · as of {today}")
+    out = [f"{canon} — {p.team_name} {p.player_depth} — ADP {p.player_adp}", "=" * 74,
+           "", "Header line for the note, ready to paste:", "  " + header]
     for t in C.CLAIM_TYPES:
         rows = grouped.get(t)
         if not rows:
@@ -604,7 +749,105 @@ def player_claims(player_name: str) -> str:
             "an earlier one; say so in the note rather than reporting both as live.",
             "Weight by basis: team_official > beat_report > consensus > single_commenter.",
             "sentiment is what the market thinks, which is worth recording and worth",
-            "trusting less than the rest — the 2025 backtest found tone added no edge."]
+            "trusting less than the rest — the 2025 backtest found tone added no edge.",
+            "",
+            "NOTE FORMAT (what write_note expects; the site reads data/notes/*.md):",
+            "  the header line printed at the top of this output, verbatim",
+            "  **Room sentiment:** one line of substance, no superlatives.",
+            "  - bullets: injury and role first, with basis ('per beat report',",
+            "    'one commenter'), dates when a status changed, and what it is",
+            "    conditional on. Market and sentiment last. Quote the thread where",
+            "    the wording is the evidence. No invented stat ranges.",
+            "  **Draft take:** one sentence. The site previews a note by its last",
+            "  line, so this is the line people see on the board.",
+            "  Say 'nothing new since <date>' rather than padding a thin player.",
+            "", "Undistilled threads that mention him are listed by player_threads."]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def player_threads(player_name: str) -> str:
+    """Every corpus thread that mentions one player, busiest first, with
+    whether it has been distilled yet.
+
+    This is the retrieval step for refreshing a note: it says which threads
+    still need reading before player_claims is complete for him. Only
+    confidently resolved mentions count toward the order; uncertain ones are
+    shown separately."""
+    names = {p.player_name.lower(): p.player_name for p in pool()[0]}
+    canon = names.get(player_name.strip().lower())
+    if not canon:
+        return f"{player_name!r} is not in the player pool."
+    rows = _threads_for(canon)
+    if not rows:
+        return f"No thread in the corpus mentions {canon}."
+    done = C.distilled_threads()
+    out = [f"{canon}: {sum(k for _, k, _ in rows)} mentions across {len(rows)} threads",
+           "id       date        kind        distilled  mentions  title", "-" * 78]
+    for post, k, q in sorted(rows, key=lambda r: -r[1]):
+        pid = post.get("id", "?")
+        out.append(f"{pid:8} {C.thread_date(post):11} "
+                   f"{C.thread_kind(post.get('title', ''), post.get('selftext', '')):11} "
+                   f"{'yes' if pid in done else '--':10} x{k:<3}"
+                   + (f"(+{q}?) " if q else "      ")
+                   + f" {post.get('title', '')[:44]}")
+    todo = [p for p, _, _ in rows if p.get("id") not in done]
+    if todo:
+        out.append(f"\n{len(todo)} thread(s) not yet distilled — distill_thread them, "
+                   f"then player_claims.")
+    return "\n".join(out)
+
+
+@mcp.tool()
+def note_queue(limit: int = 40) -> str:
+    """Which players need a note written or rewritten, most urgent first.
+
+    A note is stale when a claim newer than the note exists. Injury and role
+    claims from a beat report or the team outrank everything else — they are
+    the facts the 2025 backtest says matter, and the ones that change daily in
+    late August. Sentiment-only players go last."""
+    all_c = C.load()
+    if not all_c:
+        return "No claims yet — distill_thread first."
+    by_p = defaultdict(list)
+    for c in all_c:
+        by_p[c["player"]].append(c)
+    basis_rank = {b: i for i, b in enumerate(C.BASIS)}
+    type_rank = {t: i for i, t in enumerate(C.CLAIM_TYPES)}
+
+    def note_date(name):
+        """The 'as of' date in the note header. A note without one is
+        'undated' — file mtime is a git-checkout time, not a writing time, and
+        the shipped Chase note carried an mtime two days after a knee injury
+        it knew nothing about."""
+        best = None
+        for d in (SHIPPED_NOTES, DOSSIERS):
+            f = d / f"{name}.md"
+            if f.exists():
+                m = re.search(r"as of (\d{4}-\d{2}-\d{2})",
+                              f.read_text(encoding="utf-8", errors="ignore")[:300])
+                best = max(best or "", m.group(1) if m else "undated")
+        return best
+
+    rows = []
+    for name, cs in by_p.items():
+        newest = max(c.get("date") or "" for c in cs)
+        strongest = min((type_rank.get(c["type"], 9), basis_rank.get(c["basis"], 9)) for c in cs)
+        nd = note_date(name)
+        if nd is None:
+            status = "missing"
+        elif nd == "undated":
+            status = "undated"
+        else:
+            status = "stale" if newest > nd else "current"
+        rows.append((status != "current", strongest, -len(cs), name, status, nd, newest, len(cs)))
+    rows.sort()
+    out = [f"{sum(1 for r in rows if r[4] != 'current')} of {len(rows)} players with claims "
+           f"need a note", "player                     status   note-as-of  newest-claim  claims",
+           "-" * 74]
+    for _, _, _, name, status, nd, newest, n in rows[:limit]:
+        out.append(f"{name:26} {status:8} {nd or '--':11} {newest:13} {n}")
+    out.append("\nplayer_claims(name) -> write_note(name, md, publish=True) for each.")
     return "\n".join(out)
 
 

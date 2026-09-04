@@ -1,9 +1,11 @@
-**Josh Jacobs** (GB, RB, bye 11) — board rank 24
+**Josh Jacobs** (GB, RB, bye 11) — board rank 24 · as of 2026-09-04
 
-**Room sentiment:** The disagreement is about off-field risk rather than talent — 59 mentions, the loudest being a joke defense ("I'm going to draft Josh Jacobs even harder," 455) aimed at a do-not-draft list.
+**Room sentiment:** Effectively undraftable in redraft. He is on the commissioner exempt list with no end date, and the room's own price collapsed to nothing inside a day.
 
-- **The legal overhang is the story.** Camp notes report he "is still under investigation following an early-June domestic violence incident," with a later update listing his case as "still open (more likely just nothing)." The room does not agree what that means: one poster says "I don't see any scenario where Josh Jacobs is suspended this season," others say the situation alone scares them off, and several qualify their rankings with "assuming no suspension."
-- **Bull case:** role security. "No competition in the backfield," a projected 57% rush share and 10.6 rushing TDs, and standalone upside if Jordan Love misses time. Consensus average rank 26.00; Underdog ADP 40.7.
-- **Bear case:** post-heavy-workload regression. A cited stat: every rushing-title winner since 2020 lost at least 848 rushing yards the following year. Others say he "looked cooked" last season and point to declining efficiency and age.
+- **Status (beat report, Aug 30).** Per Adam Schefter, the NFL placed Jacobs on the commissioner exempt list after the Brown County DA charged him with misdemeanor battery and criminal damage to property. He is paid but cannot play until the commissioner removes him. **There is no end date**, and his court date is Nov 17. Several platforms would not let owners put him in an IR slot.
+- **This superseded everything earlier.** On Aug 26 the GM saying the team had prepared for a possible suspension was flaired misleading by the mods and read as a canned answer to a hypothetical. The coach said the day before the exempt-list move that he expected Jacobs to play. Neither survived Aug 30.
+- **How long, per the room:** most expect six games or more, citing first-offense policy and Jabrill Peppers missing seven on the same list in 2024. Many expect no games at all this season. A minority argues four or fewer because the charges are misdemeanors. Nobody in the corpus has a league-issued number.
+- **Price.** He was going rounds 3-5 and $31-45 in auctions right up to the news, because the risk was called overblown. After it, one owner got zero bites offering him for players in the 110-140 ADP range. The remaining bid is a round 8-10 stash betting on a half-season return.
+- **The handcuff is [MarShawn Lloyd](MarShawn%20Lloyd.md)**, who moved from round 13-15 to round 9-11 the same day.
 
-**Draft take:** The ADP already carries a suspension discount — if you think the case dies quietly, he's value in the late third/fourth. If an unresolved investigation is a dealbreaker, take the WRs going next to him (Tet, Burden, Evans).
+**Draft take:** Do not draft him in redraft; a bench stash only makes sense in a deep league with an IR slot and a real belief he returns by Week 13.
