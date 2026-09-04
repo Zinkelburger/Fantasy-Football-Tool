@@ -578,8 +578,12 @@ def _preceded_by_other_first_name(words, normed, after_sep, i, aliases):
         return False              # "WR Chase", "JAX Allen"
     if prev_raw != prev_raw.rstrip(".,;:!?)]}-–—/\\\"'’"):
         return False              # punctuation between them: a list, not a name
-    if aliases.get(prev) or aliases.get(f"{prev} {normed[i]}"):
-        return False              # the pool knows it; existing rules handle it
+    if aliases.get(f"{prev} {normed[i]}"):
+        return False              # the pair itself is a pool name
+    # Deliberately not exempting "prev is any alias the pool owns". Brandon
+    # Aubrey is in the pool, which made "the Giants have cut QB Brandon Allen"
+    # exempt and it resolved to Josh Allen. Owning the first name of somebody
+    # else is not evidence that this surname is yours; only owning the pair is.
     return True
 
 

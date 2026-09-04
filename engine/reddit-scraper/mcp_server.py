@@ -529,10 +529,29 @@ def _thread_priority(post, comment_chars, mention_index, explain=False):
     score = 0.0
     if _ADVICE.search(title):
         score -= 55; why.append("somebody's own roster question")
+    # A transaction report about an offensive lineman reads exactly like one
+    # about a running back — "waived", "cut", "trading", "designated to IR" are
+    # the same words either way. What separates them is whether the title names
+    # somebody draftable. "Saints waived RB Devin Neal" does; "The Eagles
+    # waived both Uar Bernard and Joshua Weru" does not, and neither does "On
+    # this day in 1995, Jimmy Smith was released by the Eagles".
+    #
+    # This test only became usable once the resolver stopped reading a surname
+    # wearing someone else's first name as a player; before that every one of
+    # those titles resolved to a real player and the check would have passed
+    # them all.
+    named = _names_in(title, title)
     if _REPORTING.search(title) or C._BEAT.match(title):
-        score += 40; why.append("beat report")
+        if named:
+            score += 40
+            why.append("beat report on " + ", ".join(sorted(named)[:3]))
+        else:
+            score -= 25
+            why.append("reports a move, but names nobody draftable")
     elif C.thread_kind(title, post.get("selftext", "")) == "news":
         score += 8; why.append("news vocabulary, no attribution")
+    elif named:
+        score += 12; why.append("title names " + ", ".join(sorted(named)[:3]))
     if re.search(r"\bAMA\b|ask me anything|ask us anything|we host", title, re.I):
         # An AMA is labelled discussion and reads like a goldmine — a named
         # analyst answering questions all day. Measured over the first 27
