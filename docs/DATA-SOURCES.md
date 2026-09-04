@@ -18,12 +18,22 @@ exact fetch date and each sheet's own self-reported update date.
   a 1-10 "Landmine" risk score (new in 2026) and FantasyPros ECR.
 - **Used by:** `data/ranks/{std,0.5_ppr,ppr}_with_depth.csv` → the `ESPN_Rank`
   and `Sleeper_Rank` columns, which drive the draft tool's "is this player
-  going earlier on my platform" comparison. **This is the only source for
-  those columns** — without it they are blank and all three scoring formats
-  collapse to identical boards. Our family league is on ESPN, so the ESPN
-  column is the one that matters.
+  going earlier on my platform" comparison. Our family league is on ESPN, so
+  the ESPN column is the one that matters.
+- **Two scripts write those columns, and the last one to run wins.**
+  `build_player_csv.py --juicebox <dir>` fills them from these sheets, but only
+  during a full board rebuild, which needs the manual FantasyPros export.
+  `engine/update_ranks.py` overwrites them from the live ESPN and Sleeper APIs
+  and needs no auth, so in practice it runs far more often. After the
+  2026-09-04 refresh the board carries the **live-API** values: of 192 players
+  in both, 176 differ from this sheet (Josh Allen ESPN 17 here, 26 on the
+  sheet). Neither is wrong; they are different measurements. Know which one you
+  are looking at before drawing a conclusion from it.
+- **What only this sheet has:** the per-platform splits beyond ESPN/Sleeper
+  (Yahoo, CBS, Fleaflicker, Superflex), the 1-10 Landmine risk score, and
+  FantasyPros ECR. The live API has none of that.
 - **Coverage:** ~197 players (top of the board only; deep bench is blank).
-- **Last fetched: 2026-08-03.** Sheet self-reported update: 2026-07-31.
+- **Last fetched: 2026-09-04.** Sheet self-reported update: 2026-09-04.
 
 ## 2. JuiceBoxOne — "JuiceSheets Draft Cheat Sheets"
 
@@ -36,7 +46,7 @@ exact fetch date and each sheet's own self-reported update date.
   projection to sanity-check our own model against. Not a model input;
   it is a second opinion.
 - **Coverage:** 167 players (30 QB / 57 RB / 60 WR / 20 TE).
-- **Last fetched: 2026-08-03.** Sheet self-reported update: 2026-07-31.
+- **Last fetched: 2026-09-04.** Sheet self-reported update: 2026-09-04.
 
 ### Refreshing both sheets
 
