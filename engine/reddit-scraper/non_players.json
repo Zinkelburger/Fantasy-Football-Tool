@@ -14,10 +14,21 @@
  "Alaric Jackson": {
   "role": "not in pool"
  },
+ "Allen Robinson": {
+  "note": "used as the WR age-cliff comparison",
+  "role": "retired"
+ },
+ "Amari Cooper": {
+  "note": "cited as a Stefanski-coached WR10 finish in 2022",
+  "role": "retired"
+ },
  "Andy Reid": {
   "role": "coach"
  },
  "Antonio Brown": {
+  "role": "retired"
+ },
+ "Barry Sanders": {
   "role": "retired"
  },
  "Ben Baby": {
@@ -35,16 +46,73 @@
  "Bill Simmons": {
   "role": "media"
  },
+ "Brandon Murchison": {
+  "note": "RotoBaller analyst hosting the AMA; 'Hey Brandon' resolved onto kicker Brandon Aubrey (thread 1w5cn8y)",
+  "role": "reporter"
+ },
  "Brian Gutekunst": {
   "role": "front office"
  },
  "Brock Osweiler": {
   "role": "retired"
  },
+ "Bryan Thomas": {
+  "note": "Jaguars defensive end; commenters explicitly distinguish him from WR Brian Thomas Jr",
+  "role": "not in pool"
+ },
+ "Carson Wentz": {
+  "note": "listed among QBs who declined after a good year",
+  "role": "not in pool"
+ },
+ "Charlie Kolar": {
+  "note": "Chargers TE asked about in a dynasty 2TE question",
+  "role": "not in pool"
+ },
+ "Chris Harris": {
+  "note": "fantasy analyst cited on A.J. Brown",
+  "role": "reporter"
+ },
  "Christian Ponder": {
   "role": "retired"
  },
+ "Daejon Love": {
+  "note": "fictional player invented as a joke in r/fantasyfootball thread 1w4ei8c; 332-point comment inflates Jeremiyah Love mention counts",
+  "role": "not in pool"
+ },
+ "Dan Campbell": {
+  "note": "Lions head coach, took over play calling week 10",
+  "role": "coach"
+ },
+ "Dan Graziano": {
+  "role": "reporter"
+ },
+ "Dan Quinn": {
+  "note": "Commanders head coach",
+  "role": "coach"
+ },
+ "Daniel Dopp": {
+  "role": "reporter"
+ },
+ "Darius Slayton": {
+  "note": "Giants WR named in the WR2 discussion",
+  "role": "not in pool"
+ },
  "Darwin Thompson": {
+  "role": "retired"
+ },
+ "Davis Mills": {
+  "note": "Texans backup QB cited for Nico Collins splits",
+  "role": "not in pool"
+ },
+ "Davis Webb": {
+  "note": "Broncos offensive coordinator/QB coach cited on Evan Engram usage",
+  "role": "coach"
+ },
+ "Dawson Knox": {
+  "role": "not in pool"
+ },
+ "DeAndre Hopkins": {
+  "note": "used in the Osweiler QB-proof comparison",
   "role": "retired"
  },
  "Declan Doyle": {
@@ -53,17 +121,49 @@
  "Demario Douglas": {
   "role": "not in pool"
  },
+ "Derek Carr": {
+  "note": "named in an off-topic aside",
+  "role": "retired"
+ },
+ "Devonta Freeman": {
+  "role": "retired"
+ },
  "Dianna Russini": {
   "role": "reporter"
  },
  "Diego Pavia": {
   "role": "not in pool"
  },
+ "Duce Staley": {
+  "role": "coach"
+ },
+ "Durham Smythe": {
+  "note": "blocking TE named as scheme comparison; resolver counted him as kicker Charlie Smyth",
+  "role": "not in pool"
+ },
+ "Elijah Arroyo": {
+  "note": "Seahawks TE Cooper prefers to AJ Barner",
+  "role": "not in pool"
+ },
+ "Eric Bienemy": {
+  "role": "coach"
+ },
+ "Eric Bieniemy": {
+  "note": "Chiefs assistant cited on run-heavy plans",
+  "role": "coach"
+ },
  "Ezekiel Elliott": {
   "role": "retired"
  },
  "Field Yates": {
   "role": "analyst"
+ },
+ "Frank Reich": {
+  "note": "Jets coach",
+  "role": "coach"
+ },
+ "Frank Smith": {
+  "role": "coach"
  },
  "Greg Roman": {
   "role": "coach"
@@ -77,11 +177,31 @@
  "Jabrill Peppers": {
   "role": "not in pool"
  },
+ "Jack Strand": {
+  "note": "backup QB prospect discussed in an AMA",
+  "role": "not in pool"
+ },
+ "Jacob Saylors": {
+  "role": "not in pool"
+ },
  "Jacob de Jesus": {
+  "role": "not in pool"
+ },
+ "Jake Browning": {
+  "role": "not in pool"
+ },
+ "Jamaal Williams": {
   "role": "not in pool"
  },
  "James Robinson": {
   "role": "retired"
+ },
+ "Jason Licht": {
+  "role": "not in pool"
+ },
+ "Jeff Mueller": {
+  "note": "injury analyst quoted on Rome Odunze",
+  "role": "reporter"
  },
  "Jeff Stoutland": {
   "role": "coach"
@@ -89,14 +209,29 @@
  "Jeremy Fowler": {
   "role": "reporter"
  },
+ "Jerry Rice": {
+  "note": "cited on age-33 production; collides with Rashee Rice",
+  "role": "retired"
+ },
+ "Jim Schwartz": {
+  "role": "coach"
+ },
  "Joe Brady": {
   "role": "coach"
  },
  "Joe Flacco": {
   "role": "not in pool"
  },
+ "Joe Milton": {
+  "note": "QB named in a joke about the Cowboys",
+  "role": "not in pool"
+ },
  "Joe Person": {
   "role": "reporter"
+ },
+ "Joey Galloway": {
+  "note": "retired WR in an anecdote",
+  "role": "retired"
  },
  "John Shipley": {
   "role": "reporter"
@@ -105,6 +240,17 @@
   "role": "not in pool"
  },
  "Josh Gordon": {
+  "role": "retired"
+ },
+ "Josh McDaniels": {
+  "note": "Chargers coach quoted on hot-hand RB usage",
+  "role": "coach"
+ },
+ "Julian Edelman": {
+  "note": "cited as the last McDaniels-offense fantasy WR2",
+  "role": "retired"
+ },
+ "Julio Jones": {
   "role": "retired"
  },
  "Kellen Moore": {
@@ -116,6 +262,10 @@
  "Kevin Stefanski": {
   "role": "coach"
  },
+ "Kliff Kingsbury": {
+  "note": "former Commanders OC",
+  "role": "coach"
+ },
  "Klint Kubiak": {
   "role": "coach"
  },
@@ -125,11 +275,22 @@
  "Kyren Lacy": {
   "role": "deceased"
  },
+ "Laremy Tunsil": {
+  "note": "offensive tackle",
+  "role": "not in pool"
+ },
  "Le'Veon Bell": {
   "role": "retired"
  },
  "Liam Coen": {
   "role": "coach"
+ },
+ "Liz Loza": {
+  "role": "reporter"
+ },
+ "Luke McCaffrey": {
+  "note": "Commanders WR, outside the 337-man pool; collides with Christian McCaffrey",
+  "role": "not in pool"
  },
  "Mac Jones": {
   "role": "not in pool"
@@ -137,10 +298,21 @@
  "Malik Davis": {
   "role": "not in pool"
  },
+ "Mark Ingram": {
+  "note": "cited in the Payton/Kamara RB-committee comparison",
+  "role": "retired"
+ },
  "Marquise Brown": {
   "role": "not in pool"
  },
  "Matt Barrows": {
+  "role": "reporter"
+ },
+ "Matt Forte": {
+  "role": "retired"
+ },
+ "Matt Harmon": {
+  "note": "charts WR route win rates; quoted on A.J. Brown decline",
   "role": "reporter"
  },
  "Matt LaFleur": {
@@ -152,7 +324,18 @@
  "Matthew Berry": {
   "role": "analyst"
  },
+ "Micah Parsons": {
+  "note": "defensive player named as a Packers defense downgrade",
+  "role": "not in pool"
+ },
+ "Michael Thomas": {
+  "note": "named in an off-topic Derek Carr aside",
+  "role": "retired"
+ },
  "Mike Chappell": {
+  "role": "reporter"
+ },
+ "Mike Clay": {
   "role": "reporter"
  },
  "Mike Garafolo": {
@@ -161,10 +344,28 @@
  "Mike Macdonald": {
   "role": "coach"
  },
+ "Mike Maher": {
+  "role": "reporter"
+ },
+ "Mike McCarthy": {
+  "note": "Steelers coach",
+  "role": "coach"
+ },
  "Mike McDaniel": {
   "role": "coach"
  },
+ "Mike Vrabel": {
+  "note": "Patriots head coach, coached A.J. Brown in Tennessee",
+  "role": "coach"
+ },
  "Miles Sanders": {
+  "role": "not in pool"
+ },
+ "Myers Briggs": {
+  "note": "AMA joke question 'who is the most Myers Briggs player' \u2014 resolver mapped Myers onto kicker Jason Myers (thread 1vz62qu)",
+  "role": "not in pool"
+ },
+ "Myles Garrett": {
   "role": "not in pool"
  },
  "Nick Chubb": {
@@ -191,17 +392,32 @@
  "Ray Rice": {
   "role": "retired"
  },
+ "Ricky Pearsall": {
+  "note": "49ers WR named on a commenter roster",
+  "role": "not in pool"
+ },
+ "Robert Griffin": {
+  "note": "listed among QBs who declined after a good year",
+  "role": "retired"
+ },
  "Robert Mays": {
   "role": "analyst"
  },
  "Roschon Johnson": {
   "role": "not in pool"
  },
+ "Ryan Heath": {
+  "role": "reporter"
+ },
  "Ryan McFadden": {
   "role": "reporter"
  },
  "Savion Williams": {
   "role": "not in pool"
+ },
+ "Sean Mannion": {
+  "note": "Eagles play caller cited in the Saquon Barkley case",
+  "role": "coach"
  },
  "Sean McDermott": {
   "note": "Bills HC",
@@ -213,14 +429,59 @@
  "Sean Payton": {
   "role": "coach"
  },
+ "Sidney Rice": {
+  "note": "retired WR named in a fade list; collides with Rashee Rice",
+  "role": "retired"
+ },
+ "Sione Vaki": {
+  "note": "Lions RB asked about as a Gibbs contingency; no pool entry",
+  "role": "not in pool"
+ },
  "Spencer Strasmore": {
   "role": "fictional"
+ },
+ "Steve Smith": {
+  "role": "retired"
+ },
+ "TY Hilton": {
+  "note": "retired WR used as a boom-bust comparison",
+  "role": "retired"
+ },
+ "Taysom Hill": {
+  "note": "named as no longer needing to be ranked",
+  "role": "retired"
+ },
+ "Teddy Bridgewater": {
+  "note": "listed among QBs who declined after a good year",
+  "role": "not in pool"
  },
  "Todd Bowles": {
   "role": "coach"
  },
  "Tom Pelissero": {
   "role": "reporter"
+ },
+ "Trey Sermon": {
+  "role": "not in pool"
+ },
+ "Ty'son Williams": {
+  "role": "not in pool"
+ },
+ "Tyler Badie": {
+  "note": "named as a Denver backup RB competing with RJ Harvey",
+  "role": "not in pool"
+ },
+ "Vincent Jackson": {
+  "note": "retired WR used as a comparison",
+  "role": "retired"
+ },
+ "Zach Ertz": {
+  "note": "used as a career comparison for Isaiah Likely",
+  "role": "retired"
+ },
+ "Zach Wilson": {
+  "note": "used in a bad-QB comparison",
+  "role": "not in pool"
  },
  "Zack Moss": {
   "role": "not in pool"

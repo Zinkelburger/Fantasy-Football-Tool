@@ -416,9 +416,32 @@ def _thread_priority(post, comment_chars, mention_index):
         return -1000.0
     score = 0.0
     if C.thread_kind(title, post.get("selftext", "")) == "news":
-        score += 25
-    score += min(comment_chars, 60000) / 3000.0
-    score += min(post.get("score", 0), 3000) / 250.0
+        score += 40
+    if re.search(r"\bAMA\b|ask me anything|ask us anything|we host", title, re.I):
+        # An AMA is labelled discussion and reads like a goldmine — a named
+        # analyst answering questions all day. Measured over the first 27
+        # distilled threads it is the worst value in the corpus: the Ringer AMA
+        # produced ONE team-official-or-beat-report claim from 149k characters,
+        # and three other AMAs produced none at all from 130k more. What they
+        # generate is opinion, in volume, which the 2025 backtest priced at zero.
+        score -= 45
+    # Size is a cost, not a benefit. Hard claims (team_official or beat_report)
+    # per 10k characters, over the first 27 threads distilled:
+    #
+    #   Crod getting the nod over Tuten     16k chars   3.64
+    #   Chase not practicing today           4k chars   2.23
+    #   Puka left practice early            20k chars   2.02
+    #   ...
+    #   Ringer Fantasy Football Show AMA   149k chars   0.07
+    #   Who are you fading for no reason   115k chars   0.00
+    #   punting TE is the way to go        100k chars   0.00
+    #
+    # A thread needs enough substance to be worth opening, and past that every
+    # extra character is reading labour buying sentiment. So: a bonus for
+    # clearing a floor, then a penalty that grows with length.
+    score += 8 if comment_chars >= 3000 else comment_chars / 400.0
+    score -= max(comment_chars - 25000, 0) / 6000.0
+    score += min(post.get("score", 0), 3000) / 400.0
     # players in it that people actually draft
     for name, adp in mention_index.get(post.get("id"), []):
         if adp <= 60:
@@ -472,12 +495,26 @@ def _vote_tally(post_id, title):
     It is a tally of *mentions in a nomination slot*, not of agreement: a reply
     that says "not Achane" counts for Achane. Label it as such."""
     votes, ups = Counter(), Counter()
+    top_level = singles = 0
     for c in _read_jsonl(COMMENTS):
         if c.get("post_id") != post_id or not (c.get("parent_id") or "").startswith("t3_"):
             continue
-        for n in _names_in(c.get("body") or "", title):
+        top_level += 1
+        names = _names_in(c.get("body") or "", title)
+        if len(names) == 1:
+            singles += 1
+        for n in names:
             votes[n] += 1
             ups[n] += max(c.get("score") or 0, 0)
+
+    # Only a show-of-hands thread has a meaningful tally. An AMA does not: its
+    # top-level comments are questions, and greetings resolve to players —
+    # "Love the show" gave Jeremiyah Love ten nominations in the Ringer AMA,
+    # and "Hey Brandon" reached Brandon Aubrey. The shape tells them apart. In
+    # the biggest-bust thread 187 of 305 top-level comments name exactly one
+    # player (61%); in the AMA it is 111 of 649 (17%).
+    if top_level < 25 or singles / max(top_level, 1) < 0.35:
+        return []
     return [(n, k, ups[n]) for n, k in votes.most_common()]
 
 
@@ -749,6 +786,17 @@ Rules that matter:
     again. That registry is the only part of the resolver that learns.
   - Nothing worth saying about a player means no claim for that player. An
     empty distillation of a thin thread is a correct answer.
+  - A claim is about ONE player. When a thread argues that two players
+    cannibalize each other, that is two claims, and the other name belongs in
+    conditional_on — each player's note has to stand on its own.
+  - Strategy is not a claim. "Punt TE", "TE1 to TE12 is only four points a
+    week", "take RBs in the first three rounds" are about the draft, not about
+    a player, and forcing them into sentiment claims for whoever got named
+    loses the argument and pollutes the player. Skip them; that work lives in
+    engine/league-sim/findings/.
+  - An AMA host, a national ranker or a podcaster is basis "analyst" — he has
+    no access a beat writer has, but the room weights him more than one
+    commenter.
 
 Return them through submit_claims as a JSON array."""
 

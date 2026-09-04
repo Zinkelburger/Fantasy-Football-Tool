@@ -35,7 +35,9 @@ CLAIMS = HERE / "corpus" / "claims.jsonl"
 # Ordered most to least durable. injury outranks role only in the sense that it
 # expires faster, not that it matters more.
 CLAIM_TYPES = {
-    "injury":    "health, availability, practice participation, IR/suspension",
+    "injury":    ("availability of any kind — health, practice participation, IR, "
+                  "suspension, the commissioner exempt list. The question it answers "
+                  "is 'will he be on the field', not 'is he hurt'"),
     "role":      "usage, snap share, depth chart, committee split, scheme fit",
     "market":    "ADP, where he actually goes, cost relative to ranking",
     "sentiment": "what the community thinks, including bare-name votes",
@@ -45,6 +47,10 @@ CLAIM_TYPES = {
 BASIS = {
     "team_official":   "the team, a coach, or the official depth chart",
     "beat_report":     "a named beat writer or insider quoted in the thread",
+    "analyst":         ("a national analyst, ranker or podcaster speaking for "
+                        "himself — an AMA host, Hartitz, the Ringer crew. Not a "
+                        "beat report, because he has no access; not one "
+                        "commenter, because the room weights him"),
     "consensus":       "several commenters independently agreeing",
     "single_commenter": "one person's opinion",
 }

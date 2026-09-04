@@ -441,11 +441,48 @@ agent converges without supervision, and `claims.append` dedupes so a retried
 thread stores nothing twice. Have workers call the Python module directly rather
 than the MCP tools: a server started before an edit still runs the old code.
 
-The brief that works is in the git history of this file's sibling
-`AGENT_BRIEF` usage — the load-bearing parts are: read every page before
-submitting, sentiment is one claim per player with a count and never one per
-comment, `conditional_on` is why whole threads are worth reading, and an empty
-distillation of a thin thread is a correct answer.
+The brief that works is `docs/AGENT_BRIEF.md`. Load-bearing parts: read every
+page before submitting; sentiment is one claim per player with a count, never
+one per comment; `conditional_on` is why whole threads are worth reading; an
+empty distillation of a thin thread is a correct answer; and each worker writes
+temp files under its own subdirectory, because parallel workers otherwise
+overwrite each other's thread dumps mid-read.
+
+Six workers over three threads each produced 1,361 claims across 217 players in
+about fifteen minutes of wall clock. Four of the six independently asked for the
+same missing field — a `basis` for a national analyst who is not a beat writer —
+which is why `analyst` now exists.
+
+### Size is a cost, not a benefit
+
+The first fleet run made the priority function measurable. Hard claims
+(`team_official` or `beat_report`) per 10k characters, over the first 27 threads:
+
+| thread | chars | hard/10k |
+|---|---|---|
+| Crod getting the nod over Tuten | 16k | 3.64 |
+| Chase not practicing today | 4k | 2.23 |
+| Puka left practice early | 20k | 2.02 |
+| Ringer Fantasy Football Show AMA | 149k | 0.07 |
+| Who are you fading for no good reason | 115k | 0.00 |
+| punting TE is the way to go | 100k | 0.00 |
+
+The valuable threads are small news posts. The giant opinion threads cost the
+most to read and yield almost nothing durable — and the 2025 backtest already
+priced their output, sentiment, at zero. So priority rewards clearing a size
+floor and then *penalises* length, and AMAs take a flat −45: they read like a
+goldmine, a named analyst answering questions all day, and produced one hard
+claim from 149k characters plus none at all from 130k more.
+
+### An AMA has no show of hands
+
+The nominations tally was wrong on AMAs and a worker caught it. Top-level
+comments there are questions and greetings, and greetings resolve to players:
+"Love the show" gave Jeremiyah Love ten nominations, "Hey Brandon" reached
+Brandon Aubrey, and every "Thanks Daniel!" became Daniel Jones. Shape separates
+them — 187 of 305 top-level comments name exactly one player in the biggest-bust
+thread (61%), against 111 of 649 in the Ringer AMA (17%) — so the tally only
+appears above 35%. The greetings themselves are fixed by registering the hosts.
 
 ### The registry is the part that learns
 
