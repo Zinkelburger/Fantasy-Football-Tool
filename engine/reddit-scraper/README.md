@@ -313,6 +313,9 @@ Registered in `.mcp.json` at the repo root. Tools:
 | `note_queue` | players whose note is missing, undated, or older than their newest claim |
 | `claims_stats` | what is distilled, what is left, where claims came from |
 | `write_note` | save a finished markdown note; `publish=True` also writes `data/notes/` |
+| `next_threads` | claim the next undistilled threads, best first, leased so a fleet does not collide |
+| `report_non_player` | register a coach / reporter / retired player so the resolver stops mapping him onto a real one |
+| `sweep_many` | sweep several subreddits in one call |
 
 ### Thread-first is the path to prefer (`thread_digest`)
 
@@ -404,23 +407,73 @@ threads) -> `distill_thread` each -> `note_queue` -> `player_claims` ->
 `write_note(publish=True)` for the players it lists. Only threads and players
 with something new get touched.
 
-### Fan-out: one thread per subagent
+### Running a fleet
 
-A 30-day sweep in draft week is ~150 threads. One session reading them in
-sequence is hours of context churn; the same session handing each thread to a
-subagent is minutes. Each subagent needs only the working directory, the venv
-python, its thread ids, and these three steps:
+A 30-day sweep is ~285 threads and 6.5M characters. One session reading that in
+sequence is not a plan. The pipeline is built so N agents can read it at once
+without a coordinator, and the parent session only writes notes.
 
-    S.distill_thread(id)            # read every page
-    write the claims JSON to a file
-    S.submit_claims(open(f).read()) # fix validation errors, resubmit
+The primitive is `next_threads(count, worker)`. It hands back the highest-value
+unclaimed threads and **leases** them for 45 minutes, so six agents calling it
+simultaneously get disjoint work instead of all starting at the top of the same
+list. Submitting claims for a thread releases its lease; a crashed agent's lease
+simply expires. The lock is `O_EXCL` on a file in `corpus/` — one machine, short
+critical section, nothing fancier is warranted.
 
-`submit_claims` rejects a malformed batch whole and names the problem, so a
-subagent can converge on a valid batch without supervision, and `claims.append`
-dedupes so a retried thread stores nothing twice. The parent session then only
-reads `note_queue` and writes notes. Have subagents call the Python module
-directly rather than the MCP tools: a server started before an edit still runs
-the old code.
+Priority is not thread size. Ranked by: reporting over opinion, how many
+draftable players are in it, recency (a September practice report supersedes an
+August one), and size with size *capped*, because an 800-comment joke thread
+carries less than a 100-comment beat report. The `Official: [Rate My Team]` /
+`[Who Do I Draft?]` dailies sort dead last at a flat −1000: they are 6% of the
+corpus by text and almost none of it is a claim. `thread_kind` even labels the
+daily Trade thread "news", because the word *trade* is in the title — which is
+exactly why the penalty is a floor and not a nudge.
+
+Each worker loops:
+
+    S.next_threads(1, worker="wA")   # claim
+    S.distill_thread(id)             # read every page
+    S.submit_claims(json)            # validates, stores, releases the lease
+    S.report_non_player(...)         # anything mis-resolved that isn't a player
+
+`submit_claims` rejects a malformed batch whole and names the problem, so an
+agent converges without supervision, and `claims.append` dedupes so a retried
+thread stores nothing twice. Have workers call the Python module directly rather
+than the MCP tools: a server started before an edit still runs the old code.
+
+The brief that works is in the git history of this file's sibling
+`AGENT_BRIEF` usage — the load-bearing parts are: read every page before
+submitting, sentiment is one claim per player with a count and never one per
+comment, `conditional_on` is why whole threads are worth reading, and an empty
+distillation of a thin thread is a correct answer.
+
+### The registry is the part that learns
+
+`non_players.json` holds people who are not draftable: coaches, beat writers,
+retired players, anyone outside the 337-man pool. The pool cannot represent
+someone it does not contain, so without this every such person is shredded onto
+whoever shares his name. It was the largest remaining error class in the audit
+above — two of three misses.
+
+A registered full name is blocked as a span, which is what stops `Andy` reaching
+a kicker: consuming `Andy Reid` whole means no shorter n-gram inside it can
+match. A registered *first* name additionally stops resolving on its own unless
+the pool player is corroborated elsewhere in the comment, which is what kills
+"Andy loves good RBs" while leaving "Bijan" and "Josh Allen" untouched. Surnames
+are deliberately **not** gated this way — they are 55% of all mentions, and
+gating `Johnson` or `Brown` would cost far more than it saves.
+
+Andy Borregales went from 31 confident mentions, every one of them Andy Reid or
+Randy Moss, to zero. Seeded with 76 names found by scanning the corpus for
+capitalized pairs that collide with the pool, hand-checked (edit distance alone
+calls `Matt Nagy` a variant of `Matt Gay`), and verified against the pool so a
+real player can never be registered. `report_non_player` refuses a name that is
+in the pool, and refuses a single token, since one token would block a surname
+the pool legitimately owns.
+
+This is the only part of the resolver that learns from being read. Every agent
+that notices a coach being treated as a player makes the next agent's index
+better.
 
 ## Claims, not prose (`claims.py`)
 

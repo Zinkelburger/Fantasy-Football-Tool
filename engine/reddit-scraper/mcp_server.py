@@ -24,8 +24,10 @@ not be republished, and this repo is public.
 """
 
 import json
+import os
 import pathlib
 import re
+import time
 from collections import Counter, defaultdict
 from datetime import datetime
 
@@ -42,6 +44,8 @@ DOSSIERS = CORPUS / "dossiers"
 # Where the site actually reads notes from. corpus/dossiers is a staging area;
 # write_note(publish=True) copies a finished note here.
 SHIPPED_NOTES = HERE.parent.parent / "data" / "notes"
+LEASES = CORPUS / "leases.json"
+LEASE_MINUTES = 45
 
 mcp = MCPServer("ff-reddit-scraper", version="1.0.0")
 
@@ -350,6 +354,81 @@ def write_note(player_name: str, markdown: str, publish: bool = False) -> str:
     if "as of" not in markdown[:300]:
         msg += "\nwarning: no 'as of <date>' in the header — readers cannot tell how stale it is"
     return msg
+
+
+def _with_lock(fn, retries=60):
+    """Run fn under a crude exclusive lock so parallel agents can claim work.
+
+    A fleet of subagents all calling next_threads at once will otherwise read
+    the same file, pick the same threads, and distil them twice. O_EXCL on a
+    lockfile is enough here: single machine, short critical section."""
+    lock = CORPUS / ".lease.lock"
+    CORPUS.mkdir(exist_ok=True)
+    for _ in range(retries):
+        try:
+            fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                if time.time() - lock.stat().st_mtime > 120:
+                    lock.unlink(missing_ok=True)      # stale, holder died
+            except OSError:
+                pass
+            time.sleep(0.1)
+            continue
+        try:
+            os.close(fd)
+            return fn()
+        finally:
+            lock.unlink(missing_ok=True)
+    return fn()          # lock never came free; better to race than to hang
+
+
+def _read_leases():
+    try:
+        return json.loads(LEASES.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _live_leases(now=None):
+    now = now or time.time()
+    return {k: v for k, v in _read_leases().items()
+            if now - v.get("ts", 0) < LEASE_MINUTES * 60}
+
+
+def _thread_priority(post, comment_chars, mention_index):
+    """What is this thread worth reading? Higher is sooner.
+
+    Not all 272 undistilled threads deserve equal attention, and a fleet that
+    starts at the top of an arbitrary list spends its first hour on rate-my-team
+    dailies. Ranked by: reporting over opinion, players people actually draft,
+    recency (a September practice report supersedes an August one), and size —
+    with size capped, because an 800-comment joke thread carries less than a
+    100-comment beat report."""
+    title = post.get("title", "")
+    if re.match(r"^Official:\s*\[", title):
+        # The daily rate-my-team / who-do-I-draft / trade threads. They are 6%
+        # of the corpus by text and almost none of it is a claim: roster dumps
+        # and one-line verdicts on them. thread_kind even calls the Trade
+        # thread "news", because the word trade is in it. Sink them below
+        # everything real rather than nudging — they are still claimable once
+        # the 264 genuine threads are done.
+        return -1000.0
+    score = 0.0
+    if C.thread_kind(title, post.get("selftext", "")) == "news":
+        score += 25
+    score += min(comment_chars, 60000) / 3000.0
+    score += min(post.get("score", 0), 3000) / 250.0
+    # players in it that people actually draft
+    for name, adp in mention_index.get(post.get("id"), []):
+        if adp <= 60:
+            score += 3
+        elif adp <= 150:
+            score += 1
+    ts = post.get("created_utc") or 0
+    age_days = max((time.time() - ts) / 86400.0, 0)
+    score += max(12 - age_days, -10)
+    return score
 
 
 _BOARD = {}
@@ -665,7 +744,9 @@ Rules that matter:
     prompt turn into arguments.
   - People who are not in the pool — Pop Douglas, Calvin Austin, Matt Nagy,
     Andy Reid — get no claims. The index will sometimes have mapped them onto
-    a pool player who shares a name; ignore it when the thread disagrees.
+    a pool player who shares a name; ignore it when the thread disagrees, and
+    call report_non_player so the next reader does not have to notice it
+    again. That registry is the only part of the resolver that learns.
   - Nothing worth saying about a player means no claim for that player. An
     empty distillation of a thin thread is a correct answer.
 
@@ -701,6 +782,12 @@ def submit_claims(claims_json: str) -> str:
     for c in batch:
         c.setdefault("date", C.thread_date(posts.get(c["thread"], {})))
     added, dupes = C.append(batch)
+    def _release():
+        leases = _read_leases()
+        for t in {c["thread"] for c in batch}:
+            leases.pop(t, None)
+        LEASES.write_text(json.dumps(leases, indent=1), encoding="utf-8")
+    _with_lock(_release)
     by_type = Counter(c["type"] for c in batch)
     return (f"stored {added} claims"
             + (f" ({dupes} already present)" if dupes else "")
@@ -848,6 +935,126 @@ def note_queue(limit: int = 40) -> str:
     for _, _, _, name, status, nd, newest, n in rows[:limit]:
         out.append(f"{name:26} {status:8} {nd or '--':11} {newest:13} {n}")
     out.append("\nplayer_claims(name) -> write_note(name, md, publish=True) for each.")
+    return "\n".join(out)
+
+
+@mcp.tool()
+def next_threads(count: int = 1, worker: str = "") -> str:
+    """Claim the next undistilled threads to work on, highest value first.
+
+    This is the entry point for a fleet. Each call leases the threads it hands
+    back for 45 minutes, so N agents running at once get disjoint work instead
+    of all starting at the top of the same list. Call it, distil what it gives
+    you with distill_thread, submit_claims, then call it again for more.
+
+    Threads are ranked by whether they report or opine, how many draftable
+    players are in them, recency, and size with size capped — an 800-comment
+    joke thread is worth less than a 100-comment beat report. Daily
+    rate-my-team and who-do-I-draft posts sort to the bottom.
+
+    Pass `worker` (any string naming yourself) so a stuck lease can be traced.
+    A lease expires on its own; submitting claims for a thread releases it."""
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    chars = Counter()
+    for c in _read_jsonl(COMMENTS):
+        chars[c.get("post_id")] += len(c.get("body") or "")
+
+    by_name = {p.player_name: p for p in pool()[0]}
+    index = defaultdict(list)
+    seen = set()
+    for row, post, m in A.resolved_mentions(pool()):
+        if m.tier in ("review", "ambiguous"):
+            continue
+        pid = post.get("id") or row.get("post_id")
+        k = (pid, m.player.player_name)
+        if k in seen:
+            continue
+        seen.add(k)
+        index[pid].append((m.player.player_name,
+                           getattr(by_name.get(m.player.player_name), "player_adp", 999)))
+
+    def claim():
+        done = C.distilled_threads()
+        live = _live_leases()
+        todo = [p for pid, p in posts.items() if pid not in done and pid not in live]
+        todo.sort(key=lambda p: -_thread_priority(p, chars.get(p["id"], 0), index))
+        picked = todo[:max(1, min(count, 25))]
+        leases = _read_leases()
+        for p in picked:
+            leases[p["id"]] = {"worker": worker or "?", "ts": time.time()}
+        LEASES.write_text(json.dumps(leases, indent=1), encoding="utf-8")
+        return picked, len(todo), len(live)
+
+    picked, remaining, held = _with_lock(claim)
+    if not picked:
+        return (f"Nothing left to claim: every thread is distilled or leased "
+                f"({held} leases live). claims_stats() for the state.")
+    out = [f"leased {len(picked)} thread(s) to {worker or 'you'} for {LEASE_MINUTES} min "
+           f"· {remaining - len(picked)} unclaimed, {held} held by others", "=" * 74]
+    for p in picked:
+        out.append(f"{p['id']}  {C.thread_kind(p.get('title',''), p.get('selftext','')):10} "
+                   f"{C.thread_date(p):11} {chars.get(p['id'],0):>7,}ch  {p.get('title','')[:52]}")
+    out += ["", "For each: distill_thread(id) -> read every page -> submit_claims(json).",
+            "Then call next_threads again. Report any coach, reporter or retired",
+            "player you see mis-resolved with report_non_player."]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def report_non_player(name: str, role: str = "", note: str = "") -> str:
+    """Record someone who is NOT a draftable player: a coach, a beat writer, a
+    retired player, anyone outside the 337-man pool.
+
+    This is the fix for the resolver's last real error class. The pool cannot
+    represent a person it does not contain, so every such person gets shredded
+    onto whoever shares his name — "the ghost of Nick Chubb" became Chuba
+    Hubbard, "Pop Douglas" became Caleb Douglas, and "Andy" reached a kicker 31
+    times when it meant Andy Reid.
+
+    Once registered, the full name is blocked outright and the bare first name
+    stops resolving unless the pool player is corroborated elsewhere in the
+    comment. If you are reading a thread and see a name treated as a player who
+    plainly is not one, report it here — that is knowledge only a reader has."""
+    name = " ".join(name.split())
+    if len(name.split()) < 2:
+        return ("Give the full name — a single token would block a surname the "
+                "pool legitimately owns.")
+    names = {p.player_name.lower() for p in pool()[0]}
+    if name.lower() in names:
+        return f"{name!r} IS in the draft pool; not registering."
+    path = HERE / R.NON_PLAYERS_FILE
+    try:
+        reg = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        reg = {}
+    if name in reg:
+        return f"{name!r} already registered as {reg[name].get('role','?')}."
+    reg[name] = {k: v for k, v in (("role", role.strip()), ("note", note.strip())) if v}
+    path.write_text(json.dumps(reg, indent=1, sort_keys=True), encoding="utf-8")
+    R.NON_PLAYER_NAMES, R.NON_PLAYER_FIRSTS = R.load_non_players()
+    global _pool
+    _pool = None
+    return (f"registered {name!r}" + (f" ({role})" if role else "")
+            + f"; registry now {len(reg)} names. Resolver reloaded.")
+
+
+@mcp.tool()
+def sweep_many(subreddits: str = "fantasyfootball,DynastyFF,fantasyfootballadvice",
+               top: int = 60, hot: int = 60, new: int = 120, days: int = 30,
+               min_comments: int = 10, replace_more: int = 12) -> str:
+    """Sweep several subreddits in one call, comma-separated.
+
+    r/fantasyfootball is the main room, but team subreddits carry the beat
+    reporting first and the other fantasy subs argue differently. Every listing
+    is deduped into the same corpus, so overlap costs nothing but a skip."""
+    out = []
+    for sub in [x.strip() for x in subreddits.split(",") if x.strip()]:
+        try:
+            out.append(f"--- r/{sub}\n" + sweep_subreddit(
+                sub, top=top, hot=hot, new=new, days=days,
+                min_comments=min_comments, replace_more=replace_more))
+        except Exception as e:
+            out.append(f"--- r/{sub}\n  failed: {type(e).__name__}: {e}")
     return "\n".join(out)
 
 

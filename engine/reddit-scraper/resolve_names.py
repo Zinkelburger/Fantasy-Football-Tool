@@ -334,6 +334,39 @@ def _load_dict_words():
 _DICT_WORDS = _load_dict_words() | _FUZZY_STOP_FLOOR
 
 
+NON_PLAYERS_FILE = "non_players.json"
+
+
+def load_non_players(path=NON_PLAYERS_FILE):
+    """People who turn up constantly and are not draftable: coaches, beat
+    writers, retired players, anyone outside the 337-man pool.
+
+    The resolver's remaining error class, and the one an audit kept finding.
+    Two of three misses over 84 blind-judged mentions were this: "the ghost of
+    Nick Chubb" became Chuba Hubbard, "Pop Douglas" became Caleb Douglas. The
+    pool has no way to represent someone it does not contain, so every such
+    person gets shredded onto whoever shares a name with him.
+
+    Returns (full-name keys, first-name keys). Full names are blocked outright
+    as spans. First names only demand corroboration, because "Andy" is Andy
+    Reid far more often than Andy Borregales but "Josh" is usually a player."""
+    try:
+        with open(pathlib.Path(__file__).resolve().parent / path, encoding="utf-8") as fh:
+            reg = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return frozenset(), frozenset()
+    full, firsts = set(), set()
+    for name in reg:
+        k = _key(name)
+        if " " in k:
+            full.add(k)
+            firsts.add(k.split()[0])
+    return frozenset(full), frozenset(firsts)
+
+
+NON_PLAYER_NAMES, NON_PLAYER_FIRSTS = load_non_players()
+
+
 def fuzzy_alias(token, raw_token, alias_keys, cutoff=0.86,
                 corroborated=lambda alias: False):
     """Catch the misspellings the threads are full of: Mahommes, Kiddle, Charbs.
@@ -579,6 +612,13 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
                 key = " ".join(x for x in normed[i:i + n] if x)
                 if not key:
                     continue
+                if n > 1 and key in NON_PLAYER_NAMES:
+                    # "Andy Reid", "Nick Chubb", "Pop Douglas" — consume the
+                    # whole span so no shorter n-gram inside it can match
+                    # either. Blocking the full name is what stops "Andy"
+                    # reaching a kicker and "Chubb" reaching Chuba Hubbard.
+                    consumed.update(range(i, i + n))
+                    continue
                 cands = aliases.get(key)
                 matched_key = key
                 gated = ""
@@ -590,6 +630,17 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
                     # the capital is no evidence at all: "Just the waiting
                     # sucks" is not Justice Hill.
                     gated = "sentence-initial capital proves nothing"
+                elif (cands and n == 1 and key in NON_PLAYER_FIRSTS
+                      and key in first_names
+                      and not any(a != key and (a in sent_words
+                                                or f" {a} " in f" {comment_norm} ")
+                                  for c in cands
+                                  for a in getattr(c, "_alias_keys", ()) or ())):
+                    # A bare first name shared with a known non-player, with
+                    # the pool player nowhere else in the comment. "Andy loves
+                    # good RBs" is Andy Reid; the adjacency rule below misses
+                    # it because no capitalized surname follows.
+                    gated = "first name of a known non-player, uncorroborated"
                 elif (cands and n == 1 and key in first_names
                       and _adjacent_to_other_name(words, normed, after_sep, i,
                                                   aliases, cands)):
