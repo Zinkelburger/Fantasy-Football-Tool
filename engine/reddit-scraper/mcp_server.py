@@ -47,6 +47,7 @@ SHIPPED_NOTES = HERE.parent.parent / "data" / "notes"
 LEASES = CORPUS / "leases.json"
 INDEX_CACHE = CORPUS / "index_cache.json"
 SKIPPED = CORPUS / "skipped.json"
+NOTE_LOG = CORPUS / "notes_written.json"
 LEASE_MINUTES = 45
 
 mcp = MCPServer("ff-reddit-scraper", version="1.0.0")
@@ -368,6 +369,12 @@ def write_note(player_name: str, markdown: str, publish: bool = False) -> str:
     DOSSIERS.mkdir(parents=True, exist_ok=True)
     path = DOSSIERS / f"{canon}.md"
     path.write_text(markdown, encoding="utf-8")
+    def _log():
+        log = _read_note_log()
+        log[canon] = {"ts": time.time(),
+                      "claims": len([c for c in C.load() if c.get("player") == canon])}
+        NOTE_LOG.write_text(json.dumps(log, indent=1), encoding="utf-8")
+    _with_lock(_log)
     msg = f"wrote {path.relative_to(HERE)} ({len(markdown)} chars)"
     if publish:
         SHIPPED_NOTES.mkdir(parents=True, exist_ok=True)
@@ -403,6 +410,13 @@ def _with_lock(fn, retries=60):
         finally:
             lock.unlink(missing_ok=True)
     return fn()          # lock never came free; better to race than to hang
+
+
+def _read_note_log():
+    try:
+        return json.loads(NOTE_LOG.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def _read_skipped():
@@ -1151,20 +1165,29 @@ def player_threads(player_name: str) -> str:
 
 
 @mcp.tool()
-def note_queue(limit: int = 40) -> str:
+def note_queue(limit: int = 40, include_silent: bool = False) -> str:
     """Which players need a note written or rewritten, most urgent first.
 
     A note is stale when a claim newer than the note exists. Injury and role
     claims from a beat report or the team outrank everything else — they are
     the facts the 2025 backtest says matter, and the ones that change daily in
-    late August. Sentiment-only players go last."""
+    late August. Sentiment-only players go last.
+
+    include_silent adds the players the corpus never mentioned. They still need
+    a note for a complete pass, and "nobody is talking about this player" is
+    itself the finding — no hype, no reported role change, no injury chatter.
+    Writing that honestly is the job; padding it is not."""
     all_c = C.load()
     if not all_c:
         return "No claims yet — distill_thread first."
     by_p = defaultdict(list)
     for c in all_c:
         by_p[c["player"]].append(c)
+    if include_silent:
+        for p in pool()[0]:
+            by_p.setdefault(p.player_name, [])
     basis_rank = {b: i for i, b in enumerate(C.BASIS)}
+    logged = _read_note_log()
     type_rank = {t: i for i, t in enumerate(C.CLAIM_TYPES)}
 
     def note_date(name):
@@ -1183,19 +1206,35 @@ def note_queue(limit: int = 40) -> str:
 
     rows = []
     for name, cs in by_p.items():
-        newest = max(c.get("date") or "" for c in cs)
-        strongest = min((type_rank.get(c["type"], 9), basis_rank.get(c["basis"], 9)) for c in cs)
+        newest = max([c.get("date") or "" for c in cs], default="")
+        strongest = min([(type_rank.get(c["type"], 9), basis_rank.get(c["basis"], 9))
+                         for c in cs], default=(9, 9))
         nd = note_date(name)
+        # Dates alone are too coarse for an unattended pass: a note written at
+        # noon and three claims stored at three o'clock are the same calendar
+        # day, so the note reads as current when it never saw them. The log
+        # records how many claims each note was actually written from.
+        seen = logged.get(name, {}).get("claims")
         if nd is None:
             status = "missing"
         elif nd == "undated":
             status = "undated"
+        elif seen is None:
+            # A note with no log entry predates the log. Unknown is treated as
+            # stale rather than current: the cost is one rewrite, and the cost
+            # of the other guess is shipping a note nobody checked.
+            status = "unverified"
+        elif seen < len(cs):
+            status = f"stale +{len(cs) - seen}"
         else:
             status = "stale" if newest > nd else "current"
-        rows.append((status != "current", strongest, -len(cs), name, status, nd, newest, len(cs)))
+        rows.append((not status.startswith("current"), strongest, -len(cs),
+                     name, status, nd, newest, len(cs)))
     rows.sort()
-    out = [f"{sum(1 for r in rows if r[4] != 'current')} of {len(rows)} players with claims "
-           f"need a note", "player                     status   note-as-of  newest-claim  claims",
+    out = [f"{sum(1 for r in rows if not r[4].startswith('current'))} of {len(rows)} players need a note"
+           + (" (including those the corpus never mentioned)" if include_silent else
+              " (players with claims only; pass include_silent for the whole board)"),
+           "player                     status   note-as-of  newest-claim  claims",
            "-" * 74]
     for _, _, _, name, status, nd, newest, n in rows[:limit]:
         out.append(f"{name:26} {status:8} {nd or '--':11} {newest:13} {n}")

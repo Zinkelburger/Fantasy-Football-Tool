@@ -66,6 +66,24 @@ cp docs/example-.env .env   # then fill in real values
 - `OPENAI_MODEL` (optional, live summarizer; default `gpt-5-nano-2025-08-07`)
 - `OPENAI_BATCH_MODEL` (optional, batch summarizer; default `gpt-5-mini`)
 
+## Doing a full pass
+
+`docs/FULL-PASS.md` is the runbook: refresh inputs, sweep, warm the index, fan
+agents out to distil, fan them out again to write notes, ship. It assumes no
+prior conversation and every step is resumable. The two agent briefs it hands
+out are `docs/AGENT_BRIEF.md` (thread -> claims) and `docs/NOTE_BRIEF.md`
+(claims -> the note the site shows).
+
+`refresh_pool.py` corrects the pool's teams against Sleeper's live roster,
+which is public and needs no key. It is not a replacement for the FantasyPros
+ADP export — Sleeper has no ADP and no notion of who is draftable — but it
+fixes what the export goes stale on. Run 2026-09-04 against an export taken
+2026-08-10, it found six players on new teams (Keenan Allen to Indianapolis,
+Kayshon Boutte to Houston, Najee Harris to the Giants, Kaleb Johnson to Green
+Bay, Jaydon Blue to Philadelphia, Emari Demercado to Dallas) and one free agent
+who had signed. Every one of them was already in our own claims, which is the
+useful part: the scraper notices roster moves before the board does.
+
 ## Each season's checklist
 
 1. Download the FantasyPros overall-ADP export **and** the six JuiceBoxOne
