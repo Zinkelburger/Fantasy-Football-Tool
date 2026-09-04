@@ -126,12 +126,21 @@ def fetch_thread(url_or_id: str, replace_more: int = 20) -> str:
 @mcp.tool()
 def sweep_subreddit(subreddit: str = "fantasyfootball", top: int = 50,
                     hot: int = 50, new: int = 50, days: int = 60,
-                    min_comments: int = 1, replace_more: int = 12) -> str:
+                    min_comments: int = 1, replace_more: int = 12,
+                    require_relevance: bool = False) -> str:
     """Sweep a subreddit's top/hot/new listings into the corpus.
 
     Reddit search never indexes comment bodies, which is why this pulls whole
     threads instead of searching per player. Resumable: already-cached posts
-    are skipped. Budget roughly 2-5 API requests per post at 100 req/min."""
+    are skipped. Budget roughly 2-5 API requests per post at 100 req/min.
+
+    require_relevance keeps only posts whose title names a draftable player or
+    reads like a report. Leave it off for r/fantasyfootball. Turn it on for a
+    team subreddit, which is mostly game threads, open threads and memes with
+    the beat reporting scattered through — and that reporting names the player
+    in the title. It is also worth turning on for r/fantasyfootballadvice and
+    r/Fantasy_Football, which are largely personal rate-my-team posts: swept
+    without it they contributed 233 posts of which almost none rank."""
     import time
     from datetime import datetime, timedelta
 
@@ -139,11 +148,21 @@ def sweep_subreddit(subreddit: str = "fantasyfootball", top: int = 50,
     sub = r.reddit.subreddit(subreddit)
     cutoff = (datetime.now() - timedelta(days=days)).timestamp()
 
-    cands = {}
+    def relevant(post):
+        if not require_relevance:
+            return True
+        title = post.title or ""
+        return bool(_names_in(title, title) or C._BEAT.match(title)
+                    or C._ATTRIB.search(title))
+
+    cands, skipped = {}, 0
     for listing in (sub.top(time_filter="month", limit=top),
                     sub.hot(limit=hot), sub.new(limit=new)):
         for s in listing:
             if s.created_utc >= cutoff and s.num_comments >= min_comments:
+                if not relevant(s):
+                    skipped += 1
+                    continue
                 cands.setdefault(s.id, s)
 
     CORPUS.mkdir(exist_ok=True)
@@ -178,7 +197,8 @@ def sweep_subreddit(subreddit: str = "fantasyfootball", top: int = 50,
             time.sleep(0.2)
 
     return (f"swept r/{subreddit}: {len(cands)} candidate posts, "
-            f"{len(todo)} newly fetched, +{added_c} comments\n"
+            f"{len(todo)} newly fetched, +{added_c} comments"
+            + (f", {skipped} skipped off-topic" if skipped else "") + "\n"
             f"corpus now {len(_read_jsonl(POSTS))} posts, "
             f"{len(_read_jsonl(COMMENTS))} comments")
 
@@ -432,8 +452,12 @@ def _thread_priority(post, comment_chars, mention_index, explain=False):
         # the 264 genuine threads are done.
         return (-1000.0, ["daily churn thread"]) if explain else -1000.0
     score = 0.0
-    if C.thread_kind(title, post.get("selftext", "")) == "news":
-        score += 40; why.append("reads as reporting")
+    if _ADVICE.search(title):
+        score -= 55; why.append("somebody's own roster question")
+    if _REPORTING.search(title) or C._BEAT.match(title):
+        score += 40; why.append("beat report")
+    elif C.thread_kind(title, post.get("selftext", "")) == "news":
+        score += 8; why.append("news vocabulary, no attribution")
     if re.search(r"\bAMA\b|ask me anything|ask us anything|we host", title, re.I):
         # An AMA is labelled discussion and reads like a goldmine — a named
         # analyst answering questions all day. Measured over the first 27
@@ -493,6 +517,32 @@ def _thread_priority(post, comment_chars, mention_index, explain=False):
     if age_days <= 3:
         why.append("fresh")
     return (score, why) if explain else score
+
+
+# Somebody's own roster question. These are the dominant form on
+# r/fantasyfootballadvice and r/Fantasy_Football, and they defeat both halves of
+# the score: they are short, and they are maximally focused, because a trade
+# question names exactly the two or three players being traded. They also trip
+# the news test, since thread_kind counts the word "trade" as reporting. What
+# they contain is one person's league and a dozen one-line verdicts on it —
+# nothing that generalises to a draft note.
+_ADVICE = re.compile(
+    r"^\s*(should|would|who|which|what|is|are|am|do|does|can|could|help|"
+    r"thoughts?|rate|need|any)\b.*\?|"
+    r"\b(should i|would you|who do i|who should i|rate my|my team|my league|"
+    r"help me|thoughts on my|am i|did i|worth it|i just (got|drafted|traded)|"
+    r"trade\s+\w+\s+for\b|for\s+\w+\?|start\s+\w+\s+or\b|\bor\b.*\?)",
+    re.I)
+
+# A beat report, not merely a title containing injury or transaction words.
+# thread_kind is deliberately loose because erring toward "news" only costs a
+# careful read; ranking cannot afford that, so it asks for the shape.
+_REPORTING = re.compile(
+    r"\bper\s+@?[A-Z]|\baccording to\s+[A-Z]|\breport(s|ed|edly)\b|"
+    r"\bsources?\s+(say|said|tell)|\b(returned?|placed|activated|waived|"
+    r"released|signed|claimed|ruled)\b|\b(did not|didn't|limited|full)\s+"
+    r"practic\w*|\bpractice (today|report|participation)\b|"
+    r"\b(questionable|doubtful|out for|season-ending|IR|PUP)\b", re.I)
 
 
 _BOARD = {}
@@ -1148,7 +1198,8 @@ def report_non_player(name: str, role: str = "", note: str = "") -> str:
 @mcp.tool()
 def sweep_many(subreddits: str = "fantasyfootball,DynastyFF,fantasyfootballadvice",
                top: int = 60, hot: int = 60, new: int = 120, days: int = 30,
-               min_comments: int = 10, replace_more: int = 12) -> str:
+               min_comments: int = 10, replace_more: int = 12,
+               require_relevance: bool = False) -> str:
     """Sweep several subreddits in one call, comma-separated.
 
     r/fantasyfootball is the main room, but team subreddits carry the beat
@@ -1159,7 +1210,8 @@ def sweep_many(subreddits: str = "fantasyfootball,DynastyFF,fantasyfootballadvic
         try:
             out.append(f"--- r/{sub}\n" + sweep_subreddit(
                 sub, top=top, hot=hot, new=new, days=days,
-                min_comments=min_comments, replace_more=replace_more))
+                min_comments=min_comments, replace_more=replace_more,
+                require_relevance=require_relevance))
         except Exception as e:
             out.append(f"--- r/{sub}\n  failed: {type(e).__name__}: {e}")
     return "\n".join(out)
