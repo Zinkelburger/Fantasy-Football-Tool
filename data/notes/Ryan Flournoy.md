@@ -1,9 +1,8 @@
 **Ryan Flournoy** (DAL, WR, bye 14) — board rank 248 · as of 2026-09-04
 
-**Room sentiment:** A thin but now beat-confirmed third-receiver role, and a dynasty pitch that is really about 2027.
+**Room sentiment:** a trusted third receiver whose real case is a 2027 dynasty bet, not a 2026 lineup spot.
 
-- Role: ESPN's Dan Graziano (Aug 11) has him as the Cowboys' third receiver and says the team trusts him — a fantasy factor only if CeeDee Lamb or George Pickens gets hurt. One commenter went further on Aug 20, saying Flournoy has taken over as the third target ahead of Jake Ferguson; nothing has confirmed or walked that back.
-- No injury claims.
-- Market, and read the condition: asked on Sept 2 for the take that most separates him from consensus, Murchison said he is telling followers to do whatever they can to acquire Flournoy in dynasty, rookie draft or startup, projecting a top-24 fantasy WR for almost nothing — but from 2027 on, and only once Pickens leaves Dallas in free agency. That is a bet on a roster change that has not happened.
+- Dan Graziano (ESPN, 8/11) reports he is the Cowboys' third receiver and the team trusts him, so he could be a fantasy factor if CeeDee Lamb or George Pickens is injured — his standalone value is entirely conditional on that. A commenter on 8/20 goes further and says he has taken the third-target role ahead of Jake Ferguson.
+- The dynasty case is the loudest thing in the file: asked for the take that most sets him apart from consensus, Murchison said he has been telling followers to do whatever they can to acquire Flournoy in dynasty, in rookie drafts or startups, projecting a top-24 fantasy WR from 2027 on — conditional on George Pickens leaving in free agency. One commenter agrees he could be Dallas' WR2 next season on that path, with great camp reviews, but objects that he is about to turn 27.
 
-**Draft take:** A dynasty add on the Pickens-departure bet; in redraft he is a last-pick contingency on a Lamb or Pickens injury, not a target.
+**Draft take:** a dynasty buy on the Pickens-leaves scenario and a redraft handcuff to Lamb or Pickens — nothing here argues for a 2026 roster spot.

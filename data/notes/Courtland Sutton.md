@@ -1,11 +1,10 @@
 **Courtland Sutton** (DEN, WR, bye 10) — board rank 76 · as of 2026-09-04
 
-**Room sentiment:** The room buys the touchdowns and discounts the targets; the fade case has quietly grown a second leg in Pat Bryant.
+**Room sentiment:** Across three separate threads, nobody defends his hold on the WR2 job.
 
-- Role, consensus Sept 3: everyone agrees Jaylen Waddle's arrival cuts his target volume. The bull case — four separate nominations — accepts that and argues the trade is worth it: he now draws CB2s, he is still Denver's biggest red-zone threat with double-digit touchdown range, and that is top-24 upside at a WR3/4 price.
-- The fade, Sept 1: he is roughly co-number-one with Waddle rather than the clear lead, one commenter has him a drop candidate by week 8 in competition with Pat Bryant, and others write off the whole Denver receiver room from last year.
-- Older and weaker, Aug 11: a commenter relayed an unnamed camp report that Bryant may be passing Sutton for the WR2 job. Nobody in that thread defended Sutton's hold on it, though a Broncos fan doubted the report. No beat writer or coach has said this, and the Sept 3 consensus still treats Sutton as the red-zone piece — so treat Bryant as a live threat, not a settled one.
-- No injury or availability claim on him anywhere.
-- Market is one line: a commenter names him among receivers he likes relative to current ADP. Nothing says where the room actually drafts him, so there is no board-versus-room price gap to report.
+- Role: Denver added Jaylen Waddle, and commenters accept his target volume drops. The bull argument (4 nominations, +10) is that he now faces CB2s, remains Denver's biggest red-zone threat with double-digit-touchdown range, and has top-24 upside at a WR3/4 price.
+- The bear case is about the job itself, and it is the older claim that started it: on 08-11 a commenter relayed an unnamed camp report that Pat Bryant may be passing Sutton for the Broncos' WR2 role, with a Broncos fan sceptical of the report. Two later threads repeat it — Bryant is named as the veteran expected to displace him by mid-year, and one commenter predicts Sutton is a drop candidate by Week 8. In all three, nobody argues the other side.
+- One commenter fades him to roughly co-number-one with Waddle rather than a clear lead, and others say the whole Denver receiver room was bad last year, Sutton included.
+- Market: one claim only, a bare list entry naming him a receiver he likes relative to ADP. Nothing in the corpus contests board rank 76.
 
-**Draft take:** Draft him as a WR3 who pays in touchdowns, accept a co-number-one target floor, and watch Pat Bryant's snap share in September before you pay more than that.
+**Draft take:** Board rank 76 pays for a lead role the room does not expect him to hold past midseason — fine as a WR4, wrong as your WR2.

@@ -83,6 +83,30 @@ def _read_jsonl(path):
 
 # --------------------------------------------------------------------- fetch
 
+def _canon_name(raw):
+    """Pool name for a player, tolerant of how the name is actually written.
+
+    A DST's pool key is the exact string "New England Patriots DST   (11)" —
+    three spaces and a parenthesised bye — but the note header prints the clean
+    "New England Patriots DST", so a writer copying the header back into
+    player_claims was told the player is not in the pool. Accept either, and
+    accept collapsed whitespace, since the run of spaces survives no round trip
+    through a prompt or a table.
+    """
+    def norm(x):
+        x = re.sub(r"\s*\(\d+\)\s*$", "", str(x)).strip().lower()
+        return re.sub(r"\s+", " ", x)
+    players = pool()[0]
+    exact = {p.player_name.lower(): p.player_name for p in players}
+    hit = exact.get(raw.strip().lower())
+    if hit:
+        return hit
+    loose = {}
+    for p in players:
+        loose.setdefault(norm(p.player_name), p.player_name)
+    return loose.get(norm(raw))
+
+
 @mcp.tool()
 def fetch_thread(url_or_id: str, replace_more: int = 20) -> str:
     """Fetch one Reddit thread's post and comments into the local corpus.
@@ -373,8 +397,7 @@ def write_note(player_name: str, markdown: str, publish: bool = False) -> str:
     Writes corpus/dossiers/<Player Name>.md as a staging copy. With
     publish=True it also overwrites data/notes/<Player Name>.md, which is the
     file the site bundles — build_deploy.py picks it up on the next build."""
-    names = {p.player_name.lower(): p.player_name for p in pool()[0]}
-    canon = names.get(player_name.strip().lower())
+    canon = _canon_name(player_name)
     if not canon:
         return f"{player_name!r} is not in the player pool; note not written."
     DOSSIERS.mkdir(parents=True, exist_ok=True)
@@ -1166,8 +1189,7 @@ def player_claims(player_name: str) -> str:
     two days apart, and only the dates say which one still stands.
 
     Write the note from these, not from player_dossier."""
-    names = {p.player_name.lower(): p.player_name for p in pool()[0]}
-    canon = names.get(player_name.strip().lower())
+    canon = _canon_name(player_name)
     if not canon:
         return f"{player_name!r} is not in the player pool."
     grouped = C.for_player(canon)
@@ -1268,8 +1290,7 @@ def player_threads(player_name: str) -> str:
     still need reading before player_claims is complete for him. Only
     confidently resolved mentions count toward the order; uncertain ones are
     shown separately."""
-    names = {p.player_name.lower(): p.player_name for p in pool()[0]}
-    canon = names.get(player_name.strip().lower())
+    canon = _canon_name(player_name)
     if not canon:
         return f"{player_name!r} is not in the player pool."
     rows = _threads_for(canon)

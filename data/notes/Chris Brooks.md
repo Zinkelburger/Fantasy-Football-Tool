@@ -1,9 +1,10 @@
 **Chris Brooks** (GB, RB, bye 11) — board rank 276 · as of 2026-09-04
 
-**Room sentiment:** thin — six top-level mentions and six upvotes in the one thread that discussed him, and the interest is entirely contingent.
+**Room sentiment:** A blocking specialist the room reaches for only because the backfield in front of him keeps thinning — and it disagrees about whether he or Kaleb Johnson is the right dart.
 
-- Listed as RB2 on the Packers' official website, per a commenter, and described as a special-teams roster piece who is excellent in his pass-protection role. Twerski says that role is real but doubts it expands much, which is why he ranks Brooks behind Kaleb Johnson in the Green Bay backfield.
-- The snap case exists only while Josh Jacobs is unavailable: with only Kaleb Johnson added, one commenter argues Green Bay is effectively relying on MarShawn Lloyd and Brooks for backfield snaps, and a few see a three-way committee. Murchison expects Brooks to mix in rather than let Lloyd carry a full load, citing his past production; Cooper takes Brooks over Kaleb Johnson as a deep-league handcuff stash. Lloyd's own durability is the other lever — one commenter added Brooks on Jacobs news specifically because Lloyd cannot stay healthy.
-- Market: he is the only running back bolded in one sub-40%-rostered audit, at 32.6% on Sleeper — the room's top deep RB stash, ahead of George Holani, Kendre Miller, Tahj Brooks and Samaje Perine.
+- His value exists only while Josh Jacobs is unavailable. Two separate claims attach that condition explicitly, and a third adds that MarShawn Lloyd cannot stay healthy. Nothing here is about Brooks improving; it is about the room in front of him emptying out.
+- The role itself is narrow and well agreed: pass protection, third down and special teams. He was listed as RB2 on the Packers' own website on 8/30, but the commenter noting it treats the listing as blocking-driven rather than a workload signal.
+- How much he actually plays is genuinely disputed among named analysts. Sanderson expects him to take the second-most snaps in the backfield to open the year while calling him "really limited"; Murchison expects him to mix in rather than let Lloyd carry a full load, citing his past production. Twerski agrees he is excellent in the role but doubts it expands, and ranks Kaleb Johnson ahead of him. Cooper is the lone voice taking Brooks over Johnson.
+- Market: one datapoint, from 8/30 — at 32.6% rostered he is the only back bolded in a sub-40% Sleeper availability audit, ahead of George Holani, Kendre Miller and Samaje Perine. Sanderson's "round 7" price is far ahead of anything else reported on him and nothing else in the corpus contests his board rank of 276.
 
-**Draft take:** deep-league dart only, and mainly if you already hold the Green Bay backfield — the role is pass protection and special teams unless Jacobs stays out.
+**Draft take:** Deep-league handcuff only, and the room's majority prefers Kaleb Johnson for the same slot — take him just to cover a Jacobs absence, not for standalone snaps.

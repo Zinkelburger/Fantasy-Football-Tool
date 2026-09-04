@@ -83,23 +83,40 @@ characters on a single single-commenter claim has written fiction.
 **A well-covered player — five claims or more — runs 1,200-2,500 characters**,
 four to six bullets. Most players never reach the bottom of that range.
 
-**2,500 is a soft ceiling, and a 25-plus-claim player may pass it.** Three
-writers in one session each trimmed twice and still landed at 2,600-2,800 on
-players like Tuten and Loveland, where a team_official quote, a beat practice
-report, several named analysts disagreeing and a real market split are all
-load-bearing. Going further would have meant deleting sourced facts, which is
-worse than a long note. Never pad to reach the band; never cut a sourced fact to
-fit under it. If you are over 2,800, you are probably keeping sentiment you
-could drop — cut there first, since it is the weakest thing you have.
+**Past roughly 25 claims the band stops applying.** A 30-to-55-claim player
+runs 2,800-3,800 and should, and a 60-plus-claim availability case (Josh Jacobs
+had 105 claims, Jeanty 99) lands near 3,200 after three trim passes. On those the
+escape hatch below does not apply — there is no sentiment left to cut, because
+every bullet is availability, roster mechanics or price. Being over the ceiling
+there is not a failure. Writers kept trimming twice and overshooting anyway,
+because on those players a team_official quote, a beat practice report, several
+named analysts disagreeing and a real market split are all load-bearing at once —
+Jeremiyah Love has 54 claims and the honest note is 3,800 characters. The rule is
+not a length, it is: **never pad to reach a number, never cut a sourced fact to
+fit under one.** When you genuinely must cut, cut sentiment first; it is the
+weakest thing you have and the backtest priced it at zero.
 
 Longer is not better — this is read mid-draft.
 
 ## Judgement rules
 
-**Weight by basis:** `team_official > beat_report > analyst > consensus >
-single_commenter`. This ordering also prints at the bottom of every
-`player_claims` call; if the two ever disagree, the tool is right and the
-mismatch is a bug worth reporting.
+**Weight by basis — but derive the basis from the claim text, not the label.**
+The ordering is `team_official > beat_report > analyst > consensus >
+single_commenter`, and it prints at the bottom of every `player_claims` call.
+The *label* is unreliable in both directions and every writer in the September
+run reported it:
+
+- It under-rates. Named analysts (Hartitz, Murchison, Twerski, Loza, Cooper,
+  Dopp, Maher) arrive as `single_commenter` because a Redditor typed the relay.
+- It over-rates, which is the dangerous direction. Claims tagged `team_official`
+  that read "a commenter relays that the head coach said...", a `beat_report`
+  that is "one commenter relays an unnamed beat reporter", an `analyst` tag on a
+  bold-predictions column being laundered as reporting. Roughly one claim in
+  eight at the top two tiers.
+
+So read the sentence and ask who actually said it. A relayed coach quote is
+still the coach on a question of fact, but it is not the team speaking, and it
+does not outrank a named beat writer. Say in the note how you know.
 
 **A coach is the best source for a fact and the worst for a forecast.**
 `team_official` outranks everything on what happened — he is on IR, he took
@@ -114,8 +131,29 @@ repeating a hamstring two days after the beat writer reported full practice is
 lag, not news. When a genuine reversal happens at equal weight, report one
 story with a direction rather than two contradictory quotes.
 
+**But a dated observation is not a status, and it expires.** "Did not practise
+Monday" from a beat writer is a fact about Monday. Read literally, the basis rule
+says that August note outranks three weeks of later commenters saying the player
+is fine — so a one-day absence in mid-August would still be leading his note four
+days before Week 1. That is wrong, and it bit three players in one batch
+(Worthy, Brenton Strange, Diggs). A practice observation, a snap count from one
+game, a single-day rep note: report the arc, not the frozen datapoint. Weight
+basis when two sources describe the same standing state; prefer recency when the
+earlier item was a snapshot with a shelf life. If nothing has been said since and
+you cannot tell whether it resolved, say exactly that — "no follow-up reported"
+is honest and "he is out" is not.
+
 **Availability beats everything.** IR, PUP, the commissioner exempt list, a
 waiver — first bullet and in the draft take. The board's rank does not know it.
+
+**For a handcuff, the availability fact is the other man's.** Half the players in
+this pool matter only in someone else's absence, and their own status is boring:
+healthy, buried, undrafted. Their whole case arrives as an `only while:` rider —
+Shough while Jordyn Tyson is on IR, Holani while Charbonnet is on PUP, Vele while
+Tyson is out. That rider IS the availability item for this player and belongs in
+the first bullet and the draft take, not tucked into a role bullet. Say whose
+status it depends on and what that status currently is, because a reader deciding
+whether to spend a pick on the backup is really asking about the starter.
 
 **Board rank and ADP are not two opinions.** `player_claims` prints an ADP above
 the header and a board rank inside it; they are different scales over the same
@@ -125,9 +163,33 @@ claims* say the room actually pays.
 
 **Say so when the board and the room disagree on price.** The board rank in
 your header can be weeks stale. If the market claims consistently put a player
-somewhere else — Brooks at board rank 127 while the room drafts him round 7-8,
-Lloyd at 189 while the room takes him in the 6th — that gap is one of the most
+somewhere else — *Jonathon* Brooks at board rank 127 while the room drafts him
+round 7-8, Lloyd at 189 while the room takes him in the 6th — that gap is one of
+the most
 decision-relevant things on the page. Name it in the market bullet.
+
+**When there is no price to compare, say the board is unchallenged — once, in a
+clause.** Plenty of players have one bare market claim, or none: a nomination in
+a list, a name in a mock. There is nothing to compare and hunting for a gap means
+inventing one. "Nothing in the corpus contests his board rank" is a true and
+useful sentence — it tells the reader the number is untested rather than
+confirmed, which is different from silence. Keep it to a clause inside the market
+or draft-take line; it is not its own bullet, and it does not belong on a player
+whose price the room actually discusses.
+
+**Two figures for one static fact is not a supersession problem.** The basis and
+recency rules settle facts that *changed*. They say nothing about a claim saying
+McBride is 100 points clear of TE2 and another saying 85, or three different
+touch counts for the same season. Nothing changed; somebody counted differently.
+Prefer the figure that states its own denominator or carries the supporting
+counting stats, say "roughly", and drop the rest. Never average them, and never
+present both as though the disagreement were meaningful.
+
+**An `only while:` rider is sometimes just a topic.** Most are real conditions
+("while LeQuint Allen is out"). Some are a bare name, or a question, or a scope
+note about which season is being discussed. Read it before you template it into
+prose — a rider reading `only while: Rome Odunze` means "if Odunze misses time",
+and writing it literally produces nonsense.
 
 **Sentiment is the weakest thing you have.** The backtest found note tone added
 no edge over ADP and that hyped players mildly underperformed. Its one sharp

@@ -492,6 +492,43 @@ floor and then *penalises* length, and AMAs take a flat −45: they read like a
 goldmine, a named analyst answering questions all day, and produced one hard
 claim from 149k characters plus none at all from 130k more.
 
+### What 27 threads said, and what 464 said
+
+The table above was measured over the first 27 threads distilled, and it did not
+survive the full pass. Across 464:
+
+| | discussion | news |
+|---|---|---|
+| claims produced | **2,874** | 1,297 |
+| `beat_report` + `team_official` | **226** | 163 |
+| `role` + `market` | **1,714** | 700 |
+
+Discussion threads out-produce news threads on every measure, including the
+hard-sourced half the pipeline is tuned to find. Two reasons, and both were
+invisible from inside the ranking:
+
+**Beat quotes get relayed.** A coach speaks, and the sentence reaches the corpus
+inside a discussion thread rather than as its own post — Hafley on Achane's
+40-touch workload, McDaniel on a three-back rotation, Philadelphia's OC on
+Barkley as the focal point. `thread_kind` reads titles, so a relayed quote reads
+as opinion. That is also why `basis` labels look wrong so often: the relay is
+real reporting wearing a commenter's clothes.
+
+**The players who most need coverage generate no news.** An elite, healthy player
+in a settled role is never the subject of a beat report — there is nothing to
+report. After the news-first pass, 21 of the board's top 60 had notes resting on
+no beat or team source at all: Gibbs, Bijan, Jonathan Taylor, Smith-Njigba,
+Achane, Bowers, McBride. Everything known about them — Smith-Njigba at 0.33
+targets per route run, McBride's 60-target lead over TE2, the fact that only six
+backs cleared a 70% snap share in 2025 and the board's number-one pick is not
+among them — lives in exactly the long threads the size penalty buries.
+
+So the size penalty is right about *arguments* and wrong about *analysis*, and it
+cannot tell them apart from a title. Read the discussion threads too; the brief's
+"strategy is not a claim" rule is what keeps the punt-TE posts from turning into
+noise, and a distiller reading a whole thread applies it better than any filter
+on the title does.
+
 ### The exception: length is not the same as dilution
 
 The size penalty is right about opinion threads and was wrong about one class of

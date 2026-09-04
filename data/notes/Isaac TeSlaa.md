@@ -1,11 +1,10 @@
 **Isaac TeSlaa** (DET, WR, bye 6) — board rank 220 · as of 2026-09-04
 
-**Room sentiment:** He has the WR3 job by default and the room is more negative than split on whether he can do anything with it.
+**Room sentiment:** The room's own worked example of hype outrunning opportunity, and the offseason reports do not help him.
 
-- Role (consensus, Sep 1): Detroit's WR3, behind the two star receivers and behind LaPorta and Gibbs for targets. Last year's WR3, Kalif Raymond, is gone, so the job is his by default, and commenters describe a steep dropoff after the top two.
-- Same thread, same day, and the fade is the better-argued half: critics say he is still raw, "riding off that one catch," that route running is not developing, hands are inconsistent, and that every offseason report was bad with nothing shown in preseason. Defenders only point to a third-round pick still learning the position with 6 touchdowns last year.
-- The sharpest version of the fade (Aug 8) is about the hype rather than the player — "so many people are convinced the guy is the future with 10 catches and behind three or four other guys firmly planted" — and a Sep 1 thread calls him the easiest drop of a five-player group, arguing the sub has a love affair with receivers who will sit behind two more talented teammates for at least two more years.
-- Sentiment is dynasty roster-churn: named on three taxi squads, though one manager would slot Matt Hibner in over him; another prefers Kayshon Boutte to him outright; and he turns up elsewhere as end-of-bench filler and a very late "year 2 TeSlaa?" dart.
-- No injury or availability claim, and nothing beat- or team-sourced anywhere on him.
+- Role: Detroit's WR3 by default — last year's WR3 Kalif Raymond is gone and there is a steep dropoff after the top two — but LaPorta and Gibbs are also ahead of him in the target order.
+- Reports are negative and consistent. One commenter says he looked bad in camp and counts Detroit's supporting cast as thinner than it appears. In the thread where the room splits, critics say he is still raw, "riding off that one catch," and that every offseason report was bad: route running not developing, inconsistent hands, nothing in preseason. Defenders offer draft capital — a third-rounder still learning the position — and 6 touchdowns last year.
+- He is used twice as the cautionary case rather than the subject: "so many people are convinced the guy is the future with 10 catches and behind three or four other guys firmly planted," offered as a sharper case of camp-hype overreach than Keon Coleman; and he is called the easiest drop of a five-player group, with the argument that this sub has a love affair with players who caught ten passes and will sit behind two better receivers on their own team for at least two more years.
+- Market and sentiment: nothing but very late dart-throws. Named on three taxi squads, used as end-of-bench filler, preferred over rookie Marlin Klein in one best-ball question, and passed over for Kayshon Boutte by another commenter. Board rank 220 matches how he is actually treated.
 
-**Draft take:** Not worth a redraft bench spot — the role is real by default, and the reports on him are not.
+**Draft take:** Leave him on the wire in redraft — he is a dynasty hold at best, and the negative case against him is the specific one.

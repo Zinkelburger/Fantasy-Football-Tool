@@ -1,10 +1,10 @@
 **Greg Dulcich** (MIA, TE, bye 6) — board rank 187 · as of 2026-09-04
 
-**Room sentiment:** a named late-round dart with real support among rankers and no settled role behind it.
+**Room sentiment:** A target-vacuum dart rather than a talent bet, and the standing doubt is whether he stays on the field.
 
-- Role is the open question and nothing in the corpus resolves it. Loza (Sept 3) calls herself a Dulcich truther and endorses him as a high-upside late dart, but explicitly advises pairing him with a floor tight end while his role is unclear. A commenter (Sept 2) floats him as one of the few Miami pass catchers who could absorb targets alongside Achane, and labels that "a sprinkle of hopium" rather than a projection. No injury or availability claim anywhere.
-- Cooper (Sept 1) makes him his favourite deep TE dart and his pick for an out-of-nowhere breakout — pure upside on a bad Dolphins team, taken late in best ball — and calls him the safer of the deep Miami plays in leagues with many flex spots.
-- The counterweight (Sept 2, consensus): commenters would take Mason Taylor over him right now, 14 upvotes, with the rebuttal that Dulcich's yards-per-route-run at the end of last season were absurd and carry the upside.
-- Market: the room pays much less than board rank 187. The case made for him (Sept 1) is as a deep sleeper going undrafted — the argument being that Miami has no consensus alpha pass-catcher and no NFL team throws for under 2,500 yards — and it drew two mentions and essentially no upvotes. Elsewhere he is a streamable last-round name: one auction drafter took him second-to-last and immediately added Hunter Henry off waivers as protection, which is the honest way to own him.
+- Role: Miami is very thin at wide receiver and the case for him is explicitly that somebody has to catch the ball. One commenter floats him as a pass catcher who could absorb targets alongside De'Von Achane but labels his own take "a sprinkle of hopium" rather than a projection. The room's standing objection is availability — "he can play but will he."
+- Cooper's favorite deep TE dart and his pick for an out-of-nowhere breakout: pure upside on a bad Dolphins team, taken late in best ball, and he calls Dulcich the safer of the deep Miami plays in leagues with many flex spots. Loza calls herself a Dulcich truther and endorses him as a high-upside late throw, but advises pairing him with a floor TE while the role is unclear.
+- The counterweight: a 14-upvote comment would take Mason Taylor over him right now, answered only by the point that his yards per route run at the end of last season were high enough to carry upside.
+- Market: essentially undrafted. He is floated as a deep sleeper on the argument that no NFL team throws for under 2,500 yards, with two mentions and almost no upvotes behind them, and named as the last-round TE flier in a 9-upvote comment alongside Malachi Fields and Dylan Sampson. One auction drafter took him second-to-last and immediately added Hunter Henry off waivers as protection.
 
-**Draft take:** last-round TE2 dart only, behind a tight end you can actually start — and do not pay board rank 187 for a player the room is leaving undrafted.
+**Draft take:** A last-pick or waiver TE2 in deep and best-ball leagues only — nothing here justifies starting him Week 1.

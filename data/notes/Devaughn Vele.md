@@ -1,9 +1,9 @@
 **Devaughn Vele** (NO, WR, bye 8) — board rank 270 · as of 2026-09-04
 
-**Room sentiment:** Pure contingency name — everything said about him is conditioned on Jordyn Tyson being on IR.
+**Room sentiment:** a pure injury-replacement bet — every claim about him is conditional on Jordyn Tyson being out.
 
-- Role: named as an absorber of Saints targets while Tyson is out — "Vele Season" drew 38 points and "Time for Vele to ball out" the same day (Aug 30) — but the room ranks him behind Juwan Johnson and Olave in the beneficiary order, so he is third in line for the vacated work.
-- The condition has a stated length in one version: Tyson out at least four games. One commenter's plan is to draft Tyson at $1, stash him on IR and roster Vele as the actual piece.
-- Market: one analyst names him one of only two receivers worth adding off waivers before Week 1; another calls him a deep-league sleeper who "could be useful this year."
+- Role: named across two 2026-08-30 threads as a beneficiary of Tyson's absence ("Time for Vele to ball out", "Vele Season"), described by one commenter as "perfectly capable" of covering Tyson's snaps. This holds only while Tyson is on IR, and the same threads expect that to be at least four games.
+- The room ranks him behind Juwan Johnson and Chris Olave in the New Orleans beneficiary order, and a reply to the "perfectly capable" comment notes he is nowhere near Tyson's upside. One commenter's plan is to draft Tyson at $1, stash him on IR, and roster Vele as the actual playable piece.
+- Market: Hartitz names him one of only two receivers — with Chris Bell — worth adding off waivers before Week 1. A Ringer host lists him among deep-league sleepers and says he "could be useful this year".
 
-**Draft take:** Waiver add rather than a draft pick — worth a roster spot only in deep leagues, and only while Tyson is out.
+**Draft take:** waiver-wire add rather than a draft pick in anything but the deepest leagues, and the claim expires the week Jordyn Tyson is activated.

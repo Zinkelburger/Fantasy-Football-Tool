@@ -1,9 +1,11 @@
 **Jaylen Wright** (MIA, RB, bye 6) — board rank 213 · as of 2026-09-04
 
-**Room sentiment:** He made the roster and nobody, his own fanbase included, is confident he stays on it.
+**Room sentiment:** A roster-bubble back, not a fantasy asset — the room's own last-year precedent for discounting Miami backfield hype.
 
-- Availability first, and it is still open. On Aug 30 commenters read Jarquez Hunter's release as Miami deciding to keep Wright at final cutdowns. But on Sept 2 a Dolphins fan says he is not sure Wright is even on the roster in a week and would rather hold Ollie Gordon. Same commenter-level weight, later claim, so the bubble talk has not gone away. He did handle kick returns in the preseason.
-- Role: contested RB2 behind De'Von Achane. The late-August read was blunt — he is on the bubble (63 pts) and "he's just not getting it" (44 pts). He has flashed in practice but two preseason games went badly, and an Aug 29 commenter notes in passing that Wright has been struggling, which nobody in that thread disputes.
-- The dissent: some say he is still solidifying the RB2 job he always held and that Miami was only adding depth for a receiver they were cutting anyway. One commenter adds the Dolphins may have been shopping him to free a running back spot, and a separate proposal to trade Wright plus a day-3 pick for a receiver was downvoted to -6.
+- Roster status first: the room has him on the Miami bubble (08-27, "I think Jalen Wright is on the bubble" at 63 pts, "he's just not getting it" at 44 pts). One Dolphins fan (09-02) says he is not sure Wright is even on the roster in a week and prefers Ollie Gordon as the back to hold. He did handle kick returns in the preseason.
+- The one thing cutting the other way: commenters read Jarquez Hunter's release (08-30) as Miami deciding to keep Wright at cutdowns — though the same commenter adds Wright has not shown much and that the Dolphins may have been shopping him to free an RB spot. Only while: reported trade talks around Wright or Gordon do not materialize.
+- Role, if he sticks: contested RB2 behind De'Von Achane. He has flashed in practice but two preseason games went badly, and one commenter notes in passing that he has been struggling — nobody in the thread disputed it.
+- The room's own base rate on him: he got the same McDaniel public buildup last offseason and topped out around 75 touches, roughly 70 carries for about 200 yards in 2025. That precedent is now used to discount praise for *other* Miami backups.
+- Sentiment: a commenter floating a Wright-plus-day-3-pick trade for a receiver was downvoted to -6.
 
-**Draft take:** Do not draft him — his own fanbase is not sure he is on the roster in a week, and nothing says he has held the RB2 job behind Achane.
+**Draft take:** Don't draft him — he is a cut candidate whose own 2025 is the room's standing evidence that Miami backfield hype does not convert.

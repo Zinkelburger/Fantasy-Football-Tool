@@ -1,9 +1,7 @@
 **Tre' Harris** (LAC, WR, bye 7) — board rank 218 · as of 2026-09-04
 
-**Room sentiment:** one mention in the entire corpus, and it is a ranking, not an argument.
+**Room sentiment:** nothing on his role in the corpus — the only claims are two analysts naming him as a late-round flier.
 
-- Nothing on role, snaps or injury. No commenter has made a case for or against him.
-- Market (2026-09-03): one analyst named him among his favorite late-round WR fliers at WR63 on his board, behind only Caleb Douglas in that group.
-- Board rank 218 lines up with a WR63 flier, so there is no board-versus-room price gap to exploit here.
+- Market: Maher lists him among his favourite late-round fliers at WR63 on his board, behind only Caleb Douglas in that group (2026-09-03). Sanderson calls him his favourite extremely late pick and one of the players who goes undrafted but can matter without an injury ahead of him, preferring Harris or Denzel Boston to Khalil Shakir off the wire (2026-09-01).
 
-**Draft take:** final-rounds dart — one analyst's flier list is the only thing arguing for him.
+**Draft take:** last-pick or first-waiver dart on analyst word alone — there is no reported role change behind it.

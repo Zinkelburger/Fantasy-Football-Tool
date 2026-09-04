@@ -1,10 +1,9 @@
 **Hunter Henry** (NE, TE, bye 11) — board rank 123 · as of 2026-09-04
 
-**Room sentiment:** Was a free last-pick TE in late-August drafts; the New England target picture has since gotten more crowded and the case is quieter for it.
+**Room sentiment:** A free last-pick tight end whose case rests on last year's role, which New England spent the offseason changing.
 
-- Role as of Aug 27, and this was the consensus: repeatedly named as a free last-pick TE — the Patriots' No. 2 pass catcher last year, a top-5 or top-10 fantasy TE finish, and no competition at his own position.
-- That case is narrowing. A.J. Brown and Romeo Doubs are now in New England, and on Sept 3 one analyst expects Henry to see less action for it. Later date, weaker basis than the consensus it argues against — treat it as a live concern, not a settled downgrade.
-- He signed an extension in New England, reported Aug 28. The room raised it as target competition and immediately dismissed it: not the kind of player who takes work from a WR1. Read it as job security in a modest role, not a target bump.
-- Market: one commenter took him in the 14th round purely as Kittle insurance, with Kittle as his only other tight end. That is the shape of the demand — a backup, not a starter anyone is chasing.
+- Role: New England's TE1 with no competition at the position. He was the Patriots' No. 2 pass catcher last year and finished top-5 to top-10 at the position, and he was reported on 08-28 to have just signed an extension.
+- What changed: A.J. Brown and Romeo Doubs both arrived. Loza expects Henry to see less action as a result. When the extension came up, the room dismissed him as target competition on the grounds that he is not the kind of player who takes work from a WR1 — that argument cuts both ways and is also the case against him.
+- Market: ranked around TE9 and drafted well past that. Multiple commenters report getting him in the 11th round, one took him in the 14th purely as Kittle insurance, and one OP's tiers leave him outside the top four groups — a round or two later than board rank 123 implies.
 
-**Draft take:** Fine as a last-round TE2 or as insurance behind an elite one, but the Brown and Doubs additions took the top-10 argument off the table, so do not draft him as your starter.
+**Draft take:** A last-round TE2 or bye-week fill — the top-10 finish came before New England imported two target-eaters.

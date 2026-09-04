@@ -1,10 +1,11 @@
 **Demond Claiborne** (MIN, RB, bye 6) — board rank 214 · as of 2026-09-04
 
-**Room sentiment:** A depth-chart bet, not a player bet — the case for him is who is ahead of him, and the pushback is his own tape.
+**Room sentiment:** The bull case is the depth chart rather than the player, and his own supporters say so.
 
-- Role: he is the Vikings' RB3 behind Jordan Mason and Aaron Jones, and nobody claims he has a role now. Two commenters expect him to start taking touches around midseason — one names Week 7, another thinks sooner — turning the backfield into a three-way split and capping Mason's value (Sep 4). That is conditional on him earning the work; an earlier version of the same idea makes it conditional on Jones or Mason missing time.
-- The best-supported argument for him is the depth chart: a 28-upvote comment likes him because Aaron Jones is washed and Mason "was never that great," he looked good in camp, and he landed in a good spot. The 8-upvote rebuttal in the same thread is the more specific one — the only thing going for him is an uninspiring depth chart, and he is small with a fast 40 but a low big-play rate, mediocre-to-bad college receiving metrics, and he looked terrible in preseason.
-- The one camp report on him is negative: a commenter says he cannot hold on to the ball in camp, pairing that with Aaron Jones's age as a reason Minnesota could still add a back — though a Vikings fan replies the room is healthy and likelier to cut a back than add one (Aug 24). No injury or availability claim.
-- Market and sentiment are dynasty-side and lukewarm: taken at 4.01 in a rookie draft and dropped immediately for roster space, named about seven times as a taxi stash alongside Tahj Brooks and LeQuint Allen, and still sitting on waivers in at least one league.
+- His path runs through Jordan Mason and Aaron Jones, and a Vikings fan says that room is healthy and likelier to cut a back than add one — so nothing has opened yet. One commenter says he would be the pass-protection back if Jones goes down; another expects him to get looks only on Jones or Mason missing time. Jermar Jefferson, the other back, is on IR.
+- Role: a sixth-round rookie sitting third in Minnesota behind Mason and Jones.
+- The 28-upvote case for him: Aaron Jones is washed, Mason was never that great, he looked good in camp and he landed in a good spot. The 8-upvote rebuttal is the more specific one — the only thing going for him is an uninspiring depth chart; he is small with a fast 40 but a low big-play rate and mediocre-to-bad college receiving metrics, and he looked terrible in preseason. A separate commenter says he could not hold on to the ball in camp.
+- Timeline, from commenters only: two expect him to start taking touches around midseason, one naming Week 7 and another thinking sooner, turning Minnesota into a three-way split and capping Mason's value.
+- Market: he costs nothing and is treated accordingly. He is still sitting on waivers in at least one manager's league, was taken 4.01 in a rookie draft and dropped immediately for roster space, and appears about seven times in one thread as a taxi stash grouped with Tahj Brooks and LeQuint Allen under "youth upside at RB."
 
-**Draft take:** A last-pick or taxi stash on the depth chart in front of him, not on anything he has shown — in redraft he is a Week 6 waiver name, not a draft pick.
+**Draft take:** Nothing has opened in a healthy Minnesota backfield — a dynasty taxi stash and a redraft waiver name, not a bench spot unless you own Jordan Mason.

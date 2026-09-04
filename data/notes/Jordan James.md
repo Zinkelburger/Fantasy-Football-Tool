@@ -1,9 +1,10 @@
 **Jordan James** (SF, RB, bye 8) — board rank 208 · as of 2026-09-04
 
-**Room sentiment:** thin and split — a waiver-wire name whose case rests entirely on his ribs healing and CMC not lasting.
+**Room sentiment:** rated the best back on waivers, but he is a contingency pick whose value needs both Christian McCaffrey to miss time and Kaelon Black to lose the job back.
 
-- Cracked/broken ribs in camp; he only got healthy roughly a week or two before 2026-09-02, returned in preseason week 3 and looked solid, but a commenter making his case on 9/2 concedes he is still playing with a cracked rib.
-- He was in pole position for the 49ers' RB2 job before the injury and lost it to Kaelon Black while out. A minority still argues James is the better back and the real CMC insurance; one floats a split with Black on pass work and James on early downs — all of it conditional on James getting fully healthy before San Francisco actually needs a lead back. Twerski sees him as the other half of a committee if CMC goes down but owns fewer James shares than Black.
-- Availability note for redraft: as of 2026-08-31 the room called him the best running back sitting on waivers and told an owner who had him available to add him immediately, ahead of the Saints backfield names.
+- His case is entirely someone else's availability: he matters only if Christian McCaffrey misses time, and nothing in the corpus reports McCaffrey as out. Behind that, Isaac Guerendo holds a roster spot only because he is on IR, and a rostering commenter expects him gone when he comes off it.
+- His own status: he broke or cracked ribs in camp and only got healthy roughly a week or two before 9/2. He returned in preseason week 3 and looked solid, though the commenter arguing his case on 9/2 conceded he still has a cracked rib.
+- Role: he was in pole position for the 49ers' RB2 job before the ribs and lost it to Kaelon Black while out. A minority of the room still argues he is the better back and the real McCaffrey insurance — the 8/30 case is that he got the ball in the playoffs — and one floats a split with Black on pass work and James on early downs. Twerski sees him as the other half of a likely committee if McCaffrey goes down, but owns fewer James shares than Kaelon Black shares.
+- Commenters called him the best running back sitting on waivers and told an owner to add him immediately, ahead of the Saints backfield adds.
 
-**Draft take:** free CMC insurance rather than a standalone play — add him where he is unrostered, but Black is ahead of him until the ribs are a non-story.
+**Draft take:** a waiver add, not a draft pick — he is worth a bench spot only if you roster McCaffrey, and even then Black is the man currently holding the job.

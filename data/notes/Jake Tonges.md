@@ -1,11 +1,10 @@
 **Jake Tonges** (SF, TE, bye 8) — board rank 234 · as of 2026-09-04
 
-**Room sentiment:** Universally framed as the Kittle handcuff, with value that exists only while Kittle is out or limited.
+**Room sentiment:** Priced as the Kittle handcuff and nothing else; the only disagreement is whether you roster him now or wait for the inactive report.
 
-- Role: San Francisco's TE2, and every role claim carries the same condition. Commenters call him startable as the fill-in only while Kittle is inactive (Sep 2), and the cheap bench pickup to hold if Kittle sits or plays a limited version of himself. An August claim has him as part of the stopgap plan while Kittle is out, alongside a heavy dose of Deebo and McCaffrey.
-- One commenter goes further (Sep 3): he is a capable enough backup that San Francisco can afford to ease Kittle back in rather than rush him for Week 1.
-- The room's own counter to that is the load-bearing objection: a Shanahan starter does not get eased in. If Kittle plays, Tonges is nothing, and that caps the entire case.
-- Market: "Kittle plus Tonges" as a package drew 56 points (Aug 23), with commenters citing his production last year including a championship-week game. Others call him a great value at ADP; one prefers Mayer at a similar price for having standalone value even with Bowers healthy.
-- Sentiment: elsewhere he is named the intended waiver backup behind Kittle and listed among the tight ends sitting on waivers as evidence of positional depth — plenty of rooms do not draft him at all, which is what board rank 234 is describing.
+- His whole case is George Kittle's status, and Kittle's is genuinely unsettled: an 08-21 thread has commenters planning around Kittle being out, and on 09-03 one commenter cites Tonges as the reason San Francisco can afford to ease Kittle back rather than rush him for Week 1. Every claim on Tonges is conditional on Kittle sitting or playing a limited version of himself. The room's counter is that a Shanahan starter does not get eased in, which caps the thesis.
+- Role: Kittle's direct backup and, per one commenter, the best backup tight end in the NFL — five TE1 finishes in six weeks without Kittle last season, including 19 PPR points in Week 17. He is called startable as the fill-in, and he is free in most leagues.
+- The other counter, also from the room: you can simply pick him up off waivers when Kittle is ruled out, so drafting him is paying for a week of certainty.
+- Market: "Kittle plus Tonges" as a pairing drew 56 points in one thread, citing his production last year including a championship-week game. A couple of commenters call him a good value at ADP, though one prefers Mayer at a similar price for having standalone value even if Brock Bowers stays healthy. He otherwise sits on waivers, consistent with board rank 234.
 
-**Draft take:** Draft him only if you own Kittle; otherwise leave him on waivers until Kittle's status actually turns.
+**Draft take:** Only draft him if you own Kittle, whose Week 1 workload the room expects to be managed — for everyone else he is the first tight end to claim the week Kittle is ruled out.
