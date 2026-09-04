@@ -565,18 +565,28 @@ def _preceded_by_other_first_name(words, normed, after_sep, i, aliases):
     if i == 0 or after_sep[i]:
         return False
     prev_raw, prev = words[i - 1], normed[i - 1]
-    if not prev_raw[:1].isupper() or not prev:
+    # Strip opening punctuation before testing the capital: beat reports are
+    # posted as "[Jordan Schultz] BREAKING: ...", and "[Jordan" fails
+    # isupper() on its first character, which exempted the pair and let
+    # Schultz the reporter resolve to Dalton Schultz.
+    lead = prev_raw.lstrip("([{\"'“‘*_")
+    if not lead[:1].isupper() or not prev:
         return False
-    if i - 1 == 0 and prev in _DICT_WORDS:
+    if i - 1 == 0 and prev_raw == lead and prev in _DICT_WORDS:
         # The preceding word opens the sentence, so its capital proves nothing,
         # and it is an ordinary English word: "Got Herbert in the 8th",
         # "Assuming Bijan", "Targeting Dak". A sentence-opening token that is
         # *not* a word is a given name — "Landon Robinson will make the 53" —
         # and that pair is somebody else.
+        #
+        # A token that arrived wrapped in punctuation is exempt from the
+        # exemption: "[Jordan Schultz] BREAKING:" is a byline, not a sentence
+        # opening, so the capital does mean something and Jordan being a
+        # dictionary word is beside the point.
         return False
-    if prev in _NAME_PREFIX or prev_raw.isupper():
+    if prev in _NAME_PREFIX or lead.isupper():
         return False              # "WR Chase", "JAX Allen"
-    if prev_raw != prev_raw.rstrip(".,;:!?)]}-–—/\\\"'’"):
+    if lead != lead.rstrip(".,;:!?)]}-–—/\\\"'’"):
         return False              # punctuation between them: a list, not a name
     if aliases.get(f"{prev} {normed[i]}"):
         return False              # the pair itself is a pool name
