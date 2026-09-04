@@ -1099,7 +1099,8 @@ def player_claims(player_name: str) -> str:
     header = (f"**{canon}** ({p.team_name}, {str(p.player_depth)[:2]}, bye {bye or '?'})"
               f" — board rank {rank or '?'} · as of {today}")
     out = [f"{canon} — {p.team_name} {p.player_depth} — ADP {p.player_adp}", "=" * 74,
-           "", "Header line for the note, ready to paste:", "  " + header]
+           "", f"Header line for the note, ready to paste (the date is today, "
+           f"generated now):", "  " + header]
     for t in C.CLAIM_TYPES:
         rows = grouped.get(t)
         if not rows:
@@ -1113,7 +1114,11 @@ def player_claims(player_name: str) -> str:
     out += ["", "=" * 74,
             "Newest first within each block. A later injury/role claim supersedes",
             "an earlier one; say so in the note rather than reporting both as live.",
-            "Weight by basis: team_official > beat_report > consensus > single_commenter.",
+            "Weight by basis: " + " > ".join(C.BASIS) + ".",
+            "A later claim supersedes an earlier one on the same fact ONLY if its",
+            "basis is at least as strong. A weaker later mention is usually lag —",
+            "a commenter repeating a hamstring two days after the beat writer",
+            "reported full practice is not news, it is someone who missed the news.",
             "sentiment is what the market thinks, which is worth recording and worth",
             "trusting less than the rest — the 2025 backtest found tone added no edge.",
             "",
@@ -1238,7 +1243,20 @@ def note_queue(limit: int = 40, include_silent: bool = False) -> str:
            "-" * 74]
     for _, _, _, name, status, nd, newest, n in rows[:limit]:
         out.append(f"{name:26} {status:8} {nd or '--':11} {newest:13} {n}")
-    out.append("\nplayer_claims(name) -> write_note(name, md, publish=True) for each.")
+    out += ["",
+            "Ordered by: needs work first, then the strongest claim type and basis",
+            "the player has, then claim count. So an injury claim from a beat",
+            "report outranks a pile of sentiment.",
+            "",
+            "status:  missing    no note file at all",
+            "         undated    a note with no 'as of' header — provenance unknown",
+            "         unverified a note written before write_note kept a log; it may",
+            "                    be fine, but nothing records what it was written from",
+            "         stale +N   N claims arrived after the note was written",
+            "         current    written from every claim now stored",
+            "Rewrite everything except current.",
+            "",
+            "player_claims(name) -> write_note(name, md, publish=True) for each."]
     return "\n".join(out)
 
 

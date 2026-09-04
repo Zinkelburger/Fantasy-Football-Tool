@@ -79,14 +79,26 @@ Read `thread_shortlist` before spending agents if you want to sanity-check it.
     S.note_queue(40)                      # players with claims
     S.note_queue(40, include_silent=True)  # the whole board, silent ones too
 
-Give each agent `docs/NOTE_BRIEF.md`. They pull from `note_queue`, read
-`player_claims`, and call `write_note(..., publish=True)`, which writes
-`data/notes/<Player>.md` — the file the site bundles.
+Give each agent `docs/NOTE_BRIEF.md` **and an explicit list of player names**.
+Unlike distilling, note writing has no lease: two writers handed the same
+queue will pick the same players off the top and the second silently overwrites
+the first. Read `note_queue` yourself, slice it into disjoint blocks of six to
+eight names, and give each writer its own block. That is the dispatcher's job,
+not the writer's.
 
-`note_queue` statuses: `missing` (no note), `undated` (a note with no `as of`
-header), `unverified` (a note written before the log existed), `stale +N` (N
-claims arrived after the note was written), `current`. Only `current` can be
-skipped.
+They read `player_claims`, then call `write_note(..., publish=True)`, which
+writes `data/notes/<Player>.md` — the file the site bundles.
+
+`note_queue` prints its own status legend and sort order. Only `current` can be
+skipped; `unverified` means a note exists but nothing records what it was
+written from, which is not the same as done.
+
+Eight notes written this way on 2026-09-04 ran 1,800-2,900 characters. Two
+writers reviewing the brief afterwards both caught the same two faults in it,
+which is why it now names a length target and states which of "later
+supersedes earlier" and "weight by basis" wins when they disagree. Ask your
+writers for that kind of feedback and fold it back in — the brief is the part
+of this pipeline that improves fastest.
 
 ## 5. Ship
 

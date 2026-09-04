@@ -1,10 +1,10 @@
-**Isiah Pacheco** (DET, RB, bye 6) — board rank 151
+**Isiah Pacheco** (DET, RB, bye 6) — board rank 151 · as of 2026-09-04
 
-**Room sentiment:** Quiet — 6 mentions and no real debate. He is discussed as a handcuff, not as a player anyone is targeting for standalone value.
+**Room sentiment:** Negative and settled — Lions fans call the signing an unreliable placeholder and treat the injury as predictable, with only a small minority defending it as a cheap bet.
 
-- **The one actionable take** ties him to Detroit's backfield news: after a report that Jahmyr Gibbs was not practicing amid contract talks, a poster wrote it was "not a bad time to pick up Isiah Pacheco, will definitely get the David Montgomery share and if Gibbs sits a game or two, he'll get that work as well." That is the entire bull case in the corpus.
-- **Hartitz's handcuff RB tiers** place him in tier 4: "There's a favorite, but we have questions," alongside Tyjae Spears, Tyler Allgeier, MarShawn Lloyd and Jaydon Blue. So even the handcuff framing carries a caveat about the split.
-- **Market:** 16.03 (pick 183.9) in a superflex TEP sample — effectively free. His only other appearances are historical table rows from his Kansas City seasons in an unrelated Kenneth Walker article.
-- **What's missing:** no camp reports, no Detroit depth-chart chatter, no health updates. The room has simply not engaged with him.
+- He is on IR. Detroit placed him there with a back injury on 2026-09-01, out at least four games. The board's rank does not know it. Detroit deliberately kept him on the initial 53 at cutdowns before making the move so he stays return-eligible after four games rather than being lost for the season — that is why five backs made the 53.
+- Even when he returns, the job is small: he signed as Detroit's RB2 on a one-year deal around $1.8M to be the short-yardage and early-down complement behind Jahmyr Gibbs, which the room pegs at roughly 5-8 touches a game. Before the IR move the room already had him no higher than the No. 2 and possibly behind undrafted back Jacob Saylors, who reporting in the thread had as the backup. Saylors is next man up while he is out.
+- Durability is the live argument. One side counts four straight years of significant missed time — 3 games in 2023, 10 in 2024 with a broken leg, 4 last year with an MCL, at least 4 now; the other says outside the leg break it is only 4 missed games in 4 years. Either way the missed time is happening again.
+- Handling advice from the room is blunt: one analyst dropped him from first to last among handcuffs unless you have an IR spot, and another is fine cutting him outright if you don't. The recurring line is "injury prone RB on IR without ever suiting up."
 
-**Draft take:** A last-rounds handcuff/bench stash whose value is entirely contingent on Gibbs missing time or the Montgomery-role split falling his way. Don't spend a real pick; grab him at the end of the draft or off waivers.
+**Draft take:** Do not draft him — on IR for at least four games and returning to a 5-8 touch complementary role behind Gibbs, he is a waiver name at best and a cut if you have no IR slot.

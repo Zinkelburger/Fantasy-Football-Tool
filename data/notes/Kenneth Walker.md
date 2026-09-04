@@ -1,10 +1,12 @@
-**Kenneth Walker** (KC, RB, bye 5) — board rank 22
+**Kenneth Walker** (KC, RB, bye 5) — board rank 22 · as of 2026-09-04
 
-**Room sentiment:** He lands on target lists and do-not-draft lists in equal measure — 49 mentions, including a dedicated "Why I changed my mind about Kenneth Walker on the Chiefs" thread that scored 204.
+**Room sentiment:** The August injury scare has cleared and the role is as good as it gets; the open question is whether he can hold a workload he has never actually been given.
 
-- The move to Kansas City is the whole story: Andy Reid, no Charbonnet vulturing goal-line work, and camp buzz about "catching passes in the screen game... something he didn't always get to showcase in Seattle."
-- Price is the sticking point even for converts — the pro-Walker author still says "I don't know if I want to pay the RB6 price tag he currently has on Sleeper." A "Do NOT draft these players" thread lists him at RB8-10.
-- Bear case is history plus offense shape: "Kenneth Walker has never finished as an RB1," and "I just don't see this offense having some kind of bell cow, focal point anymore." One camp note adds Mahomes is unlikely to run as much with Walker added.
-- Market: average rank 25.00; 3.03 / 27.7 superflex — a round-2 RB alongside Henry and Hampton.
+- The foot/ankle scare is resolved. It surfaced in late August as a vague "weird shoe injury" that had analysts flagging his history of foot problems, but he returned to a full practice on Wednesday 9/2 with no limitation reported. Nothing since.
+- Durability remains the live doubt rather than a current status. The room's most-upvoted correction on that (142 points) is that he has missed 10 games in four years, most of them from a single injury; the counter-case cites chronic soft-tissue issues, Seattle's pitch count, and career snap shares in the 47-64% range. Both are arguments about risk, not about anything he is currently dealing with.
+- Role is the reason to draft him. He is Kansas City's clear first-choice back, not a timeshare — their only major offensive investment at $30M guaranteed, with reports of the team emphasizing the run and the offense running through him. Per the room, he may also absorb the manufactured screen work that used to go to Rashee Rice, and the Demercado waiver is read as the team trusting him on passing downs. Kansas City kept ten offensive linemen and four tight ends and brought Bieniemy back, which the room reads as a commitment to running.
+- The role bear case is real and specific: Walker has never been handed a bellcow load anywhere, his career high is around 250 touches, Andy Reid has a long history of goal-line trickery, and Mahomes checks down at a low rate — so the goal-line and receiving volume being priced in is a projection, not a track record. One Chiefs fan also fades him on both tackle spots looking like revolving doors.
+- Market: he goes at the 1/2 turn against an ADP near 21, and drafters report paying a late-second or 2/3-turn price and being surprised he lasted. Maher has him as the value of the second-round back group in non-PPR at RB7 and 15th overall, and he rises rather than falls as you move from PPR toward standard, on the strength of the goal-line role. Hartitz slots him behind Chase Brown and ahead of Omarion Hampton.
+- Sentiment is split without much heat — 12 nominations drawing only about 19 upvotes. Bulls call him a plausible overall RB1 on talent plus situation; bears note he has never finished as an RB1 and just left a better offense.
 
-**Draft take:** You're paying for a situation change, not proven RB1 output. Fine if he slips behind the other round-2 backs; the room's own converts won't pay RB6.
+**Draft take:** Take him at the 1/2 turn as your RB1 and pay the second-round price — the role is the best he has ever had, and the risk is health, not usage.
