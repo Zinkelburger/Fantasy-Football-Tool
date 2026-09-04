@@ -396,7 +396,23 @@ def _live_leases(now=None):
             if now - v.get("ts", 0) < LEASE_MINUTES * 60}
 
 
-def _thread_priority(post, comment_chars, mention_index):
+def _mention_index():
+    """post id -> Counter of player -> mentions, plus each player's ADP.
+
+    Counts, not presence. Whether a thread is *about* a player is a question
+    about concentration, and presence cannot answer it: a bust megathread names
+    forty early-round players once each and says nothing about any of them."""
+    by_name = {p.player_name: p for p in pool()[0]}
+    per = defaultdict(Counter)
+    for row, post, m in A.resolved_mentions(pool()):
+        if m.tier in ("review", "ambiguous"):
+            continue
+        per[post.get("id") or row.get("post_id")][m.player.player_name] += 1
+    return {pid: (c, {n: getattr(by_name.get(n), "player_adp", 999) for n in c})
+            for pid, c in per.items()}
+
+
+def _thread_priority(post, comment_chars, mention_index, explain=False):
     """What is this thread worth reading? Higher is sooner.
 
     Not all 272 undistilled threads deserve equal attention, and a fleet that
@@ -406,6 +422,7 @@ def _thread_priority(post, comment_chars, mention_index):
     with size capped, because an 800-comment joke thread carries less than a
     100-comment beat report."""
     title = post.get("title", "")
+    why = []
     if re.match(r"^Official:\s*\[", title):
         # The daily rate-my-team / who-do-I-draft / trade threads. They are 6%
         # of the corpus by text and almost none of it is a claim: roster dumps
@@ -413,10 +430,10 @@ def _thread_priority(post, comment_chars, mention_index):
         # thread "news", because the word trade is in it. Sink them below
         # everything real rather than nudging — they are still claimable once
         # the 264 genuine threads are done.
-        return -1000.0
+        return (-1000.0, ["daily churn thread"]) if explain else -1000.0
     score = 0.0
     if C.thread_kind(title, post.get("selftext", "")) == "news":
-        score += 40
+        score += 40; why.append("reads as reporting")
     if re.search(r"\bAMA\b|ask me anything|ask us anything|we host", title, re.I):
         # An AMA is labelled discussion and reads like a goldmine — a named
         # analyst answering questions all day. Measured over the first 27
@@ -424,7 +441,7 @@ def _thread_priority(post, comment_chars, mention_index):
         # produced ONE team-official-or-beat-report claim from 149k characters,
         # and three other AMAs produced none at all from 130k more. What they
         # generate is opinion, in volume, which the 2025 backtest priced at zero.
-        score -= 45
+        score -= 45; why.append("AMA — measured near-zero hard claims")
     # Size is a cost, not a benefit. Hard claims (team_official or beat_report)
     # per 10k characters, over the first 27 threads distilled:
     #
@@ -440,18 +457,42 @@ def _thread_priority(post, comment_chars, mention_index):
     # extra character is reading labour buying sentiment. So: a bonus for
     # clearing a floor, then a penalty that grows with length.
     score += 8 if comment_chars >= 3000 else comment_chars / 400.0
-    score -= max(comment_chars - 25000, 0) / 6000.0
+    over = max(comment_chars - 25000, 0) / 6000.0
+    if over > 3:
+        score -= over; why.append(f"long ({comment_chars//1000}k chars) — costs reading, yields opinion")
+    else:
+        score -= over
     score += min(post.get("score", 0), 3000) / 400.0
     # players in it that people actually draft
-    for name, adp in mention_index.get(post.get("id"), []):
-        if adp <= 60:
-            score += 3
-        elif adp <= 150:
-            score += 1
+    # Focus, not breadth. The threads that produced hard claims were about one
+    # or two players — "Crod getting the nod over Tuten" (16k chars, 3.64 hard
+    # per 10k), "Chase not practicing today" (4k, 2.23). The threads that
+    # produced none named forty players once each. Counting distinct players
+    # ranks the second kind top, which is backwards, so score the share of the
+    # thread's mentions held by its top three names.
+    counts, adps = mention_index.get(post.get("id"), (Counter(), {}))
+    total = sum(counts.values())
+    if total >= 5:
+        top3 = counts.most_common(3)
+        focus = sum(k for _, k in top3) / total
+        score += 26 * focus
+        lead, lead_n = top3[0]
+        if adps.get(lead, 999) <= 60:
+            score += 8
+        elif adps.get(lead, 999) <= 150:
+            score += 4
+        names = ", ".join(n for n, _ in top3)
+        if focus >= 0.45:
+            why.append(f"focused on {names} ({focus:.0%} of mentions)")
+        else:
+            why.append(f"spread over {len(counts)} players, no focus ({focus:.0%} top three)")
+        score -= min(len(counts), 60) / 5.0
     ts = post.get("created_utc") or 0
     age_days = max((time.time() - ts) / 86400.0, 0)
     score += max(12 - age_days, -10)
-    return score
+    if age_days <= 3:
+        why.append("fresh")
+    return (score, why) if explain else score
 
 
 _BOARD = {}
@@ -1007,19 +1048,7 @@ def next_threads(count: int = 1, worker: str = "") -> str:
     for c in _read_jsonl(COMMENTS):
         chars[c.get("post_id")] += len(c.get("body") or "")
 
-    by_name = {p.player_name: p for p in pool()[0]}
-    index = defaultdict(list)
-    seen = set()
-    for row, post, m in A.resolved_mentions(pool()):
-        if m.tier in ("review", "ambiguous"):
-            continue
-        pid = post.get("id") or row.get("post_id")
-        k = (pid, m.player.player_name)
-        if k in seen:
-            continue
-        seen.add(k)
-        index[pid].append((m.player.player_name,
-                           getattr(by_name.get(m.player.player_name), "player_adp", 999)))
+    index = _mention_index()
 
     def claim():
         done = C.distilled_threads()
@@ -1045,6 +1074,36 @@ def next_threads(count: int = 1, worker: str = "") -> str:
     out += ["", "For each: distill_thread(id) -> read every page -> submit_claims(json).",
             "Then call next_threads again. Report any coach, reporter or retired",
             "player you see mis-resolved with report_non_player."]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def thread_shortlist(count: int = 25, undistilled_only: bool = True) -> str:
+    """The threads most likely to be worth reading, with the reason for each.
+
+    Same ranking next_threads hands out, but printed rather than claimed, so you
+    can see what the queue thinks is valuable and why before spending agents on
+    it. Reasons come from the score itself, not a separate explanation."""
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    chars = Counter()
+    for c in _read_jsonl(COMMENTS):
+        chars[c.get("post_id")] += len(c.get("body") or "")
+    index = _mention_index()
+    done = C.distilled_threads()
+    rows = []
+    for pid, p in posts.items():
+        if undistilled_only and pid in done:
+            continue
+        sc, why = _thread_priority(p, chars.get(pid, 0), index, explain=True)
+        rows.append((sc, pid, p, why))
+    rows.sort(key=lambda r: -r[0])
+    out = [f"top {min(count, len(rows))} of {len(rows)} "
+           f"{'undistilled ' if undistilled_only else ''}threads", "=" * 76]
+    for sc, pid, p, why in rows[:count]:
+        out.append(f"{sc:6.0f}  {pid}  {C.thread_date(p):11} {p.get('title','')[:60]}")
+        out.append(f"        {' · '.join(why) if why else 'no strong signal'}")
+    out.append("")
+    out.append("next_threads(n) claims from the top of exactly this list.")
     return "\n".join(out)
 
 
