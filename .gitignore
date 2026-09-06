@@ -16,6 +16,7 @@ archive/go-tool/releases
 archive/go-tool/status
 __pycache__
 .claude
+.codex
 espn_cache
 ffhound_analysis/
 opportunity_score
