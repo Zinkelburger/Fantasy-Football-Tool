@@ -1,8 +1,19 @@
 /* Static SPA: hash routing over prebuilt JSON (site/build_site.py). */
 "use strict";
 
-const VIEWS = ["home", "live", "weekly", "board", "blog", "post", "cheat",
+const VIEWS = ["home", "live", "weekly", "board", "blog", "post", "plan",
   "models", "draft"];
+
+/* The five views that make up "Rankings & research": one nav entry, a
+   tab row inside it. They were five peer nav entries until 2026-08-06,
+   which put "Cheat sheet" and "Models" beside "My league" as if they
+   were the same kind of thing. #section-tabs is shown on exactly these,
+   and the nav entry stays lit across all of them. */
+const SECTION = ["plan", "board", "weekly", "blog", "post", "models"];
+
+/* Routes that moved. Kept because they are linked from outside. */
+const ALIASES = { cheat: "plan" };
+
 const cache = {};
 
 async function data(name) {
@@ -38,6 +49,7 @@ function loadError(viewId, on) {
 function route() {
   const hash = location.hash.replace(/^#\/?/, "");
   let [page, arg] = hash.split("/");
+  page = ALIASES[page] || page;
   if (page === "blog" && arg) page = "post"; /* #/blog/<slug> deep link */
   const view = VIEWS.includes(page) ? page : "home";
 
@@ -45,19 +57,30 @@ function route() {
   for (const v of VIEWS) {
     document.getElementById(`view-${v}`).hidden = v !== view;
   }
-  let activeLink = null;
+
+  const inSection = SECTION.includes(view);
   document.querySelectorAll("#site-nav a").forEach(a => {
-    const on = a.dataset.route === view
-      || (view === "post" && a.dataset.route === "blog");
-    a.classList.toggle("active", on);
-    if (on) activeLink = a;
+    a.classList.toggle("active",
+      a.dataset.route === view || (inSection && a.dataset.route === "plan"));
   });
-  // On a phone the nav is one swipeable row, so the link for the page you're
-  // on is often off the right edge — where a highlight nobody can see is the
-  // same as no highlight. Pull it into view.
-  if (activeLink && document.getElementById("site-nav").scrollWidth
-      > document.getElementById("site-nav").clientWidth) {
-    activeLink.scrollIntoView({ block: "nearest", inline: "center" });
+
+  const tabs = document.getElementById("section-tabs");
+  tabs.hidden = !inSection;
+  if (inSection) {
+    let activeTab = null;
+    tabs.querySelectorAll("a").forEach(a => {
+      /* A single write-up lights the Findings tab it came from. */
+      const on = a.dataset.sect === view
+        || (view === "post" && a.dataset.sect === "blog");
+      a.classList.toggle("active", on);
+      if (on) activeTab = a;
+    });
+    // On a phone the tab row is one swipeable strip, so the tab for the
+    // page you're on is often off the right edge — where a highlight
+    // nobody can see is the same as no highlight. Pull it into view.
+    if (activeTab && tabs.scrollWidth > tabs.clientWidth) {
+      activeTab.scrollIntoView({ block: "nearest", inline: "center" });
+    }
   }
 
   loadError(`view-${view}`, false);
@@ -69,7 +92,7 @@ function route() {
   if (view === "board") guard(renderBoard());
   if (view === "blog") guard(renderBlogList());
   if (view === "post" && arg) guard(renderPost(arg));
-  if (view === "cheat") guard(renderCheat());
+  if (view === "plan") guard(renderPlan());
   if (view === "live") guard(renderLive(arg)); else Live.stopPolling();
   if (view === "draft") {
     const f = document.getElementById("draft-frame");
@@ -204,18 +227,6 @@ async function renderBoard() {
   const pre = await data("preseason");
   boardDone = true;   /* only after the fetch — a failure must retry */
 
-  const SECTIONS = ["k", "dst"];
-  const sections = document.getElementById("board-sections");
-  sections.addEventListener("click", e => {
-    const b = e.target.closest("button[data-sec]");
-    if (!b) return;
-    sections.querySelectorAll(".tab")
-      .forEach(t => t.classList.toggle("active", t === b));
-    for (const s of SECTIONS) {
-      document.getElementById(`board-sec-${s}`).hidden = s !== b.dataset.sec;
-    }
-  });
-
   document.getElementById("pre-k-table").innerHTML =
     `<thead><tr><th class="rank">#</th><th>Kicker slot</th>
      <th class="num" title="${Copy.attr("tip.own-season")}">Own PPG</th>
@@ -271,14 +282,92 @@ async function renderPost(id) {
   window.scrollTo(0, 0);
 }
 
-/* -------------------------------------------------------- cheat sheet */
-let cheatDone = false;
-async function renderCheat() {
-  if (cheatDone) return;
-  const c = await data("cheatsheet");
-  document.getElementById("cheat-body").innerHTML =
-    `<h1>${c.title}</h1>` + c.html;
-  cheatDone = true;
+/* --------------------------------------------------------- draft plan
+   One plan, three scoring formats. Every rule ships all three bodies
+   (site/plan.md, built by build_site.py), so switching format is a
+   re-render and never a fetch.
+
+   The chosen format is the draft tool's own setting, read and written
+   in place: picking "full PPR" here and then opening the draft tool
+   should not ask the same question twice. */
+const FMT_KEYS = { std: "STD", half: "0.5PPR", ppr: "PPR" };
+const FMT_FROM = { STD: "std", "0.5PPR": "half", PPR: "ppr" };
+
+function planFormat() {
+  try {
+    const s = JSON.parse(localStorage.getItem("ffda.settings") || "{}");
+    return FMT_FROM[s.scoringFormat] || "std";
+  } catch (e) { return "std"; }
+}
+
+function planSetFormat(fmt) {
+  try {
+    const s = JSON.parse(localStorage.getItem("ffda.settings") || "{}");
+    s.scoringFormat = FMT_KEYS[fmt];
+    localStorage.setItem("ffda.settings", JSON.stringify(s));
+  } catch (e) { /* private mode: the choice just won't persist */ }
+}
+
+function drawPlan(plan, fmt) {
+  const changedOnly =
+    document.getElementById("plan-changed-only").checked;
+  const posts = cache.blog || [];
+  const title = slug => (posts.find(p => p.id === slug) || {}).title || slug;
+  const num = slug => (slug.match(/^\d+/) || [""])[0];
+
+  const html = plan.sections.map(s => {
+    const rules = s.rules.filter(r => !changedOnly || r.changes);
+    if (!rules.length) return "";
+    return `<section class="plan-band">
+      <h3 class="plan-band-title">${s.title}</h3>` +
+      rules.map(r => `
+        <article class="plan-rule${r.changes ? " changes" : ""}" id="rule-${r.id}">
+          <h4>${r.title}${r.changes
+            ? `<span class="plan-flag" title="${Copy.attr("plan.changes.tip")}"
+                     >${Copy.text("plan.changes")}</span>` : ""}</h4>
+          <div class="plan-body">${r.html[fmt]}</div>
+          <p class="plan-why">${r.why.map(w =>
+            `<a href="#/blog/${w}" title="${Copy.attr("plan.why.tip")}">#${num(w)} ${title(w)}</a>`
+          ).join("")}</p>
+        </article>`).join("") + "</section>";
+  }).join("");
+
+  const body = document.getElementById("plan-body");
+  body.innerHTML = html || `<p class="dim">${Copy.text("plan.none-changed")}</p>`;
+  document.getElementById("plan-fmt-note").textContent =
+    Copy.text(`plan.note.${fmt}`);
+  const n = plan.sections.reduce(
+    (a, s) => a + s.rules.filter(r => r.changes).length, 0);
+  document.querySelector(".plan-filter span").textContent =
+    Copy.fill("plan.changed-only", { n });
+}
+
+let planWired = false;
+async function renderPlan() {
+  const plan = await data("plan");
+  /* The findings list supplies each rule's link titles, so a renamed
+     write-up can never leave the plan pointing at a stale name. */
+  if (!cache.blog) await data("blog");
+
+  const draw = () => {
+    const fmt = planFormat();
+    document.querySelectorAll("#plan-formats .tab").forEach(b =>
+      b.classList.toggle("active", b.dataset.fmt === fmt));
+    drawPlan(plan, fmt);
+  };
+
+  if (!planWired) {
+    planWired = true;
+    document.getElementById("plan-formats").addEventListener("click", e => {
+      const b = e.target.closest("button[data-fmt]");
+      if (!b) return;
+      planSetFormat(b.dataset.fmt);
+      draw();
+    });
+    document.getElementById("plan-changed-only")
+      .addEventListener("change", draw);
+  }
+  draw();
 }
 
 

@@ -1,7 +1,50 @@
 # 10 — WR age effects: what survives scrutiny and what was overfit
 
-**Confidence: Low-Medium.** Half the first-pass story died under
-robustness checks. Read it as a lesson in method as much as a finding.
+**Confidence: Medium-High** for "29 and older underperform their
+price", after the board-wide re-test below. **Low** for the 29–30
+"death zone" specifically — that framing was the overfit part.
+
+> **Extended 2026-08-06.** This page tested ages inside ADP 36–120
+> only, and hedged to "use age as a tiebreaker, not a rule". Re-run at
+> every price over ten drafts (2016–2025,
+> `scripts/wr_archetypes.py --full`), scoring each WR against unflagged
+> WRs at the same price and standardizing to the peers' price mix, the
+> broad cut is the one that holds:
+>
+> | Cut | Price-standardized top-24 gap |
+> |---|---|
+> | **29 and older** | **−8 points [−15, −1]** |
+> | 29–30 only | −3 points [−13, +9] |
+>
+> So it is age, not a two-year death zone. The 29+ result survives
+> everything we threw at it: hit thresholds of top-12 (−7), top-24
+> (−8) and top-36 (−12), all significant; 2-, 4- and 6-band price
+> schemes (−8 in each); both eras (−2.7 early, −7.4 late); and every
+> leave-one-year-out refit (−6% to −11%, never flipping). No single
+> season drives it.
+>
+> This is the only one of findings 08/09/10 that came through the
+> board-wide re-test, so it is the only one the draft tool still
+> states as a verdict — and it now fires at any price, not just the
+> middle rounds.
+>
+> **What kind of penalty it is (2026-08-06).** Splitting the outcome by
+> how good a season we ask for, price-standardized, the damage is
+> concentrated in the tail:
+>
+> | Outcome | WR 29+ | Peers | Price-matched gap |
+> |---|---|---|---|
+> | top-5 | 8/136 | 7.4% | −2.1 [−6.2, +2.0] |
+> | top-12 | 17/136 | 17.3% | **−6.9 [−12.1, −1.8]** |
+> | top-24 | 37/136 | 32.6% | **−8.0 [−15.1, −0.9]** |
+> | beat his price by 40+ ranks | 5/136 | 9.6% | **−5.2 [−9.4, −0.8]** |
+>
+> His 90th-percentile price-adjusted finish is +31.0 against +39.7 for
+> same-priced peers. So the old receiver is not especially likely to be
+> *bad* — he is about half as likely to give you the season that wins a
+> league. That is a ceiling penalty, and it should weigh most when you
+> are shopping for upside and least when you need a floor. The draft
+> tool's mark says "lower ceiling at this price" for this reason.
 
 The first pass found a tidy story: mid-round WRs aged 29–30 are a
 death zone (17% hit, 61% bust) while 31+ veterans bounce back. Only

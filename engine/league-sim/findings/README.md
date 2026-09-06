@@ -37,10 +37,10 @@ and are unaffected.
 | [05](05-never-pay-up-for-te.md) | Top-8 TE production is available late every year; the pure-wire punt is drying up. **Its "never spend an early pick" is partly superseded by [33](33-te-same-pick.md)** — the two agree the middle rounds are the trap, not the elite tier | data + sim v3 | High |
 | [06](06-qb-timing.md) | Early QB is fairly priced; late-QB-plus-streaming measurably costs (v5 re-confirms; early QB gains real value vs sharp rooms) | data + sim v3 + v5 spot-check | Medium-High |
 | [07](07-what-a-starter-is-worth.md) | Positional value curves: why rounds 1–3 are RB rounds here | data | High |
-| [08](08-bad-team-wr1-edge.md) | Mid-round alpha WRs on doubted teams nearly double the hit rate | data | Medium |
+| [08](08-bad-team-wr1-edge.md) | Mid-round alpha WRs on doubted teams nearly double the hit rate — but the board-wide re-test says that is price mix, not an edge. **Update 2026-08-06:** room rank on its own is null too (not-team-WR1: −4.9% [−15.2, +5.8] in the mid-round window); WR3-or-lower busts +21.3% board-wide but the whole effect is 2021-25, so it fails the era test finding 10 passed. No mark either way | data | Medium (null) |
 | [09](09-decline-discount-trap.md) | WRs coming off a collapse year bust more at every age | data | Medium |
 | [10](10-wr-age-effects.md) | Age 29–30 looks like a danger zone — partially survives scrutiny, partially overfit | data | Low-Medium |
-| [11](11-methuen-jackels-audit.md) | The Jackels drafted best-in-league; the leaks are TE price and one WR archetype | data | High (it's your data) |
+| [11](11-audit-your-own-drafts.md) | **NULL** — grading real drafts against six settled rules over 72 team-seasons finds nothing; the TE dead-zone rule even comes out backwards (+0.59 SD). Draft haul is the wrong yardstick for single-pick rules, and observed shape is endogenous ([36](36-draft-order.md)'s warning, reproduced). Audit your league for rule *compliance*, never for outcome correlation | data | High (for the null) |
 | [12](12-championship-variance.md) | Back-to-back runner-up finishes are variance, not process failure | data + sim v3 | High |
 | [13](13-handcuffs-are-free-insurance.md) | Handcuffs are correctly-priced insurance: free to hold, no edge (also: environment version table) | data + sim v3 | Medium-High |
 | [14](14-qb-round-sweep.md) | QB timing sweep: rounds 4–6 is the sweet spot; past 10 costs real points | sim v3 — stale | Medium-High |
@@ -79,7 +79,8 @@ venv/bin/python -m simfl analyze kickers|streaming|scarcity
 venv/bin/python -m simfl.grid --heroes all -n 240   # strategy backtest
 venv/bin/python -m simfl.plots                      # all figures
 venv/bin/python scripts/wr_archetypes.py            # findings 08-10
-venv/bin/python scripts/jackels_review.py           # finding 11
+venv/bin/python scripts/wr_room_rank.py             # finding 08 room-rank update
+venv/bin/python analysis/draft_leaks.py             # finding 11 (any league export)
 venv/bin/python scripts/next_season_signal.py       # findings 15-18 (--quick to skip stats suite)
 venv/bin/python analysis/rb_wr_curves.py            # finding 23 curves + figure
 venv/bin/python analysis/rb_wr_swap.py              # finding 23 causal swap test

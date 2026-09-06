@@ -1,6 +1,32 @@
 # 10 — The WR age cliff is real, but smaller than it looked
 
-**Confidence: Low-Medium** (half the original story died under stress-testing; read this one as a lesson in method too)
+**Confidence: Medium-High** for "29 and older underperform their
+price" — this one got *stronger* when we widened the test. Update
+below.
+
+> **Updated 6 August 2026.** This post tested age only in the middle
+> rounds, and hedged to "use age as a tiebreaker, not a rule". We
+> re-ran it over ten drafts at every price, always comparing a
+> receiver to others who cost the same pick. The broad cut is the real
+> one:
+>
+> | | Top-24 rate vs same-priced peers |
+> |---|---|
+> | **29 and older** | **−8 points** (range −15 to −1) |
+> | 29–30 only | −3 points (range −13 to +9) |
+>
+> So it was never a two-year "death zone" — that framing was the
+> overfit part. It's just age, and it shows up everywhere on the
+> board. It survived every check we ran: three different definitions
+> of a "hit", three ways of slicing price, both halves of the sample,
+> and dropping any single season (the effect moves between −6 and −11
+> points and never flips).
+>
+> Of our three receiver-archetype findings, this is the only one that
+> came through the board-wide re-test — findings
+> [08](#/blog/08-bad-team-wr1-edge) and
+> [09](#/blog/09-decline-discount-trap) did not. It is also the only
+> one the draft tool still states as a verdict.
 
 ## TL;DR
 

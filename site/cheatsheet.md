@@ -131,5 +131,4 @@ data and how confident we are.
   reliability and late picks buy lottery tickets. Spend them that way.
   [Finding 29](#/blog/29-round-profile)
 - **Losing two finals in a row is normal bad luck, not a broken plan.**
-  [Finding 12](#/blog/12-championship-variance) ·
-  [Finding 11](#/blog/11-methuen-jackels-audit)
+  [Finding 12](#/blog/12-championship-variance)

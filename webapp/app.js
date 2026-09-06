@@ -766,22 +766,22 @@ function initApp() {
         : '.');
     const why = !flagged ? ''
       : hot
-        ? ` Ran hot — scored ${p.gapc.toFixed(1)} a game more than a typical ` +
-          `${p.pos} would have from the same targets and carries.` +
+        ? ` He scored ${p.gapc.toFixed(1)} a game more than a typical ` +
+          `${p.pos} does with the same targets and carries.` +
           (!signal ? caveat
             : (p.tdl >= 0.15
-                ? ` Mostly touchdown luck (+${p.tdl.toFixed(1)} TDs a game ` +
-                  'over expected). '
+                ? ` Most of that is touchdown luck (+${p.tdl.toFixed(1)} TDs ` +
+                  'a game over what his chances were worth). '
                 : ' ') +
-              'Hot WR/TE seasons gave back about 2 points a game the next ' +
-              'year in our 2017-25 backtests.')
-        : ` Ran cold — scored ${(-p.gapc).toFixed(1)} a game less than a ` +
-          `typical ${p.pos} with the same chances.` +
+              'Receivers and tight ends who did this gave back about 2 ' +
+              'points a game the next year in our 2017-25 backtests.')
+        : ` He scored ${(-p.gapc).toFixed(1)} a game less than a ` +
+          `typical ${p.pos} does with the same chances.` +
           (!signal ? caveat
             : ' Chances carry over to next season better than points do — ' +
-              'cold WR/TE seasons held their value while the average ' +
-              'player slid (2017-25): the strongest buy signal in our ' +
-              'research.');
+              'receivers and tight ends who did this held their value ' +
+              'while the average player slid (2017-25): the strongest ' +
+              'buy signal in our research.');
     return { flagged, hot, signal, tip: base + why };
   }
 
@@ -790,16 +790,18 @@ function initApp() {
      with the player's own numbers, watch for context. Bundled per
      clean name, like notes. */
   const FM_LABEL = { buy: 'Buy', fade: 'Fade', watch: 'Context' };
-  /* Each rule gets the name people already use for it. "Finding 16"
-     means nothing at a draft table; "TD regression" does. */
+  /* Each rule is named the way you'd say it out loud at a draft table.
+     Not "TD regression", not "hot/cold finish" — those are terms you
+     have to already know to read, and the whole point of the row is
+     that it explains itself. Short, because the chip does not wrap. */
   const FM_TOPIC = {
-    8: 'Top receiver on a bad team',
-    9: 'Bounce-back discount',
-    10: 'Receiver age',
-    15: 'Hot/cold finish',
-    16: 'TD regression',
-    17: 'Targets vs. points',
-    18: 'Injury history',
+    10: 'Age',
+    13: 'Backup running back',
+    14: 'When to take a quarterback',
+    16: 'Touchdown luck',
+    17: 'How often he got the ball',
+    18: 'Games he missed',
+    33: 'When to take a tight end',
   };
   // Unmapped finding: fall back to its write-up title ("16-td-luck-
   // regresses" -> "Td luck regresses") rather than a bare number.
@@ -808,8 +810,16 @@ function initApp() {
     const words = String(m.slug || '').replace(/^\d+-/, '').replace(/-/g, ' ');
     return words ? words[0].toUpperCase() + words.slice(1) : `Finding ${m.f}`;
   }
-  /* Where he sits in his own team's position room on the draft board:
-     "He's the Bengals WR1 — 31 picks ahead of their WR2 (Tee Higgins)."
+  /* Who else is in his team's position room, on the draft board:
+     "31 picks ahead of the next CIN receiver (Tee Higgins)."
+
+     This line used to open with "He's CIN's WR1 on the draft board",
+     which the meta line directly above it has already said in fewer
+     words ("CIN WR, rank 12"). For a team's clear #1 the two read as
+     the same sentence twice. So the standing is only spelled out when
+     he is NOT the top of his room — that is the case the meta cannot
+     tell you — and the room line otherwise goes straight to the fact
+     it alone carries: who is next, and how far back.
      Context for the note page only (build_data.py load_rooms). */
   function roomText(p) {
     const rm = p.room;
@@ -817,6 +827,7 @@ function initApp() {
     // This tool shows team codes, not nicknames — match it: "DET's RB1".
     const poss = p.team ? `${p.team}'s` : 'his team\'s';
     const subj = p.team || 'His team';
+    const room = p.team ? `${p.team} ${p.pos}` : p.pos;
     let rookSaid = false;
     const rookTag = (n) => {
       if (!rm.rook || rm.rook !== n) return '';
@@ -828,16 +839,25 @@ function initApp() {
     const bits = [];
     if (rm.ahead && rm.aheadGap != null)
       bits.push(rm.aheadGap === 0
-        ? `priced level with ${rm.ahead}${rookTag(rm.ahead)}`
-        : `${gap(rm.aheadGap)} behind ${rm.ahead}${rookTag(rm.ahead)}`);
+        ? `Priced level with ${poss} ${p.pos}${rm.rank - 1}, ` +
+          `${rm.ahead}${rookTag(rm.ahead)}`
+        : `${gap(rm.aheadGap)} behind ${poss} ${p.pos}${rm.rank - 1}, ` +
+          `${rm.ahead}${rookTag(rm.ahead)}`);
     if (rm.behind && rm.behindGap != null)
-      bits.push(`${rm.behindGap === 0 ? 'priced level with' :
-        `${gap(rm.behindGap)} ahead of`} their ${p.pos}${rm.rank + 1}` +
-        ` (${rm.behind}${rookTag(rm.behind)})`);
+      bits.push((bits.length ? 'and ' : '') +
+        (rm.behindGap === 0
+          ? `priced level with the next ${room} (${rm.behind}${rookTag(rm.behind)})`
+          : `${gap(rm.behindGap)} ahead of the next ${room} ` +
+            `(${rm.behind}${rookTag(rm.behind)})`));
+    // Nobody else in the room is priced at all — worth saying plainly,
+    // it is the strongest version of "the job is his".
+    if (!bits.length && !rm.rook)
+      return `The only ${room} on the draft board.`;
     const rook = rm.rook && !rookSaid
       ? ` ${subj} spent pick ${rm.rookPick} on a ${p.pos} (${rm.rook}).` : '';
-    return `He's ${poss} ${p.pos}${rm.rank} on the draft board` +
-      `${bits.length ? ` — ${bits.join(', ')}` : ''}.${rook}`;
+    if (!bits.length) return rook.trim();
+    const line = bits.join(' ');
+    return `${line[0].toUpperCase()}${line.slice(1)}.${rook}`;
   }
 
   function fmarksFor(p) {
@@ -860,18 +880,24 @@ function initApp() {
       links: [['23-early-rb-vs-wr', 'why RB first'],
               ['02-zero-rb-is-a-trap', 'zero-RB']] },
     { lo: 3, hi: 5, text: 'The tested QB sweet spot is rounds 4-6. WR ' +
-      'value stays nearly flat for twenty ranks — never reach for one.',
+      'value stays nearly flat for twenty ranks — never reach for one. ' +
+      'Round 4 is the last good door on tight end: after it the odds ' +
+      'of a top-6 TE fall 53% → 30% → 16%.',
       links: [['14-qb-round-sweep', 'QB timing'],
-              ['07-what-a-starter-is-worth', 'value curves']] },
+              ['07-what-a-starter-is-worth', 'value curves'],
+              ['33-te-same-pick', 'tight end timing']] },
     { lo: 6, hi: 8, text: 'Have your QB by round 6 — waiting past 10 ' +
-      'is what hurts. Mid TEs still hit ~50%. At WR: the clear #1 on a ' +
-      'bad team hits 43% vs 25%; skip bounce-back discounts and ' +
-      '29-30-year-olds.',
-      links: [['06-qb-timing', 'QB'], ['08-bad-team-wr1-edge', 'WR1 edge'],
-              ['09-decline-discount-trap', 'the trap']] },
+      'is what hurts. Don\'t start your tight end here: a rounds 5-9 ' +
+      'TE finishes top-6 just 16-30% of the time and misses top-12 ' +
+      'over half the time — round-12 odds at a round-6 price. At WR ' +
+      'the one rule that held up board-wide is age: 29 and older hit ' +
+      'about 8 points less often than others costing the same pick.',
+      links: [['06-qb-timing', 'QB'],
+              ['33-te-same-pick', 'tight end timing'],
+              ['10-wr-age-effects', 'WR age']] },
     { lo: 9, hi: 11, text: 'QB/TE starters are still here (41% and 43% ' +
-      'hit) — RB/WR are lotteries now (12% / 17%). Go young at WR/TE; ' +
-      'the slid veteran is the trap. Handcuff your RB1 — it pays ' +
+      'hit) — RB/WR are lotteries now (12% / 17%). Go young at WR/TE. ' +
+      'Handcuff your RB1 — it pays ' +
       'exactly when he sits.',
       links: [['29-round-profile', 'the numbers'],
               ['13-handcuffs-are-free-insurance', 'handcuffs']] },
@@ -973,7 +999,15 @@ function initApp() {
           (team.has(q.name) ? ' ← yours' : '');
       });
       const ahead = i > 0 ? chart[i - 1] : null;
-      const handcuffFor = (ahead && team.has(ahead.name)) ? ahead : null;
+      // Running backs only. Handcuffing is an RB idea — finding 13 tested
+      // "should you draft your starting RB's backup", and the insurance
+      // it prices is the workload transferring whole when the starter
+      // sits. Nothing equivalent happens at WR: your WR1 missing time
+      // does not hand his targets to one named man. Flagging the WR
+      // behind yours was calling a thing a handcuff that never pays like
+      // one.
+      const handcuffFor =
+        (p.pos === 'RB' && ahead && team.has(ahead.name)) ? ahead : null;
       return {
         handcuffFor,
         title: (handcuffFor ? `Handcuff to your ${handcuffFor.name}. ` : '') +
@@ -1035,10 +1069,25 @@ function initApp() {
       if (isPicked) tr.classList.add('picked');
       if (team.has(p.name)) tr.classList.add('onteam');
       if (p.name === selectedName) tr.classList.add('selected');
+
+      // Two things can make a row worth looking at twice, and they stack:
+      // he backs up a running back you already own, and he may not last
+      // until your next pick. That combination is exactly when you act,
+      // so both go in the tooltip rather than one overwriting the other.
+      const dep = depthInfo(p);
+      const isHandcuff = Boolean(dep.handcuffFor) && !isPicked;
+      const why = [];
+      if (isHandcuff) {
+        tr.classList.add('handcuff');
+        why.push(`Backs up your ${dep.handcuffFor.name} — this is his ` +
+          `handcuff, the back who inherits the work if he misses time`);
+      }
       if (!isPicked && predGone.has(p.name)) {
         tr.classList.add('pred-gone');
-        tr.title = `Predicted gone before your next pick — simulation has them taken at #${predGone.get(p.name)}\n${openHint}`;
+        why.push('Predicted gone before your next pick — simulation has ' +
+          `them taken at #${predGone.get(p.name)}`);
       }
+      if (why.length) tr.title = `${why.join('\n')}\n${openHint}`;
 
       // Empty state is a hollow ring, not a dash: it reads as "slot waiting to
       // be filled" and lines up with the filled states above it.
@@ -1075,13 +1124,12 @@ function initApp() {
         `${step.v ? `<span class="${step.cls}" title="You marked him ${step.word}">${step.glyph}</span>` : ''}` +
         `${team.has(p.name) ? '<span class="flag-star">★</span>' : ''}</span></td>` +
         `<td class="team-cell">${escapeHtml(p.team)}</td>` +
-        (() => {
-          const d = depthInfo(p);
-          return `<td class="pos-cell${d.handcuffFor ? ' is-handcuff' : ''}" ` +
-            `title="${escapeHtml(d.title)}">` +
-            `${escapeHtml(p.pos)}${depthByName.get(p.name) || ''}` +
-            (d.handcuffFor ? '<span class="hc-mark" aria-hidden="true">⛓</span>' : '') + '</td>';
-        })() +
+        // The ⛓ that used to sit here is gone: the row itself now carries
+        // the handcuff, and a symbol you have to learn said less than the
+        // highlight does. The depth chart stays on hover.
+        `<td class="pos-cell${isHandcuff ? ' is-handcuff' : ''}" ` +
+          `title="${escapeHtml(dep.title)}">` +
+          `${escapeHtml(p.pos)}${depthByName.get(p.name) || ''}</td>` +
         sites.map(s => {
           const label = s === 'espn' ? 'ESPN' : 'Sleeper';
           const raw = s === 'espn' ? p.espn : p.sleeper;
@@ -1574,9 +1622,27 @@ function initApp() {
     const edited = noteEditedFor(p);
     const editing = noteEditingName === p.name;
     const opp = showModelMarks ? oppRead(p) : null;
+    const fm = showModelMarks ? fmarksFor(p) : null;
+    /* Two reasons this tag stays quiet, both "we already know it means
+       nothing here":
+       - Only WR/TE. The 2017-25 backtest behind this number found the
+         gap predicts the next season at those two positions only
+         (OPP_SIGNAL_POS). Telling a drafter his RB1 "scored above his
+         chances" is commentary the engine itself cannot cash — the
+         running back's own tooltip goes on to say goal-line work
+         repeats. So RB/QB get the plain stat and no verdict.
+       - Not alongside the touchdown-luck row, which states the same
+         fact in touchdowns that this states in points; for most
+         flagged players the whole gap IS the extra scores. The row
+         carries the number and the link, so the tag yields. */
+    const saidByRow = (fm || []).some(m => m.f === 16);
+    const tagWorthIt = opp && opp.flagged && opp.signal && !saidByRow;
     $('note-meta').textContent = `${p.team} ${p.pos}, rank ${p.rank}` +
-      (opp ? ` · 2025: ${p.ppg25.toFixed(1)} PPG on ${p.xfp.toFixed(1)} expected` +
-        (opp.flagged ? (opp.hot ? ' (ran hot)' : ' (ran cold)') : '') : '') +
+      (opp ? ` · 2025: ${p.ppg25.toFixed(1)} PPG, ` +
+        `${p.xfp.toFixed(1)} from his chances` +
+        (tagWorthIt
+          ? (opp.hot ? ' — scored above them' : ' — scored below them')
+          : '') : '') +
       `${edited ? ' · edited' : ''}`;
     $('note-meta').title = opp ? opp.tip : '';
     // Who else is in his position room. Plain facts off the draft board,
@@ -1586,7 +1652,6 @@ function initApp() {
     const roomLine = roomText(p);
     $('note-room').hidden = !roomLine;
     $('note-room').textContent = roomLine || '';
-    const fm = showModelMarks ? fmarksFor(p) : null;
     $('note-findings').hidden = !fm;
     $('note-findings').innerHTML = !fm ? '' : fm.map(m =>
       `<p class="fm-row fm-${m.dir}"><a class="fm-chip" target="_blank" ` +

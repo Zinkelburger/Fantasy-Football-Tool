@@ -10,6 +10,18 @@ average (partial r = +0.04). The kill shot: the last 5 weeks are no
 more predictive than the *first* 5 weeks of the same season. A hot
 finish is a small sample wearing a story.
 
+> **The draft tool stopped marking this on 2026-08-06.** It used to
+> put a "watch" row on all 48 players who closed 4+ PPG above or below
+> their own average. That was a mistake in the other direction: a row
+> that hands a drafter a real number and then explains it means
+> nothing still reads as a reason to move him, and phrased as a
+> warning it made a strong finish look like a *strike against* the
+> player, which is not what this page says. `--grade` backs the null
+> up on the marked names themselves — hot finishers went −0.79 PPG the
+> next season, cold finishers −0.32, both noise. A finding with
+> nothing to act on belongs here and in the round-by-round guide,
+> where advice about a bias belongs, not on the clock.
+
 ## The number
 
 2017→2025, eight season transitions, family scoring (ESPN std, 4pt

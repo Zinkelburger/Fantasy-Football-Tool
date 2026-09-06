@@ -10,8 +10,9 @@ buy suppressed usage without leaving the draft tool.
 
 ## Steps
 1. Hover any veteran's name on the player board.
-2. Read the tooltip — it says whether he ran hot or cold and what that
-   means, in words; there is no glyph or color code on the row.
+2. Read the tooltip — it says whether he scored above or below what his
+   chances were worth, and what that means, in words; there is no glyph
+   or color code on the row.
 3. Open the player's note and read the line under the tab bar.
 
 ## Expected
@@ -20,10 +21,13 @@ buy suppressed usage without leaving the draft tool.
   Expected PPG is usage-based expected points — what a typical player would
   have scored from the same targets, carries and field position — bundled per
   scoring format (STD/0.5PPR/PPR follow the format switcher).
-- A hot/cold season (8+ games and actual-minus-expected at least 1.5
+- A flagged season (8+ games and actual-minus-expected at least 1.5
   (STD) / 1.9 (0.5PPR) / 2.25 (PPR) points per game past the typical
-  player at his position) adds a sentence to that tooltip saying he ran
-  hot or cold and by how much.
+  player at his position) adds a sentence to that tooltip saying he
+  scored above or below his chances and by how much. It is written out
+  — "He scored 3.4 a game more than a typical RB does with the same
+  targets and carries" — never as "ran hot"/"ran cold", which is a
+  term you have to already know to read.
 - Direction counts **only for WR and TE**, per the 2017–25 backtest
   (`engine/league-sim/analysis/gap_regression_check.py`): the gap
   predicted the next season in 8 of 8 year-pairs there. **RB and QB
@@ -33,8 +37,18 @@ buy suppressed usage without leaving the draft tool.
 - The read adds no glyph, no color, and no new column — row layout is
   unchanged. Unchecking **Model marks** in the toolbar hides the
   tooltip line and the note-pane read.
-- The note pane meta line repeats the read:
-  `TEAM POS, rank N · 2025: 13.9 PPG on 11.2 expected (ran hot)`.
+- The note pane meta line carries the read:
+  `TEAM POS, rank N · 2025: 13.9 PPG, 11.2 from his chances — scored
+  above them`. The trailing verdict is **only ever shown at WR and
+  TE**, the two positions where the backtest above found the gap
+  predicts anything; RB and QB get the bare stat and no verdict,
+  because telling a drafter his running back "scored above his
+  chances" is a judgement the engine's own tooltip then walks back.
+  It is **also dropped when the player has a touchdown-luck row** in
+  the findings box below: for most flagged players the whole gap *is*
+  the extra scores, so the two would state one finding twice, in
+  different units, two lines apart. The row wins — it carries the
+  number and the link.
 - Players without 2025 data (2026 rookies, injury redshirts) show no flag, no
   tooltip line, and render exactly as before.
 

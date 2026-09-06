@@ -32,10 +32,13 @@ def _ppg_curve(prev: pl.DataFrame) -> dict[str, list[float]]:
     return curve
 
 
-def build_pool(year: int, sc: ScoringConfig) -> list[PlayerSeason]:
+def build_pool(year: int, sc: ScoringConfig,
+               adp_fmt: str | None = None) -> list[PlayerSeason]:
+    """`adp_fmt` picks the draft board (see data.load_adp). None keeps
+    the historical standard board every published finding rests on."""
     weekly = load_weekly(year, sc)
     prev = load_weekly(year - 1, sc)
-    adp = load_adp(year)
+    adp = load_adp(year, adp_fmt)
     byes = load_schedule_byes(year)
     rookie_years = load_rookie_years()
 
@@ -99,7 +102,7 @@ def build_pool(year: int, sc: ScoringConfig) -> list[PlayerSeason]:
 
     players = list(pool.values())
     reports = load_injury_reports(year)
-    epts = load_expected_points(year)
+    epts = load_expected_points(year, sc.reception)
     for p in players:
         p.week_status = reports.get(p.pid, {})
         p.week_ep = epts.get(p.pid, {})
