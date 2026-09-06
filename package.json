@@ -1,0 +1,15 @@
+{
+  "name": "fantasy-football-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser regression tests for FOSS Football and the draft assistant.",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "node --test webapp/test_*.cjs && python3 -m unittest discover -s webapp -p 'test_*.py' && python3 -m unittest discover -s engine -p 'test_update_ranks.py'",
+    "test:e2e": "python3 build_deploy.py && node --test tests/e2e.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

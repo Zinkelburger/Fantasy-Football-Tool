@@ -4,7 +4,12 @@ A draft tool with a note on each player, so you know who you're drafting
 even if you don't know the players. Super useful for people like me who
 play fantasy football but don't have a clue who anyone is :)
 
-Website: [draftassistant.football](https://draftassistant.football/)
+Website: [FOSS Football](https://fantasy-football-tool.pages.dev/)
+· [Open the draft tool](https://fantasy-football-tool.pages.dev/webapp/)
+
+The Cloudflare Pages address works independently of the custom domains.
+For draft-day use with Claude Code, run `python3 webapp/local_server.py`
+and open [the local dashboard](http://localhost:8765/).
 
 ![gui image](gui.png)
 

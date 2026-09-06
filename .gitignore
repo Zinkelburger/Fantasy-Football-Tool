@@ -47,3 +47,5 @@ coverage.html
 **/data/pbp/
 public/
 chrome-extension/dist/
+node_modules/
+test-results/

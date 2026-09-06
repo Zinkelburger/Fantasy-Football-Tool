@@ -26,6 +26,9 @@ which spots I still need to fill.
   of (no RB/WR by round 4, QB by 10, TE by 12) is bolded red; K/DST are
   never bolded — off-board picks can't be counted, so they'd cry wolf.
 - Rostered players get a ★ on the board.
+- Adding a player manually also marks them picked, so they leave the available
+  pool and AI candidates. Removing them from your team keeps them picked (they
+  may belong to another team); use Undo to make them available again.
 - The × remove button appears only in Manual mode and only on
   manually-added players; extension-detected roster players merge in
   without duplicates; manual additions persist across reloads.

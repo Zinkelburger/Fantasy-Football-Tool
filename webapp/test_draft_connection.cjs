@@ -114,6 +114,7 @@ test('extension manifest connects ESPN and localhost without public hosting', ()
   const bridge = manifest.content_scripts.find(s => s.js.includes('bridge.js'));
   assert.ok(bridge.matches.includes('http://localhost/*'));
   assert.ok(bridge.matches.includes('http://127.0.0.1/*'));
+  assert.ok(bridge.matches.includes('https://fantasy-football-tool.pages.dev/*'));
   assert.ok(manifest.content_scripts.some(s => s.js.includes('espn-draft.js')
     && s.matches.includes('https://fantasy.espn.com/football/draft*')));
 });

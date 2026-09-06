@@ -65,6 +65,25 @@ roster panel cannot substitute another team. Reload the extension in
 `chrome://extensions`, then refresh ESPN and the dashboard to activate updates.
 Live mutation timing and your installed Chrome bridge still warrant a mock check.
 
+## Browser regression tests
+
+From the repository root, run `npm ci`, `npx playwright install chromium`,
+then `npm test`. This builds the actual `public/` deployment and runs the
+Python/Node tests plus Chrome browser scenarios covering navigation, scoring,
+notes, manual drafting, ESPN/Sleeper messages, predictions, backup restore,
+AI streaming/errors, and phone layouts. Installed Google Chrome is used when
+available; set `CHROME_PATH` to choose another Chromium executable.
+GitHub Actions runs the same suite on pushes to main and pull requests.
+
+The hosted fallback is [the Cloudflare draft tool](https://fantasy-football-tool.pages.dev/webapp/).
+Extension 1.5.2 adds this exact origin to the bridge. Run
+`python3 chrome-extension/package.py`, reload the unpacked extension, and
+refresh the dashboard to activate it.
+
+External draft messages and AI responses use fixtures, so these tests do not
+make real draft picks or consume AI credits. They cannot verify selectors in
+your live ESPN room or your installed extension; use a mock draft for that.
+
 ## Refreshing the draft board
 
 Run `python3 engine/update_ranks.py` then `python3 webapp/build_data.py` from

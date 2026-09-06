@@ -348,6 +348,37 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+// Validate the complete backup before replacing any live state. A valid JSON
+// file can still contain the wrong shapes and otherwise break every reload.
+function validDraftBackup(b) {
+  const object = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+  const strings = v => Array.isArray(v) && v.every(x => typeof x === 'string');
+  const optional = (key, check) => b[key] === undefined || check(b[key]);
+  const record = (v, check) => object(v) && Object.values(v).every(check);
+  if (!object(b) || b.app !== 'ff-draft-tool' || (b.version !== undefined && b.version !== 1)) return false;
+  if (!['manualPicked', 'manualTeam', 'unpicked', 'extPickedRaw'].every(k => optional(k, strings))) return false;
+  if (!optional('toDraft', v => record(v, x => ['love', 'yes', 'no', 'hate'].includes(x)))) return false;
+  if (!optional('noteOverrides', v => record(v, x => typeof x === 'string'))) return false;
+  if (!optional('rankOverrides', v => record(v, ranks => record(ranks, x => Number.isFinite(x) && x > 0)))) return false;
+  if (!optional('extState', v => record(v, payload => object(payload) && strings(payload.players)))) return false;
+  if (!optional('settings', object)) return false;
+  const s = b.settings || {};
+  for (const key of ['apiKey', 'model', 'ollamaEndpoint', 'ollamaModel', 'systemPrompt', 'userPrompt']) {
+    if (s[key] !== undefined && typeof s[key] !== 'string') return false;
+  }
+  for (const key of ['useOllama', 'manualMode', 'useClaudeCode']) {
+    if (s[key] !== undefined && !(key === 'useClaudeCode' && s[key] === null) && typeof s[key] !== 'boolean') return false;
+  }
+  for (const [key, values] of Object.entries({ scoringFormat: ['STD', '0.5PPR', 'PPR'],
+    rankSource: ['auto', 'espn', 'sleeper', 'both'], botRanks: ['auto', 'espn', 'sleeper', 'mine'], botAlgo: ['need', 'ba'] })) {
+    if (s[key] !== undefined && !values.includes(s[key])) return false;
+  }
+  for (const [key, min, max] of [['numTeams', 2, 32], ['numRounds', 8, 30], ['draftSlot', 0, 32]]) {
+    if (s[key] !== undefined && (!Number.isInteger(s[key]) || s[key] < min || s[key] > max)) return false;
+  }
+  return true;
+}
+
 // Minimal markdown renderer for notes and LLM output (headings, lists,
 // bold/italic/code/links). Input is escaped first, so output is safe HTML.
 function renderMarkdown(md) {
@@ -438,7 +469,7 @@ if (typeof module !== 'undefined' && module.exports) {
     expectedPoints, waitCost,
     STARTER_SLOTS, ROSTER_CAPS, BADLY_NEEDED_BY_ROUND,
     PICK_VALUE_FITS, PICK_VALUE_EXHAUSTED, BENCH_WEIGHT, FLEX_POSITIONS,
-    DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS,
+    DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS, validDraftBackup,
   };
 } else {
   initApp();
@@ -517,7 +548,6 @@ function initApp() {
   let predictMode = store.load('predictMode', false); // predictions stay on, re-simulated after every live pick
   let tourIndex = -1;           // -1 = tour not running
   let predicted = null;         // [{pick, round, team, name, pos}] from the pick simulation
-  let predictedAtCount = -1;    // pick count the prediction was made at (stale otherwise)
   let predictedMeta = null;     // {followNext, byPos, suggestion} — only valid while predicted is
 
   /* ---------- derived data ---------- */
@@ -549,14 +579,15 @@ function initApp() {
   }
 
   // Board order = your imported ranks where present, bundled rank otherwise;
-  // bundled rank breaks ties so a partial import stays stable.
+  // Explicit ranks win ties with bundled ranks in a partial import.
   function boardPlayers() {
     const eff = (p) => {
       const o = rankOverrideFor(p);
       return o === null ? (p.rankNum || 9999) : o;
     };
     return allPlayers().slice().sort((a, b) =>
-      eff(a) - eff(b) || (a.rankNum || 9999) - (b.rankNum || 9999));
+      eff(a) - eff(b) || Number(rankOverrideFor(a) === null) - Number(rankOverrideFor(b) === null)
+      || (a.rankNum || 9999) - (b.rankNum || 9999));
   }
 
   // ESPN's pick feed is a ticker: it can show only the recent picks, so any one
@@ -620,10 +651,9 @@ function initApp() {
   }
 
   function pickNumber() {
-    // go/http_server.go: pick number == count of picked players. The raw count
-    // is the better number because it also covers picks that aren't on our
-    // board at all (K/DST), which fuzzy matching drops.
-    return Math.max(extPickedRaw.length, pickedSet().size);
+    // Use the same deduplicated, undo-aware log as the snake grid. It also
+    // retains off-board picks (K/DST), without counting raw name aliases twice.
+    return pickLogEntries().length;
   }
 
   // Which site the extension is scraping ('espn' | 'sleeper' | null): every
@@ -1341,9 +1371,10 @@ function initApp() {
 
   function renderAll() {
     // Predictions follow the live draft: in predict mode every new real pick
-    // re-simulates the window instead of leaving a stale snapshot around.
+    // or roster/prep update re-simulates the window. ESPN can report the
+    // personal roster after the picks without changing the pick count.
     if (predictMode) {
-      if (pickNumber() !== predictedAtCount) computePrediction();
+      computePrediction();
     } else if (predicted) {
       predicted = null;
       predictedMeta = null;
@@ -1497,7 +1528,14 @@ function initApp() {
   function toggleTeam(name) {
     const i = manualTeam.indexOf(name);
     if (i >= 0) manualTeam.splice(i, 1);
-    else manualTeam.push(name);
+    else {
+      manualTeam.push(name);
+      // A player on my team is no longer available to draft or recommend.
+      unpicked.delete(name);
+      if (!extPickedCanonical().has(name)) manualPicked.add(name);
+      store.save('manualPicked', [...manualPicked]);
+      store.save('unpicked', [...unpicked]);
+    }
     store.save('manualTeam', manualTeam);
     renderAll();
   }
@@ -2040,7 +2078,6 @@ function initApp() {
   function computePrediction() {
     predicted = null;
     predictedMeta = null;
-    predictedAtCount = pickNumber();
     const teams = settings.numTeams;
     const rounds = settings.numRounds;
     const entries = pickLogEntries();
@@ -2427,6 +2464,7 @@ function initApp() {
       : settings.useOllama ? 'Asking Ollama…' : 'Asking OpenAI…';
     $('ai-output').innerHTML = '';
 
+    let renderFrame = null;
     try {
       const picked = pickedSet();
       const available = boardPlayers().filter(p => !picked.has(p.name));
@@ -2464,7 +2502,8 @@ function initApp() {
         answer += chunk;
         if (!renderQueued) {
           renderQueued = true;
-          requestAnimationFrame(() => {
+          renderFrame = requestAnimationFrame(() => {
+            renderFrame = null;
             renderQueued = false;
             const out = $('ai-output');
             out.innerHTML = renderMarkdown(answer);
@@ -2477,12 +2516,17 @@ function initApp() {
       else if (settings.useOllama) await streamOllama(messages, onChunk);
       else await streamOpenAI(messages, onChunk);
 
+      // Publish the final text before Done, including in background tabs
+      // where animation frames can be paused for the entire response.
+      $('ai-output').innerHTML = renderMarkdown(answer);
       $('ai-status').textContent = 'Done ' + new Date().toLocaleTimeString();
       setStatus('AI query complete');
     } catch (e) {
       $('ai-output').innerHTML = renderMarkdown('## Error\n\n' + String(e && e.message || e));
       $('ai-status').textContent = 'Error';
     } finally {
+      // A queued partial answer must never overwrite a stream error.
+      if (renderFrame !== null) cancelAnimationFrame(renderFrame);
       querying = false;
       $('btn-ask').disabled = false;
     }
@@ -2533,7 +2577,7 @@ function initApp() {
     file.text().then((text) => {
       let b;
       try { b = JSON.parse(text); } catch (e) { alert('Not a valid backup file (bad JSON).'); return; }
-      if (!b || b.app !== 'ff-draft-tool') { alert('Not a draft-prep backup file.'); return; }
+      if (!validDraftBackup(b)) { alert('Not a valid draft-prep backup file. Your current data has not been changed.'); return; }
       if (!confirm('Replace your prep (markers, picks, team, rank overrides, note edits, prompts) ' +
         "with this file's data? Your API key is kept as-is.")) return;
       settings = Object.assign({}, DEFAULT_SETTINGS, b.settings || {}, { apiKey: settings.apiKey });
@@ -2543,6 +2587,13 @@ function initApp() {
       unpicked = new Set(b.unpicked || []);
       rankOverrides = b.rankOverrides || {};
       noteOverrides = b.noteOverrides || {};
+      // Old backups contain only manual state. Clear the destination's cached
+      // draft in that case instead of mixing two unrelated drafts together.
+      extState = b.extState || {};
+      extPickedRaw = b.extPickedRaw || [];
+      predicted = null;
+      predictedMeta = null;
+      predictMode = false;
       store.save('settings', settings);
       store.save('manualPicked', [...manualPicked]);
       store.save('manualTeam', manualTeam);
@@ -2550,6 +2601,9 @@ function initApp() {
       store.save('unpicked', [...unpicked]);
       store.save('rankOverrides', rankOverrides);
       store.save('noteOverrides', noteOverrides);
+      store.save('extState', extState);
+      store.save('extPickedRaw', extPickedRaw);
+      store.save('predictMode', false);
       mirrorPrep();
       $('scoring-format').value = settings.scoringFormat;
       $('settings-dialog').close();
@@ -2570,6 +2624,8 @@ function initApp() {
       unpicked: [...unpicked],
       rankOverrides,
       noteOverrides,
+      extState,
+      extPickedRaw,
     };
     download('draft-prep-backup.json', JSON.stringify(backup, null, 2), 'application/json');
     setStatus('Prep exported (API key not included)');
