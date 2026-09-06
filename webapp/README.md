@@ -1,16 +1,91 @@
 # Fantasy Football Draft Tool — Web Version
 
-A fully static, browser-based port of the Go/Fyne desktop app (`../go`). No
-server, no accounts, no state stored anywhere except your own browser's
-localStorage. Draft picks flow in live from the Chrome extension; AI
-recommendations call the OpenAI API (or a local Ollama) directly from your
-browser.
+A browser-based port of the Go/Fyne desktop app (`../go`). The draft board can
+run as a static page, with draft state stored in your browser's localStorage.
+Claude Code integration requires the optional local server and a CLI login.
+Draft picks flow in live from the Chrome extension; AI
+recommendations use OpenAI, Ollama, or the optional local Claude Code bridge.
+
+## Local ESPN draft with Claude Sonnet (no API key)
+
+From the repository root:
+
+```bash
+python3 webapp/local_server.py
+```
+
+Open **http://localhost:8765** in Chrome and leave the terminal running. This
+serves the bundled dashboard locally; foss.football does not need to be online.
+Python's standard library is sufficient. Claude Code must be installed and signed
+in with your subscription (`claude auth login`). The server prints login readiness.
+On a fresh local dashboard, Claude Code is selected automatically; otherwise choose
+**Settings → AI → Use Claude Code**. **Ask AI** (Q) starts Sonnet and streams its
+answer into the dashboard using the current draft state and candidate notes.
+
+Install the Chrome extension in the **same Chrome profile** as the ESPN and local
+dashboard tabs:
+
+1. Run `python3 chrome-extension/package.py` from the repository root.
+2. Open `chrome://extensions`, enable Developer mode, click **Load unpacked**, and
+   select `chrome-extension/dist/chrome`.
+3. Open your ESPN draft room and the local dashboard. Refresh both tabs if they
+   were already open when you installed/reloaded the extension.
+4. Confirm **Extension: connected** and that actual ESPN picks and your roster
+   appear correctly. The connected badge alone confirms the bridge, not the ESPN
+   selectors. Try an ESPN mock before relying on it for a live draft.
+5. Select scoring and check league size/draft slot in Settings → Draft. Put any
+   custom lineup rules in Settings → Prompts; the dashboard otherwise assumes its
+   standard 1-QB, RB/WR-flex lineup. Ask AI gives advice; make the actual pick on ESPN.
+
+The localhost server binds only to this computer, serves dashboard assets, and
+allows one Claude answer at a time. It launches the official `claude -p --model
+sonnet` command with tools/customizations disabled and a temporary working directory.
+It uses the CLI subscription login, strips API-key/provider overrides from the child
+environment, and never sends credentials to the page. Each question is independent;
+draft context is supplied again so previous picks do not linger as available.
+
+Claude still needs internet access and available subscription usage. Anthropic's
+[current notice](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan)
+says `claude -p` draws from subscription limits (the announced separate credit
+change was paused). This is not unlimited or offline inference. The bridge does
+not browse for new injury news; it reasons from the provided notes and draft state.
+Errors and a 150-second timeout are surfaced in the AI panel without stopping the
+board. A plain `python -m http.server` or `file://` page still supports draft tracking,
+but cannot launch Claude Code.
+
+Verification: `python3 -m unittest discover -s webapp -p 'test_*.py'` exercises the
+bridge's request checks, static-file boundary, streaming and error handling without
+using Claude credits. `node --test webapp/test_draft_connection.cjs` checks draft
+prompt context, synthetic ESPN markup, and extension URL coverage. A real Sonnet
+connection and the Ask AI browser flow were also
+tested on September 5, 2026. Extension 1.5.1 was also tested in a browser against
+user-supplied ESPN room HTML: 58 picks and the correct four-player personal roster.
+It reads draft-board pick cells explicitly marked `myTeam`, so the selectable
+roster panel cannot substitute another team. Reload the extension in
+`chrome://extensions`, then refresh ESPN and the dashboard to activate updates.
+Live mutation timing and your installed Chrome bridge still warrant a mock check.
+
+## Refreshing the draft board
+
+Run `python3 engine/update_ranks.py` then `python3 webapp/build_data.py` from
+this repository's root, and reload the dashboard. Rank follows current FFC
+12-team mock ADP for the selected scoring format; hover it for the average
+pick. The sample date is displayed above the board. A dash means that player
+is outside the fresh sample. ESPN is overall ADP order, not standard-only or
+the draft room's default order. Imported ranks still take precedence; use
+Settings → Revert to bundled if you want to remove your personal overrides.
+
+For a new draft, close the old ESPN draft tab, use Settings → Reset draft state,
+then open the new draft. There is no draft-ID isolation yet: old tabs can write
+old picks back. Reset clears picks, roster, ratings and cached extension state;
+it preserves edited notes, imported ranks and settings. Recheck draft slot and
+team count. Merely opening a new draft does not reliably clear accumulated picks.
 
 ## Running it
 
 **Option A — just open it.** Double-click `index.html` (or `File → Open` in
-Chrome). Everything works from disk because the player data is bundled into
-`data/players-data.js`.
+Chrome). The board works from disk because the player data is bundled into
+`data/players-data.js`. Use the local server above for Claude Code integration.
 
 **Option B — foss.football (production).** `python3 ../build_deploy.py`
 assembles this app under `/webapp/` of the Cloudflare Pages deploy (see

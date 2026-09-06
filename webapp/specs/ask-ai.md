@@ -18,7 +18,13 @@ full notes of the best available players.
 - Asking switches the right panel to the permanent "AI Output" tab, where the
   answer streams in as rendered markdown.
 - OpenAI models fall back down a chain if one fails; Ollama is used instead
-  when enabled.
+  when enabled. Claude Code takes precedence when selected on the local server,
+  uses the signed-in subscription with Sonnet, and streams into the same panel.
+- The prompt includes the current season/date, scoring, league size, draft slot,
+  next pick, lineup assumptions and current candidate rankings. The first overall
+  pick is 1, not 0. Old Reddit notes are not presented as verified live facts.
+- A failed or interrupted Claude request produces an error and re-enables Ask AI;
+  it never silently switches to a paid API provider.
 - If no LLM is configured, the panel explains exactly how to set one up —
   and the rest of the app still works without it.
 - Queries are rate-limited (no accidental double-fire).

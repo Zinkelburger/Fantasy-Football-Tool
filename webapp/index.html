@@ -51,6 +51,7 @@
         <label class="chk" title="What our research adds to a player: the buy/fade reads in his note and in the hover on his name. Uncheck for a clean board — your own marks and notes stay."><input type="checkbox" id="show-model-marks" checked> Model marks</label>
         <span id="player-count"></span>
       </div>
+      <div id="rank-data-stamp" role="status" style="padding: 4px 12px; font-size: 12px; color: var(--text-muted, #9a9aa6)"></div>
       <div id="round-guide" hidden>
         <span id="round-guide-text"></span>
         <button id="btn-round-guide"
@@ -89,7 +90,7 @@
         <div id="ai-output" class="md-body">
           <p class="muted">Click <b>Ask AI</b> (or press Q) to get draft recommendations
           based on the top available players, your roster, and the draft so far.
-          Configure your API key in Settings (&#9881;) first — or press <b>?</b> for
+          Choose Claude Code, OpenAI or Ollama in Settings (&#9881;) — or press <b>?</b> for
           help and a guided tour of the whole app.</p>
         </div>
         <div id="board-view" hidden>
@@ -297,6 +298,13 @@
         <button type="button" class="stab stab-all" data-stab="all"
           title="Every setting on one page">View all</button>
       </div>
+      <fieldset data-stab="ai">
+        <legend>Claude Code (Sonnet)</legend>
+        <label class="chk"><input type="checkbox" id="set-use-claude"> Use Claude Code instead of OpenAI or Ollama</label>
+        <p class="hint">Uses your existing Claude Code subscription login. No API key needed.
+          Start <code>python3 webapp/local_server.py</code> and open <code>http://localhost:8765</code>.</p>
+        <p class="hint" id="claude-status">Available through the local dashboard server. Claude plan usage limits apply.</p>
+      </fieldset>
       <fieldset data-stab="ai">
         <legend>OpenAI</legend>
         <label>API key

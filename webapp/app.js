@@ -82,9 +82,18 @@ function truncateNote(content) {
   return truncated + '...';
 }
 
-// Port of prompt_manager.go BuildFullUserPrompt — same template, verbatim.
-function buildUserPrompt(currentPick, pickedPlayersStr, currentTeam, userPromptCustom, allNotes) {
-  return `It is pick ${currentPick} of a 2025 fantasy football draft. ` +
+// Draft advice uses the current league context and labels the limits of the notes.
+function buildUserPrompt(currentPick, pickedPlayersStr, currentTeam, userPromptCustom, allNotes, context = {}) {
+  const date = context.date || new Date().toLocaleDateString('en-CA');
+  const year = context.season || new Date().getFullYear();
+  return `It is pick ${currentPick} of a ${year} fantasy football draft. Today is ${date}. ` +
+    `Scoring: ${context.scoring || 'not specified'}. League size: ${context.numTeams || 'not specified'}. ` +
+    `Draft slot: ${context.slot || 'unknown'}. Your next overall pick: ${context.nextPick || 'unknown'}. ` +
+    `Dashboard lineup assumptions: ${context.lineup || 'not specified'}. ` +
+    `Use the current candidate rankings below; note headers may contain older ranks. ` +
+    `Treat Reddit notes as attributed evidence and opinion, not verified current facts. ` +
+    `Do not assume an old injury is ongoing, invent news, or claim to have checked live sources. ` +
+    `Explain material uncertainty and use current rankings as the baseline. ` +
     `These players have been picked so far: ${pickedPlayersStr}. ` +
     `Current team info: ${currentTeam}. ${userPromptCustom} ` +
     `The notes for each player are separated by '---start playername---' and '---end playername---'.` +
@@ -398,6 +407,7 @@ const DEFAULT_SETTINGS = {
   apiKey: '',
   model: '',
   useOllama: false,
+  useClaudeCode: null,   // auto-select on our local server until explicitly set
   ollamaEndpoint: 'http://localhost:11434',
   ollamaModel: '',
   scoringFormat: 'STD',
@@ -895,6 +905,20 @@ function initApp() {
     const search = searchText.trim().toLowerCase();
     const manual = settings.manualMode;
 
+    const source = DATA.rankSources;
+    const sourceFormat = { STD: 'standard', '0.5PPR': 'half-ppr', PPR: 'ppr' }[settings.scoringFormat];
+    const sample = source && source.formats && source.formats[sourceFormat];
+    const stamp = $('rank-data-stamp');
+    if (stamp) {
+      const stale = sample && Date.now() - Date.parse(sample.end_date + 'T23:59:59Z') > 7 * 86400000;
+      stamp.textContent = sample
+        ? `Board: FFC ${sample.teams}-team ${sample.type} mocks · through ${sample.end_date}${stale ? ' · STALE — refresh before drafting' : ''} · — = no current ADP`
+        : 'Board source date unavailable — refresh before drafting';
+      stamp.title = source ? `Fetched ${source.fetched_at}. ${source.espn}. Blue ranks are your personal overrides.` : '';
+    }
+    $('th-espn').title = 'ESPN overall ADP order, not standard-only or draft-room order. Click to sort.';
+    $('th-rank').title = 'Board order from current FFC mock ADP. Hover a rank for average pick. Blue numbers are your imported ranks.';
+
     const sites = siteColumns();
     $('th-espn').hidden = !sites.includes('espn');
     $('th-sleeper').hidden = !sites.includes('sleeper');
@@ -1045,7 +1069,7 @@ function initApp() {
       tr.innerHTML =
         (ovRank !== null
           ? `<td class="rank-override" title="Your rank (bundled: ${escapeHtml(p.rank)})">${escapeHtml(String(ovRank))}</td>`
-          : `<td>${escapeHtml(p.rank)}</td>`) +
+          : `<td title="${p.adp ? `FFC average pick: ${escapeHtml(p.adp)}` : 'No current FFC ADP'}">${escapeHtml(p.rank)}</td>`) +
         `<td class="player-name"${nameTip ? ` title="${escapeHtml(nameTip)}"` : ''}>` +
         `${escapeHtml(p.name)}<span class="name-flags">` +
         `${step.v ? `<span class="${step.cls}" title="You marked him ${step.word}">${step.glyph}</span>` : ''}` +
@@ -1063,7 +1087,7 @@ function initApp() {
           const raw = s === 'espn' ? p.espn : p.sleeper;
           const site = parseInt(raw, 10);
           const base = ovRank !== null ? ovRank : p.rankNum;
-          if (!isFinite(site) || !isFinite(base)) return `<td class="site-cell">${escapeHtml(String(raw))}</td>`;
+          if (!isFinite(site) || !isFinite(base) || base >= 9999) return `<td class="site-cell">${escapeHtml(String(raw))}</td>`;
           // Signed like the user thinks about it: how the site feels vs the
           // board. (+n) = the site is n spots HIGHER on them (goes earlier
           // there), (−n) = n spots lower (may fall to you there).
@@ -2144,10 +2168,82 @@ function initApp() {
   setInterval(() => { if (!extDetected) requestExtState(); }, 30000);
 
   /* ---------- LLM ---------- */
+  async function localClaudeStatus() {
+    if (!['localhost', '127.0.0.1'].includes(location.hostname)) {
+      throw new Error('Claude Code needs the local dashboard. Run python3 webapp/local_server.py and open http://localhost:8765.');
+    }
+    let info;
+    try {
+      const response = await fetch('/api/claude/status', { signal: AbortSignal.timeout(12000) });
+      if (!response.ok) throw new Error('Server not ready');
+      info = await response.json();
+    } catch (e) {
+      throw new Error('Start the Claude bridge with python3 webapp/local_server.py, then open http://localhost:8765. A plain file or static server cannot launch Claude Code.');
+    }
+    if (info.service !== 'ffda-claude') throw new Error('This server does not provide Claude Code. Run python3 webapp/local_server.py.');
+    return info;
+  }
+
+  async function detectLocalClaude() {
+    if (!['localhost', '127.0.0.1'].includes(location.hostname)) return;
+    try {
+      const info = await localClaudeStatus();
+      $('claude-status').textContent = info.ready
+        ? 'Sonnet is ready through your Claude Code login. Uses your Claude plan limits.'
+        : info.error;
+      if (settings.useClaudeCode == null && !settings.apiKey && !settings.useOllama) {
+        settings.useClaudeCode = true;
+        store.save('settings', settings);
+      }
+      if (settings.useClaudeCode) {
+        $('ai-status').textContent = info.ready ? 'Claude Sonnet ready' : 'Claude Code needs login';
+      }
+    } catch (e) { $('claude-status').textContent = e.message; }
+  }
+  // Run after the synchronous UI initialization has completed.
+  setTimeout(detectLocalClaude, 0);
+
   function llmConfigured() {
+    if (settings.useClaudeCode) return true;
     return settings.useOllama
       ? Boolean(settings.ollamaEndpoint && settings.ollamaModel)
       : Boolean(settings.apiKey);
+  }
+
+  async function streamClaudeCode(messages, onChunk) {
+    const info = await localClaudeStatus();
+    if (!info.ready) throw new Error(info.error);
+    const response = await fetch('/api/claude/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-FFDA-Token': info.token },
+      body: JSON.stringify({ messages }),
+      signal: AbortSignal.timeout(165000),
+    });
+    if (!response.ok) {
+      const problem = await response.json().catch(() => ({}));
+      throw new Error(problem.error || `Claude bridge HTTP ${response.status}`);
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) throw new Error('Claude connection ended before the answer completed. Try again.');
+        buffer += decoder.decode(value, { stream: true });
+        let newline;
+        while ((newline = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.slice(0, newline).trim();
+          buffer = buffer.slice(newline + 1);
+          if (!line) continue;
+          const event = JSON.parse(line);
+          if (event.error) throw new Error(event.error);
+          if (event.model) $('ai-status').textContent = `Asking ${event.model}…`;
+          if (event.text) onChunk(event.text);
+          if (event.done) return;
+        }
+      }
+    } finally { await reader.cancel().catch(() => {}); }
   }
 
   async function streamOpenAI(messages, onChunk) {
@@ -2249,6 +2345,7 @@ function initApp() {
         '## LLM not configured\n\n' +
         'Open Settings (⚙) and either:\n\n' +
         '- paste an **OpenAI API key**, or\n' +
+        '- enable **Claude Code (Sonnet)** on the local dashboard, or\n' +
         '- enable **Ollama** with a local model.\n\n' +
         'Everything else (draft tracking, filters, notes) works without it.');
       return;
@@ -2261,7 +2358,8 @@ function initApp() {
     querying = true;
     lastQueryAt = Date.now();
     $('btn-ask').disabled = true;
-    $('ai-status').textContent = settings.useOllama ? 'Asking Ollama…' : 'Asking OpenAI…';
+    $('ai-status').textContent = settings.useClaudeCode ? 'Asking Claude Sonnet…'
+      : settings.useOllama ? 'Asking Ollama…' : 'Asking OpenAI…';
     $('ai-output').innerHTML = '';
 
     try {
@@ -2272,7 +2370,9 @@ function initApp() {
       let allNotes = '';
       for (const p of top) {
         const note = noteFor(p);
-        if (note) allNotes += `---start ${p.name}---\n${note}\n---end ${p.name}---\n\n`;
+        allNotes += `---start ${p.name}---\nCurrent board rank: ${p.rank}; position: ${p.pos}; ` +
+          `ESPN rank: ${p.espn || 'unknown'}; Sleeper rank: ${p.sleeper || 'unknown'}.\n` +
+          `${note || 'No research note available.'}\n---end ${p.name}---\n\n`;
       }
 
       const pickedNames = [...picked];
@@ -2283,7 +2383,11 @@ function initApp() {
         ? groups.map(g => `=== ${g.pos} ===\n` + g.players.map(p => p.name).join('\n')).join('\n')
         : '[No players on your team yet]';
 
-      const prompt = buildUserPrompt(pickNumber(), pickedStr, teamStr, settings.userPrompt, allNotes);
+      const prompt = buildUserPrompt(pickNumber() + 1, pickedStr, teamStr, settings.userPrompt, allNotes, {
+        scoring: settings.scoringFormat, numTeams: settings.numTeams,
+        slot: effectiveSlot(), nextPick: yourNextPick()?.next,
+        lineup: '1 QB, 2 RB, 2 WR, 1 TE, 1 RB/WR FLEX, 1 K, 1 DST. Override with explicit custom league instructions.',
+      });
       const messages = [
         { role: 'system', content: settings.systemPrompt },
         { role: 'user', content: prompt },
@@ -2304,7 +2408,8 @@ function initApp() {
         }
       };
 
-      if (settings.useOllama) await streamOllama(messages, onChunk);
+      if (settings.useClaudeCode) await streamClaudeCode(messages, onChunk);
+      else if (settings.useOllama) await streamOllama(messages, onChunk);
       else await streamOpenAI(messages, onChunk);
 
       $('ai-status').textContent = 'Done ' + new Date().toLocaleTimeString();
@@ -2424,6 +2529,7 @@ function initApp() {
       apiKey: $('set-apikey').value,
       model: $('set-model').value,
       useOllama: $('set-use-ollama').checked,
+      useClaudeCode: $('set-use-claude').checked,
       ollamaEndpoint: $('set-ollama-endpoint').value,
       ollamaModel: $('set-ollama-model').value,
       systemPrompt: $('set-system-prompt').value,
@@ -2446,6 +2552,7 @@ function initApp() {
     $('set-apikey').value = settings.apiKey;
     $('set-model').value = settings.model;
     $('set-use-ollama').checked = settings.useOllama;
+    $('set-use-claude').checked = Boolean(settings.useClaudeCode);
     $('set-ollama-endpoint').value = settings.ollamaEndpoint;
     $('set-ollama-model').value = settings.ollamaModel;
     $('set-system-prompt').value = settings.systemPrompt;
@@ -2462,6 +2569,7 @@ function initApp() {
     settings.apiKey = $('set-apikey').value.trim();
     settings.model = $('set-model').value.trim();
     settings.useOllama = $('set-use-ollama').checked;
+    settings.useClaudeCode = $('set-use-claude').checked;
     settings.ollamaEndpoint = $('set-ollama-endpoint').value.trim() || DEFAULT_SETTINGS.ollamaEndpoint;
     settings.ollamaModel = $('set-ollama-model').value.trim();
     settings.systemPrompt = $('set-system-prompt').value;
@@ -2977,7 +3085,7 @@ function initApp() {
   });
 
   $('help-data-stamp').textContent =
-    `Player data generated ${DATA.generatedAt} — rebuild with build_data.py when rankings change.`;
+    `Bundle built ${DATA.generatedAt}. Rankings fetched ${DATA.rankSources?.fetched_at || 'at an unknown date'}. Refresh rankings with engine/update_ranks.py, then rebuild with webapp/build_data.py.`;
   applySplit();
   applyTeamCollapsed();
   renderAll();
