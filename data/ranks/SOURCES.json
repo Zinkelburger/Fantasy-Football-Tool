@@ -1,0 +1,38 @@
+{
+  "fetched_at": "2026-09-06T03:53:06+00:00",
+  "season": 2026,
+  "board_source": "Fantasy Football Calculator",
+  "board_kind": "12-team mock-draft ADP",
+  "formats": {
+    "standard": {
+      "url": "https://fantasyfootballcalculator.com/api/v1/adp/standard?teams=12&year=2026",
+      "type": "Non-PPR",
+      "teams": 12,
+      "rounds": 15,
+      "total_drafts": 1606,
+      "start_date": "2026-08-29",
+      "end_date": "2026-09-05"
+    },
+    "half-ppr": {
+      "url": "https://fantasyfootballcalculator.com/api/v1/adp/half-ppr?teams=12&year=2026",
+      "type": "Half-PPR",
+      "teams": 12,
+      "rounds": 15,
+      "total_drafts": 2879,
+      "start_date": "2026-08-31",
+      "end_date": "2026-09-05"
+    },
+    "ppr": {
+      "url": "https://fantasyfootballcalculator.com/api/v1/adp/ppr?teams=12&year=2026",
+      "type": "PPR",
+      "teams": 12,
+      "rounds": 15,
+      "total_drafts": 7430,
+      "start_date": "2026-08-29",
+      "end_date": "2026-09-05"
+    }
+  },
+  "espn": "Overall ADP order; not standard-only and not draft-room order",
+  "sleeper": "Per-format ADP order; values of 999 are excluded",
+  "missing": "Blank ranks/ADP mean outside the current source sample"
+}

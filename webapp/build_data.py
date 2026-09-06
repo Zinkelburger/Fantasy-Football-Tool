@@ -116,8 +116,9 @@ def load_format(path: str, opp, opp_fmt: str, rooms=None):
                 "team": (row["Team"] or "").strip(),
                 "pos": (row["POS"] or "").strip(),
                 "bye": (row["Bye"] or "").strip(),
-                "rank": (row["Rank"] or "").strip(),
+                "rank": (row["Rank"] or "—").strip(),
                 "rankNum": rank_num,
+                "adp": (row.get("ADP") or "").strip(),
                 "espn": (row["ESPN_Rank"] or "").strip(),
                 "sleeper": (row["Sleeper_Rank"] or "").strip(),
             }
@@ -236,8 +237,18 @@ def main():
         for m in sorted(set(missing)):
             print(f"  - {m}")
 
+    source_path = os.path.join(DATA_DIR, "ranks", "SOURCES.json")
+    rank_sources = {}
+    if os.path.exists(source_path):
+        with open(source_path, encoding="utf-8") as f:
+            rank_sources = json.load(f)
+    # Notes retain their own research date, but an old board rank in a
+    # September note must not contradict today's selected scoring format.
+    notes = {name: re.sub(r" — board rank [^·\n]+(?= ·|\n|$)", "", note, count=1)
+             for name, note in notes.items()}
     data = {
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        "rankSources": rank_sources,
         "formats": formats,
         "notes": notes,
         "fmarks": fmarks,

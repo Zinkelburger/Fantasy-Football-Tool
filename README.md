@@ -28,7 +28,7 @@ Inside `engine/`:
 |---|---|
 | `engine/league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
 | `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes |
-| `engine/update_ranks.py` | refreshes ESPN/Sleeper/FFC market ranks (also runs twice weekly via GitHub Actions) |
+| `engine/update_ranks.py` | refreshes all scoring-format boards from FFC plus ESPN/Sleeper comparisons (twice weekly via GitHub Actions) |
 | `engine/fetch_juicebox.py` | pulls the JuiceBoxOne ranking sheets into `data/juicebox/<year>/` |
 
 `docs/DATA-SOURCES.md` tracks every external data feed and when it was

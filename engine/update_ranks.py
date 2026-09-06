@@ -1,35 +1,19 @@
 #!/usr/bin/env python3
-"""Refresh site-rank columns and the market ADP snapshot from public APIs.
+"""Refresh every draft board and market comparison from public feeds.
 
-No keys, no auth, stdlib only. Sources (all verified working 2026-08-03):
-
-- ESPN:    lm-api-reads.fantasy.espn.com kona_player_info — ranked by
-           ESPN's live ADP (ownership.averageDraftPosition; one list,
-           no per-format split).
-- Sleeper: api.sleeper.com/projections — real Sleeper ADP for std,
-           half-ppr and ppr formats.
-- FFC:     fantasyfootballcalculator.com/api — 12-team mock-draft ADP
-           (std / half / ppr), a third opinion for the site's board.
-
-What it writes:
-
-1. data/ranks/{std,0.5_ppr,ppr}_with_depth.csv — ESPN_Rank and Sleeper_Rank
-   columns only. Rank / Player / Team / Bye / POS are never touched:
-   Rank is OUR board, this script only refreshes the market columns.
-2. engine/league-sim/data/market/adp_2026.csv — tracked snapshot joining
-   all three sources by player, consumed by site/build_site.py for the
-   model-vs-market view.
-
-Run it, eyeball the diff, then rebuild + redeploy:
+The main Rank is FFC's per-format, 12-team mock-draft ADP order; ADP stores
+its actual average pick. ESPN/Sleeper comparison columns remain independent.
+Players outside FFC's sample stay searchable with no main rank. Never retain
+old ranks after a successful refresh. Reject incomplete/stale primary feeds
+before writing any board. SOURCES.json records fetch time and sample windows.
 
     python3 engine/update_ranks.py
-    python3 build_deploy.py         # rebundles webapp + site data
-    git add -A && git commit        # Cloudflare Pages redeploys on push
-
-Cadence: weekly in July, every 2–3 days in August, daily draft week.
-ADP moves fastest the final two weeks before Labor Day.
+    python3 webapp/build_data.py    # local dashboard
+    python3 build_deploy.py         # assemble deployable site, no publication
 """
 import csv
+import math
+from datetime import date, datetime, timezone
 import json
 import re
 import sys
@@ -42,6 +26,7 @@ RANKS = ROOT / "data" / "ranks"
 SNAPSHOT = HERE / "league-sim" / "data" / "market" / "adp_2026.csv"
 
 SEASON = 2026
+TEAMS = 12
 UA = {"User-Agent": "Mozilla/5.0 (foss.football rank refresh; github.com/Zinkelburger/Fantasy-Football-Tool)"}
 
 # CSV file -> sleeper adp field. ESPN has one ADP (no per-format split);
@@ -51,6 +36,11 @@ FORMATS = {
     "0.5_ppr_with_depth.csv": "adp_half_ppr",
     "ppr_with_depth.csv":     "adp_ppr",
 }
+
+FFC_FORMATS = {"std_with_depth.csv": "standard",
+               "0.5_ppr_with_depth.csv": "half-ppr",
+               "ppr_with_depth.csv": "ppr"}
+POSITIONS = {"QB", "RB", "WR", "TE"}
 
 SUFFIX_RE = re.compile(r"\s+(?:jr\.?|sr\.?|ii|iii|iv|v)$")
 
@@ -69,12 +59,7 @@ def get_json(url: str, headers: dict = None) -> object:
 
 
 def fetch_espn():
-    """name -> overall rank (1..N) by ESPN live ADP.
-
-    NOT draftRanksByRankType: those ranks are an unpublished editorial list
-    (identical for STD/PPR, wildly off ADP — e.g. Lamar rank 88 vs ADP 40,
-    verified 2026-08-03). ownership.averageDraftPosition is what ESPN draft
-    rooms actually follow."""
+    """name -> overall order by ESPN ADP (not standard-only or room order)."""
     flt = json.dumps({"players": {"limit": 500,
                                   "sortAdp": {"sortPriority": 1, "sortAsc": True}}})
     url = (f"https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/"
@@ -119,7 +104,7 @@ def fetch_sleeper():
                                 "pos": p.get("position") or ""})
         for field in ("adp_std", "adp_half_ppr", "adp_ppr"):
             adp = st.get(field)
-            if adp:
+            if adp and 0 < adp < 999:
                 raw.setdefault(field, []).append((adp, n))
     out = {}
     for field, pairs in raw.items():
@@ -130,56 +115,99 @@ def fetch_sleeper():
     return out, meta
 
 
+def validate_ffc(data, fmt, today=None):
+    """Reject partial, wrong-format/year, or stale responses before any writes."""
+    today = today or date.today()
+    meta = data.get("meta", {})
+    expected = {"standard": "Non-PPR", "half-ppr": "Half-PPR", "ppr": "PPR"}[fmt]
+    end = date.fromisoformat(meta.get("end_date", ""))
+    start = date.fromisoformat(meta.get("start_date", ""))
+    if (data.get("status") != "Success" or meta.get("type") != expected
+            or meta.get("teams") != TEAMS or end.year != SEASON
+            or not 0 <= (today - end).days <= 7 or start > end
+            or meta.get("total_drafts", 0) <= 0):
+        raise ValueError(f"FFC {fmt}: wrong format, empty sample, or stale date: {meta}")
+    players = data.get("players", [])
+    seen = set()
+    skill_count = 0
+    for p in players:
+        n = norm(p.get("name", ""))
+        adp = float(p.get("adp", 0))
+        if not n or n in seen or not math.isfinite(adp) or not 0 < adp < 999:
+            raise ValueError(f"FFC {fmt}: invalid/duplicate player or ADP: {p}")
+        seen.add(n)
+        skill_count += p.get("position") in POSITIONS
+    if skill_count < 100:
+        raise ValueError(f"FFC {fmt}: only {skill_count} skill players; refusing partial board")
+    return sorted(players, key=lambda p: (float(p["adp"]), norm(p["name"])))
+
+
 def fetch_ffc():
-    """name -> {'standard': adp, 'half-ppr': adp, 'ppr': adp} (raw pick numbers)"""
-    out = {}
-    for fmt in ("standard", "half-ppr", "ppr"):
-        url = f"https://fantasyfootballcalculator.com/api/v1/adp/{fmt}?teams=12&year={SEASON}"
-        try:
-            data = get_json(url)
-        except Exception as e:
-            print(f"FFC {fmt}: FAILED ({e}) — continuing without it")
+    out, samples, feeds = {}, {}, {}
+    for fmt in FFC_FORMATS.values():
+        url = f"https://fantasyfootballcalculator.com/api/v1/adp/{fmt}?teams={TEAMS}&year={SEASON}"
+        data = get_json(url)
+        feeds[fmt] = validate_ffc(data, fmt)
+        samples[fmt] = {"url": url, **data["meta"]}
+        for p in feeds[fmt]:
+            out.setdefault(norm(p["name"]), {})[fmt] = p["adp"]
+        print(f"FFC {fmt}: {len(feeds[fmt])} players; sample through {data['meta']['end_date']}")
+    return out, samples, feeds
+
+
+def build_board(previous, players, espn, sleeper, slp_field):
+    old = {norm(r["Player"]): r for r in previous}
+    rows, seen = [], set()
+    # Keep overall positions, including picks spent on K/DST, but only show
+    # skill players. ADP remains the raw average pick, not an ordinal rank.
+    for rank, p in enumerate(players, 1):
+        if p["position"] not in POSITIONS:
             continue
-        n = 0
-        for p in data.get("players", []):
-            if p.get("name") and p.get("adp"):
-                out.setdefault(norm(p["name"]), {})[fmt] = p["adp"]
-                n += 1
-        print(f"FFC {fmt}: {n} players")
-    return out
+        n = norm(p["name"])
+        seen.add(n)
+        prior = old.get(n, {})
+        rows.append({"Rank": str(rank), "Player": prior.get("Player", p["name"]),
+                     "Team": p.get("team") or "", "Bye": str(p.get("bye") or ""),
+                     "POS": p["position"], "ADP": str(p["adp"])})
+    for n, row in old.items():
+        if n not in seen:
+            rows.append({**row, "Rank": "", "ADP": ""})
+    for row in rows:
+        n = norm(row["Player"])
+        # Absence is missing data, never permission to keep yesterday's value.
+        row["ESPN_Rank"] = str(espn.get(n, ""))
+        row["Sleeper_Rank"] = str(sleeper.get(n, {}).get(slp_field, ""))
+    return rows
 
 
-def update_csvs(espn, sleeper):
-    unmatched = set()
+def update_csvs(espn, sleeper, feeds, samples):
+    boards = {}
     for fname, slp_field in FORMATS.items():
+        with open(RANKS / fname, newline="", encoding="utf-8") as f:
+            previous = list(csv.DictReader(f))
+        boards[fname] = build_board(previous, feeds[FFC_FORMATS[fname]], espn, sleeper, slp_field)
+    # All primary feeds and all board transformations have succeeded.
+    for fname, rows in boards.items():
         path = RANKS / fname
-        with open(path, newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            fieldnames = reader.fieldnames
-            rows = list(reader)
-        hit_e = hit_s = 0
-        for row in rows:
-            n = norm(row["Player"])
-            e = espn.get(n)
-            s = sleeper.get(n, {}).get(slp_field)
-            if e:
-                row["ESPN_Rank"] = str(e)
-                hit_e += 1
-            if s:
-                row["Sleeper_Rank"] = str(s)
-                hit_s += 1
-            if not e and not s:
-                unmatched.add(row["Player"])
-        with open(path, "w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
+        temporary = path.with_suffix(".csv.tmp")
+        with temporary.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["Rank", "Player", "Team", "Bye", "POS",
+                                             "ESPN_Rank", "Sleeper_Rank", "ADP"],
+                               lineterminator="\n")
             w.writeheader()
             w.writerows(rows)
-        print(f"{fname}: ESPN {hit_e}/{len(rows)}, Sleeper {hit_s}/{len(rows)}")
-    if unmatched:
-        print(f"\nWARNING: {len(unmatched)} board players matched NEITHER source "
-              f"(stale rank kept — check name spelling or retirement):")
-        for name in sorted(unmatched):
-            print(f"  - {name}")
+        temporary.replace(path)
+        print(f"{fname}: {sum(bool(r['Rank']) for r in rows)} ranked; "
+              f"{sum(not r['Rank'] for r in rows)} without current FFC ADP")
+    metadata = {
+        "fetched_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "season": SEASON, "board_source": "Fantasy Football Calculator",
+        "board_kind": "12-team mock-draft ADP", "formats": samples,
+        "espn": "Overall ADP order; not standard-only and not draft-room order",
+        "sleeper": "Per-format ADP order; values of 999 are excluded",
+        "missing": "Blank ranks/ADP mean outside the current source sample",
+    }
+    (RANKS / "SOURCES.json").write_text(json.dumps(metadata, indent=2) + "\n")
 
 
 def write_snapshot(espn, sleeper, sleeper_meta, ffc):
@@ -213,12 +241,12 @@ def write_snapshot(espn, sleeper, sleeper_meta, ffc):
 
 
 def main():
+    ffc, samples, feeds = fetch_ffc()
     espn = fetch_espn()
     sleeper, sleeper_meta = fetch_sleeper()
-    ffc = fetch_ffc()
     if not espn and not sleeper:
         sys.exit("ERROR: both ESPN and Sleeper fetches failed; nothing updated")
-    update_csvs(espn, sleeper)
+    update_csvs(espn, sleeper, feeds, samples)
     write_snapshot(espn, sleeper, sleeper_meta, ffc)
     print("\nNext: python3 build_deploy.py  (then commit + push to redeploy)")
 

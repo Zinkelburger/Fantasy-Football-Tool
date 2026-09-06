@@ -1,4 +1,4 @@
-# Refreshes ESPN/Sleeper/FFC market ranks twice a week and commits the
+# Refreshes all scoring-format boards plus ESPN/Sleeper comparisons twice a week and commits the
 # result. If the repo is connected to Cloudflare Pages, the push triggers a
 # redeploy automatically, so foss.football stays current with zero manual
 # work. Season note: bump the cron to daily in the two weeks before Labor
@@ -26,11 +26,15 @@ jobs:
           python-version: "3.12"
       - name: Refresh ranks from public APIs
         run: python3 engine/update_ranks.py
+      - name: Rebuild the dashboard and validate the bundle
+        run: |
+          python3 -m unittest discover -s engine -p 'test_update_ranks.py'
+          python3 webapp/build_data.py
       - name: Commit if anything moved
         run: |
           git config user.name "rank-refresh-bot"
           git config user.email "actions@github.com"
-          git add data/ranks/*.csv engine/league-sim/data/market/adp_2026.csv
+          git add data/ranks/*.csv data/ranks/SOURCES.json engine/league-sim/data/market/adp_2026.csv webapp/data/players-data.js
           git diff --cached --quiet && echo "no ADP movement" && exit 0
           git commit -m "data: refresh ESPN/Sleeper/FFC ranks ($(date -u +%F))"
           git push

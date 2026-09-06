@@ -20,15 +20,11 @@ exact fetch date and each sheet's own self-reported update date.
   and `Sleeper_Rank` columns, which drive the draft tool's "is this player
   going earlier on my platform" comparison. Our family league is on ESPN, so
   the ESPN column is the one that matters.
-- **Two scripts write those columns, and the last one to run wins.**
-  `build_player_csv.py --juicebox <dir>` fills them from these sheets, but only
-  during a full board rebuild, which needs the manual FantasyPros export.
-  `engine/update_ranks.py` overwrites them from the live ESPN and Sleeper APIs
-  and needs no auth, so in practice it runs far more often. After the
-  2026-09-04 refresh the board carries the **live-API** values: of 192 players
-  in both, 176 differ from this sheet (Josh Allen ESPN 17 here, 26 on the
-  sheet). Neither is wrong; they are different measurements. Know which one you
-  are looking at before drawing a conclusion from it.
+- `engine/update_ranks.py` is the routine refresh: it rebuilds the main board
+  from current FFC ADP for each scoring format, then fills ESPN/Sleeper
+  comparison columns from their APIs. ESPN is overall ADP order, not a
+  standard-only feed or draft-room order. JuiceBox's platform ranking is a
+  separate measurement; downloading its sheet does not update the main board.
 - **What only this sheet has:** the per-platform splits beyond ESPN/Sleeper
   (Yahoo, CBS, Fleaflicker, Superflex), the 1-10 Landmine risk score, and
   FantasyPros ECR. The live API has none of that.
@@ -48,7 +44,7 @@ exact fetch date and each sheet's own self-reported update date.
 - **Coverage:** 167 players (30 QB / 57 RB / 60 WR / 20 TE).
 - **Last fetched: 2026-09-04.** Sheet self-reported update: 2026-09-04.
 
-### Refreshing both sheets
+### Refreshing both sheets (optional comparison data)
 
 Both are public, so no auth, no API key, no manual download:
 
@@ -58,30 +54,41 @@ python engine/fetch_juicebox.py --year 2026
 
 It pulls every tab of both workbooks via Google's `/export?format=xlsx`
 endpoint, writes them to `data/juicebox/2026/juicebox_*.csv`, and rewrites
-`data/juicebox/2026/SOURCES.json` with the fetch date. Then rebuild the boards:
+`data/juicebox/2026/SOURCES.json` with the fetch date. Refresh the actual draft
+boards independently from the repository root:
 
 ```bash
-cd engine/reddit-scraper
-python build_player_csv.py FantasyPros_2026_Overall_ADP_Rankings.csv --juicebox ../../data/juicebox/2026
-python ../../webapp/build_data.py
+python3 engine/update_ranks.py
+python3 webapp/build_data.py
 ```
 
 **Staleness policy:** these sheets are edited through the preseason
 (injuries, depth charts, holdouts). Anything older than ~1 week is
 suspect during August; re-fetch the morning of a draft.
 
-## 3. FantasyPros overall ADP export
+## 3. Current draft boards — Fantasy Football Calculator
 
-- **Link:** https://www.fantasypros.com/nfl/adp/overall.php (use the CSV
-  export button; the file lands as `FantasyPros_<year>_Overall_ADP_Rankings.csv`)
-- **Gives us:** the board ordering (`AVG` ADP), team, **bye week**, position,
-  and a Sleeper ADP column. Manual download — not scripted.
-- **Used by:** `engine/reddit-scraper/build_player_csv.py`, which produces both
-  `engine/reddit-scraper/combined_with_depth.csv` (scraper input) and the three
-  `data/ranks/*_with_depth.csv` board files.
-- **Caveat:** the 2026 export carries Sleeper / RTSports / Real-Time columns
-  but **no ESPN column** — that is why source 1 above is required.
-- **Last downloaded: 2026-08-03** (`engine/reddit-scraper/FantasyPros_2026_Overall_ADP_Rankings.csv`).
+- **Source:** https://fantasyfootballcalculator.com/adp/standard/12-team/all
+- **Refresh:** `python3 engine/update_ranks.py`, then
+  `python3 webapp/build_data.py` for the local dashboard or
+  `python3 build_deploy.py` to assemble the full site.
+- **Main board:** recent 12-team mock ADP, fetched independently for standard,
+  half-PPR and PPR. Rank is overall order; the ADP column stores average pick.
+  This is a market baseline, not expert rankings or ESPN-only drafting behavior.
+- **Missing players:** retained for search/roster tracking with blank Rank/ADP;
+  missing comparison values are cleared rather than inherited from old data.
+- **Freshness:** `data/ranks/SOURCES.json` records fetch time, sample dates,
+  scoring, team count, and draft count. The dashboard displays the sample date.
+  Failed, incomplete, mismatched or >7-day-old FFC samples abort before writing
+  boards. The existing GitHub workflow refreshes the boards and dashboard twice
+  weekly; run the command again before drafting.
+- **2026-09-06 refresh:** samples through September 5. Standard sample: 1,606
+  mocks, August 29–September 5. Josh Jacobs ADP 54.1; RJ Harvey ADP 121.4.
+- **Historical FantasyPros export:**
+  `engine/reddit-scraper/FantasyPros_2026_Overall_ADP_Rankings.csv` was downloaded
+  August 3 and remains input to the scraper pool. It is no longer the current
+  draft-board source. `build_player_csv.py` is for rebuilding that pool; use
+  `--no-board`, or follow any full rebuild with `engine/update_ranks.py`.
 
 ## 4. r/fantasyfootball corpus
 
