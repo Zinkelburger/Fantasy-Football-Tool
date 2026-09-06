@@ -18,16 +18,13 @@ function extractEspnPickedPlayers() {
   }
 }
 
-// ESPN renders every team's roster with the same `.player-column[title]`
-// markup, so an unscoped query can sweep all 12 rosters into "Your Team".
-// Prefer a container that is clearly *your* roster; fall back to the whole
-// document, but say so loudly in the console.
+// Current ESPN rooms mark each of your draft-board cells with `.myTeam`.
+// The roster dropdown can display another team, and the board HEADER also has
+// `.myTeam`, so neither a generic roster panel nor a substring match is safe.
 const MY_ROSTER_CONTAINERS = [
   '.draft-columns__col--myteam',
-  '[class*="myTeamRoster"]',
-  '[class*="my-team-roster"]',
-  '[class*="myTeam"]',
-  '[class*="my-team"]',
+  '.myTeamRoster',
+  '.my-team-roster',
 ];
 
 let rosterScopeLogged = false;
@@ -40,39 +37,46 @@ function findRosterRoot() {
   return { root: null, sel: null };
 }
 
-// Only ever reports a roster it could scope to *your* team. The old fallback
-// read the whole document, which swept all 12 rosters in as yours — and the
-// app infers your draft slot from the first pick it sees on your team, so
-// that fallback silently assigned you to whoever made pick 1. Reporting
-// nothing is strictly better: the slot stays unknown, and you can click your
-// column header to set it.
 function extractEspnRosterPlayers() {
+  let names;
+  let source;
+  const ownCells = document.querySelectorAll('.draft-board-grid-pick-cell.myTeam');
+  if (ownCells.length > 0) {
+    names = [];
+    source = 'draft-board cells marked myTeam';
+    for (const cell of ownCells) {
+      if (!cell.classList.contains('completedPick')) continue;
+      const first = cell.querySelector('.playerFirstName')?.textContent.trim() || '';
+      const last = cell.querySelector('.playerLastName')?.textContent.trim() || '';
+      const name = [first, last].filter(Boolean).join(' ');
+      // A completed cell may be mid-render. Keep the last complete snapshot
+      // until the next mutation rather than replacing it with a partial team.
+      if (!name) return;
+      names.push(name);
+    }
+  } else {
     const scope = findRosterRoot();
-
     if (!scope.root) {
       if (!rosterScopeLogged) {
         rosterScopeLogged = true;
-        console.warn(
-          `ESPN roster: no "my team" container matched, so no roster is being ` +
-          `reported (your draft slot won't auto-detect — click your column ` +
-          `header on the Draft Board to set it). To fix detection, find your ` +
-          `roster's container in DevTools and add its selector to ` +
-          `MY_ROSTER_CONTAINERS in espn-draft.js.`);
+        console.warn('ESPN roster: no personal draft cells or explicit personal roster found; ' +
+          'not reporting an unverified team. Try opening ESPN’s Draft Board tab.');
       }
       return;
     }
+    source = scope.sel;
+    names = Array.from(scope.root.querySelectorAll('div.player-column[title]'))
+      .map(el => el.title.trim()).filter(Boolean);
+    // An empty legacy container may not yet have rendered its roster table.
+    if (!names.length && !scope.root.querySelector('.roster-module')) return;
+  }
 
-    const playerElements = scope.root.querySelectorAll('div.player-column[title]');
-    const playerNames = Array.from(playerElements).map(el => el.title);
-
-    if (!rosterScopeLogged) {
-      rosterScopeLogged = true;
-      console.log(`ESPN roster scoped to "${scope.sel}" (${playerNames.length} players)`);
-    }
-
-    if (playerNames.length > 0) {
-        sendDataToServer({ site: 'espn', type: 'roster_players', players: playerNames });
-    }
+  if (!rosterScopeLogged) {
+    rosterScopeLogged = true;
+    console.log(`ESPN roster scoped to ${source} (${names.length} players)`);
+  }
+  // Include confirmed empty rosters, so a new draft or undo clears old picks.
+  sendDataToServer({ site: 'espn', type: 'roster_players', players: [...new Set(names)] });
 }
 
 function runEspnExtractions() {
@@ -85,7 +89,8 @@ function initializeEspnDraft() {
     // The draft room mutates on every clock tick; without a debounce this
     // re-scrapes (and re-renders the web app) dozens of times a second.
     const observer = new MutationObserver(debounce(runEspnExtractions, 250));
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true,
+      characterData: true, attributes: true, attributeFilter: ['class', 'title'] });
     console.log('ESPN draft assistant initialized');
 }
 
