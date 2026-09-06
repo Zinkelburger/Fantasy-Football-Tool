@@ -78,6 +78,33 @@ bust rates by position. Is the family's rookie thing a leak or a lean?
 frozen before the 2026 season: bad-team-WR1s should hit ≥40%,
 fallen studs should bust ≥50%. Score them next January.
 
+**B17. Do league-settings adjustments survive a real waiver wire?**
+`analysis/settings_vbd.py` reproduces a Subvertadown VBD sensitivity
+study on our own finding-07 curves: replacement level is the only thing
+league settings touch, so a knob moves a position in proportion to how
+steep its curve is where the knob drags that baseline. Three of its four
+results reproduce cleanly — PPR (WR up, RB down, TE mildly up, QB mildly
+down), WR slots (2WR->4WR barely moves relative value because the WR
+curve is flat, while one extra RB slot moves RB12 from pick 36 to 20),
+and superflex x league size (QB replacement collapses QB17 -> QB29 from
+8 to 14 teams). **The fourth does not**: VBD says QBs should be drafted
+later as a 1QB league grows, and on our curves QB1 sits at pick 6-7 in
+all four league sizes. Suspect the QB curve tail (QB#40 reads 3.7 PPG —
+backups slipping past the six-game filter); fix that before trusting
+either answer. Then the real test, which VBD cannot do and we can: run
+the simulator at 10 and 14 teams and at superflex, and check whether the
+predicted shifts survive an emergent wire. Prior from
+[finding 06](06-qb-timing.md)/[22](22-waiver-wire-reality.md): VBD
+overstates the "wait on QB" adjustment at every 1QB league size, because
+it assumes replacement level is obtainable and the wire says it is not.
+Graduating this would retire finding 36's biggest caveat ("superflex or
+TE-premium would break the QB and TE results") and let the draft tool
+parameterize its advice on league settings instead of hardcoding
+12-team standard. Note the webapp trap: `PICK_VALUE_FITS` is fit on
+*overall ADP slot* in a 12-team standard market, so it cannot simply be
+fed a different league size — it needs refitting against positional rank
+plus a rank-to-slot map per setting.
+
 ## Proposed — feasibility limited, proxies only
 
 **B12. RB pass protection.** No free pass-block grades exist. Proxies:

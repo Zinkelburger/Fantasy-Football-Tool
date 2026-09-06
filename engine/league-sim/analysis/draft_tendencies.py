@@ -8,6 +8,8 @@ data/espn/picks.parquet for the simulator to fit against.
 """
 
 import json
+import random
+import statistics as st
 import sys
 from pathlib import Path
 
@@ -20,6 +22,11 @@ from simfl.config import DEFAULT_SCORING, SEASONS
 from simfl.data import load_adp, load_weekly, load_rookie_years, norm_name
 
 ESPN = ROOT / "data" / "espn"
+
+# Round bands for the reach split. The pooled reach table hides the one
+# real signal in it (see reach_by_round).
+BANDS = ((1, 3), (4, 6), (7, 10), (11, 16))
+BOOT_N = 4000
 
 
 def player_map() -> dict:
@@ -69,6 +76,65 @@ def build_picks() -> pl.DataFrame:
     return pl.DataFrame(rows).sort("year", "overall")
 
 
+def _boot_median_ci(vals: list[float], n: int = BOOT_N) -> tuple[float, float, float]:
+    """Median with a 95% bootstrap CI.
+
+    Reach is skewed (a few huge reaches, a long tail of players who fell
+    out of the top 200) and the per-cell n is small — 12 picks for early
+    TEs. A mean +/- sd would imply precision that isn't there.
+    """
+    rng = random.Random(7)
+    draws = sorted(st.median(rng.choices(vals, k=len(vals))) for _ in range(n))
+    return st.median(vals), draws[int(0.025 * n)], draws[int(0.975 * n)]
+
+
+def reach_by_round(with_adp: pl.DataFrame) -> None:
+    """Reach split by round band, which the pooled table above hides.
+
+    Pooled over 16 rounds the room looks neutral on TE (median -0.4).
+    That is two opposite effects cancelling: it reaches for tight ends
+    in rounds 1-6 and lets them rot after round 10. Splitting by band
+    is what makes either one visible. Same sign convention as report():
+    NEGATIVE = taken earlier than ADP (reached for).
+    """
+    print("\n== Reach by round band (negative = reached early), 95% bootstrap CI ==")
+    print(f"{'band':>9} {'pos':>4} {'n':>5} {'median':>8}   {'95% CI':>16}")
+    for lo, hi in BANDS:
+        for pos in ("RB", "WR", "TE", "QB"):
+            vals = (with_adp
+                    .filter(pl.col("round").is_between(lo, hi), pl.col("pos") == pos)
+                    .get_column("reach").to_list())
+            if len(vals) < 5:
+                continue
+            med, l, u = _boot_median_ci(vals)
+            # flag cells whose interval excludes zero
+            star = " *" if (l > 0 or u < 0) else ""
+            print(f"{f'rd {lo}-{hi}':>9} {pos:>4} {len(vals):>5} {med:>8.1f}   "
+                  f"[{l:>6.1f},{u:>6.1f}]{star}")
+        print()
+
+    print("== Does the early reach repeat? (median reach, rounds 1-6, per year) ==")
+    years = sorted(with_adp.get_column("year").unique().to_list())
+    print(f"{'year':>6}" + "".join(f"{p:>8}" for p in ("TE", "QB", "RB", "WR")))
+    for y in years:
+        row = f"{y:>6}"
+        for pos in ("TE", "QB", "RB", "WR"):
+            vals = (with_adp
+                    .filter(pl.col("year") == y, pl.col("round") <= 6,
+                            pl.col("pos") == pos)
+                    .get_column("reach").to_list())
+            row += f"{st.median(vals):>8.1f}" if vals else f"{'-':>8}"
+        print(row)
+
+    print("\n== How often a position FELL 5+ picks past ADP (rounds 1-6) ==")
+    for pos in ("RB", "WR", "TE", "QB"):
+        vals = (with_adp
+                .filter(pl.col("round") <= 6, pl.col("pos") == pos)
+                .get_column("reach").to_list())
+        fell = sum(1 for v in vals if v > 5)
+        print(f"  {pos}: {fell}/{len(vals)} ({100 * fell / len(vals):.0f}%)")
+
+
 def report(df: pl.DataFrame) -> None:
     skill = df.filter(pl.col("pos").is_in(["QB", "RB", "WR", "TE"]))
     with_adp = skill.filter(pl.col("adp").is_not_null()).with_columns(
@@ -85,6 +151,8 @@ def report(df: pl.DataFrame) -> None:
         pl.col("reach").std().round(1).alias("std"),
         pl.len().alias("n"),
     ).sort("pos"))
+
+    reach_by_round(with_adp)
 
     print("\n== Same, rookies vs veterans (rounds 1-10 only) ==")
     print(with_adp.filter(pl.col("round") <= 10).group_by("rookie").agg(
