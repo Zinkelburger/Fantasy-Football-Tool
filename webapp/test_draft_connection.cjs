@@ -118,3 +118,59 @@ test('extension manifest connects ESPN and localhost without public hosting', ()
   assert.ok(manifest.content_scripts.some(s => s.js.includes('espn-draft.js')
     && s.matches.includes('https://fantasy.espn.com/football/draft*')));
 });
+
+const app = require('./app.js');
+
+test('draft request fixes the answer shape: own ranking, upside labels, several positions', () => {
+  const prompt = buildUserPrompt(30, '[a]', 'RB: RB1 X', 'Go young', 'notes', {
+    nextPick: 31, followingPick: 42, waitCosts: 'RB: about 100 points',
+    previous: '1. A (RB) 2. B (WR)', previousPick: 19, boardTail: '#40 C (WR1, DAL)',
+  });
+  for (const text of ['Upside play', 'Stable play', 'heading "Ranking"', 'at least three positions',
+    'never list four of one position in a row', 'context, not a filter',
+    'following pick after that: 42', '10 other teams pick in between',
+    'previous answer, at pick 19', '1. A (RB) 2. B (WR)', 'RB: about 100 points',
+    'Further down the board', '#40 C (WR1, DAL)', 'The user adds: Go young']) {
+    assert.ok(prompt.includes(text), text);
+  }
+  assert.ok(prompt.indexOf('How to answer') < prompt.indexOf('Player Notes'));
+});
+
+test('the Ask AI slate spreads across positions instead of running down the board', () => {
+  const mk = (pos, n) => Array.from({ length: n }, (_, i) => ({ name: `${pos}${i + 1}`, pos }));
+  // A board where the next fifteen names are all quarterbacks and tight ends.
+  const board = [...mk('QB', 8), ...mk('TE', 7), ...mk('RB', 10), ...mk('WR', 10), ...mk('K', 3)];
+  const slate = app.pickCandidates(board, {});
+  const count = pos => slate.filter(p => p.pos === pos).length;
+  assert.equal(slate.length, app.AI_SLATE_SIZE);
+  assert.deepEqual([count('QB'), count('TE'), count('RB'), count('WR'), count('K')], [3, 3, 6, 6, 0]);
+  assert.deepEqual(slate.map(p => p.name).slice(0, 4), ['QB1', 'QB2', 'QB3', 'TE1'], 'board order kept');
+  // Already starting a QB and a TE: one of each stays as a word of context,
+  // the room goes to the positions the user can still start.
+  const later = app.pickCandidates(board, { QB: 1, TE: 1 });
+  const c2 = pos => later.filter(p => p.pos === pos).length;
+  assert.deepEqual([c2('QB'), c2('TE'), c2('RB'), c2('WR')], [1, 1, 8, 8]);
+  // A thin late board simply returns what is there, kickers excluded.
+  assert.deepEqual(app.pickCandidates([...mk('RB', 2), ...mk('K', 2)], {}).map(p => p.name), ['RB1', 'RB2']);
+});
+
+test('the final Ranking list is carried from one answer to the next', () => {
+  const answer = '## Walkthrough\n1. **A** (RB) — Upside play\n2. **B** (WR)\n\n' +
+    'Some prose.\n\n## Ranking\n1. **Bijan Robinson** (RB) — Stable, clean workload\n' +
+    '2. Puka Nacua (WR) — Balanced\n\n3) `Josh Allen` (QB) — Stable\n';
+  assert.deepEqual(app.parseRanking(answer), [
+    'Bijan Robinson (RB) — Stable, clean workload', 'Puka Nacua (WR) — Balanced', 'Josh Allen (QB) — Stable']);
+  assert.deepEqual(app.parseRanking('no list here'), []);
+  assert.deepEqual(app.parseRanking(''), []);
+});
+
+test('prompts saved by the old page upgrade to the new defaults; edited ones stay', () => {
+  const d = app.DEFAULT_SETTINGS;
+  const stale = app.upgradeLegacyPrompts({
+    systemPrompt: 'You are a fantasy football expert. Give a summary of who to draft and why.',
+    userPrompt: 'my own words',
+  }, d);
+  assert.equal(stale.systemPrompt, d.systemPrompt);
+  assert.equal(stale.userPrompt, 'my own words');
+  assert.ok(!d.userPrompt.includes('I NEED THE LIST'), 'the list demand now lives in the fixed contract');
+});

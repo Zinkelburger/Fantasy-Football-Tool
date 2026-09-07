@@ -83,21 +83,149 @@ function truncateNote(content) {
 }
 
 // Draft advice uses the current league context and labels the limits of the notes.
+//
+// The shape of the answer is fixed here, not in the editable user prompt,
+// because the two things that made the old answers useless on draft day were
+// both shape problems: the model built its list around roster "needs" (four
+// quarterbacks in one answer once the user's QB was the only starter left
+// unfilled) and it reshuffled its opinion every time the button was pressed.
+// So the contract is: rank the slate, walk it in your own order, label each
+// player's upside, cover several positions, and keep the previous ranking
+// unless something changed. The user prompt is the user's own instructions on
+// top of that, never a replacement for it.
 function buildUserPrompt(currentPick, pickedPlayersStr, currentTeam, userPromptCustom, allNotes, context = {}) {
   const date = context.date || new Date().toLocaleDateString('en-CA');
   const year = context.season || new Date().getFullYear();
+  const between = context.followingPick && context.nextPick
+    ? ` Your following pick after that: ${context.followingPick}` +
+      ` (${context.followingPick - context.nextPick - 1} other teams pick in between).`
+    : '';
+  const outlook = context.waitCosts
+    ? `\n\nWhat waiting costs, by position (best player there now versus the best one the ` +
+      `simulated bots leave for your following pick, priced on each position's points-per-` +
+      `draft-slot curve): ${context.waitCosts}`
+    : '';
+  const previous = context.previous
+    ? `\n\nYour previous answer, at pick ${context.previousPick}, ranked: ${context.previous}. ` +
+      `Keep that order unless a pick since then removed someone or the evidence genuinely ` +
+      `changes your mind — and if you do move a player, say so in one clause. The user reads ` +
+      `this between picks; a list that reshuffles on every press is worthless to them.`
+    : '';
+  const tail = context.boardTail
+    ? `\n\nFurther down the board (no notes, for context only — mention one of these only if ` +
+      `he clearly belongs above someone in the slate): ${context.boardTail}`
+    : '';
   return `It is pick ${currentPick} of a ${year} fantasy football draft. Today is ${date}. ` +
     `Scoring: ${context.scoring || 'not specified'}. League size: ${context.numTeams || 'not specified'}. ` +
-    `Draft slot: ${context.slot || 'unknown'}. Your next overall pick: ${context.nextPick || 'unknown'}. ` +
+    `Draft slot: ${context.slot || 'unknown'}. Your next overall pick: ${context.nextPick || 'unknown'}.${between} ` +
     `Dashboard lineup assumptions: ${context.lineup || 'not specified'}. ` +
     `Use the current candidate rankings below; note headers may contain older ranks. ` +
     `Treat Reddit notes as attributed evidence and opinion, not verified current facts. ` +
     `Do not assume an old injury is ongoing, invent news, or claim to have checked live sources. ` +
     `Explain material uncertainty and use current rankings as the baseline. ` +
-    `These players have been picked so far: ${pickedPlayersStr}. ` +
-    `Current team info: ${currentTeam}. ${userPromptCustom} ` +
-    `The notes for each player are separated by '---start playername---' and '---end playername---'.` +
-    `\n\nPlayer Notes:\n${allNotes}`;
+    `These players have been picked so far: ${pickedPlayersStr}.` +
+    `\n\nThe user's roster so far, for context only: ${currentTeam}` +
+    outlook + previous +
+    `\n\nHow to answer:\n` +
+    `1. Rank the candidate slate below in YOUR order, best pick first, and walk through the ` +
+    `top 12 to 15 one at a time. Each entry: **Name** (POS, TEAM, board #N) — then ` +
+    `**Upside play**, **Stable play** or **Balanced**, with how much upside (high / medium / ` +
+    `low ceiling) and how safe the floor is (high / medium / low floor) — then one or two ` +
+    `sentences on why, drawing on his standing in his own team's position room, the gap ` +
+    `to the man behind him, his 2025 usage, the research marks and the note.\n` +
+    `2. The slate spans positions on purpose and the user chooses what fits: within your ` +
+    `top 8 name at least three positions, and never list four of one position in a row. ` +
+    `Do not build the list around what the roster "needs".\n` +
+    `3. The roster is context, not a filter. Where a player could only sit on the user's ` +
+    `bench (a second quarterback or tight end, a fifth running back) say so in a few ` +
+    `words and rank him accordingly — but do not drop the best players to make room ` +
+    `for a position the roster lacks.\n` +
+    `4. Say which of your top names will probably be gone before the user's next pick and ` +
+    `who should still be there; the slate says what the simulation expects.\n` +
+    `5. Do not restate the roster, the picks so far or the draft state.\n` +
+    `6. Finish with a numbered list under the heading "Ranking": 10 to 15 lines, each ` +
+    `"Name (POS) — Upside/Stable/Balanced, one short clause". This list is required.` +
+    (userPromptCustom ? `\n\nThe user adds: ${userPromptCustom}` : '') +
+    `\n\nThe candidate slate follows. Each player's notes are separated by ` +
+    `'---start playername---' and '---end playername---'; the lines before the note ` +
+    `are current numbers from the draft board.` +
+    `\n\nPlayer Notes:\n${allNotes}` + tail;
+}
+
+// The Ask AI slate: the best available players at every position the lineup
+// starts, quotas per position so the model always sees a spread. This
+// replaces "top 15 by board rank", which by round 6 was routinely a run of
+// quarterbacks and tight ends nobody wanted advice on. A position the user
+// already starts one of and cannot flex (QB, TE in the default lineup) keeps a
+// single representative — still worth a word, never worth four notes. If a
+// quota goes unfilled (late draft, position picked clean) the slate tops up
+// from the flex positions so the model never sees a thin list.
+const AI_SLATE_QUOTAS = { RB: 6, WR: 6, QB: 3, TE: 3 };
+const AI_SLATE_SIZE = 18;
+// Beyond the slate, this many more names ride along as one-line context.
+const AI_BOARD_TAIL = 20;
+function pickCandidates(available, have = {}, quotas = AI_SLATE_QUOTAS, size = AI_SLATE_SIZE) {
+  const chosen = new Set();
+  const counts = {};
+  for (const p of available) {
+    const pos = normPos(p.pos);
+    if (!(pos in quotas)) continue;   // K/DST never make the slate
+    const quota = backupOnly(pos, have[pos] || 0) ? 1 : quotas[pos];
+    if ((counts[pos] || 0) >= quota) continue;
+    counts[pos] = (counts[pos] || 0) + 1;
+    chosen.add(p);
+  }
+  // Top up evenly: the flex position with fewer names in the slate gets the
+  // next one, so a stretch of the board that is all running backs doesn't
+  // turn the spare room into six more of them.
+  const spare = {};
+  for (const pos of FLEX_POSITIONS) spare[pos] = available.filter(p => normPos(p.pos) === pos && !chosen.has(p));
+  while (chosen.size < size) {
+    const open = FLEX_POSITIONS.filter(pos => spare[pos].length);
+    if (!open.length) break;
+    const pos = open.reduce((a, b) => ((counts[b] || 0) < (counts[a] || 0) ? b : a));
+    chosen.add(spare[pos].shift());
+    counts[pos] = (counts[pos] || 0) + 1;
+  }
+  return available.filter(p => chosen.has(p));
+}
+
+// The final "Ranking" list of an answer, as plain names-with-clauses, so the
+// next question can carry it forward. Takes the last numbered block in the
+// text (the walkthrough may be numbered too; the ranking comes last).
+function parseRanking(answer) {
+  let block = [];
+  let last = [];
+  for (const line of String(answer || '').split('\n')) {
+    const m = line.match(/^\s*(\d+)[.)]\s+(.+?)\s*$/);
+    if (m) { block.push(m[2].replace(/\*\*/g, '').replace(/`/g, '')); continue; }
+    if (line.trim() === '') continue;
+    if (block.length) last = block;
+    block = [];
+  }
+  if (block.length) last = block;
+  return last.slice(0, 15);
+}
+
+// Prompts saved by an earlier version of this page: the defaults used to be
+// written into settings on every save, so a user who never touched the
+// prompt box still carries the old text. Those exact strings upgrade to the
+// current defaults; anything the user actually wrote is left alone.
+const LEGACY_DEFAULT_PROMPTS = {
+  systemPrompt: [
+    'You are a fantasy football expert. Give a summary of who to draft and why.',
+  ],
+  userPrompt: [
+    'Output the top several players you think could help me the most along with an ' +
+    'explanation, considering their value, upside, and drawbacks. Look for high upside players ' +
+    'with good matchups. Give me a short list at the end like 1. 2. 3. 4. I NEED THE LIST AT THE END!!!!',
+  ],
+};
+function upgradeLegacyPrompts(settings, defaults) {
+  for (const key of Object.keys(LEGACY_DEFAULT_PROMPTS)) {
+    if (LEGACY_DEFAULT_PROMPTS[key].includes(settings[key])) settings[key] = defaults[key];
+  }
+  return settings;
 }
 
 // Sleeper sends AVAILABLE players; picked = all - available (go/http_server.go
@@ -287,6 +415,18 @@ function nextPickForTeam(team, teams, picksMade) {
   }
 }
 
+// A position you only ever start one of is finished once you have one: a
+// second QB or TE cannot crack the lineup, so it should never be the pick the
+// panel recommends, however steep its points-per-slot curve looks. Depth at a
+// flex position is a different thing — injuries and byes churn RB/WR all year,
+// so those stay eligible even once the flex is nominally full. Read off the
+// league shape rather than hardcoded, so superflex or a 2-TE lineup still
+// recommends the second one. Applies to YOUR suggestion only: the bots keep
+// drafting backups late, because real managers do.
+function backupOnly(pos, have) {
+  return have >= (STARTER_SLOTS[pos] || 0) && !FLEX_POSITIONS.includes(pos);
+}
+
 // The shared draft-sense rule: would a team with `have` players at `pos`
 // reasonably draft that position in `round`? No hoarding QBs/TEs early, no
 // early K/DST, positional caps, and when a mustFill set is given only those
@@ -449,11 +589,15 @@ const DEFAULT_SETTINGS = {
   numRounds: 15,          // draft board: rounds
   botRanks: 'auto',       // predictor: ranking the bots draft by (auto|espn|sleeper|mine)
   botAlgo: 'need',        // predictor: need-aware filter or pure best available (need|ba)
-  // Same defaults as go/prompts/*.md
-  systemPrompt: 'You are a fantasy football expert. Give a summary of who to draft and why.',
-  userPrompt: 'Output the top several players you think could help me the most along with an ' +
-    'explanation, considering their value, upside, and drawbacks. Look for high upside players ' +
-    'with good matchups. Give me a short list at the end like 1. 2. 3. 4. I NEED THE LIST AT THE END!!!!',
+  // The answer's shape lives in buildUserPrompt; these are the voice and the
+  // user's own emphasis, both editable in Settings → Prompts.
+  systemPrompt: 'You are a sharp fantasy football draft analyst sitting next to the user during ' +
+    'a live draft. Be direct and specific, lead with the player, and label upside plainly. ' +
+    'Draw on the draft-board numbers and notes you are given rather than general memory; ' +
+    'if the note is thin, say so instead of inventing detail.',
+  userPrompt: 'Favor players with a real ceiling, but say clearly when a pick is a stable ' +
+    'floor play instead. A player far ahead of the next man on his own team\'s depth chart ' +
+    'is worth more than the rank alone says.',
 };
 
 // Same fallback chain as go/chatgpt.go AskStream.
@@ -469,7 +613,8 @@ if (typeof module !== 'undefined' && module.exports) {
     expectedPoints, waitCost,
     STARTER_SLOTS, ROSTER_CAPS, BADLY_NEEDED_BY_ROUND,
     PICK_VALUE_FITS, PICK_VALUE_EXHAUSTED, BENCH_WEIGHT, FLEX_POSITIONS,
-    DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS, validDraftBackup,
+    DEFAULT_SETTINGS, OPENAI_FALLBACK_MODELS, validDraftBackup, backupOnly,
+    pickCandidates, parseRanking, upgradeLegacyPrompts, AI_SLATE_QUOTAS, AI_SLATE_SIZE,
   };
 } else {
   initApp();
@@ -499,7 +644,8 @@ function initApp() {
     remove(key) { localStorage.removeItem('ffda.' + key); },
   };
 
-  let settings = Object.assign({}, DEFAULT_SETTINGS, store.load('settings', {}));
+  let settings = upgradeLegacyPrompts(Object.assign({}, DEFAULT_SETTINGS, store.load('settings', {})), DEFAULT_SETTINGS);
+  let lastAdvice = store.load('lastAdvice', null);           // {pick, ranking[]} from the last Ask AI answer
   let manualPicked = new Set(store.load('manualPicked', []));   // canonical names
   let manualTeam = store.load('manualTeam', []);                // canonical names
   let toDraft = store.load('toDraft', {});                      // name -> MARK_SCALE value
@@ -754,11 +900,21 @@ function initApp() {
   function renderPosFilters() {
     const positions = ['All', ...new Set(allPlayers().map(p => p.pos)
       .sort((a, b) => (POSITION_ORDER[a] || 9) - (POSITION_ORDER[b] || 9)))];
+    // Your running backs' handcuffs live 100+ ranks down the board, where
+    // the green row highlight is off screen. This chip brings them up.
+    const cuffs = myHandcuffs();
+    if (cuffs.size) positions.push('Backups');
+    else if (posFilter === 'Backups') posFilter = 'All';
     const box = $('pos-filters');
     box.innerHTML = '';
     for (const pos of positions) {
       const btn = document.createElement('button');
       btn.textContent = pos;
+      if (pos === 'Backups') {
+        btn.title = 'Only the direct backups to the running backs on your team — the ' +
+          'handcuffs, wherever they sit on the board';
+        btn.classList.add('backups');
+      }
       if (pos === posFilter) btn.classList.add('active');
       btn.addEventListener('click', () => { posFilter = pos; renderAll(); });
       box.appendChild(btn);
@@ -884,7 +1040,10 @@ function initApp() {
     if (!bits.length && !rm.rook)
       return `The only ${room} on the draft board.`;
     const rook = rm.rook && !rookSaid
-      ? ` ${subj} spent pick ${rm.rookPick} on a ${p.pos} (${rm.rook}).` : '';
+      ? (rm.rook === p.name
+          ? ` A rookie — ${subj}'s pick ${rm.rookPick} this year.`
+          : ` ${subj} spent pick ${rm.rookPick} on a ${p.pos} (${rm.rook}).`)
+      : '';
     if (!bits.length) return rook.trim();
     const line = bits.join(' ');
     return `${line[0].toUpperCase()}${line.slice(1)}.${rook}`;
@@ -954,6 +1113,54 @@ function initApp() {
       `<b>R${rnd}</b> · ${g.text} ${guideLinks(g)}`;
   }
 
+  // NFL-team depth charts off the bundled board: name -> slot (WR2 = the
+  // team's 2nd-ranked WR) and name -> the whole team+position chart. Shared by
+  // the board, the team panel and the Ask AI slate; rebuilt when the format
+  // changes, since each format ranks the room its own way.
+  let depthCache = null;
+  function depthMaps() {
+    const players = allPlayers();
+    if (depthCache && depthCache.key === settings.scoringFormat && depthCache.n === players.length) {
+      return depthCache;
+    }
+    const depthByName = new Map();
+    const depthListByName = new Map();
+    const byTeamPos = new Map();
+    for (const q of players) {
+      const k = q.team + '|' + q.pos;
+      if (!byTeamPos.has(k)) byTeamPos.set(k, []);
+      byTeamPos.get(k).push(q);
+    }
+    for (const arr of byTeamPos.values()) {
+      arr.sort((a, b) => (a.rankNum || 9999) - (b.rankNum || 9999));
+      arr.forEach((q, i) => { depthByName.set(q.name, i + 1); depthListByName.set(q.name, arr); });
+    }
+    depthCache = { key: settings.scoringFormat, n: players.length, depthByName, depthListByName };
+    return depthCache;
+  }
+
+  // The man directly behind a running back on his own team's chart — the
+  // handcuff finding 13 priced. Running backs only, for the reason spelled
+  // out at depthInfo(): a receiver's targets don't transfer to one named man.
+  // "#151" on the board, or "unranked" — never a bare dash in prose.
+  function boardRankLabel(p) {
+    return p.rankNum && p.rankNum < 9999 ? `#${p.rank}` : 'unranked';
+  }
+  // Your running backs' handcuffs, by name — what the Backups filter shows.
+  function myHandcuffs() {
+    const out = new Set();
+    for (const p of teamPlayers()) { const c = handcuffOf(p); if (c) out.add(c.name); }
+    return out;
+  }
+
+  function handcuffOf(p) {
+    if (normPos(p.pos) !== 'RB') return null;
+    const chart = depthMaps().depthListByName.get(p.name);
+    if (!chart) return null;
+    const i = chart.indexOf(p);
+    return i >= 0 && chart[i + 1] ? chart[i + 1] : null;
+  }
+
   function renderTable() {
     const picked = pickedSet();
     const extPicked = extPickedCanonical();
@@ -995,20 +1202,7 @@ function initApp() {
 
     // NFL-team depth: WR2 = that team's 2nd-ranked WR. Bundled rank, so your
     // imported ranks don't reshuffle other teams' depth charts.
-    const depthByName = new Map();
-    const depthListByName = new Map();  // name -> the whole team+position chart
-    {
-      const byTeamPos = new Map();
-      for (const q of allPlayers()) {
-        const k = q.team + '|' + q.pos;
-        if (!byTeamPos.has(k)) byTeamPos.set(k, []);
-        byTeamPos.get(k).push(q);
-      }
-      for (const arr of byTeamPos.values()) {
-        arr.sort((a, b) => (a.rankNum || 9999) - (b.rankNum || 9999));
-        arr.forEach((q, i) => { depthByName.set(q.name, i + 1); depthListByName.set(q.name, arr); });
-      }
-    }
+    const { depthByName, depthListByName } = depthMaps();
 
     // "Who's behind this guy, and by how much?" — the gap to the next player
     // at the same position on the same NFL team. A small gap means a
@@ -1066,12 +1260,14 @@ function initApp() {
     let availShown = 0;
     let markerPlaced = false;
     visibleNames = [];
+    const cuffNames = posFilter === 'Backups' ? myHandcuffs() : null;
     // Every row advertises its click behavior — Ctrl+click is invisible otherwise.
     const openHint = 'Click / Enter: open the note · Ctrl+click / Ctrl+Enter: open in an extra tab';
     for (const p of list) {
       const isPicked = picked.has(p.name);
       if (!isPicked) available++;
-      if (posFilter !== 'All' && p.pos !== posFilter) continue;
+      if (posFilter === 'Backups') { if (!cuffNames.has(p.name)) continue; }
+      else if (posFilter !== 'All' && p.pos !== posFilter) continue;
       if (isPicked && !showPicked) continue;
       if (search && !(p.name.toLowerCase().includes(search) || p.team.toLowerCase().includes(search))) continue;
 
@@ -1257,6 +1453,8 @@ function initApp() {
 
   function renderTeam() {
     const players = teamPlayers();
+    const team = new Set(teamNames());
+    const picked = pickedSet();
     const box = $('team-list');
     $('team-count').textContent = players.length
       ? `${players.length} player${players.length === 1 ? '' : 's'}` : '';
@@ -1338,6 +1536,29 @@ function initApp() {
           row.appendChild(rm);
         }
         box.appendChild(row);
+        // Your running back's handcuff, right under him: who he is, where he
+        // sits on the board, and whether he can still be had. The board row
+        // highlight finds him while you scan; this line answers the question
+        // you actually ask on the clock — "do I still need to grab Gibbs's
+        // backup?" — without leaving the panel.
+        const backup = real && handcuffOf(real);
+        if (backup) {
+          const state = team.has(backup.name) ? 'yours'
+            : picked.has(backup.name) ? 'gone' : 'avail';
+          const label = state === 'yours' ? 'on your team ✓'
+            : state === 'gone' ? 'already drafted' : 'still available';
+          const sub = document.createElement('div');
+          sub.className = `team-sub team-sub-${state}`;
+          sub.title = `${backup.name} is the next ${escapeHtml(pos)} on ${backup.team}'s depth chart ` +
+            `behind your ${p.name} — the handcuff that pays exactly when he sits. ` +
+            'Click to open the note.';
+          sub.innerHTML = `<span class="ts-label">Backup</span> ` +
+            `<span class="ts-name">${escapeHtml(backup.name)}</span> ` +
+            `<span class="ts-rank">${escapeHtml(boardRankLabel(backup))}</span> ` +
+            `<span class="ts-state">${label}</span>`;
+          sub.addEventListener('click', (e) => openNote(backup, e.ctrlKey || e.metaKey));
+          box.appendChild(sub);
+        }
       });
     }
   }
@@ -1827,11 +2048,24 @@ function initApp() {
             `${escapeHtml(myRank(s.B))}${spots}`
           : `nothing worth having goes before pick ${meta.followNext} — no position is scarce, ` +
             'so this is simply best available';
+      // One name answers "who", but the choice is between positions, so the
+      // runners-up ride along: the best body at every other position worth a
+      // pick here, with what passing on it costs. Positions you can only start
+      // one of and already have (a backup QB/TE) never appear — they aren't a
+      // real option, and offering them is what made this panel feel wrong.
+      const alsoLine = () => {
+        const rest = (meta.options || []).slice(1);
+        if (!rest.length) return '';
+        const bits = rest.map(o => `<b>${escapeHtml(o.A.name)}</b> ` +
+          `<span class="ol-suggest-meta">${o.pos} · your #${escapeHtml(myRank(o.A))}` +
+          `${o.cost >= 1 ? ` · waiting costs ${Math.round(o.cost)}` : ''}</span>`);
+        return `<div class="ol-suggest-why">Or — ${bits.join(' · ')}</div>`;
+      };
       suggest = '<div class="ol-suggest" title="Among the positions you\'d draft now, the one ' +
         'where waiting until your following turn costs the most projected points.">' +
         `<div class="ol-suggest-head">${onClock ? 'Your pick now' : `At your pick ${info.next}`} — ` +
         `<b>${escapeHtml(s.A.name)}</b> <span class="ol-suggest-meta">${s.pos} · your #${escapeHtml(myRank(s.A))}</span></div>` +
-        `<div class="ol-suggest-why">${why}</div></div>`;
+        `<div class="ol-suggest-why">${why}</div>${alsoLine()}</div>`;
     }
 
     const head = '<tr><th></th>' +
@@ -2143,7 +2377,7 @@ function initApp() {
     const flexOpen = flexBodies < flexSlots;
 
     const byPos = {};
-    let suggestion = null;
+    const options = [];
     for (const pos of ['QB', 'RB', 'WR', 'TE']) {
       const A = boardAvail.find(p => p.pos === pos && !goneNames.has(p.name));
       if (!A) continue;
@@ -2157,17 +2391,20 @@ function initApp() {
       const bench = !(myGaps.has(pos) || (flexOpen && FLEX_POSITIONS.includes(pos)));
       const weighted = bench ? cost * BENCH_WEIGHT : cost;
       byPos[pos] = { A, B, cost, spots, bench };
+      if (backupOnly(pos, myCounts[pos] || 0)) continue;
       if (!wouldDraft(pos, myCounts[pos] || 0, round, rounds, myMustFill)) continue;
-      if (!suggestion || weighted > suggestion.weighted ||
-          (weighted === suggestion.weighted && effRank(A) < effRank(suggestion.A))) {
-        suggestion = { pos, A, B, cost, spots, weighted, bench };
-      }
+      options.push({ pos, A, B, cost, spots, weighted, bench });
     }
+    // Every position worth a pick here, dearest wait first — the panel names
+    // the best one but shows the rest, because "take a back instead" is only
+    // useful next to what you'd be giving up at receiver.
+    options.sort((x, y) => y.weighted - x.weighted || effRank(x.A) - effRank(y.A));
+    const suggestion = options[0] || null;
     // botSrc rides along so the outlook can show the number the bots actually
     // sorted on next to your own rank. Without it the table mixes two rank
     // systems silently, and any player your board likes more than the site
     // does reads as an inexplicable faller.
-    predictedMeta = { followNext, byPos, suggestion, botSrc: src, effRank };
+    predictedMeta = { followNext, byPos, suggestion, options, botSrc: src, effRank };
     return info;
   }
 
@@ -2467,29 +2704,124 @@ function initApp() {
     let renderFrame = null;
     try {
       const picked = pickedSet();
+      const team = new Set(teamNames());
       const available = boardPlayers().filter(p => !picked.has(p.name));
-      const top = available.slice(0, 15);
+      const myCounts = {};
+      for (const p of teamPlayers()) {
+        const pos = normPos(p.pos);
+        myCounts[pos] = (myCounts[pos] || 0) + 1;
+      }
+      const slate = pickCandidates(available, myCounts);
+      const inSlate = new Set(slate.map(p => p.name));
+      const tail = available.filter(p => !inSlate.has(p.name) && normPos(p.pos) in AI_SLATE_QUOTAS)
+        .slice(0, AI_BOARD_TAIL);
+
+      // What the bots do before your turn, and what passing on a position
+      // costs — the same simulation the Draft Board's suggestion runs on.
+      // Computed on the side so a page not in predict mode doesn't suddenly
+      // tint rows orange.
+      const savedPred = predicted, savedMeta = predictedMeta;
+      const nextInfo = computePrediction();
+      const meta = predictedMeta;
+      const goneAt = new Map();
+      if (predicted && nextInfo) for (const pr of predicted) goneAt.set(pr.name, pr.pick);
+      predicted = savedPred; predictedMeta = savedMeta;
+
+      const { depthByName } = depthMaps();
+      const availability = (p) => {
+        if (!nextInfo) return '';
+        if (nextInfo.until <= 0) return 'You are on the clock.';
+        const at = goneAt.get(p.name);
+        return at ? `Simulation expects him gone before your pick ${nextInfo.next} (taken around pick ${at}).`
+          : `Simulation expects him still available at your pick ${nextInfo.next}.`;
+      };
+      const roomLine = (p) => {
+        const slot = depthByName.get(p.name);
+        const standing = slot ? `${p.team} ${normPos(p.pos)}${slot} by draft-board rank.` : '';
+        const room = roomText(p);
+        const cuff = handcuffOf(p);
+        const cuffLine = cuff ? ` His own backup is ${cuff.name} (board ${boardRankLabel(cuff)}).` : '';
+        const yours = normPos(p.pos) === 'RB' && (() => {
+          const chart = depthMaps().depthListByName.get(p.name) || [];
+          const ahead = chart[chart.indexOf(p) - 1];
+          return ahead && team.has(ahead.name) ? ` Backs up your own ${ahead.name} — the handcuff.` : '';
+        })();
+        return [standing, room].filter(Boolean).join(' ') + cuffLine + (yours || '');
+      };
+      const numbers = (p) => {
+        const lines = [
+          `Board rank ${p.rank}; position ${normPos(p.pos)}; team ${p.team}; bye ${p.bye || '?'}; ` +
+          `ADP ${p.adp || 'n/a'}; ESPN rank ${p.espn || 'unknown'}; Sleeper rank ${p.sleeper || 'unknown'}.`,
+        ];
+        const rl = roomLine(p);
+        if (rl) lines.push(`Position room: ${rl}`);
+        const opp = oppRead(p);
+        if (opp) lines.push(`Usage: ${opp.tip}`);
+        const fm = fmarksFor(p);
+        if (fm) lines.push(`Research marks: ${fmTip(fm).replace(/\n/g, ' | ')}`);
+        const av = availability(p);
+        if (av) lines.push(`Availability: ${av}`);
+        if (backupOnly(normPos(p.pos), myCounts[normPos(p.pos)] || 0)) {
+          lines.push(`Roster fit: the user already starts a ${normPos(p.pos)}, so he would be a bench pick.`);
+        }
+        return lines.join('\n');
+      };
 
       let allNotes = '';
-      for (const p of top) {
+      for (const p of slate) {
         const note = noteFor(p);
-        allNotes += `---start ${p.name}---\nCurrent board rank: ${p.rank}; position: ${p.pos}; ` +
-          `ESPN rank: ${p.espn || 'unknown'}; Sleeper rank: ${p.sleeper || 'unknown'}.\n` +
+        allNotes += `---start ${p.name}---\n${numbers(p)}\n` +
           `${note || 'No research note available.'}\n---end ${p.name}---\n\n`;
       }
+      const boardTail = tail.map(p => {
+        const slot = depthByName.get(p.name);
+        const rm = p.room;
+        const gap = rm && rm.behindGap != null && rm.behind
+          ? `, ${rm.behindGap >= 200 ? '200+' : rm.behindGap} picks ahead of ${rm.behind}` : '';
+        return `#${p.rank} ${p.name} (${normPos(p.pos)}${slot || ''}, ${p.team}${gap})`;
+      }).join('; ');
 
       const pickedNames = [...picked];
       const pickedStr = pickedNames.length ? `[${pickedNames.join(', ')}]` : '[No players picked yet]';
 
+      // Roster as a depth chart with each running back's handcuff status,
+      // plus which starting slots are still open — stated as context. The
+      // prompt itself tells the model not to draft around it.
       const groups = groupByPosition(teamPlayers());
+      const openSlots = Object.keys(STARTER_SLOTS)
+        .filter(pos => (myCounts[pos] || 0) < STARTER_SLOTS[pos]);
       const teamStr = groups.length
-        ? groups.map(g => `=== ${g.pos} ===\n` + g.players.map(p => p.name).join('\n')).join('\n')
+        ? groups.map(g => {
+            const pos = normPos(g.pos);
+            return `${pos}: ` + g.players.map((p, i) => {
+              const cuff = handcuffOf(p);
+              const cuffState = !cuff ? ''
+                : team.has(cuff.name) ? ` (his backup ${cuff.name} is also yours)`
+                : picked.has(cuff.name) ? ` (his backup ${cuff.name} is already drafted)`
+                : ` (his backup ${cuff.name}, board ${boardRankLabel(cuff)}, is still available)`;
+              return `${pos}${i + 1} ${p.name}${cuffState}`;
+            }).join('; ');
+          }).join('. ') +
+          `. Starting slots still open: ${openSlots.length ? openSlots.join(', ') : 'none'}.`
         : '[No players on your team yet]';
 
-      const prompt = buildUserPrompt(pickNumber() + 1, pickedStr, teamStr, settings.userPrompt, allNotes, {
+      const waitCosts = meta && meta.byPos
+        ? Object.entries(meta.byPos).map(([pos, o]) =>
+            `${pos}: about ${Math.round(o.cost)} points (${o.A.name} now` +
+            (o.B ? ` vs ${o.B.name} later)` : ' — nobody worth having later)') +
+            (o.bench ? ', bench depth for you' : '')).join('; ')
+        : '';
+      const currentPick = pickNumber() + 1;
+      const previous = lastAdvice && lastAdvice.ranking && lastAdvice.ranking.length &&
+        lastAdvice.pick <= currentPick
+        ? lastAdvice.ranking.map((r, i) => `${i + 1}. ${r}`).join(' ') : '';
+
+      const prompt = buildUserPrompt(currentPick, pickedStr, teamStr, settings.userPrompt, allNotes, {
         scoring: settings.scoringFormat, numTeams: settings.numTeams,
-        slot: effectiveSlot(), nextPick: yourNextPick()?.next,
+        slot: effectiveSlot(), nextPick: nextInfo ? nextInfo.next : yourNextPick()?.next,
+        followingPick: meta ? meta.followNext : null,
         lineup: '1 QB, 2 RB, 2 WR, 1 TE, 1 RB/WR FLEX, 1 K, 1 DST. Override with explicit custom league instructions.',
+        waitCosts, boardTail, previous, previousPick: lastAdvice ? lastAdvice.pick : null,
       });
       const messages = [
         { role: 'system', content: settings.systemPrompt },
@@ -2519,6 +2851,13 @@ function initApp() {
       // Publish the final text before Done, including in background tabs
       // where animation frames can be paused for the entire response.
       $('ai-output').innerHTML = renderMarkdown(answer);
+      // Carry the final ranking into the next question, so the model is
+      // asked to keep its opinion rather than form a fresh one each press.
+      const ranking = parseRanking(answer);
+      if (ranking.length) {
+        lastAdvice = { pick: currentPick, ranking };
+        store.save('lastAdvice', lastAdvice);
+      }
       $('ai-status').textContent = 'Done ' + new Date().toLocaleTimeString();
       setStatus('AI query complete');
     } catch (e) {
@@ -2713,6 +3052,8 @@ function initApp() {
     predicted = null;
     predictedMeta = null;
     predictMode = false;
+    lastAdvice = null;
+    store.remove('lastAdvice');
     store.save('predictMode', false);
     store.save('manualPicked', []);
     store.save('manualTeam', []);

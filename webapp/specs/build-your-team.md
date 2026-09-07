@@ -25,6 +25,11 @@ which spots I still need to fill.
   filled ✓" when done. A position I've hit its badly-needed round with zero
   of (no RB/WR by round 4, QB by 10, TE by 12) is bolded red; K/DST are
   never bolded — off-board picks can't be counted, so they'd cry wolf.
+- **Each running back shows his handcuff under him**: a "Backup" line
+  naming the next RB on his NFL team's depth chart, that player's board
+  rank, and whether he is still available (green bar and text), already
+  drafted (struck through) or on my team. Clicking the line opens the
+  backup's note. Running backs only — see `depth-handcuffs`.
 - Rostered players get a ★ on the board.
 - Adding a player manually also marks them picked, so they leave the available
   pool and AI candidates. Removing them from your team keeps them picked (they
@@ -38,5 +43,5 @@ which spots I still need to fill.
   state persists too.
 
 ## Verify against
-- `webapp/app.js` — `renderTeam()`, `toggleTeam()`, `teamNames()`, `STARTER_SLOTS`
-- `webapp/style.css` — `.team-row`, `.pos-chip`, `#team-needs`
+- `webapp/app.js` — `renderTeam()`, `handcuffOf()`, `toggleTeam()`, `teamNames()`, `STARTER_SLOTS`
+- `webapp/style.css` — `.team-row`, `.team-sub`, `.pos-chip`, `#team-needs`

@@ -159,7 +159,9 @@ Whichever you choose, the resulting origin must be listed in the extension's
   Reset draft state — Manual mode also adds a header Reset button
 - **Your Team as a depth chart**: QB1/RB1/RB2… chips, team/bye/rank columns,
   a "Still need" line for unfilled starters (bold red when it's getting
-  urgent), collapsible position groups,
+  urgent), each running back's handcuff listed under him with whether he's
+  still available (a **Backups** filter chip on the board shows just those),
+  collapsible position groups,
   click a player for their note, » collapses the whole panel
 - Cycle ✅/❌ target markers anywhere; **Manual mode** (Settings) reveals
   Picked/+Team buttons for extension-less drafting — in a live draft the
@@ -180,10 +182,17 @@ Whichever you choose, the resulting origin must be listed in the extension's
 - **Export/Import my data**: one JSON file with markers, picks, team, rank
   overrides, note edits, and prompts — move your prep between browsers
   (API key never included)
-- **Ask AI** (Q): sends pick number, picked players, your roster, and the full
-  notes of the top-15 available players to the LLM — same prompt template as
-  the Go app — and streams the answer with a model fallback chain
-  (`gpt-5-nano → gpt-5-mini → gpt-4o-mini`, or your own model from Settings)
+- **Ask AI** (Q): sends the LLM a position-balanced slate of the best
+  available players (6 RB, 6 WR, 3 QB, 3 TE; one QB/TE once you start one),
+  each with the board's numbers — rank/ADP, his standing in his NFL team's
+  position room and the gap to his backup, 2025 usage, research marks, and
+  whether the pick simulation expects him gone before your next pick — plus
+  what waiting costs per position and your roster as context (never a
+  filter). The answer walks the model's own ranking with an **Upside /
+  Stable / Balanced** label per player and ends in a numbered Ranking that
+  is fed back into the next question so the advice doesn't reshuffle.
+  Streams with a model fallback chain (`gpt-5-nano → gpt-5-mini →
+  gpt-4o-mini`, or your own model from Settings)
 - Live draft sync from the Chrome extension — ESPN and Sleeper (verified),
   plus Yahoo, NFL.com and CBS (scrapers shipped but **selectors unverified**;
   run a mock draft there first, see below)

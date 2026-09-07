@@ -208,14 +208,50 @@ test('Claude advice renders streamed output and sends current draft context', as
     return r.fulfill({ contentType: 'application/x-ndjson', body: '{"text":"## Recommendation\\n"}\n{"text":"Draft the best available RB."}\n{"done":true}\n' });
   });
   await draft({ useClaudeCode: true, scoringFormat: 'PPR', draftSlot: 4 });
-  await bridge({ picked_players: { site: 'espn', players: ['Josh Allen'] }, roster_players: { site: 'espn', players: ['Josh Allen'] } });
-  await pickCount(1);
+  await bridge({ picked_players: { site: 'espn', players: ['Josh Allen', 'Jahmyr Gibbs'] }, roster_players: { site: 'espn', players: ['Josh Allen', 'Jahmyr Gibbs'] } });
+  await pickCount(2);
+  // Your running back's handcuff sits under him in the team panel, green
+  // while he can still be had.
+  const teamText = await page.locator('#team-list').innerText();
+  assert.match(teamText, /RB1\s+Jahmyr Gibbs[\s\S]*Backup\s+Isiah Pacheco\s+#\d+\s+still available/i);
+  assert.equal(await page.locator('#team-list .team-sub-avail').count(), 1);
+  // ...and the Backups chip brings him up on the board, wherever he sits.
+  await page.locator('#pos-filters button', { hasText: 'Backups' }).click();
+  assert.deepEqual(await page.locator('#player-tbody tr[data-name]').evaluateAll(rows => rows.map(r => r.dataset.name)), ['Isiah Pacheco']);
+  await page.locator('#pos-filters button', { hasText: 'All' }).click();
   await page.locator('#btn-ask').click();
   await page.waitForFunction(() => document.querySelector('#ai-status').textContent.startsWith('Done'));
   assert.match(await page.locator('#ai-output').innerText(), /Draft the best available RB/);
-  assert.match(request.messages[1].content, /PPR/);
-  assert.match(request.messages[1].content, /Josh Allen/);
+  const prompt = request.messages[1].content;
+  assert.match(prompt, /PPR/);
+  assert.match(prompt, /Josh Allen/);
+  // The slate spans positions with the board's own numbers on every player,
+  // and the answer shape is fixed: upside labels, several positions, a Ranking.
+  const slatePos = pos => (prompt.match(new RegExp(`^Board rank \\d+; position ${pos};`, 'gm')) || []).length;
+  assert.equal(slatePos('RB'), 7); assert.equal(slatePos('WR'), 7); assert.equal(slatePos('TE'), 3);
+  assert.equal(slatePos('QB'), 1, 'one QB once the user starts one');
+  for (const text of ['Upside play', 'heading "Ranking"', 'Position room:', 'picks ahead of the next',
+    'Availability: Simulation expects', 'What waiting costs, by position', 'Further down the board',
+    'RB1 Jahmyr Gibbs (his backup Isiah Pacheco, board #', 'Starting slots still open: RB, WR, TE, K, DST',
+    'already starts a QB, so he would be a bench pick']) {
+    assert.ok(prompt.includes(text), text);
+  }
+  assert.doesNotMatch(prompt, /previous answer/);
   assert.equal(await page.locator('#btn-ask').isEnabled(), true);
+  // The next question carries the last answer's Ranking forward.
+  await page.unroute('**/api/claude/chat');
+  await page.route('**/api/claude/chat', r => {
+    request = r.request().postDataJSON();
+    return r.fulfill({ contentType: 'application/x-ndjson', body: '{"text":"## Ranking\\n1. **Bijan Robinson** (RB) — Stable\\n2. Puka Nacua (WR) — Upside"}\n{"done":true}\n' });
+  });
+  await page.waitForTimeout(5100);
+  await page.locator('#btn-ask').click();
+  await page.waitForFunction(() => document.querySelector('#ai-status').textContent.startsWith('Done'));
+  assert.deepEqual(await stored('lastAdvice'), { pick: 3, ranking: ['Bijan Robinson (RB) — Stable', 'Puka Nacua (WR) — Upside'] });
+  await page.waitForTimeout(5100);
+  await page.locator('#btn-ask').click();
+  await page.waitForFunction(() => document.querySelector('#ai-status').textContent.startsWith('Done'));
+  assert.match(request.messages[1].content, /previous answer, at pick 3, ranked: 1\. Bijan Robinson \(RB\) — Stable 2\. Puka Nacua \(WR\) — Upside/);
 });
 
 test('Claude failure is visible and leaves board usable', async () => {

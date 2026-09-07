@@ -160,6 +160,8 @@ body.dragging { cursor: col-resize; user-select: none; }
 #pos-filters { display: flex; gap: 0.25rem; }
 #pos-filters button { padding: 0.2rem 0.55rem; font-size: 0.85rem; }
 #pos-filters button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+#pos-filters button.backups { border-color: var(--green); color: var(--green); }
+#pos-filters button.backups.active { background: var(--green); color: #fff; }
 
 #search-box { flex: 1; min-width: 130px; }
 .chk { color: var(--fg-dim); font-size: 0.85rem; white-space: nowrap; }
@@ -546,6 +548,23 @@ tr.next-pick-marker.on-clock td {
   color: var(--fg-dim); font-size: 0.78rem; white-space: nowrap;
 }
 .team-row .t-rm { padding: 0 0.3rem; font-size: 0.75rem; }
+/* The handcuff line under each of your running backs. Green while he can
+   still be had — that is the state you act on; dim once he's gone or yours. */
+.team-sub {
+  display: flex; gap: 0.4rem; align-items: baseline;
+  margin: -0.1rem 0 0.15rem 3.65rem;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.76rem; color: var(--fg-dim);
+  border-left: 2px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.team-sub:hover { background: var(--bg-hover); }
+.team-sub .ts-label { text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.68rem; }
+.team-sub .ts-name { font-weight: 500; color: var(--fg); }
+.team-sub-avail { border-left-color: var(--green); }
+.team-sub-avail .ts-state, .team-sub-avail .ts-name { color: var(--green); }
+.team-sub-gone .ts-name { text-decoration: line-through; }
 
 footer {
   display: flex;

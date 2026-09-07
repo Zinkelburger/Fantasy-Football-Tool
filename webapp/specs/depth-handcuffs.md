@@ -47,9 +47,15 @@ backup to someone I already drafted — the handcuff worth a late pick
 - No glyph. The ⛓ that used to sit in the Pos cell is gone — a symbol
   you have to learn said less than the highlight does.
 - The Pos column header tooltip advertises the hover.
+- **Two more ways to find him**, because a green row 150 ranks down is
+  off screen during a draft: the Your Team panel lists each running
+  back's backup under him with his availability, and a green **Backups**
+  chip appears in the position filter bar (only once you roster a
+  running back who has a backup on the board) that shows just those
+  players. The Ask AI slate also names him — "backs up your own X".
 
 ## Verify against
-- `webapp/app.js` — `depthInfo()`, `depthListByName`/`depthByName`,
+- `webapp/app.js` — `depthInfo()`, `depthMaps()`, `handcuffOf()`, `myHandcuffs()`,
   the `handcuff` row class and Pos cell in `renderTable()`
 - `webapp/style.css` — `tr.handcuff`, `.pos-cell.is-handcuff`
 - `webapp/index.html` — Pos column header title
