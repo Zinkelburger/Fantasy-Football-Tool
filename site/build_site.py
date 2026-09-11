@@ -492,7 +492,34 @@ def build_preseason():
     return dict(k=k, dst=dst)
 
 
+WEEKLY_LATEST = ROOT / "data" / "weekly" / "latest.json"
+
+
 def build_weekly():
+    """The weekly page's data. engine/weekly/build_week.py writes
+    data/weekly/latest.json (lines, D/ST + K ranks, opportunity scores,
+    injuries) every Tuesday and Saturday via GitHub Actions; this just
+    reshapes it. Falls back to the preseason week-1 lines in games.csv
+    if that file has never been built, so the site still deploys."""
+    if not WEEKLY_LATEST.exists():
+        return _weekly_from_games()
+    d = json.loads(WEEKLY_LATEST.read_text())
+    skill = []
+    for r in d["skill"]:
+        skill.append(dict(
+            id=r["id"], name=r["name"], pos=r["pos"], team=r["team"],
+            games=r["games"], ewma=r["ewma"], ep=r["ep"], pts=r["pts"],
+            last=r["last"], usage=r["usage"], opp=r["opp"], home=r["home"],
+            imp=r["imp_own"], injury=r["injury"]))
+    label = d["label"]
+    if d.get("games_played_this_week"):
+        label += f" · {d['games_played_this_week']} played"
+    return dict(label=label, generated=d["generated"], season=d["season"],
+                week=d["week"], dst=d["dst"], k=d["k"], skill=skill,
+                model=d.get("model", {}), injuries=d.get("injuries", []))
+
+
+def _weekly_from_games():
     rows = [r for r in read_csv(MKT / "games.csv")
             if r["season"] == "2026" and r["week"] == "1"
             and r["total_line"]]
@@ -505,13 +532,14 @@ def build_weekly():
         for d, off, imp_opp, imp_own, home in (
                 (r["home_team"], r["away_team"], imp_a, imp_h, True),
                 (r["away_team"], r["home_team"], imp_h, imp_a, False)):
-            dst.append(dict(team=TEAMS[d], opp=TEAMS[off],
+            dst.append(dict(team=TEAMS[d], abbr=d, opp=TEAMS[off],
                             imp=round(imp_opp, 1), home=home))
-            kick.append(dict(team=TEAMS[d], opp=TEAMS[off],
+            kick.append(dict(team=TEAMS[d], abbr=d, opp=TEAMS[off],
                              imp=round(imp_own, 1), dome=dome, home=home))
     dst.sort(key=lambda d: d["imp"])
     kick.sort(key=lambda d: (-d["imp"] - (0.7 if d["dome"] else 0)))
-    return dict(label="2026 Week 1 (preseason lines)", dst=dst, k=kick)
+    return dict(label="2026 Week 1 (preseason lines)", dst=dst, k=kick,
+                skill=[], model={}, injuries=[])
 
 
 def _full_writeup(stem):

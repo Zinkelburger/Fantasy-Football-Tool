@@ -132,7 +132,26 @@
       </div>
 
       <div id="weekly-skill" class="tab-pane" hidden>
-        <div class="empty-state">
+        <div class="blurb" data-copy="weekly.skill.blurb"></div>
+        <div class="tabs skill-controls">
+          <span id="skill-pos" class="tabs">
+            <button data-pos="QB" class="tab pos-qb">QB</button>
+            <button data-pos="RB" class="tab pos-rb active">RB</button>
+            <button data-pos="WR" class="tab pos-wr">WR</button>
+            <button data-pos="TE" class="tab pos-te">TE</button>
+          </span>
+          <span id="skill-fmt" class="tabs scoring">
+            <button data-fmt="std" class="tab">Std</button>
+            <button data-fmt="half" class="tab active">Half</button>
+            <button data-fmt="ppr" class="tab">PPR</button>
+          </span>
+        </div>
+        <details class="note">
+          <summary data-copy-text="weekly.skill.note.title"></summary>
+          <div data-copy="weekly.skill.note.body"></div>
+        </details>
+        <div class="tbl"><table id="skill-table"></table></div>
+        <div id="skill-empty" class="empty-state" hidden>
           <h3 data-copy-text="weekly.skill.title"></h3>
           <div data-copy="weekly.skill.body"></div>
         </div>

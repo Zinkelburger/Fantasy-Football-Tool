@@ -66,6 +66,23 @@ test('all public views, research article and embedded draft load', async () => {
   assert.deepEqual(failures, []);
 });
 
+test('weekly opportunity table renders and toggles', async () => {
+  await page.goto(`${base}/#/weekly`);
+  await page.locator('#weekly-tabs button[data-tab="skill"]').click();
+  await page.locator('#skill-table tbody tr').first().waitFor();
+  const rb = await page.locator('#skill-table tbody tr').count();
+  assert.ok(rb > 10, `expected RB rows, got ${rb}`);
+  await page.locator('#skill-pos button[data-pos="TE"]').click();
+  await page.waitForFunction(() => document.querySelector('#skill-table tbody tr td:nth-child(2)').innerText.length > 0);
+  const firstName = await page.locator('#skill-table tbody tr td:nth-child(2)').first().innerText();
+  await page.locator('#skill-fmt button[data-fmt="ppr"]').click();
+  assert.equal(await page.locator('#skill-fmt button.active').getAttribute('data-fmt'), 'ppr');
+  await page.reload();
+  await page.locator('#weekly-tabs button[data-tab="skill"]').click();
+  assert.equal(await page.locator('#skill-pos button.active').getAttribute('data-pos'), 'TE');
+  assert.ok(firstName.length > 3);
+});
+
 test('search, position filters, scoring and notes work', async () => {
   await draft();
   for (const scoring of ['STD', '0.5PPR', 'PPR']) {

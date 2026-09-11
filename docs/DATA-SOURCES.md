@@ -234,3 +234,18 @@ J.K. Dobbins; JuiceBoxOne is materially higher on A.J. Brown, Jayden
 Daniels, Terry McLaurin, Jaylen Waddle and Bhayshul Tuten. Neither list is
 validated against 2026 outcomes yet — that is what the accuracy harness in
 `SITE_PLAN.md` (gap 5) is for.
+
+## In-season weekly feeds (engine/weekly, from 2026-09-10)
+
+| feed | endpoint | auth | refreshed |
+|---|---|---|---|
+| NFL state (season/week) | `https://api.sleeper.app/v1/state/nfl` | none | every build |
+| Play-by-play, weekly player stats, schedules (with lookahead lines), injuries, depth charts, player id crosswalk | nflverse via `nflreadpy` | none | Tue + Sat (GitHub Actions) and on `refresh_week()` |
+| Live lines (DraftKings) | `https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard` | none; **send no browser User-Agent** (403 otherwise) | every build |
+| ESPN league: rosters, free agents, projections, matchups | `lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/<y>/segments/0/leagues/<id>` | `espn_s2` + `SWID` cookies (private league) | on each tool call |
+| ESPN league writes: lineup, add/drop, waiver claims | `lm-api-writes.fantasy.espn.com/.../transactions/` | cookies; gated behind a previewed token + user confirmation | only when asked |
+| FantasyPros ECR (weekly) | `https://api.fantasypros.com/public/v2/json/nfl/<y>/consensus-rankings` | `FANTASYPROS_API_KEY` (optional) | every build when keyed |
+| Reddit (search, megathreads) | Reddit API via PRAW | `CLIENT_ID`/`CLIENT_SECRET` in engine/reddit-scraper/.env | on each tool call |
+
+Not used: ffverse `ep_weekly_<season>` (no 2026 file as of 2026-09-10; our
+own model in finding 39 agrees with it at r = .95–.98 on 2025).

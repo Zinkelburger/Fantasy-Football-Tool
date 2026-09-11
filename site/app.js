@@ -140,6 +140,80 @@ function applyWeeklyFilters() {
     });
 }
 
+/* Opportunity scores: QB/RB/WR/TE ranked by usage-based expected
+   points (engine/weekly). Position and scoring format are client-side
+   toggles over the one bundle; localStorage remembers them. */
+const SKILL_PREF = "ffSkillPref";
+let skillPref = { pos: "RB", fmt: "half" };
+try { skillPref = { ...skillPref, ...(JSON.parse(localStorage.getItem(SKILL_PREF)) || {}) }; } catch { /* fresh */ }
+
+function renderSkill(w) {
+  const empty = document.getElementById("skill-empty");
+  const table = document.getElementById("skill-table");
+  if (!w.skill || !w.skill.length) {
+    empty.hidden = false; table.hidden = true;
+    document.querySelector("#weekly-skill .skill-controls").hidden = true;
+    return;
+  }
+  const paint = () => {
+    const { pos, fmt } = skillPref;
+    document.querySelectorAll("#skill-pos .tab").forEach(t => t.classList.toggle("active", t.dataset.pos === pos));
+    document.querySelectorAll("#skill-fmt .tab").forEach(t => t.classList.toggle("active", t.dataset.fmt === fmt));
+    const rows = w.skill.filter(r => r.pos === pos).sort((a, b) => b.ewma[fmt] - a.ewma[fmt]);
+    const n = v => (v == null ? "–" : v.toFixed(1));
+    const gap = r => {
+      if (r.ep[fmt] == null || r.games < 2) return "";
+      const g = r.pts[fmt] - r.ep[fmt];
+      if (g >= 3) return `<span class="tag up" title="${Copy.attr("tip.gap-hot")}">hot</span>`;
+      if (g <= -3) return `<span class="tag down" title="${Copy.attr("tip.gap-cold")}">cold</span>`;
+      return "";
+    };
+    const inj = r => {
+      if (!r.injury) return "";
+      const st = r.injury.status || "";
+      if (!st && /^Full/i.test(r.injury.practice || "")) return "";
+      const cls = /out|doubt/i.test(st) ? "down" : /quest/i.test(st) ? "" : "dim";
+      const txt = st || (r.injury.practice || "").replace(/ Participation.*/i, "").replace("Did Not Participate In Practice", "DNP");
+      return `<span class="tag ${cls}" title="${r.injury.injury || ""} · ${r.injury.practice || ""}">${txt}</span>`;
+    };
+    const usage = r => pos === "QB"
+      ? `${n(r.usage.pass_att)} att · ${n(r.usage.rush_att)} car`
+      : `${n(r.usage.rush_att)} car · ${n(r.usage.tgt)} tgt · rz ${n((r.usage.rush_rz || 0) + (r.usage.tgt_rz || 0))} · ez ${n(r.usage.tgt_ez)}`;
+    table.innerHTML =
+      `<thead><tr><th class="rank">#</th><th>Player</th><th>vs</th>
+       <th class="num" title="${Copy.attr("tip.imp-own")}">Implied</th>
+       <th class="num" title="${Copy.attr("tip.ewma")}">Opp. score</th>
+       <th class="num" title="${Copy.attr("tip.ep-pg")}">EP/g</th>
+       <th class="num" title="${Copy.attr("tip.pts-pg")}">Pts/g</th>
+       <th class="num" title="${Copy.attr("tip.last")}">Last</th>
+       <th title="${Copy.attr("tip.usage")}">Usage/g</th><th></th><th class="mark-col"></th></tr></thead><tbody>` +
+      rows.map((r, i) =>
+        `<tr data-mark-key="skill:${r.id}" data-search="${`${r.name} ${r.team || ""} ${r.opp || ""}`.toLowerCase()}"
+             title="${Copy.attr("tip.mark-row")}">
+         <td class="rank">${i + 1}</td>
+         <td><b>${r.name}</b> <span class="dim">${r.team || ""}</span></td>
+         <td>${r.opp ? `${r.home ? "" : "@ "}${r.opp}` : `<span class="dim">bye</span>`}</td>
+         <td class="num">${r.imp == null ? "–" : r.imp.toFixed(1)}</td>
+         <td class="num"><b>${n(r.ewma[fmt])}</b></td>
+         <td class="num">${n(r.ep[fmt])}</td>
+         <td class="num">${n(r.pts[fmt])}</td>
+         <td class="num dim">${r.last.week ? `${n(r.last.ep[fmt])} / ${n(r.last.pts[fmt])}` : "–"}</td>
+         <td class="dim">${r.games ? usage(r) : "no game yet"}</td>
+         <td>${gap(r)} ${inj(r)}</td>
+         <td class="mark-cell"></td></tr>`).join("") + "</tbody>";
+    applyWeeklyFilters();
+  };
+  document.getElementById("skill-pos").addEventListener("click", e => {
+    const b = e.target.closest("button[data-pos]"); if (!b) return;
+    skillPref.pos = b.dataset.pos; localStorage.setItem(SKILL_PREF, JSON.stringify(skillPref)); paint();
+  });
+  document.getElementById("skill-fmt").addEventListener("click", e => {
+    const b = e.target.closest("button[data-fmt]"); if (!b) return;
+    skillPref.fmt = b.dataset.fmt; localStorage.setItem(SKILL_PREF, JSON.stringify(skillPref)); paint();
+  });
+  paint();
+}
+
 let weeklyDone = false;
 async function renderWeekly() {
   const w = await data("weekly");
@@ -180,6 +254,8 @@ async function renderWeekly() {
        <td class="mark-cell"></td></tr>`
     ).join("") + "</tbody>";
 
+  renderSkill(w);
+
   document.getElementById("weekly-tabs").addEventListener("click", e => {
     const b = e.target.closest("button[data-tab]");
     if (!b) return;
@@ -189,11 +265,10 @@ async function renderWeekly() {
       document.getElementById(`weekly-${pane}`).hidden =
         pane !== b.dataset.tab;
     }
-    // The shared toolbar only applies to table panes.
-    document.getElementById("weekly-tools").hidden = b.dataset.tab === "skill";
   });
 
   document.getElementById("view-weekly").addEventListener("click", e => {
+    if (e.target.closest("#skill-pos, #skill-fmt")) return;
     const row = e.target.closest("tr[data-mark-key]");
     if (!row) return;
     cycleMark(row.dataset.markKey);

@@ -1,0 +1,46 @@
+# Rebuilds the in-season week: Vegas lines, opportunity scores (expected
+# points from usage), D/ST + K ranks, the NFL injury report and depth
+# charts. Commits data/weekly/, and that push makes Cloudflare Pages
+# redeploy foss.football with the new weekly page.
+#
+# Tuesday 10:00 UTC: Monday night's game is in the play-by-play feed.
+# Saturday 12:00 UTC: Friday's injury designations and moved lines.
+# Run it any time from the Actions tab (workflow_dispatch).
+#
+# Optional secret FANTASYPROS_API_KEY adds expert-consensus ranks.
+name: weekly
+
+on:
+  schedule:
+    - cron: "0 10 * * 2"
+    - cron: "0 12 * * 6"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-week:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the weekly engine
+        run: pip install -q nflreadpy polars numpy pyarrow requests
+      - name: Build the week
+        env:
+          FANTASYPROS_API_KEY: ${{ secrets.FANTASYPROS_API_KEY }}
+        run: python engine/weekly/build_week.py
+      - name: Check the site still builds from it
+        run: python3 site/build_site.py
+      - name: Commit if anything moved
+        run: |
+          git config user.name "weekly-bot"
+          git config user.email "actions@github.com"
+          git add data/weekly/*.csv data/weekly/*.json
+          git diff --cached --quiet && echo "nothing changed" && exit 0
+          git commit -m "data: weekly build $(date -u +%F)"
+          git push

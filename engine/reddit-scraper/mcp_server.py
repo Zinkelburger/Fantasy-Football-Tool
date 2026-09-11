@@ -1610,5 +1610,93 @@ def claims_stats() -> str:
     return "\n".join(out)
 
 
+# ---------------------------------------------------------------- in-season
+# Live lookups for the weekly pass (engine/weekly). These read Reddit
+# directly and do not touch the corpus; fetch_thread + thread_digest are
+# the way to pull a thread in for a proper read.
+
+_WEEKLY_KINDS = (
+    ("start/sit", r"start.?sit|wdis|who do i start"),
+    ("waivers", r"waiver|add.?/?drop"),
+    ("injuries", r"injur"),
+    ("trade", r"trade"),
+    ("rate my team", r"rate my team|rmt"),
+    ("news", r"news|breaking|report"),
+)
+
+
+def _age_days(created_utc):
+    return (time.time() - float(created_utc or 0)) / 86400
+
+
+@mcp.tool()
+def search_reddit(query: str, subreddits: str = "fantasyfootball,fantasyfootballadvice",
+                  days: int = 7, limit: int = 12, comments_per_thread: int = 6) -> str:
+    """Search recent Reddit threads for a player, team or topic and show
+    each thread's top comments. Read-only: nothing is stored. To read a
+    thread properly, fetch_thread(id) then thread_digest(id).
+
+    query: e.g. "Bijan Robinson", "Jaguars RB", "Kyler Murray injury".
+    days: how far back (7 = this week's discussion)."""
+    r = _reddit()
+    subs = r.reddit.subreddit(subreddits.replace(",", "+"))
+    tf = "week" if days <= 7 else "month" if days <= 31 else "year"
+    seen, out = set(), []
+    for s in subs.search(query, sort="relevance", time_filter=tf, limit=limit * 3):
+        if s.id in seen or _age_days(s.created_utc) > days:
+            continue
+        seen.add(s.id)
+        s.comment_sort = "top"
+        try:
+            s.comments.replace_more(limit=0)
+            top = sorted(s.comments, key=lambda c: -(c.score or 0))[:comments_per_thread]
+        except Exception as e:  # noqa: BLE001 - comment fetch is best effort
+            top = []
+            out.append(f"  (comments unavailable: {e})")
+        out.append(f"[{s.id}] r/{s.subreddit.display_name} · {s.score}pts · {s.num_comments} comments · "
+                   f"{_age_days(s.created_utc):.1f}d ago\n  {s.title}")
+        if s.selftext:
+            out.append("  > " + s.selftext[:400].replace("\n", " "))
+        for c in top:
+            body = (c.body or "").replace("\n", " ")
+            out.append(f"  - ({c.score}) {body[:400]}")
+        out.append("")
+        if len(seen) >= limit:
+            break
+    if not seen:
+        return f"no threads in the last {days} days for {query!r} on {subreddits}"
+    return "\n".join(out)
+
+
+@mcp.tool()
+def player_news(player: str, team_subreddit: str = "", days: int = 5) -> str:
+    """The freshest Reddit signal on one player: fantasy subs plus the
+    team's own subreddit if given (e.g. "falcons"). Beat-writer tweets
+    usually surface there first."""
+    subs = "fantasyfootball,fantasyfootballadvice,fantasy_football"
+    if team_subreddit:
+        subs += "," + team_subreddit.strip().lstrip("r/")
+    return search_reddit(player, subs, days=days, limit=8, comments_per_thread=5)
+
+
+@mcp.tool()
+def weekly_threads(days: int = 7, limit: int = 20) -> str:
+    """r/fantasyfootball's official weekly megathreads (start/sit, waiver
+    wire, injuries, trade) from the last N days, with ids for
+    fetch_thread + thread_digest. The corpus queue deliberately ranks
+    these last for draft notes; in-season they are the room."""
+    r = _reddit()
+    out = []
+    for s in r.reddit.subreddit("fantasyfootball").search("Official", sort="new", time_filter="week", limit=100):
+        if _age_days(s.created_utc) > days:
+            continue
+        kind = next((k for k, pat in _WEEKLY_KINDS if re.search(pat, s.title, re.I)), "other")
+        out.append((kind, s.num_comments, s.id, s.title, _age_days(s.created_utc)))
+    if not out:
+        return "no Official threads found in the window"
+    out.sort(key=lambda t: (t[0], -t[1]))
+    return "\n".join(f"[{i}] {k:12} {n:5} comments {age:4.1f}d  {t[:90]}" for k, n, i, t, age in out[:limit])
+
+
 if __name__ == "__main__":
     mcp.run()

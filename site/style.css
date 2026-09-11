@@ -1145,3 +1145,7 @@ body.draft-mode #main { max-width: none; padding: 0; }
   .lg-waiver-row > :nth-child(2) { display: none; }
   .ss-gain { font-size: 2rem; }
 }
+
+/* Weekly > QB/RB/WR/TE: position + scoring toggles above the table. */
+.skill-controls { justify-content: space-between; align-items: center; }
+.skill-controls .tabs { margin: 0; }

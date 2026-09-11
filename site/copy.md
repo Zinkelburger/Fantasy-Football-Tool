@@ -262,23 +262,31 @@ Pick the offense and the stadium, not the kicker.
 [Finding 28](#/blog/28-kicker-model)
 
 # weekly.skill.title
-Starts in September
+Opportunity scores start after the first games
 
 # weekly.skill.body
-Weekly rankings for quarterbacks, running backs, receivers and tight
-ends need a few weeks of real games before they mean anything.
+This table fills in once the week's games are in the play-by-play feed.
 
-The model is already built. It uses four things: how a player has
-scored recently, his expected points (what his targets and carries are
-normally worth), how many points the opposing defense gives up to his
-position, and the Vegas line for the game. Expected points is the most
-useful of the four.
+# weekly.skill.blurb
+Quarterbacks, running backs, receivers and tight ends ranked by their
+**opportunity score**: what their carries, targets and pass attempts
+are normally worth, before any luck. Usage predicts next week better
+than last week's points did, at every position.
+[How it's built](#/blog/39-opportunity-scores)
 
-It also drives the waiver advice. A player whose expected points rise
-before his actual scoring does is the one to claim early.
+# weekly.skill.note.title
+Reading the columns
 
-We will publish all of it once we have graded it against real results
-from this season, and not before.
+# weekly.skill.note.body
+**Opp. score** is a running average of expected points that leans on
+recent weeks (35% on the newest game) and starts the season from last
+year's role, so week 1 is not blank. **EP/g** is expected points per
+game this season; **Pts/g** is what he actually scored. A **hot** tag
+means he has scored 3+ a game above his usage, **cold** 3+ below; both
+tend to regress toward the usage number. **Last** is expected / actual
+in his most recent game. **Implied** is how many points Vegas expects
+his team to score this week. Injury tags come from the NFL's official
+report and are refreshed Tuesday and Saturday.
 
 
 # board.title
@@ -770,3 +778,33 @@ This page didn't load. Check your connection, then try again.
 
 # error.generic
 We couldn't load that: {error}
+
+# tip.ewma
+Opportunity score: expected points from usage, averaged with more
+weight on recent games (finding 39). Predicts next week's points better
+than last week's points at every position.
+
+# tip.imp-own
+How many points Vegas expects this player's team to score this week.
+
+# tip.ep-pg
+Expected points per game this season: what his touches were worth on
+average.
+
+# tip.pts-pg
+Actual fantasy points per game this season.
+
+# tip.last
+His most recent game: expected points / actual points.
+
+# tip.usage
+Per game: carries, targets, red-zone touches (inside the 20), end-zone
+targets. For quarterbacks: pass attempts and carries.
+
+# tip.gap-hot
+Scoring 3+ points a game above what his usage is worth. Touchdown luck
+regresses (finding 16).
+
+# tip.gap-cold
+Scoring 3+ points a game below what his usage is worth. Usage this
+good usually catches up.

@@ -21,6 +21,7 @@ and open [the local dashboard](http://localhost:8765/).
 | `site/` | foss.football — weekly rankings, 2026 board, research posts |
 | `chrome-extension/` | tracks your live draft and syncs picks into the tool ([Chrome store](https://chromewebstore.google.com/detail/draft-assistant-player-ex/neakbjfmpdmpnibgjeljflnmionbjidi)) |
 | `engine/` | everything that produces numbers and notes (see below) |
+| `data/weekly/` | in-season bundle: Vegas lines, opportunity scores, D/ST + K ranks, injury report (rebuilt Tue + Sat by `.github/workflows/weekly.yml`) |
 | `data/` | shared data: `ranks/` board CSVs, `notes/` per-player summaries, `juicebox/` external rankings |
 | `research/` | one-off studies: kicker/DST/injury prediction, opportunity scores, the reddit-notes backtest |
 | `archive/` | superseded code — the original Go desktop tool, the 2024 Python tool, season snapshots |
@@ -32,7 +33,8 @@ Inside `engine/`:
 | path | what it is |
 |---|---|
 | `engine/league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
-| `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes |
+| `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes; in-season `search_reddit` / `player_news` / `weekly_threads` MCP tools |
+| `engine/weekly/` | the in-season engine: opportunity scores (finding 39), lines, injuries, and the `ff-weekly` MCP server for start/sit, waivers and ESPN roster moves (see its README) |
 | `engine/update_ranks.py` | refreshes all scoring-format boards from FFC plus ESPN/Sleeper comparisons (twice weekly via GitHub Actions) |
 | `engine/fetch_juicebox.py` | pulls the JuiceBoxOne ranking sheets into `data/juicebox/<year>/` |
 

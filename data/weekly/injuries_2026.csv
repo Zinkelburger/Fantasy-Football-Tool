@@ -1,0 +1,140 @@
+week,team,gsis_id,full_name,position,report_status,report_primary_injury,practice_status,practice_primary_injury
+1,ARI,00-0034381,Josh Sweat,LB,,,Did Not Participate In Practice,Not injury related - resting player
+1,ARI,00-0035859,Blake Gillikin,P,,,Full Participation in Practice,Groin
+1,ARI,00-0039007,Garrett Williams,CB,,,Limited Participation in Practice,Achilles
+1,ARI,00-0039808,Isaiah Adams,G,,,Did Not Participate In Practice,Knee
+1,ARI,00-0039864,Dadrion Taylor-Demerson,S,,,Limited Participation in Practice,Ribs
+1,ARI,00-0040751,Will Johnson,CB,,,Full Participation in Practice,Ankle
+1,ARI,00-0041027,Jeremiyah Love,RB,,,Limited Participation in Practice,Ankle
+1,ATL,00-0031576,Za'Darius Smith,DE,,,Limited Participation in Practice,Shoulder
+1,ATL,00-0036354,Kyle Hinton,G,,,Limited Participation in Practice,Knee
+1,ATL,00-0039859,Brandon Dorlus,DT,,,Limited Participation in Practice,Groin
+1,ATL,00-0039917,Michael Penix Jr.,QB,,,Full Participation in Practice,Knee
+1,ATL,00-0040156,Billy Bowman Jr.,CB,,,Limited Participation in Practice,Achilles
+1,ATL,00-0041044,Zachariah Branch,WR,,,Limited Participation in Practice,Hamstring
+1,BAL,00-0036130,Nnamdi Madubuike,DT,,,Limited Participation in Practice,Neck
+1,BAL,00-0039064,Zay Flowers,WR,,,Limited Participation in Practice,Hamstring
+1,BAL,00-0039792,Devontez Walker,WR,,,Limited Participation in Practice,Groin
+1,BAL,00-0040069,Teddye Buchanan,LB,,,Limited Participation in Practice,Knee
+1,BUF,00-0035537,Ty Johnson,RB,,,Did Not Participate In Practice,Hamstring
+1,BUF,00-0040192,Jordan Hancock,CB,,,Did Not Participate In Practice,Quadricep
+1,BUF,00-0040724,T.J. Sanders,DE,,,Limited Participation in Practice,Knee
+1,CAR,00-0036903,Bobby Brown III,DT,,,Limited Participation in Practice,Back
+1,CAR,00-0037007,Patrick Jones II,LB,,,Did Not Participate In Practice,Back
+1,CAR,00-0039344,Jonathon Brooks,RB,,,Limited Participation in Practice,Groin
+1,CHI,00-0038416,Tyson Bagent,QB,,,Did Not Participate In Practice,Back
+1,CHI,00-0039919,Rome Odunze,WR,,,Limited Participation in Practice,Calf
+1,CHI,00-0040740,Ozzy Trapilo,T,,,Limited Participation in Practice,Knee
+1,CIN,00-0036410,Tee Higgins,WR,,,Full Participation in Practice,Foot
+1,CIN,00-0036900,Ja'Marr Chase,WR,,,Full Participation in Practice,Knee
+1,CIN,00-0040756,Shemar Stewart,DE,,,Full Participation in Practice,Knee
+1,CLE,00-0033131,Maliek Collins,DT,,,Limited Participation in Practice,Quadricep
+1,CLE,00-0036953,Teven Jenkins,G,,,Limited Participation in Practice,Back
+1,CLE,00-0040579,Carson Schwesinger,LB,,,Full Participation in Practice,Shoulder
+1,CLE,00-0041073,Parker Brailsford,C,,,Limited Participation in Practice,Thumb
+1,DAL,00-0033093,Jonathan Bullard,DT,,,Full Participation in Practice,Groin
+1,DAL,00-0040017,Ajani Cornelius,T,,,Limited Participation in Practice,Knee
+1,DET,00-0038660,Trevor Nowaske,LB,,,Full Participation in Practice,Knee
+1,DET,00-0038820,Christian Izien,S,,,Limited Participation in Practice,Groin
+1,DET,00-0039396,Mekhi Wingo,DT,,,Limited Participation in Practice,Groin
+1,DET,00-0039660,Thomas Harper,S,,,Full Participation in Practice,Ankle
+1,DET,00-0039862,Ennis Rakestraw Jr.,CB,,,Full Participation in Practice,Ankle
+1,DET,00-0041441,Derrick Moore,DE,,,Limited Participation in Practice,Hamstring
+1,DET,00-0041442,Jimmy Rolder,LB,,,Full Participation in Practice,Hamstring
+1,DET,00-0041445,Keith Abney II,CB,,,Full Participation in Practice,Hand
+1,GB,00-0033109,Javon Hargrave,DT,,,Limited Participation in Practice,Knee
+1,GB,00-0036551,Aaron Banks,G,,,Limited Participation in Practice,Knee
+1,GB,00-0037075,Devonte Wyatt,DT,,,Limited Participation in Practice,Ankle
+1,GB,00-0037817,Zach Bako-Bewele,T,,,Limited Participation in Practice,Knee
+1,GB,00-0039812,Ty'Ron Hopper,LB,,,Did Not Participate In Practice,Achilles
+1,GB,00-0039904,Jordan Morgan,T,,,Limited Participation in Practice,Knee
+1,GB,00-0040010,Barryn Sorrell,LB,,,Limited Participation in Practice,Foot
+1,GB,00-0040016,Warren Brinson,DT,,,Did Not Participate In Practice,Calf
+1,HOU,00-0032071,Trent Brown,T,,,Full Participation in Practice,Wrist
+1,HOU,00-0041440,Kayden McDonald,DT,,,Limited Participation in Practice,Ankle
+1,HOU,00-0041465,Wade Woodaz,LB,,,Full Participation in Practice,Thumb
+1,IND,00-0037292,Andrew Ogletree,TE,,,Limited Participation in Practice,Neck
+1,IND,00-0037664,Alec Pierce,WR,,,Limited Participation in Practice,Heel
+1,IND,00-0039876,Sedrick Van Pran-Granger,C,,,Limited Participation in Practice,Illness
+1,IND,00-0041043,A.J. Haulcy,S,,,Limited Participation in Practice,Ankle
+1,JAX,00-0034960,Jakobi Meyers,WR,,,Limited Participation in Practice,Thumb
+1,JAX,00-0036655,Cole Van Lanen,T,,,Limited Participation in Practice,Knee
+1,JAX,00-0040238,LeQuint Allen Jr.,RB,,,Did Not Participate In Practice,Hip
+1,LA,00-0031388,Aaron Donald,DE,Out,Not injury related - resting player,Did Not Participate In Practice,Not injury related - resting player
+1,LA,00-0033110,Tyler Higbee,TE,,,Full Participation in Practice,Not injury related - resting player
+1,LA,00-0033868,Myles Garrett,LB,,,Full Participation in Practice,Knee
+1,LA,00-0036603,Alaric Jackson,T,,,Full Participation in Practice,Not injury related - resting player
+1,LA,00-0036672,Grant Stuard,LB,,,Full Participation in Practice,Hamstring
+1,LA,00-0037195,Jaylen Watson,CB,,,Full Participation in Practice,Toe
+1,LA,00-0039137,Byron Young,LB,,,Full Participation in Practice,Not injury related - resting player
+1,LAC,00-0031040,Khalil Mack,DE,,,Did Not Participate In Practice,Not injury related - resting player
+1,LAC,00-0037320,Deane Leonard,CB,,,Did Not Participate In Practice,Abdomen
+1,LAC,00-0038454,Keaton Mitchell,RB,,,Limited Participation in Practice,Hamstring
+1,LAC,00-0039111,Tuli Tuipulotu,DE,,,Limited Participation in Practice,Hip
+1,LAC,00-0040221,R.J. Mickens,S,,,Limited Participation in Practice,Ankle
+1,LAC,00-0041550,Brenen Thompson,WR,,,Limited Participation in Practice,Hip
+1,LV,00-0039338,Brock Bowers,TE,,,Did Not Participate In Practice,Knee
+1,LV,00-0040122,Ashton Jeanty,RB,,,Full Participation in Practice,Ankle
+1,MIA,00-0034779,Ronnie Harrison,LB,,,Limited Participation in Practice,Hamstring
+1,MIA,00-0041524,Will Kacmarek,TE,,,Limited Participation in Practice,Calf
+1,MIA,00-0041579,Seydou Traore,TE,,,Full Participation in Practice,Thumb
+1,MIN,00-0041053,Caleb Tiernan,T,,,Limited Participation in Practice,Ankle
+1,MIN,00-0041054,Jakobe Thomas,S,,,Did Not Participate In Practice,Illness
+1,MIN,00-0041354,Jacob Thomas,S,,,Limited Participation in Practice,Ankle
+1,NE,00-0036981,Christian Barmore,DT,,,Full Participation in Practice,Knee
+1,NE,00-0037413,Ben Brown,C,Out,Knee,Did Not Participate In Practice,Knee
+1,NE,00-0040734,TreVeyon Henderson,RB,Out,Ankle,Did Not Participate In Practice,Ankle
+1,NO,00-0027962,Cameron Jordan,LB,,,Did Not Participate In Practice,Hamstring
+1,NO,00-0033906,Alvin Kamara,RB,,,Limited Participation in Practice,Knee
+1,NO,00-0039373,Audric Estimé,RB,,,Did Not Participate In Practice,Thigh
+1,NO,00-0041041,Oscar Delp,TE,,,Did Not Participate In Practice,Hamstring
+1,NYG,00-0031270,Shelby Harris,DT,,,Full Participation in Practice,Achilles
+1,NYG,00-0036386,Andrew Thomas,T,,,Full Participation in Practice,Knee
+1,NYG,00-0039337,Malik Nabers,WR,,,Full Participation in Practice,Knee
+1,NYG,00-0039446,Bryan Hudson,C,,,Full Participation in Practice,Knee
+1,NYG,00-0039847,Theo Johnson,TE,,,Full Participation in Practice,Shoulder
+1,NYJ,00-0033375,Tim Patrick,WR,,,Did Not Participate In Practice,Groin
+1,NYJ,00-0036902,Joseph Ossai,DE,,,Did Not Participate In Practice,Foot
+1,NYJ,00-0038120,Breece Hall,RB,,,Full Participation in Practice,Groin
+1,NYJ,00-0039798,Isaiah Davis,RB,,,Full Participation in Practice,Knee
+1,NYJ,00-0041032,Kenyon Sadiq,TE,,,Full Participation in Practice,Groin
+1,NYJ,00-0041038,D'Angelo Ponds,CB,,,Limited Participation in Practice,Calf
+1,PHI,00-0036224,Jonathan Greenard,LB,,,Limited Participation in Practice,Pectoral
+1,PHI,00-0041483,Eli Stowers,TE,,,Limited Participation in Practice,Hamstring
+1,PIT,00-0039167,Joey Porter Jr.,CB,,,Limited Participation in Practice,Back
+1,SEA,00-0036363,Josh Jones,T,,,Limited Participation in Practice,Knee
+1,SEA,00-0038765,Ty Okada,S,Out,Hamstring,Did Not Participate In Practice,Hamstring
+1,SEA,00-0038797,Emanuel Wilson,RB,,,Full Participation in Practice,Hamstring
+1,SEA,00-0039020,Anthony Bradford,G,,,Full Participation in Practice,Knee
+1,SEA,00-0039793,AJ Barner,TE,,,Full Participation in Practice,Oblique
+1,SEA,00-0040648,Tory Horton,WR,Questionable,Hamstring,Limited Participation in Practice,Hamstring
+1,SEA,00-0040733,Nick Emmanwori,S,Questionable,Ankle,Limited Participation in Practice,Ankle
+1,SEA,00-0040873,Julian Neal,CB,,,Full Participation in Practice,Quadricep
+1,SF,00-0029892,Kyle Juszczyk,FB,,,Limited Participation in Practice,Finger
+1,SF,00-0033288,George Kittle,TE,,,Limited Participation in Practice,Achilles
+1,SF,00-0034982,Dre Greenlaw,LB,,,Full Participation in Practice,Achilles
+1,SF,00-0035413,Luke Gifford,LB,,,Full Participation in Practice,Hamstring
+1,SF,00-0035717,Nick Bosa,DE,,,Limited Participation in Practice,Knee
+1,SF,00-0039345,Renardo Green,CB,,,Full Participation in Practice,Hamstring
+1,SF,00-0040152,Upton Stout,CB,,,Full Participation in Practice,Achilles
+1,SF,00-0040721,Alfred Collins,DT,Out,Knee,Did Not Participate In Practice,Knee
+1,SF,00-0041363,James Thompson Jr.,DT,Questionable,Hamstring,Limited Participation in Practice,Hamstring
+1,SF,00-0041556,Romello Height,DE,,,Full Participation in Practice,Ankle
+1,SF,00-0041557,Gracen Halton,DT,,,Full Participation in Practice,Ankle
+1,TB,00-0034989,Justin Skule,T,,,Limited Participation in Practice,Oblique
+1,TB,00-0035942,Christian Rozeboom,LB,,,Limited Participation in Practice,Foot
+1,TB,00-0038951,Sean Tucker,RB,,,Did Not Participate In Practice,Hamstring
+1,TB,00-0039855,Jalen McMillan,WR,,,Limited Participation in Practice,Knee
+1,TB,00-0040129,Emeka Egbuka,WR,,,Full Participation in Practice,Toe
+1,TB,00-0041031,Rueben Bain Jr.,LB,,,Limited Participation in Practice,Shoulder
+1,TB,00-0041082,Billy Schrauth,G,,,Full Participation in Practice,Knee
+1,TEN,00-0039858,Cedric Gray,LB,,,Did Not Participate In Practice,Concussion
+1,TEN,00-0041508,Keldric Faulk,DE,,,Full Participation in Practice,Shoulder
+1,WAS,00-0032268,Marcus Mariota,QB,,,Full Participation in Practice,Knee
+1,WAS,00-0035149,Nick Allegretti,C,,,Full Participation in Practice,Calf
+1,WAS,00-0035279,Charles Omenihu,DE,,,Full Participation in Practice,Wrist
+1,WAS,00-0036286,K'Lavon Chaisson,LB,,,Limited Participation in Practice,Knee
+1,WAS,00-0036940,Odafe Oweh,LB,,,Limited Participation in Practice,Calf
+1,WAS,00-0039368,Jordan Magee,LB,,,Full Participation in Practice,Chest
+1,WAS,00-0039912,Ben Sinnott,TE,,,Full Participation in Practice,Oblique
+1,WAS,00-0040242,Jacory Croskey-Merritt,RB,,,Limited Participation in Practice,Groin
