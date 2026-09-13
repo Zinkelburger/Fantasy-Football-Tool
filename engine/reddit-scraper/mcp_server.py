@@ -29,7 +29,7 @@ import pathlib
 import re
 import time
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 from mcp.server.mcpserver import MCPServer
 
@@ -1616,6 +1616,7 @@ def claims_stats() -> str:
 # the way to pull a thread in for a proper read.
 
 _WEEKLY_KINDS = (
+    ("game thread", r"game.?thread"),
     ("start/sit", r"start.?sit|wdis|who do i start"),
     ("waivers", r"waiver|add.?/?drop"),
     ("injuries", r"injur"),
@@ -1681,21 +1682,401 @@ def player_news(player: str, team_subreddit: str = "", days: int = 5) -> str:
 
 @mcp.tool()
 def weekly_threads(days: int = 7, limit: int = 20) -> str:
-    """r/fantasyfootball's official weekly megathreads (start/sit, waiver
-    wire, injuries, trade) from the last N days, with ids for
-    fetch_thread + thread_digest. The corpus queue deliberately ranks
-    these last for draft notes; in-season they are the room."""
+    """r/fantasyfootball's official weekly megathreads (game threads,
+    start/sit, waiver wire, injuries, trade) from the last N days, with ids
+    for fetch_thread + thread_digest. The corpus queue deliberately ranks
+    these last for draft notes; in-season they are the room. For the game
+    threads specifically, game_threads + game_thread_report are the
+    purpose-built pair."""
     r = _reddit()
-    out = []
-    for s in r.reddit.subreddit("fantasyfootball").search("Official", sort="new", time_filter="week", limit=100):
-        if _age_days(s.created_utc) > days:
-            continue
-        kind = next((k for k, pat in _WEEKLY_KINDS if re.search(pat, s.title, re.I)), "other")
-        out.append((kind, s.num_comments, s.id, s.title, _age_days(s.created_utc)))
+    out, seen = [], set()
+    sub = r.reddit.subreddit("fantasyfootball")
+    # Two searches: the mods title most megathreads "Official ...", but the
+    # AutoModerator game threads sometimes drop the word ("THURSDAY NIGHT
+    # FOOTBALL - AUSTRALIA EDITION - GAME THREAD").
+    for q in ("Official", '"Game Thread"'):
+        for s in sub.search(q, sort="new", time_filter="week", limit=100):
+            if s.id in seen or _age_days(s.created_utc) > days:
+                continue
+            seen.add(s.id)
+            kind = next((k for k, pat in _WEEKLY_KINDS if re.search(pat, s.title, re.I)), "other")
+            out.append((kind, s.num_comments, s.id, s.title, _age_days(s.created_utc)))
     if not out:
         return "no Official threads found in the window"
     out.sort(key=lambda t: (t[0], -t[1]))
     return "\n".join(f"[{i}] {k:12} {n:5} comments {age:4.1f}d  {t[:90]}" for k, n, i, t, age in out[:limit])
+
+
+# ------------------------------------------------------------- game threads
+#
+# The official game threads are the sub's live wire: "OFFICIAL WEEK 1 SUNDAY
+# MORNING GAME THREAD" and its afternoon / evening siblings, plus the TNF /
+# SNF / MNF threads. Tens of thousands of comments each, almost all noise, but
+# the injuries, benchings and usage notes ("X got every goal-line carry")
+# land here an hour before any news site writes them up. Reading one by hand
+# is hopeless; the tools below turn a thread into a per-player tally with the
+# comments that carry status words pulled out first.
+
+_GAME_SLOTS = (
+    ("SUN-AM", r"sunday\s+morning|early\s+(window|games)|1\s*pm"),
+    ("SUN-PM", r"sunday\s+afternoon|late\s+(window|games)|4\s*pm"),
+    ("SNF", r"sunday\s+(night|evening)|\bSNF\b"),
+    ("MNF", r"monday\s+night|\bMNF\b"),
+    ("TNF", r"thursday\s+night|\bTNF\b"),
+    ("SAT", r"saturday"),
+    ("FRI", r"friday"),
+    ("WED", r"wednesday"),
+)
+_GAME_TITLE = re.compile(r"game\s*thread", re.I)
+_PRESEASON = re.compile(r"preseason", re.I)
+_WEEK_IN_TITLE = re.compile(r"\bweek\s*(\d{1,2})\b", re.I)
+
+# Words that make a comment worth surfacing even when it is short and
+# downvoted: something happened to a body, a role, or a game script.
+_STATUS_WORDS = re.compile(
+    r"\b(injur\w*|hurt|carted|cart(ed)? off|limp\w*|concuss\w*|questionable to return|"
+    r"doubtful to return|(out|done) for the (game|day|season|year)|left the game|"
+    r"(locker room|blue tent|medical tent|sideline tent)|didn'?t return|not return\w*|"
+    r"ruled out|being evaluated|x-?rays?|hamstring|ankle|knee|shoulder|groin|calf|"
+    r"achilles|\bACL\b|\bMCL\b|torn|tore|fractur\w*|broke\w*|helped off|down on the field|"
+    r"benched|ejected|in and out|checked out|back in the game|returned to the game)\b", re.I)
+_USAGE_WORDS = re.compile(
+    r"\b(goal.?line|snap\s*count|snaps|target\w*|carr(y|ies)|touches|red.?zone|split|"
+    r"committee|vulture\w*|two.?minute|hurry.?up|garbage time|wildcat|"
+    r"first team|starter|starting|healthy scratch|inactive)\b", re.I)
+
+
+# Rule: the game-thread tools never look for defenses. A D/ST is named in a
+# game thread as "the Raiders", "LV", "Vegas D" — the same words as the team,
+# which the resolver cannot tell apart from the team's players' context and
+# which nobody posts injury news about anyway. Asked for explicitly on
+# 2026-09-13; do not remove.
+def _is_dst(name):
+    return "DST" in name.upper() or "D/ST" in name.upper()
+
+
+def _no_dst(names):
+    return {n for n in names if not _is_dst(n)}
+
+
+def _refresh_thread(sid, replace_more):
+    """Pull only what a cached thread has grown by.
+
+    Reddit has no way to search a thread's comments — search indexes titles
+    and selftext only, and the site's own "comments" search tab runs on a
+    web-client endpoint the API does not expose. So a thread has to be pulled;
+    what can be saved is pulling it twice. Fetching with sort=new puts the
+    newest comments in the first page, and each further "load more" batch is
+    one request. This tries the first page alone, then a few batches, then
+    the full budget, and stops as soon as a round comes back mostly cached.
+    On a thread that gained a hundred comments since the last read it is one
+    request instead of forty."""
+    r = _reddit()
+    seen_c = {row["id"] for row in _read_jsonl(COMMENTS)}
+    added = requests = 0
+    CORPUS.mkdir(exist_ok=True)
+    for lim in sorted({0, min(8, replace_more), replace_more}):
+        s = r.reddit.submission(id=sid)
+        s.comment_sort = "new"
+        s.comments.replace_more(limit=lim)
+        batch = s.comments.list()
+        requests += 1 + lim
+        fresh = [c for c in batch if c.id not in seen_c]
+        with open(COMMENTS, "a", encoding="utf-8") as f:
+            for c in fresh:
+                seen_c.add(c.id)
+                f.write(json.dumps({
+                    "id": c.id, "post_id": s.id, "parent_id": c.parent_id,
+                    "score": c.score, "body": c.body,
+                    "created_utc": c.created_utc}) + "\n")
+        added += len(fresh)
+        if batch and len(fresh) / len(batch) < 0.2:
+            break
+    # keep the post's comment count current for the header
+    posts = _read_jsonl(POSTS)
+    for p in posts:
+        if p["id"] == sid:
+            p["num_comments"] = s.num_comments
+            p["score"] = s.score
+    with open(POSTS, "w", encoding="utf-8") as f:
+        for p in posts:
+            f.write(json.dumps(p) + "\n")
+    return f"refreshed: +{added} new comments in ~{requests} requests ({len(seen_c)} cached total)"
+
+
+def _game_slot(title):
+    return next((k for k, pat in _GAME_SLOTS if re.search(pat, title, re.I)), "OTHER")
+
+
+def _game_threads_rss(days):
+    """Listing without credentials, via the public Atom feed.
+
+    Reddit rate-limits this hard (a second request within a minute or so
+    gets a 429), and it carries no comment counts. It is enough to find the
+    ids on a machine that has no .env yet; reading a thread still needs
+    PRAW."""
+    import urllib.request
+    import xml.etree.ElementTree as ET
+    url = ("https://www.reddit.com/r/fantasyfootball/search.rss"
+           "?q=%22Game%20Thread%22&restrict_sr=on&sort=new&t=month")
+    req = urllib.request.Request(url, headers={"User-Agent": "linux:foss.football:0.1 (game thread lister)"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        root = ET.fromstring(resp.read())
+    ns = {"a": "http://www.w3.org/2005/Atom"}
+    rows = []
+    for e in root.findall("a:entry", ns):
+        title = e.find("a:title", ns).text or ""
+        link = e.find("a:link", ns).get("href") or ""
+        when = e.find("a:updated", ns).text or ""
+        try:
+            ts = datetime.fromisoformat(when.replace("Z", "+00:00")).timestamp()
+        except ValueError:
+            ts = 0
+        sid = link.rstrip("/").split("/comments/")[-1].split("/")[0]
+        if _age_days(ts) <= days:
+            rows.append((sid, title, None, ts))
+    return rows
+
+
+@mcp.tool()
+def game_threads(days: int = 10, include_preseason: bool = False) -> str:
+    """The official game threads on r/fantasyfootball from the last N days,
+    tagged by slot (SUN-AM, SUN-PM, SNF, MNF, TNF) with ids for
+    game_thread_report. Sorted newest first.
+
+    Works without Reddit credentials by falling back to the public feed,
+    which lists titles but not comment counts and tolerates about one call a
+    minute. With credentials it uses the API and shows comment counts."""
+    rows, source = [], "api"
+    try:
+        r = _reddit()
+        seen = set()
+        sub = r.reddit.subreddit("fantasyfootball")
+        for q in ('"Game Thread"', "Official Game Thread"):
+            for s in sub.search(q, sort="new", time_filter="month", limit=100):
+                if s.id in seen or _age_days(s.created_utc) > days:
+                    continue
+                seen.add(s.id)
+                rows.append((s.id, s.title, s.num_comments, s.created_utc))
+    except ValueError:  # no credentials in .env
+        source = "rss"
+        try:
+            rows = _game_threads_rss(days)
+        except Exception as e:  # noqa: BLE001 - the feed 429s freely
+            return (f"no Reddit credentials in .env and the public feed failed ({e}). "
+                    f"Put CLIENT_ID / CLIENT_SECRET / USER_AGENT in engine/reddit-scraper/.env, "
+                    f"or wait a minute and retry.")
+    rows = [row for row in rows if _GAME_TITLE.search(row[1])
+            and (include_preseason or not _PRESEASON.search(row[1]))]
+    if not rows:
+        return f"no game threads in the last {days} days"
+    rows.sort(key=lambda t: -t[3])
+    cached = {p["id"] for p in _read_jsonl(POSTS)}
+    out = [f"official game threads, last {days} days"
+           + (" (public feed: no comment counts; reading a thread needs credentials)" if source == "rss" else ""),
+           "id       slot    week  comments  age    title", "-" * 74]
+    for sid, title, n, ts in rows:
+        wk = _WEEK_IN_TITLE.search(title)
+        out.append(f"{sid:8} {_game_slot(title):7} {('wk' + wk.group(1)) if wk else '':5} "
+                   f"{(str(n) if n is not None else '?'):>8}  {_age_days(ts):4.1f}d  {title[:70]}"
+                   + ("  [cached]" if sid in cached else ""))
+    out += ["", "next: game_thread_report(id) — fetches (or refreshes) the thread and tallies it by player."]
+    return "\n".join(out)
+
+
+def _status_hits(body):
+    hits = set(m.group(0).lower() for m in _STATUS_WORDS.finditer(body or ""))
+    return sorted(hits)
+
+
+@mcp.tool()
+def game_thread_report(post_id: str, refresh: bool = True, replace_more: int = 32,
+                       max_players: int = 30, comments_per_player: int = 5,
+                       min_score: int = 2, only_players: str = "") -> str:
+    """Read one official game thread by player instead of by comment.
+
+    Fetches the thread into the corpus (refresh=True pulls only what a
+    cached thread has grown by — game threads grow all afternoon, and a
+    refresh that finds little new costs one request), then for every draftable player named in it prints
+    mentions, the upvotes behind them, and the highest-scored comments,
+    with a STATUS section first: every comment that names a player next to
+    an injury / benching / return word, whether or not it was upvoted,
+    because "Achane limping to the tent" is posted once, not upvoted 400
+    times, and is the whole point of reading the thread.
+
+    replace_more is the number of collapsed "load more" batches to expand;
+    32 is roughly 3-5k comments of a 20k-comment afternoon thread, sorted by
+    top, which is where the signal lives. min_score drops the noise floor in
+    the per-player sections (status hits ignore it). only_players is a
+    comma-separated filter, e.g. my roster.
+
+    Defenses are never tallied or searched for (see _is_dst): a D/ST is
+    named the same way as its team.
+
+    The tally counts mentions, not agreement, and the resolver maps names
+    outside the pool onto whoever shares them — read the quoted comments,
+    not the numbers, before acting."""
+    post_id = post_id.strip().rstrip("/").split("/comments/")[-1].split("/")[0]
+    posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    fetched = ""
+    if refresh or post_id not in posts:
+        try:
+            if post_id in posts:
+                fetched = _refresh_thread(post_id, replace_more)
+            else:
+                fetched = fetch_thread(post_id, replace_more=replace_more)
+        except ValueError:
+            if post_id not in posts:
+                return ("thread not cached and no Reddit credentials in .env; "
+                        "add CLIENT_ID / CLIENT_SECRET / USER_AGENT to engine/reddit-scraper/.env")
+            fetched = "(no credentials; using cached copy)"
+        posts = {p["id"]: p for p in _read_jsonl(POSTS)}
+    post = posts.get(post_id)
+    if not post:
+        return f"no thread {post_id!r}"
+    title = post.get("title", "")
+    comments = [c for c in _read_jsonl(COMMENTS) if c.get("post_id") == post_id]
+    by_id = {c["id"]: c for c in comments}
+
+    wanted = None
+    if only_players.strip():
+        wanted = set()
+        for raw in only_players.split(","):
+            canon = _canon_name(raw)
+            if canon:
+                wanted.add(canon)
+            else:
+                wanted.update(_names_in(raw, title))
+        wanted = _no_dst(wanted)
+
+    per = defaultdict(list)          # player -> [(score, comment)]
+    status = []                      # (created, comment, names, hits)
+    for c in comments:
+        body = c.get("body") or ""
+        names = _no_dst(_names_in(body, title))
+        if wanted is not None:
+            names &= wanted
+        if not names:
+            continue
+        for n in names:
+            per[n].append(((c.get("score") or 0), c))
+        hits = _status_hits(body)
+        if hits and len(body) <= 600:
+            status.append((float(c.get("created_utc") or 0), c, names, hits))
+
+    players, *_ = pool()
+    by_name = {p.player_name: p for p in players}
+
+    def parent_line(c):
+        pid = (c.get("parent_id") or "")
+        if pid.startswith("t1_") and pid[3:] in by_id:
+            return "    ↳ replying to: " + (by_id[pid[3:]].get("body") or "").replace("\n", " ")[:160]
+        return ""
+
+    def fmt(c, n_chars=360):
+        body = (c.get("body") or "").replace("\n", " ").strip()
+        return f"  ({c.get('score', 0):>4}) {body[:n_chars]}"
+
+    def created(c):
+        ts = float(c.get("created_utc") or 0)
+        return datetime.fromtimestamp(ts, timezone.utc).strftime("%H:%M") if ts else "??:??"
+
+    out = [f"GAME THREAD {post_id} — {title}",
+           f"{post.get('num_comments', 0)} comments on Reddit · {len(comments)} in corpus · "
+           f"https://reddit.com{post.get('permalink', '')}",
+           fetched.splitlines()[-1] if fetched else "", "=" * 74]
+
+    out += ["", f"STATUS FLAGS ({len(status)} comments naming a player next to an injury / role word, oldest first, UTC)",
+            "-" * 74]
+    if not status:
+        out.append("  none")
+    for ts, c, names, hits in sorted(status, key=lambda t: t[0])[:80]:
+        out.append(f"  {created(c)}  {', '.join(sorted(names))}  [{', '.join(hits)}]")
+        out.append("      " + fmt(c, 300).strip())
+        pl = parent_line(c)
+        if pl:
+            out.append("  " + pl)
+
+    ranked = sorted(per.items(), key=lambda kv: (-len(kv[1]), -sum(max(s, 0) for s, _ in kv[1])))
+    out += ["", f"PLAYERS BY MENTIONS ({len(per)} named; showing {min(len(ranked), max_players)})",
+            "-" * 74]
+    for name, rows in ranked[:max_players]:
+        p = by_name.get(name)
+        ups = sum(max(s, 0) for s, _ in rows)
+        usage = sum(1 for _, c in rows if _USAGE_WORDS.search(c.get("body") or ""))
+        flags = sum(1 for _, c in rows if _STATUS_WORDS.search(c.get("body") or ""))
+        out.append(f"\n{name}  {getattr(p, 'team_name', '?')} {getattr(p, 'player_depth', '?')}  "
+                   f"x{len(rows)} mentions · ↑{ups}"
+                   + (f" · {flags} status" if flags else "")
+                   + (f" · {usage} usage" if usage else ""))
+        shown = 0
+        for s, c in sorted(rows, key=lambda t: -t[0]):
+            if s < min_score and shown:
+                break
+            out.append(fmt(c))
+            shown += 1
+            if shown >= comments_per_player:
+                break
+
+    out += ["", "-" * 74,
+            "Mentions count comments naming the player, not agreement. Names outside the",
+            "draft pool resolve to whoever shares them. Quote the comment, not the count."]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def live_mentions(players: str, limit: int = 1000, hours: float = 3.0) -> str:
+    """What r/fantasyfootball is saying about these players right now,
+    without pulling any thread: the subreddit's newest comments (up to
+    ~1000, ten requests) filtered to the names, grouped by player, newest
+    first. During a game window that is roughly the last 10-20 minutes of
+    every game thread at once.
+
+    This is the closest thing Reddit offers to searching comments by name.
+    Its search endpoint indexes post titles and bodies only, so for
+    anything older than this stream the thread has to be fetched
+    (game_thread_report), and for posts *about* a player — "X injury
+    update" — use search_reddit, which searches titles.
+
+    players: comma-separated, e.g. your roster. Defenses are ignored."""
+    r = _reddit()
+    wanted = set()
+    for raw in players.split(","):
+        canon = _canon_name(raw)
+        if canon:
+            wanted.add(canon)
+        else:
+            wanted.update(_names_in(raw))
+    wanted = _no_dst(wanted)
+    if not wanted:
+        return "none of those names are in the pool"
+    cutoff = time.time() - hours * 3600
+    hits, titles, scanned = defaultdict(list), {}, 0
+    for c in r.reddit.subreddit("fantasyfootball").comments(limit=limit):
+        scanned += 1
+        if c.created_utc < cutoff:
+            break
+        sid = (c.link_id or "t3_?")[3:]
+        titles.setdefault(sid, getattr(c, "link_title", "") or "")
+        body = c.body or ""
+        names = _no_dst(_names_in(body, titles[sid])) & wanted
+        for n in names:
+            hits[n].append((c.created_utc, sid, c.score, body, bool(_STATUS_WORDS.search(body))))
+    if not hits:
+        return (f"no mention of {', '.join(sorted(wanted))} in the newest {scanned} comments "
+                f"(window back to {datetime.fromtimestamp(cutoff, timezone.utc).strftime('%H:%M')} UTC at most)")
+    out = [f"newest {scanned} r/fantasyfootball comments — mentions of your players (newest first, UTC; ! = status word)",
+           "=" * 74]
+    used = set()
+    for n in sorted(hits, key=lambda k: -len(hits[k])):
+        flagged = sum(1 for h in hits[n] if h[4])
+        out.append(f"\n{n}  x{len(hits[n])}" + (f" · {flagged} with status words" if flagged else ""))
+        for ts, sid, score, body, flag in sorted(hits[n], key=lambda h: -h[0])[:12]:
+            used.add(sid)
+            when = datetime.fromtimestamp(ts, timezone.utc).strftime("%H:%M")
+            out.append(f"  {when} [{sid}] ({score:>3}){' !' if flag else '  '} " + body.replace("\n", " ")[:300])
+    out += ["", "threads: " + "; ".join(f"{k}={titles.get(k, '')[:50]}" for k in sorted(used))]
+    return "\n".join(out)
 
 
 if __name__ == "__main__":

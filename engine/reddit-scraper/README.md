@@ -58,7 +58,9 @@ pip install -r requirements.txt
 cp docs/example-.env .env   # then fill in real values
 ```
 
-`.env` needs (see `docs/example-.env`):
+`.env` lives in this directory (`engine/reddit-scraper/.env`), is gitignored,
+and has to be recreated on every machine the repo is cloned to. It needs (see
+`docs/example-.env`):
 
 - `CLIENT_ID` / `CLIENT_SECRET` — Reddit script app from https://www.reddit.com/prefs/apps
 - `USER_AGENT` — any descriptive string
@@ -667,3 +669,40 @@ them, which in a Claude Code session is the session itself.
 - Caveat from the 2025 backtest (`../reddit-notes-study/`): note *tone* added no
   draft edge over ADP, and hyped players mildly underperformed. Treat these notes
   as qualitative context (injury/situation flags), not a ranking signal.
+
+## In-season: the official game threads
+
+r/fantasyfootball runs an official game thread per window — Sunday morning,
+Sunday afternoon, Sunday evening (SNF), plus TNF and MNF — with tens of
+thousands of comments each. Injuries, benchings and usage notes ("every
+goal-line carry") show up there an hour before a news site writes them up.
+Two MCP tools read them:
+
+- `game_threads(days=10)` lists the threads with ids, tagged SUN-AM / SUN-PM /
+  SNF / MNF / TNF. Works without credentials by falling back to Reddit's
+  public Atom feed (titles only, about one call a minute before it 429s).
+- `game_thread_report(id)` fetches the thread into the corpus (or refreshes a
+  cached one, since the thread grows all afternoon) and prints it by player:
+  a STATUS section first — every comment naming a player next to an injury /
+  return / benching word, oldest first, regardless of upvotes — then each
+  player's mention count, upvotes and top comments. `only_players="..."`
+  narrows it to your roster. `replace_more` controls how much of a 20k-comment
+  thread is expanded; the default 32 batches sorted by top is a few thousand
+  comments.
+
+- `live_mentions(players)` is the cheap path: the subreddit's newest ~1000
+  comments (ten requests) filtered to your players, across every thread at
+  once. During a game window that is the last 10-20 minutes.
+
+Reddit cannot search inside a thread. Its search endpoint indexes post titles
+and bodies only; the "comments" tab on the website runs on a web-client
+endpoint the API does not expose. So a thread has to be pulled, and the tools
+avoid pulling it twice: a refresh fetches sorted by new and stops as soon as
+a round comes back mostly cached.
+
+Defenses are never matched by the game-thread tools. A D/ST is named the same
+way as its team ("the Raiders", "Vegas D"), which the resolver cannot separate
+from the team's players, and nobody posts injury news about one.
+
+Both servers are started by `engine/mcp_launch.sh`, which finds the venv on
+whichever machine it runs on; `.mcp.json` no longer carries absolute paths.

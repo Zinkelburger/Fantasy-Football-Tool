@@ -11,7 +11,8 @@ python ep_model.py fit          # refit the expected-points model (once a season
 python mcp_server.py            # the MCP server (Claude Code starts it from .mcp.json)
 python -m unittest test_weekly  # no venv needed
 ```
-Interpreter: `.venv-league-sim/bin/python` (nflreadpy, polars, numpy, mcp).
+Interpreter: `.venv-league-sim/bin/python` or `engine/league-sim/.venv/bin/python`
+(nflreadpy, polars, numpy, mcp); `engine/mcp_launch.sh weekly` picks whichever exists.
 
 ## What gets computed
 
@@ -32,7 +33,9 @@ redeploys foss.football from the push.
 
 ## Credentials
 
-Copy `.env.example` to `.env`. The league is private, so
+Copy `.env.example` to `engine/weekly/.env` (or put the same keys in
+`engine/league-sim/.env`; both are read, both gitignored, so redo this on
+each machine). The league is private, so
 `ESPN_S2` + `ESPN_SWID` are needed for any roster tool; without them
 only the public tools work. `ESPN_TEAM_ID` is optional (found from
 your SWID). `FANTASYPROS_API_KEY` is optional.
@@ -55,7 +58,10 @@ Nothing is sent without both.
 
 Reddit (`ff-reddit` server): `search_reddit`, `player_news`,
 `weekly_threads`, then `fetch_thread` + `thread_digest` for a full
-read of a megathread.
+read of a megathread. On game day, `game_threads` + `game_thread_report`
+read the official Sunday morning / afternoon / evening (and TNF / MNF)
+game threads by player, injuries and benchings first, and `live_mentions`
+watches the newest comments for your players without pulling a thread.
 
 ## Projection recipe (advisor.py)
 
