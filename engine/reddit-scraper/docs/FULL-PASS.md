@@ -1,5 +1,8 @@
 # A full pass: every player, from a cleared chat
 
+For weekly roster decisions, use [the weekly runbook](../../weekly/RESEARCH.md)
+and `research_brief`; this full-corpus pass is a separate, larger job.
+
 This is the whole pipeline as a runbook. It assumes nothing about the
 conversation that came before it, and every step is resumable — re-running any
 of them skips what is already done.
@@ -32,20 +35,16 @@ If you changed the pool, delete `corpus/index_cache.json`.
 
 ## 1. Sweep (about 15 minutes)
 
-    S.sweep_many("fantasyfootball,DynastyFF,fantasyfootballadvice,Fantasy_Football",
-                 top=120, hot=120, new=250, days=30, min_comments=8)
+    S.sweep_many("fantasy", top=120, hot=120, new=250, days=30, min_comments=8)
 
-    S.sweep_many("Jaguars,GreenBayPackers,raiders,eagles,bengals,buccaneers,Colts,"
-                 "CHIBears,LosAngelesRams,Seahawks,detroitlions,Texans,NYGiants,"
-                 "Patriots,AZCardinals,miamidolphins,ravens,KansasCityChiefs,"
-                 "buffalobills,steelers",
-                 top=40, hot=40, new=120, days=25, min_comments=5,
-                 require_relevance=True)
+    S.sweep_many("teams", top=40, hot=40, new=120, days=25, min_comments=5)
 
-Team subreddits carry the beat reporting first and are otherwise game threads
-and memes, so `require_relevance` is on for them: it keeps only posts whose
+`fantasy` is the four fantasy rooms and `teams` is all 32 team subreddits
+(`sources.py` is the catalogue; `S.reddit_sources()` prints it). Team
+subreddits carry the beat reporting first and are otherwise game threads and
+memes, so `require_relevance` defaults on for them: it keeps only posts whose
 title names a draftable player or reads like a report. It skips roughly 120
-posts per subreddit. Leave it off for r/fantasyfootball.
+posts per subreddit. It stays off for r/fantasyfootball unless asked.
 
 Resumable — already-cached posts are skipped, so re-running costs only the
 listing calls.

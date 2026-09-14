@@ -186,32 +186,7 @@ def _load_proposal(token: str) -> dict:
 @mcp.tool()
 def weekly_checklist() -> str:
     """The order of operations for a weekly pass. Read this first."""
-    return """WEEKLY PASS (every tool here is deterministic; you supply the judgment)
-
-Tuesday / Wednesday (waivers):
-  1. week_status()               is the data fresh? which week? creds present?
-  2. refresh_week()              if latest.json is older than the last games
-  3. my_roster()                 injuries, byes, who under-performed usage
-  4. waiver_recommendations()    positional needs + add/drop proposals
-  5. For each proposal you like: search_reddit(player) / player_news(player)
-     from the ff-reddit server, injury_report(team=...), player_lookup(name).
-  6. propose_transaction(add_id, drop_id)  ->  returns a token and the exact
-     question to ask. ASK THE USER. Only if they say yes:
-  7. execute_transaction(token, confirmed=True)
-
-Thursday / Saturday / Sunday morning (lineup):
-  1. refresh_week()              lines move; injuries get designations Friday
-  2. lineup_recommendation()     optimal lineup, the moves, and why
-  3. For close calls (proj within ~2 pts) read Reddit start/sit threads and
-     the injury report; the model does not know about a late scratch.
-  4. apply_lineup(token, confirmed=True) after the user approves the moves.
-
-Rules of thumb the numbers already encode (don't double count):
-  - usage (ewma_ep) beats last week's points for predicting next week
-  - a bad Vegas total is a mild penalty, never a benching by itself
-  - QUESTIONABLE is x0.8, DOUBTFUL x0.15, OUT 0; check for late news
-  - D/ST: play the defence facing the lowest implied total (dst_rankings)
-  - K: highest own implied total, +0.7 in a dome (kicker_rankings)"""
+    return Path(__file__).with_name("RESEARCH.md").read_text(encoding="utf-8")
 
 
 @mcp.tool()
@@ -227,8 +202,8 @@ def week_status() -> str:
         out.append(f"data/weekly/latest.json: {d['label']} built {d['generated']} "
                    f"({d.get('games_played_this_week', 0)} games already played, "
                    f"{len(d['skill'])} skill rows, ECR {'yes' if d.get('ecr_available') else 'no'})")
-        if d["week"] != week:
-            out.append("  -> stale week: run refresh_week()")
+        if (d.get("season"), d["week"]) != (season, week):
+            out.append("  -> stale season/week: run refresh_week()")
     else:
         out.append("data/weekly/latest.json missing -> run refresh_week()")
     out.append(f"ESPN league: {'configured' if env.get('ESPN_LEAGUE_ID') else 'ESPN_LEAGUE_ID missing'}; "

@@ -56,12 +56,17 @@ ESPN write, gated: `execute_transaction(token, confirmed=True)` and
 preview tool; `confirmed` is the agent's promise that you said yes.
 Nothing is sent without both.
 
-Reddit (`ff-reddit` server): `search_reddit`, `player_news`,
-`weekly_threads`, then `fetch_thread` + `thread_digest` for a full
-read of a megathread. On game day, `game_threads` + `game_thread_report`
-read the official Sunday morning / afternoon / evening (and TNF / MNF)
-game threads by player, injuries and benchings first, and `live_mentions`
-watches the newest comments for your players without pulling a thread.
+Weekly research follows [RESEARCH.md](RESEARCH.md), also returned by
+`weekly_checklist()`: establish roster decisions, batch up to six players in
+`research_brief`, verify original reports, and optionally read at most two
+selected threads with `read_research_thread`. Discovery is cached and fetches
+no comments. One targeted `search_reddit` or `latest_threads` call can fill a
+specific gap. The tool output reports freshness, limits and missing coverage.
+
+The existing `game_threads`, `game_thread_report` and `live_mentions` tools
+remain for explicitly requested live-game analysis. Draft corpus sweeps are a
+separate workflow. The GitHub workflow above builds weekly data; it does not
+run this personalized research or deliver a report by itself.
 
 ## Projection recipe (advisor.py)
 

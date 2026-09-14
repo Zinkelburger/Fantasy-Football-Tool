@@ -1,0 +1,1844 @@
+{
+  "sources": [
+    {
+      "fetched_at": "2026-09-14T16:52:37.186099+00:00",
+      "endpoint": "https://api.the-odds-api.com/v4/sports",
+      "params": {},
+      "usage": {
+        "x-requests-used": "0",
+        "x-requests-remaining": "500",
+        "x-requests-last": "0"
+      },
+      "file": "2026-09-14T165237Z-sports.json",
+      "sha256": "9f4c059e0c7a31e4acf106201de17d9eb756cb63c688e971a5f29fae8276809c",
+      "events": 84,
+      "weeks": {}
+    },
+    {
+      "fetched_at": "2026-09-14T16:52:37.300362+00:00",
+      "endpoint": "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds",
+      "params": {
+        "regions": "us",
+        "markets": "spreads,totals",
+        "oddsFormat": "american"
+      },
+      "usage": {
+        "x-requests-used": "2",
+        "x-requests-remaining": "498",
+        "x-requests-last": "2"
+      },
+      "file": "2026-09-14T165237Z-nfl-odds.json",
+      "sha256": "1f6e1173a88c19d692c62a56138e3e22d5f16144a74e6161a050f304e5a5e3ee",
+      "events": 17,
+      "weeks": {
+        "1": 1,
+        "2": 16
+      }
+    },
+    {
+      "fetched_at": "2026-09-14T16:53:05.169791+00:00",
+      "endpoint": "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/events",
+      "params": {},
+      "usage": {
+        "x-requests-used": "2",
+        "x-requests-remaining": "498",
+        "x-requests-last": "0"
+      },
+      "file": "2026-09-14T165305Z-nfl-events.json",
+      "sha256": "748de25471cfff809ffe6cb40a9fb70e813074b6b163761252a5809c2a8c9761",
+      "events": 17,
+      "weeks": {
+        "1": 1,
+        "2": 16
+      }
+    },
+    {
+      "fetched_at": "2026-09-14T16:53:05.389920+00:00",
+      "endpoint": "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds",
+      "params": {
+        "regions": "us2,eu,uk,au",
+        "markets": "spreads,totals",
+        "oddsFormat": "american"
+      },
+      "usage": {
+        "x-requests-used": "10",
+        "x-requests-remaining": "490",
+        "x-requests-last": "8"
+      },
+      "file": "2026-09-14T165305Z-nfl-other-regions.json",
+      "sha256": "108cb5120ccddbaff6d6ac406ccc117fa356ac90be1b895972081436ee37bd1f",
+      "events": 17,
+      "weeks": {
+        "1": 1,
+        "2": 16
+      }
+    }
+  ],
+  "games": [
+    {
+      "gameId": "2026_01_DEN_KC",
+      "week": 1,
+      "home": "KC",
+      "away": "DEN",
+      "kickoff": "2026-09-15T00:15:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -2.5,
+          "total": 43.5,
+          "homePoints": 23.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -2.5,
+          "total": 43.5,
+          "homePoints": 23.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -2.0,
+          "total": 43.5,
+          "homePoints": 22.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -2.0,
+          "total": 43.5,
+          "homePoints": 22.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -2.0,
+          "total": 43.5,
+          "homePoints": 22.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -2.0,
+          "total": 43.0,
+          "homePoints": 22.5,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -1.0,
+          "total": 43.5,
+          "homePoints": 22.25,
+          "awayPoints": 21.25,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -2.0,
+          "total": 43.0,
+          "homePoints": 22.5,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -2.0,
+          "total": 43.5,
+          "homePoints": 22.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        }
+      ],
+      "homeOpponentPoints": 20.75,
+      "awayOpponentPoints": 22.75
+    },
+    {
+      "gameId": "2026_02_DET_BUF",
+      "week": 2,
+      "home": "BUF",
+      "away": "DET",
+      "kickoff": "2026-09-18T00:15:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -4.5,
+          "total": 53.5,
+          "homePoints": 29.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -4.5,
+          "total": 53.5,
+          "homePoints": 29.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -4.5,
+          "total": 53.5,
+          "homePoints": 29.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -4.0,
+          "total": 53.5,
+          "homePoints": 28.75,
+          "awayPoints": 24.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -4.5,
+          "total": 53.5,
+          "homePoints": 29.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -4.0,
+          "total": 53.5,
+          "homePoints": 28.75,
+          "awayPoints": 24.75,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -4.0,
+          "total": 53.0,
+          "homePoints": 28.5,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -4.0,
+          "total": 53.5,
+          "homePoints": 28.75,
+          "awayPoints": 24.75,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -4.5,
+          "total": 53.5,
+          "homePoints": 29.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        }
+      ],
+      "homeOpponentPoints": 24.5,
+      "awayOpponentPoints": 29.0
+    },
+    {
+      "gameId": "2026_02_CAR_ATL",
+      "week": 2,
+      "home": "ATL",
+      "away": "CAR",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": 1.5,
+          "total": 44.5,
+          "homePoints": 21.5,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": 0.0,
+          "total": 44.0,
+          "homePoints": 22.0,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": 1.0,
+          "total": 44.0,
+          "homePoints": 21.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": 1.0,
+          "total": 44.0,
+          "homePoints": 21.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": 1.5,
+          "total": 44.5,
+          "homePoints": 21.5,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": 1.0,
+          "total": 44.0,
+          "homePoints": 21.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": 1.5,
+          "total": 44.0,
+          "homePoints": 21.25,
+          "awayPoints": 22.75,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        }
+      ],
+      "homeOpponentPoints": 22.5,
+      "awayOpponentPoints": 21.5
+    },
+    {
+      "gameId": "2026_02_NO_BAL",
+      "week": 2,
+      "home": "BAL",
+      "away": "NO",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -8.5,
+          "total": 47.5,
+          "homePoints": 28.0,
+          "awayPoints": 19.5,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -9.0,
+          "total": 47.0,
+          "homePoints": 28.0,
+          "awayPoints": 19.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -8.5,
+          "total": 47.0,
+          "homePoints": 27.75,
+          "awayPoints": 19.25,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -9.0,
+          "total": 47.0,
+          "homePoints": 28.0,
+          "awayPoints": 19.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -9.0,
+          "total": 47.0,
+          "homePoints": 28.0,
+          "awayPoints": 19.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -8.5,
+          "total": 47.5,
+          "homePoints": 28.0,
+          "awayPoints": 19.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -8.0,
+          "total": 47.5,
+          "homePoints": 27.75,
+          "awayPoints": 19.75,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -8.5,
+          "total": 47.5,
+          "homePoints": 28.0,
+          "awayPoints": 19.5,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -8.0,
+          "total": 47.0,
+          "homePoints": 27.5,
+          "awayPoints": 19.5,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 19.5,
+      "awayOpponentPoints": 28.0
+    },
+    {
+      "gameId": "2026_02_MIN_CHI",
+      "week": 2,
+      "home": "CHI",
+      "away": "MIN",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -6.0,
+          "total": 49.5,
+          "homePoints": 27.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -5.5,
+          "total": 49.5,
+          "homePoints": 27.5,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -5.5,
+          "total": 49.0,
+          "homePoints": 27.25,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        }
+      ],
+      "homeOpponentPoints": 22.0,
+      "awayOpponentPoints": 27.5
+    },
+    {
+      "gameId": "2026_02_CIN_HOU",
+      "week": 2,
+      "home": "HOU",
+      "away": "CIN",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -3.0,
+          "total": 47.0,
+          "homePoints": 25.0,
+          "awayPoints": 22.0,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -3.0,
+          "total": 46.5,
+          "homePoints": 24.75,
+          "awayPoints": 21.75,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 21.75,
+      "awayOpponentPoints": 24.75
+    },
+    {
+      "gameId": "2026_02_CLE_TB",
+      "week": 2,
+      "home": "TB",
+      "away": "CLE",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -8.5,
+          "total": 40.5,
+          "homePoints": 24.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -9.0,
+          "total": 41.0,
+          "homePoints": 25.0,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -8.5,
+          "total": 41.0,
+          "homePoints": 24.75,
+          "awayPoints": 16.25,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -9.0,
+          "total": 41.0,
+          "homePoints": 25.0,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -9.0,
+          "total": 41.0,
+          "homePoints": 25.0,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -7.5,
+          "total": 40.5,
+          "homePoints": 24.0,
+          "awayPoints": 16.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -8.0,
+          "total": 41.0,
+          "homePoints": 24.5,
+          "awayPoints": 16.5,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -8.5,
+          "total": 41.0,
+          "homePoints": 24.75,
+          "awayPoints": 16.25,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -8.0,
+          "total": 41.5,
+          "homePoints": 24.75,
+          "awayPoints": 16.75,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 16.25,
+      "awayOpponentPoints": 24.75
+    },
+    {
+      "gameId": "2026_02_GB_NYJ",
+      "week": 2,
+      "home": "NYJ",
+      "away": "GB",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": 4.5,
+          "total": 44.5,
+          "homePoints": 20.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": 3.5,
+          "total": 45.0,
+          "homePoints": 20.75,
+          "awayPoints": 24.25,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": 3.5,
+          "total": 45.0,
+          "homePoints": 20.75,
+          "awayPoints": 24.25,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": 3.5,
+          "total": 44.5,
+          "homePoints": 20.5,
+          "awayPoints": 24.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": 4.5,
+          "total": 44.5,
+          "homePoints": 20.0,
+          "awayPoints": 24.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": 4.0,
+          "total": 44.5,
+          "homePoints": 20.25,
+          "awayPoints": 24.25,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": 4.0,
+          "total": 44.5,
+          "homePoints": 20.25,
+          "awayPoints": 24.25,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": 3.5,
+          "total": 44.5,
+          "homePoints": 20.5,
+          "awayPoints": 24.0,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 24.25,
+      "awayOpponentPoints": 20.375
+    },
+    {
+      "gameId": "2026_02_PIT_NE",
+      "week": 2,
+      "home": "NE",
+      "away": "PIT",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -5.5,
+          "total": 41.5,
+          "homePoints": 23.5,
+          "awayPoints": 18.0,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -5.0,
+          "total": 41.5,
+          "homePoints": 23.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -5.5,
+          "total": 41.5,
+          "homePoints": 23.5,
+          "awayPoints": 18.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -5.5,
+          "total": 41.5,
+          "homePoints": 23.5,
+          "awayPoints": 18.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -4.5,
+          "total": 42.5,
+          "homePoints": 23.5,
+          "awayPoints": 19.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -5.5,
+          "total": 42.0,
+          "homePoints": 23.75,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -5.0,
+          "total": 41.5,
+          "homePoints": 23.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -5.5,
+          "total": 42.0,
+          "homePoints": 23.75,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 18.25,
+      "awayOpponentPoints": 23.5
+    },
+    {
+      "gameId": "2026_02_PHI_TEN",
+      "week": 2,
+      "home": "TEN",
+      "away": "PHI",
+      "kickoff": "2026-09-20T17:00:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": 7.0,
+          "total": 40.5,
+          "homePoints": 16.75,
+          "awayPoints": 23.75,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": 7.0,
+          "total": 39.0,
+          "homePoints": 16.0,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": 7.0,
+          "total": 39.0,
+          "homePoints": 16.0,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": 7.0,
+          "total": 39.0,
+          "homePoints": 16.0,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": 7.0,
+          "total": 39.5,
+          "homePoints": 16.25,
+          "awayPoints": 23.25,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": 7.0,
+          "total": 39.5,
+          "homePoints": 16.25,
+          "awayPoints": 23.25,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": 7.0,
+          "total": 39.5,
+          "homePoints": 16.25,
+          "awayPoints": 23.25,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": 7.0,
+          "total": 39.5,
+          "homePoints": 16.25,
+          "awayPoints": 23.25,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 23.25,
+      "awayOpponentPoints": 16.25
+    },
+    {
+      "gameId": "2026_02_JAX_DEN",
+      "week": 2,
+      "home": "DEN",
+      "away": "JAX",
+      "kickoff": "2026-09-20T20:05:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -2.5,
+          "total": 44.5,
+          "homePoints": 23.5,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -3.0,
+          "total": 44.5,
+          "homePoints": 23.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -3.0,
+          "total": 44.5,
+          "homePoints": 23.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -3.0,
+          "total": 44.5,
+          "homePoints": 23.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -3.0,
+          "total": 44.5,
+          "homePoints": 23.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -2.5,
+          "total": 44.5,
+          "homePoints": 23.5,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -2.5,
+          "total": 44.5,
+          "homePoints": 23.5,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -3.0,
+          "total": 44.5,
+          "homePoints": 23.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        }
+      ],
+      "homeOpponentPoints": 20.75,
+      "awayOpponentPoints": 23.75
+    },
+    {
+      "gameId": "2026_02_LV_LAC",
+      "week": 2,
+      "home": "LAC",
+      "away": "LV",
+      "kickoff": "2026-09-20T20:05:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:52:03Z",
+          "totalUpdated": "2026-09-14T16:52:03Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -7.0,
+          "total": 43.5,
+          "homePoints": 25.25,
+          "awayPoints": 18.25,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -6.5,
+          "total": 43.5,
+          "homePoints": 25.0,
+          "awayPoints": 18.5,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -7.0,
+          "total": 43.0,
+          "homePoints": 25.0,
+          "awayPoints": 18.0,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 18.25,
+      "awayOpponentPoints": 25.25
+    },
+    {
+      "gameId": "2026_02_SEA_ARI",
+      "week": 2,
+      "home": "ARI",
+      "away": "SEA",
+      "kickoff": "2026-09-20T20:25:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": 4.5,
+          "total": 41.5,
+          "homePoints": 18.5,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": 4.0,
+          "total": 41.0,
+          "homePoints": 18.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": 4.0,
+          "total": 41.0,
+          "homePoints": 18.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": 4.0,
+          "total": 41.0,
+          "homePoints": 18.5,
+          "awayPoints": 22.5,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": 4.5,
+          "total": 41.5,
+          "homePoints": 18.5,
+          "awayPoints": 23.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": 4.5,
+          "total": 41.0,
+          "homePoints": 18.25,
+          "awayPoints": 22.75,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": 4.5,
+          "total": 41.0,
+          "homePoints": 18.25,
+          "awayPoints": 22.75,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": 4.0,
+          "total": 41.5,
+          "homePoints": 18.75,
+          "awayPoints": 22.75,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 22.75,
+      "awayOpponentPoints": 18.5
+    },
+    {
+      "gameId": "2026_02_WAS_DAL",
+      "week": 2,
+      "home": "DAL",
+      "away": "WAS",
+      "kickoff": "2026-09-20T20:25:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -3.5,
+          "total": 50.5,
+          "homePoints": 27.0,
+          "awayPoints": 23.5,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -3.5,
+          "total": 50.5,
+          "homePoints": 27.0,
+          "awayPoints": 23.5,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -3.5,
+          "total": 50.5,
+          "homePoints": 27.0,
+          "awayPoints": 23.5,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -3.0,
+          "total": 50.5,
+          "homePoints": 26.75,
+          "awayPoints": 23.75,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -3.0,
+          "total": 50.5,
+          "homePoints": 26.75,
+          "awayPoints": 23.75,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -3.5,
+          "total": 50.5,
+          "homePoints": 27.0,
+          "awayPoints": 23.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -3.5,
+          "total": 50.0,
+          "homePoints": 26.75,
+          "awayPoints": 23.25,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -3.5,
+          "total": 50.5,
+          "homePoints": 27.0,
+          "awayPoints": 23.5,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        }
+      ],
+      "homeOpponentPoints": 23.5,
+      "awayOpponentPoints": 27.0
+    },
+    {
+      "gameId": "2026_02_MIA_SF",
+      "week": 2,
+      "home": "SF",
+      "away": "MIA",
+      "kickoff": "2026-09-20T20:25:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -13.5,
+          "total": 45.5,
+          "homePoints": 29.5,
+          "awayPoints": 16.0,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -13.0,
+          "total": 45.5,
+          "homePoints": 29.25,
+          "awayPoints": 16.25,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "bovada",
+          "homeSpread": -13.0,
+          "total": 45.5,
+          "homePoints": 29.25,
+          "awayPoints": 16.25,
+          "spreadUpdated": "2026-09-14T16:49:51Z",
+          "totalUpdated": "2026-09-14T16:49:51Z"
+        }
+      ],
+      "homeOpponentPoints": 16.0,
+      "awayOpponentPoints": 29.5
+    },
+    {
+      "gameId": "2026_02_IND_KC",
+      "week": 2,
+      "home": "KC",
+      "away": "IND",
+      "kickoff": "2026-09-21T00:20:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -6.5,
+          "total": 48.5,
+          "homePoints": 27.5,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -6.5,
+          "total": 47.5,
+          "homePoints": 27.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -6.5,
+          "total": 47.5,
+          "homePoints": 27.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -6.5,
+          "total": 47.5,
+          "homePoints": 27.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -6.5,
+          "total": 47.5,
+          "homePoints": 27.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -6.5,
+          "total": 47.5,
+          "homePoints": 27.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        }
+      ],
+      "homeOpponentPoints": 20.5,
+      "awayOpponentPoints": 27.0
+    },
+    {
+      "gameId": "2026_02_NYG_LA",
+      "week": 2,
+      "home": "LA",
+      "away": "NYG",
+      "kickoff": "2026-09-22T00:15:00Z",
+      "fetchedAt": "2026-09-14T16:52:37.300362+00:00",
+      "books": [
+        {
+          "book": "draftkings",
+          "homeSpread": -7.0,
+          "total": 48.5,
+          "homePoints": 27.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "betus",
+          "homeSpread": -7.0,
+          "total": 48.5,
+          "homePoints": 27.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:51:35Z",
+          "totalUpdated": "2026-09-14T16:51:35Z"
+        },
+        {
+          "book": "betonlineag",
+          "homeSpread": -7.0,
+          "total": 49.0,
+          "homePoints": 28.0,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:52:02Z",
+          "totalUpdated": "2026-09-14T16:52:02Z"
+        },
+        {
+          "book": "lowvig",
+          "homeSpread": -7.0,
+          "total": 49.0,
+          "homePoints": 28.0,
+          "awayPoints": 21.0,
+          "spreadUpdated": "2026-09-14T16:51:37Z",
+          "totalUpdated": "2026-09-14T16:51:37Z"
+        },
+        {
+          "book": "fanduel",
+          "homeSpread": -7.5,
+          "total": 48.5,
+          "homePoints": 28.0,
+          "awayPoints": 20.5,
+          "spreadUpdated": "2026-09-14T16:51:38Z",
+          "totalUpdated": "2026-09-14T16:51:38Z"
+        },
+        {
+          "book": "betrivers",
+          "homeSpread": -7.0,
+          "total": 48.5,
+          "homePoints": 27.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:05Z",
+          "totalUpdated": "2026-09-14T16:52:05Z"
+        },
+        {
+          "book": "betmgm",
+          "homeSpread": -7.0,
+          "total": 48.5,
+          "homePoints": 27.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:52:04Z",
+          "totalUpdated": "2026-09-14T16:52:04Z"
+        },
+        {
+          "book": "mybookieag",
+          "homeSpread": -7.0,
+          "total": 48.5,
+          "homePoints": 27.75,
+          "awayPoints": 20.75,
+          "spreadUpdated": "2026-09-14T16:50:49Z",
+          "totalUpdated": "2026-09-14T16:50:49Z"
+        }
+      ],
+      "homeOpponentPoints": 20.75,
+      "awayOpponentPoints": 27.75
+    }
+  ],
+  "defenses": [
+    {
+      "team": "KC",
+      "opponent": "DEN",
+      "week": 1,
+      "gameId": "2026_01_DEN_KC",
+      "opponentPoints": 20.75,
+      "books": 9,
+      "rank": 1
+    },
+    {
+      "team": "DEN",
+      "opponent": "KC",
+      "week": 1,
+      "gameId": "2026_01_DEN_KC",
+      "opponentPoints": 22.75,
+      "books": 9,
+      "rank": 2
+    },
+    {
+      "team": "SF",
+      "opponent": "MIA",
+      "week": 2,
+      "gameId": "2026_02_MIA_SF",
+      "opponentPoints": 16.0,
+      "books": 8,
+      "rank": 1
+    },
+    {
+      "team": "PHI",
+      "opponent": "TEN",
+      "week": 2,
+      "gameId": "2026_02_PHI_TEN",
+      "opponentPoints": 16.25,
+      "books": 8,
+      "rank": 2
+    },
+    {
+      "team": "TB",
+      "opponent": "CLE",
+      "week": 2,
+      "gameId": "2026_02_CLE_TB",
+      "opponentPoints": 16.25,
+      "books": 9,
+      "rank": 2
+    },
+    {
+      "team": "LAC",
+      "opponent": "LV",
+      "week": 2,
+      "gameId": "2026_02_LV_LAC",
+      "opponentPoints": 18.25,
+      "books": 9,
+      "rank": 4
+    },
+    {
+      "team": "NE",
+      "opponent": "PIT",
+      "week": 2,
+      "gameId": "2026_02_PIT_NE",
+      "opponentPoints": 18.25,
+      "books": 8,
+      "rank": 4
+    },
+    {
+      "team": "SEA",
+      "opponent": "ARI",
+      "week": 2,
+      "gameId": "2026_02_SEA_ARI",
+      "opponentPoints": 18.5,
+      "books": 8,
+      "rank": 6
+    },
+    {
+      "team": "BAL",
+      "opponent": "NO",
+      "week": 2,
+      "gameId": "2026_02_NO_BAL",
+      "opponentPoints": 19.5,
+      "books": 9,
+      "rank": 7
+    },
+    {
+      "team": "GB",
+      "opponent": "NYJ",
+      "week": 2,
+      "gameId": "2026_02_GB_NYJ",
+      "opponentPoints": 20.375,
+      "books": 8,
+      "rank": 8
+    },
+    {
+      "team": "KC",
+      "opponent": "IND",
+      "week": 2,
+      "gameId": "2026_02_IND_KC",
+      "opponentPoints": 20.5,
+      "books": 6,
+      "rank": 9
+    },
+    {
+      "team": "DEN",
+      "opponent": "JAX",
+      "week": 2,
+      "gameId": "2026_02_JAX_DEN",
+      "opponentPoints": 20.75,
+      "books": 8,
+      "rank": 10
+    },
+    {
+      "team": "LA",
+      "opponent": "NYG",
+      "week": 2,
+      "gameId": "2026_02_NYG_LA",
+      "opponentPoints": 20.75,
+      "books": 8,
+      "rank": 10
+    },
+    {
+      "team": "CAR",
+      "opponent": "ATL",
+      "week": 2,
+      "gameId": "2026_02_CAR_ATL",
+      "opponentPoints": 21.5,
+      "books": 7,
+      "rank": 12
+    },
+    {
+      "team": "HOU",
+      "opponent": "CIN",
+      "week": 2,
+      "gameId": "2026_02_CIN_HOU",
+      "opponentPoints": 21.75,
+      "books": 9,
+      "rank": 13
+    },
+    {
+      "team": "CHI",
+      "opponent": "MIN",
+      "week": 2,
+      "gameId": "2026_02_MIN_CHI",
+      "opponentPoints": 22.0,
+      "books": 8,
+      "rank": 14
+    },
+    {
+      "team": "ATL",
+      "opponent": "CAR",
+      "week": 2,
+      "gameId": "2026_02_CAR_ATL",
+      "opponentPoints": 22.5,
+      "books": 7,
+      "rank": 15
+    },
+    {
+      "team": "ARI",
+      "opponent": "SEA",
+      "week": 2,
+      "gameId": "2026_02_SEA_ARI",
+      "opponentPoints": 22.75,
+      "books": 8,
+      "rank": 16
+    },
+    {
+      "team": "TEN",
+      "opponent": "PHI",
+      "week": 2,
+      "gameId": "2026_02_PHI_TEN",
+      "opponentPoints": 23.25,
+      "books": 8,
+      "rank": 17
+    },
+    {
+      "team": "DAL",
+      "opponent": "WAS",
+      "week": 2,
+      "gameId": "2026_02_WAS_DAL",
+      "opponentPoints": 23.5,
+      "books": 8,
+      "rank": 18
+    },
+    {
+      "team": "PIT",
+      "opponent": "NE",
+      "week": 2,
+      "gameId": "2026_02_PIT_NE",
+      "opponentPoints": 23.5,
+      "books": 8,
+      "rank": 18
+    },
+    {
+      "team": "JAX",
+      "opponent": "DEN",
+      "week": 2,
+      "gameId": "2026_02_JAX_DEN",
+      "opponentPoints": 23.75,
+      "books": 8,
+      "rank": 20
+    },
+    {
+      "team": "NYJ",
+      "opponent": "GB",
+      "week": 2,
+      "gameId": "2026_02_GB_NYJ",
+      "opponentPoints": 24.25,
+      "books": 8,
+      "rank": 21
+    },
+    {
+      "team": "BUF",
+      "opponent": "DET",
+      "week": 2,
+      "gameId": "2026_02_DET_BUF",
+      "opponentPoints": 24.5,
+      "books": 9,
+      "rank": 22
+    },
+    {
+      "team": "CIN",
+      "opponent": "HOU",
+      "week": 2,
+      "gameId": "2026_02_CIN_HOU",
+      "opponentPoints": 24.75,
+      "books": 9,
+      "rank": 23
+    },
+    {
+      "team": "CLE",
+      "opponent": "TB",
+      "week": 2,
+      "gameId": "2026_02_CLE_TB",
+      "opponentPoints": 24.75,
+      "books": 9,
+      "rank": 23
+    },
+    {
+      "team": "LV",
+      "opponent": "LAC",
+      "week": 2,
+      "gameId": "2026_02_LV_LAC",
+      "opponentPoints": 25.25,
+      "books": 9,
+      "rank": 25
+    },
+    {
+      "team": "IND",
+      "opponent": "KC",
+      "week": 2,
+      "gameId": "2026_02_IND_KC",
+      "opponentPoints": 27.0,
+      "books": 6,
+      "rank": 26
+    },
+    {
+      "team": "WAS",
+      "opponent": "DAL",
+      "week": 2,
+      "gameId": "2026_02_WAS_DAL",
+      "opponentPoints": 27.0,
+      "books": 8,
+      "rank": 26
+    },
+    {
+      "team": "MIN",
+      "opponent": "CHI",
+      "week": 2,
+      "gameId": "2026_02_MIN_CHI",
+      "opponentPoints": 27.5,
+      "books": 8,
+      "rank": 28
+    },
+    {
+      "team": "NYG",
+      "opponent": "LA",
+      "week": 2,
+      "gameId": "2026_02_NYG_LA",
+      "opponentPoints": 27.75,
+      "books": 8,
+      "rank": 29
+    },
+    {
+      "team": "NO",
+      "opponent": "BAL",
+      "week": 2,
+      "gameId": "2026_02_NO_BAL",
+      "opponentPoints": 28.0,
+      "books": 9,
+      "rank": 30
+    },
+    {
+      "team": "DET",
+      "opponent": "BUF",
+      "week": 2,
+      "gameId": "2026_02_DET_BUF",
+      "opponentPoints": 29.0,
+      "books": 9,
+      "rank": 31
+    },
+    {
+      "team": "MIA",
+      "opponent": "SF",
+      "week": 2,
+      "gameId": "2026_02_MIA_SF",
+      "opponentPoints": 29.5,
+      "books": 8,
+      "rank": 32
+    }
+  ],
+  "method": "Median of same-book opponent implied points; sportsbook spread sign. Equal totals share rank. US region only for ranking; other regions audited for coverage.",
+  "limitation": "Market-implied NFL points are neither exact expected scores nor D/ST fantasy projections. Coverage is observed at retrieval, not a future availability guarantee."
+}

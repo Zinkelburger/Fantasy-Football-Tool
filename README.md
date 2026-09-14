@@ -33,7 +33,7 @@ Inside `engine/`:
 | path | what it is |
 |---|---|
 | `engine/league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
-| `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes; in-season `search_reddit` / `player_news` / `weekly_threads` / `game_threads` + `game_thread_report` MCP tools |
+| `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes; in-season `research_brief` / `read_research_thread` for bounded weekly research; separate live-game tools |
 | `engine/weekly/` | the in-season engine: opportunity scores (finding 39), lines, injuries, and the `ff-weekly` MCP server for start/sit, waivers and ESPN roster moves (see its README) |
 | `engine/update_ranks.py` | refreshes all scoring-format boards from FFC plus ESPN/Sleeper comparisons (twice weekly via GitHub Actions) |
 | `engine/fetch_juicebox.py` | pulls the JuiceBoxOne ranking sheets into `data/juicebox/<year>/` |
@@ -46,6 +46,14 @@ Cloudflare Pages project sets `python3 build_deploy.py` as its build
 command and `public` as its output directory, and those settings live in
 the Pages dashboard rather than in this repo. Moving either one breaks
 the deploy.
+
+## Weekly research
+
+Start with `ff-weekly.weekly_checklist()`, which returns the
+[weekly decision runbook](engine/weekly/RESEARCH.md). It connects current roster
+decisions to focused, cached Reddit discovery and verified original reporting.
+The scheduled GitHub build refreshes weekly data; personalized research and
+report delivery require an agent run.
 
 ## Generating notes
 

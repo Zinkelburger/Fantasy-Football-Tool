@@ -1,0 +1,33 @@
+---
+description: Defense picks, weekly website updates, source snapshots, and accuracy reports
+alwaysApply: true
+---
+
+For defense picks or updates to andrewbernal.com:
+- Use the existing sibling Andrew-Bernal-Website Astro/Cloudflare project and
+  follow Fantasy-Football-Tool/docs/DEFENSE-PUBLISHING.md. Resolve minor domain
+  typos from this context; do not create another website or change hosting.
+- An explicit publish/upload request authorizes the normal tested Git deployment.
+  Complete it and verify live pages; do not stop at a plan or local files.
+- Use the requested season/week explicitly. An update is a bounded publication
+  task, not a request to invent a model, run broad research, install plugins,
+  create recurring jobs, or change the user's fantasy roster.
+- Rank by opponent implied total, ascending (finding 27). Never use ESPN fantasy
+  projections or nfelo model spreads as bookmaker lines. Exact ties share rank;
+  alphabetical order is display only. Small gaps are weak preferences.
+- Reuse a saved US Odds API snapshot under 24 hours old, or fetch one explicitly
+  with the existing market tool (2 credits). Pair spread/total within each book,
+  then median opponent points. Keep source time, bookmaker inputs and quota.
+  Do not query per defense or per page view; do not print/publish the API key.
+- Verify full requested-week coverage and pregame status. Missing future lines
+  remain pending, never guessed or labeled as byes. Do not claim a two-week hold
+  without both weeks' inputs. Keep personal availability advice off public pages.
+- Preserve published editions byte-for-byte. Publish revisions at a new dated
+  edition URL; retain original week routes and link the current edition correctly.
+- Grade Week 1 from its September 6 original, not a later snapshot. Include all
+  picks and misses, custom scoring, pending games, zero/negative points, and the
+  denominator. Correlation is not percent accuracy; one week is not validation.
+- Use concise public prose: current picks, source/date, calculation, limitations,
+  and links to methodology/accuracy. Avoid internal implementation commentary.
+- Run relevant tests/build, inspect desktop/mobile pages, deploy reviewed files
+  only, and verify the live edition/data and accuracy URLs before saying live.

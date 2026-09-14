@@ -10,6 +10,66 @@ The intermediate scraped text (`raw_data/`, `filtered_data/`, `ff-hound/`,
 comments can't be republished, and this repo is public. Only the generated
 summaries get committed.
 
+## Weekly research: start here
+
+For weekly waivers and lineup decisions, follow
+[the weekly runbook](../weekly/RESEARCH.md), exposed by `weekly_checklist()`.
+The draft pipeline below is for building a season-wide corpus.
+
+1. Identify unresolved decisions from the current roster and weekly data.
+2. `research_brief(players=["Full Name", ...], focus="weekly", days=3)` batches
+   up to six players into one title/body search of fantasyfootball + nfl, with
+   **zero comment fetches**. It returns at most six threads by default, filtered
+   for player matches and injury/usage/transaction language, with reasons,
+   dates, source links and missing coverage. Upvotes do not affect selection.
+3. Verify the original reports. If needed, make one targeted follow-up search
+   in the current team subreddit and read at most two selected threads with
+   `read_research_thread(id, max_comments=5)`.
+4. Stop and report the decision, evidence and uncertainty. Missing results or
+   errors are evidence gaps, never proof there was no news.
+
+`search_reddit`, `latest_threads` and `player_news` use the same cache/budget.
+They fetch **no comments by default**. For backward compatibility, explicit
+`comments_per_thread` reads a sample from at most two results. New callers
+should select threads before reading comments. `latest_threads` now scans at
+most **100 posts total across selected sources**, instead of 1,000 per source;
+it explicitly reports limited coverage. Sources beyond the main fantasy/news
+rooms are opt-in. Broad groups exceeding eight sources are rejected for these
+research tools; the separate corpus tools still accept them.
+
+`research.py` implements the retrieval and relevance policy without MCP or
+credentials. SQLite stores a shared rolling budget, cache and reservations in
+ignored `corpus/research.sqlite3`. Discovery expires after 15 minutes; thread
+samples after 5. Expired rows are pruned on access and never served as current.
+Failed retrievals are briefly cached (60 seconds) as errors to prevent retries.
+Concurrent identical requests share a reservation instead of duplicating work.
+
+The server enforces **24 retrieval operations per rolling hour**, including a
+maximum of **8 thread reads**, across these research tools. Cache hits cost no
+retrieval operations. These are application-level operations, not exact HTTP
+counts: PRAW handles auth, pagination and retries. Each discovery requests at
+most 100 candidates; each detail requests at most 25 initial comments and
+expands none. The one-batch/one-follow-up/two-detail per-pass limits are agent
+workflow instructions; the hourly ceiling is enforced in code. Corpus and
+live-game tools have their own behavior and must not be used to bypass it.
+
+Shortlist scores are transparent heuristics, not fact verification. Same-link
+reposts/crossposts are deduplicated where identifiable; different publishers
+can still repeat one source. Bounded search can miss news, and the preseason
+name pool can miss rookies or transfers. Unknown full names are supported;
+current roster team assignments should override the pool for team searches.
+
+Tests (offline, no Reddit credentials or LLM calls):
+
+```bash
+.venv-reddit-scraper/bin/python -m unittest discover -s engine/reddit-scraper -p test_research.py
+```
+
+Implementation references: [PRAW comment extraction](https://praw.readthedocs.io/en/stable/tutorials/comments.html)
+(`replace_more(limit=0)` removes expansion placeholders; reading `.comments`
+still fetches the initial response), and [MCP tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)
+(clear tool contracts and structured output).
+
 ## Pipeline
 
 ```
@@ -335,7 +395,35 @@ Registered in `.mcp.json` at the repo root. Tools:
 | `write_note` | save a finished markdown note; `publish=True` also writes `data/notes/` |
 | `next_threads` | claim the next undistilled threads, best first, leased so a fleet does not collide |
 | `report_non_player` | register a coach / reporter / retired player so the resolver stops mapping him onto a real one |
-| `sweep_many` | sweep several subreddits in one call |
+| `sweep_many` | sweep several subreddits in one call; takes team codes and the groups `fantasy` / `news` / `teams` / `all` |
+| `research_brief` | recommended weekly entry point: batched player shortlist, no comments, structured coverage and evidence links |
+| `read_research_thread` | bounded cached read of a selected thread; no reply expansion |
+| `search_reddit` | cached targeted title/body discovery; comments opt-in, at most two threads |
+| `latest_threads` | cached newest 100 posts across selected subs; optional player filter, explicitly partial coverage |
+| `player_news` | cached one-player discovery across fantasyfootball, nfl and a team subreddit; no automatic comments |
+| `reddit_sources` | the catalogue in `sources.py`: what each subreddit is good for, all 32 team subs, the shorthands |
+| `weekly_threads` | r/fantasyfootball's official weekly megathreads |
+| `game_threads` | the official game threads (SUN-AM / SUN-PM / SNF / MNF / TNF) with ids; works without credentials via the public feed |
+| `game_thread_report` | one game thread read by player: injury / benching status flags first, then mentions and top comments |
+| `live_mentions` | the subreddit's newest ~1000 comments filtered to your players, no thread pull |
+
+### Where to look (`sources.py`)
+
+Every tool that takes a `subreddits` argument goes through `sources.expand()`,
+so an agent can say `MIA`, `dolphins`, `r/miamidolphins` or the pool's `JAC`
+and nflverse's `JAX` and reach the same place. Group keywords: `fantasy` (the
+four rooms), `news` (r/nfl, r/NFL_Draft), `teams` (all 32), `all`. Unknown
+names pass through untouched. `player_news` looks the team up from the pool
+so nothing has to be passed at all. `python sources.py --check` re-verifies
+every name against the live API; `reddit_sources()` prints the catalogue.
+
+Which rooms say what, measured on the September 2026 sweeps: r/fantasyfootball
+is the sample; r/fantasyfootballadvice and r/Fantasy_Football are one
+manager's question with the answers in the comments (search them, do not sweep
+them without `require_relevance`); r/DynastyFF argues about roles and
+contracts; the team subreddit has the practice report and the coach quote a
+day before the fantasy rooms repeat it; r/nfl has every transaction as a post
+with the beat report in the title.
 
 ### Thread-first is the path to prefer (`thread_digest`)
 

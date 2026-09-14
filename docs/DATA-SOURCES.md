@@ -100,6 +100,11 @@ suspect during August; re-fetch the morning of a draft.
 - **Last swept: 2026-09-04** — 1,392 posts, 116,219 comments. r/fantasyfootball
   plus DynastyFF, fantasyfootballadvice, Fantasy_Football, and 20 team subreddits
   (team subs use `require_relevance`, which skipped ~120 off-topic posts each).
+- **Catalogue:** `engine/reddit-scraper/sources.py` lists every subreddit the
+  tools know (four fantasy rooms, r/nfl, r/NFL_Draft, all 32 team subs) and
+  the shorthands: team codes, nicknames, and the groups `fantasy` / `news` /
+  `teams` / `all`. `reddit_sources()` on the MCP server prints it. Names were
+  verified against the live API 2026-09-14.
 
 ## 5. nflverse / Odds API (engine/league-sim only)
 
@@ -245,7 +250,7 @@ validated against 2026 outcomes yet — that is what the accuracy harness in
 | ESPN league: rosters, free agents, projections, matchups | `lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/<y>/segments/0/leagues/<id>` | `espn_s2` + `SWID` cookies (private league) | on each tool call |
 | ESPN league writes: lineup, add/drop, waiver claims | `lm-api-writes.fantasy.espn.com/.../transactions/` | cookies; gated behind a previewed token + user confirmation | only when asked |
 | FantasyPros ECR (weekly) | `https://api.fantasypros.com/public/v2/json/nfl/<y>/consensus-rankings` | `FANTASYPROS_API_KEY` (optional) | every build when keyed |
-| Reddit (search, megathreads) | Reddit API via PRAW | `CLIENT_ID`/`CLIENT_SECRET` in engine/reddit-scraper/.env | on each tool call |
+| Reddit weekly research | Reddit API via PRAW; `research_brief` then selected `read_research_thread` | `CLIENT_ID`/`CLIENT_SECRET` in engine/reddit-scraper/.env | discovery cached 15 min; detail 5 min; shared hourly retrieval limits; [runbook](../engine/weekly/RESEARCH.md) |
 
 Not used: ffverse `ep_weekly_<season>` (no 2026 file as of 2026-09-10; our
 own model in finding 39 agrees with it at r = .95–.98 on 2025).

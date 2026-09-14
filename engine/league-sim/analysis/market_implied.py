@@ -1,6 +1,11 @@
 """Market-implied projections from The Odds API (free tier, key in .env).
 
-Two tools:
+Commands:
+
+  market_implied.py snapshot
+      Save a dated, credential-free NFL spreads/totals response in the
+      weekly cache (2 credits, US region). Coverage depends on posted
+      markets; this does not guarantee a full-season set of lines.
 
   market_implied.py season [snapshot.json]
       The full 2026 schedule already has spreads/totals/h2h from ~9
@@ -31,6 +36,9 @@ import json
 import os
 import sys
 import urllib.request
+import urllib.parse
+import urllib.error
+from datetime import datetime, timezone
 from pathlib import Path
 from statistics import median
 
@@ -46,19 +54,45 @@ PROP_MARKETS = ("player_pass_yds,player_pass_tds,player_rush_yds,"
 
 
 def api_key():
-    for line in (ROOT / ".env").read_text().splitlines():
-        if line.startswith("ODDS_API_KEY="):
-            return line.split("=", 1)[1].strip()
-    raise SystemExit("ODDS_API_KEY not in .env")
+    key = os.environ.get("ODDS_API_KEY")
+    if key:
+        return key
+    # Same precedence as the weekly engine, without printing secrets.
+    for path in (ROOT.parent / "weekly" / ".env", ROOT / ".env"):
+        if not path.exists():
+            continue
+        for line in path.read_text().splitlines():
+            k, sep, value = line.strip().partition("=")
+            if sep and k.strip() == "ODDS_API_KEY":
+                value = value.strip().strip('"').strip("'")
+                if value:
+                    return value
+    raise SystemExit("Set ODDS_API_KEY in environment or an ignored engine .env")
 
 
-def get(path, **params):
-    params["apiKey"] = api_key()
-    q = "&".join(f"{k}={v}" for k, v in params.items())
-    with urllib.request.urlopen(f"{BASE}/{path}?{q}") as r:
-        remaining = r.headers.get("x-requests-remaining")
-        print(f"  [credits remaining: {remaining}]", file=sys.stderr)
-        return json.load(r)
+def get(path, *, save_snapshot=False, **params):
+    q = urllib.parse.urlencode(dict(params, apiKey=api_key()))
+    try:
+        with urllib.request.urlopen(f"{BASE}/{path}?{q}", timeout=30) as r:
+            data = json.load(r)
+            usage = {k: r.headers.get(k) for k in
+                     ("x-requests-remaining", "x-requests-used", "x-requests-last")}
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f"Odds API HTTP {e.code}; request URL withheld") from None
+    except Exception as e:
+        raise SystemExit(f"Odds API failed ({type(e).__name__}); request URL withheld") from None
+    print(f"  [credits remaining: {usage['x-requests-remaining']}; "
+          f"request cost: {usage['x-requests-last']}]", file=sys.stderr)
+    if save_snapshot:
+        now = datetime.now(timezone.utc)
+        cache = ROOT.parent / "weekly" / "cache" / "odds-api-audit"
+        cache.mkdir(parents=True, exist_ok=True)
+        dest = cache / f"{now:%Y-%m-%dT%H%M%S%fZ}-nfl-odds.json"
+        with dest.open("x") as f:
+            json.dump(dict(fetched_at=now.isoformat(), endpoint=f"{BASE}/{path}",
+                           params=params, usage=usage, data=data), f, indent=2)
+        print(f"Snapshot: {dest}")
+    return data
 
 
 def devig(p_a, p_b):
@@ -72,6 +106,8 @@ def american_prob(o):
 def season(snapshot=None):
     if snapshot:
         events = json.load(open(snapshot))
+        if isinstance(events, dict):
+            events = events["data"]
     else:
         events = get(f"sports/{SPORT}/odds", regions="us",
                      markets="h2h,spreads,totals", oddsFormat="american")
@@ -175,3 +211,11 @@ if __name__ == "__main__":
         season(sys.argv[2] if len(sys.argv) > 2 else None)
     elif mode == "props":
         props()
+    elif mode == "snapshot":
+        events = get(f"sports/{SPORT}/odds", save_snapshot=True,
+                     regions="us", markets="spreads,totals", oddsFormat="american")
+        dates = sorted(e["commence_time"] for e in events)
+        print(f"{len(events)} events; " +
+              (f"{dates[0]} through {dates[-1]}" if dates else "no posted lines"))
+    else:
+        raise SystemExit("Usage: market_implied.py season [snapshot.json] | props | snapshot")

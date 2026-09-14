@@ -77,22 +77,22 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 1,IND,00-0037292,Andrew Ogletree,TE,,,Full Participation in Practice,Neck
 1,IND,00-0037664,Alec Pierce,WR,,,Limited Participation in Practice,Heel
 1,IND,00-0039164,Anthony Richardson,QB,,,Full Participation in Practice,Illness
-1,IND,00-0039178,Austin Ajiake,LB,Questionable,Hamstring,Did Not Participate In Practice,Hamstring
+1,IND,00-0039178,Austin Ajiake,LB,Out,Hamstring,Did Not Participate In Practice,Hamstring
 1,IND,00-0039876,Sedrick Van Pran-Granger,C,,,Full Participation in Practice,Illness
 1,IND,00-0041043,A.J. Haulcy,S,,,Full Participation in Practice,Ankle
 1,JAX,00-0034960,Jakobi Meyers,WR,,,Limited Participation in Practice,Thumb
 1,JAX,00-0036655,Cole Van Lanen,T,,,Limited Participation in Practice,Knee
 1,JAX,00-0038934,Anton Harrison,T,,,Did Not Participate In Practice,Foot
 1,JAX,00-0040238,LeQuint Allen Jr.,RB,Questionable,Hip,Limited Participation in Practice,Hip
-1,KC,00-0032762,Chris Jones,DT,,,Limited Participation in Practice,Calf
+1,KC,00-0032762,Chris Jones,DT,,,Did Not Participate In Practice,Calf
 1,KC,00-0033873,Patrick Mahomes,QB,,,Full Participation in Practice,Knee
-1,KC,00-0036374,L'Jarius Sneed,CB,,,Full Participation in Practice,Knee
+1,KC,00-0036374,L'Jarius Sneed,CB,,,Limited Participation in Practice,Knee
 1,KC,00-0036660,Trey Smith,G,,,Full Participation in Practice,Hip
 1,KC,00-0037208,Jack Cochrane,LB,,,Full Participation in Practice,Knee
-1,KC,00-0038982,Chamarri Conner,S,,,Did Not Participate In Practice,Knee
+1,KC,00-0038982,Chamarri Conner,S,Out,Knee,Did Not Participate In Practice,Knee
 1,KC,00-0039067,Rashee Rice,WR,,,Full Participation in Practice,Knee
 1,KC,00-0039894,Xavier Worthy,WR,,,Full Participation in Practice,Shoulder
-1,KC,00-0040116,Josh Simmons,T,,,Did Not Participate In Practice,Back
+1,KC,00-0040116,Josh Simmons,T,Out,Back,Did Not Participate In Practice,Back
 1,KC,00-0040640,Ashton Gillotte,DE,,,Full Participation in Practice,Foot
 1,KC,00-0041501,R Mason Thomas,DE,,,Full Participation in Practice,Hamstring
 1,LA,00-0031388,Aaron Donald,DE,Out,Not injury related - resting player,Did Not Participate In Practice,Not injury related - resting player
@@ -141,7 +141,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 1,NYJ,00-0041032,Kenyon Sadiq,TE,,,Full Participation in Practice,Groin
 1,NYJ,00-0041038,D'Angelo Ponds,CB,Doubtful,Calf,Limited Participation in Practice,Calf
 1,PHI,00-0036224,Jonathan Greenard,LB,Out,Pectoral,Limited Participation in Practice,Pectoral
-1,PHI,00-0041483,Eli Stowers,TE,Questionable,Hamstring,Limited Participation in Practice,Hamstring
+1,PHI,00-0041483,Eli Stowers,TE,Out,Hamstring,Limited Participation in Practice,Hamstring
 1,PIT,00-0039167,Joey Porter Jr.,CB,Questionable,Back,Limited Participation in Practice,Back
 1,SEA,00-0036363,Josh Jones,T,,,Limited Participation in Practice,Knee
 1,SEA,00-0038765,Ty Okada,S,Out,Hamstring,Did Not Participate In Practice,Hamstring
