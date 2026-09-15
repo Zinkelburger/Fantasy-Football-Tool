@@ -204,6 +204,19 @@ class League:
                         "opp_projected": sides.get(opp, {}).get("totalProjectedPointsLive")}
         return None
 
+    def scoreboard(self, matchup_period: int) -> list[dict]:
+        """Every matchup of one matchup period: both team ids and points."""
+        d = self.get(["mMatchupScore"], f"&scoringPeriodId={matchup_period}")
+        out = []
+        for m in d.get("schedule", []):
+            if m.get("matchupPeriodId") != matchup_period or "home" not in m:
+                continue
+            home, away = m["home"], m.get("away") or {}
+            out.append({"home_id": home["teamId"], "home_pts": home.get("totalPoints", 0.0),
+                        "away_id": away.get("teamId"), "away_pts": away.get("totalPoints", 0.0),
+                        "winner": m.get("winner")})
+        return out
+
     def free_agents(self, week: int, positions: list[str] | None = None,
                     limit: int = 300) -> list[dict]:
         pos_ids = [k for k, v in ESPN_POSITIONS.items() if not positions or v in positions]
