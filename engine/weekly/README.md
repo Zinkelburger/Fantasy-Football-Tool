@@ -26,6 +26,7 @@ Interpreter: `.venv-league-sim/bin/python` or `engine/league-sim/.venv/bin/pytho
 | `build_week.py` | `data/weekly/latest.json`, `week_<season>_wkNN.json` | The bundle `site/build_site.py` turns into the weekly page. |
 | `advisor.py` | – | Pure functions: projection blend, exact lineup optimiser, positional needs, drop candidates, add/drop proposals. |
 | `espn_league.py` | – | ESPN read (settings, rosters, free agents, matchup, projections) and write (lineup, add/drop, waiver claim). |
+| `power_rankings.py` | – | Every league roster scored the same way: best lineup by season value, that lineup's opportunity score (usage EP, no ESPN input), RB/WR/TE bench depth, backup QB, this week's optimal projection, record and points for. Backup QBs are kept out of bench depth on purpose — only one QB starts and QB scoring is on its own scale — and shown in their own column. `python power_rankings.py [--week N] [--starters] [--json]`; also the `power_rankings` MCP tool. |
 
 `.github/workflows/weekly.yml` runs `build_week.py` Tuesday 10:00 UTC
 and Saturday 12:00 UTC and commits `data/weekly/`; Cloudflare Pages
@@ -49,7 +50,7 @@ Public, from `data/weekly/`: `weekly_checklist`, `week_status`,
 
 Your league (ESPN read): `league_settings`, `my_roster`,
 `lineup_recommendation`, `free_agents`, `waiver_recommendations`,
-`propose_transaction`.
+`propose_transaction`, `power_rankings`.
 
 ESPN write, gated: `execute_transaction(token, confirmed=True)` and
 `apply_lineup(token, confirmed=True)`. The token comes from the

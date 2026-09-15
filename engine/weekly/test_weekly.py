@@ -162,3 +162,54 @@ class Bundle(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PowerRankings(unittest.TestCase):
+    def test_rank_by_value_lineup_ignores_ir_and_locks(self):
+        import power_rankings as pr
+        strong = [P(1, "QB1", "QB", 20, slot=0), P(2, "RB1", "RB", 15, slot=2), P(3, "RB2", "RB", 12, slot=2),
+                  P(4, "WR1", "WR", 14, slot=4), P(5, "WR2", "WR", 10, slot=4), P(6, "FLX", "WR", 9, slot=3),
+                  P(7, "TE1", "TE", 8, slot=6), P(8, "K", "K", 8, slot=17), P(9, "D", "DST", 6, slot=16),
+                  P(10, "RB3", "RB", 7), P(11, "WR4", "WR", 6),
+                  P(14, "QB2", "QB", 16),                                    # backup QB: never bench depth
+                  P(12, "IR", "RB", 30, slot=21, injury="INJURY_RESERVE"),   # on IR: not strength
+                  P(13, "OUT", "WR", 25, injury="INJURY_RESERVE")]           # IR status on bench: same
+        weak = [P(21, "QB", "QB", 14, slot=0, locked=True), P(22, "RB", "RB", 9, slot=2),
+                P(23, "RB", "RB", 5, slot=2), P(24, "WR", "WR", 7, slot=4), P(25, "WR", "WR", 5, slot=4),
+                P(26, "TE", "TE", 4, slot=6), P(27, "K", "K", 7, slot=17), P(28, "D", "DST", 5, slot=16)]
+        # this-week proj differs from value on the strong team's QB (bye)
+        strong[0]["proj"] = 0.0
+        rows = pr.rank_teams({1: strong, 2: weak}, SLOTS, [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}],
+                             {1: {"wins": 0, "losses": 1, "pf": 80.0}, 2: {"wins": 1, "losses": 0, "pf": 95.0}},
+                             my_team_id=2)
+        self.assertEqual([r["name"] for r in rows], ["A", "B"])
+        a, b = rows
+        self.assertEqual(a["strength"], 20 + 15 + 12 + 14 + 10 + 9 + 8 + 8 + 6)
+        self.assertEqual(a["bench"], 7 + 6)        # IR players and the 16-point backup QB never count
+        self.assertEqual(a["backup_qb"], 16)       # reported on its own instead
+        self.assertIsNone(b["backup_qb"])
+        # QB1 is on bye this week, so the 16-point backup QB starts in his place:
+        # excluded from "bench depth", still used by the week's optimiser.
+        self.assertEqual(a["week_proj"], a["strength"] - 20 + 16)
+        self.assertEqual(a["rank"], 1)
+        self.assertTrue(b["mine"])
+        self.assertEqual((b["wins"], b["pf"]), (1, 95.0))
+        self.assertEqual(b["strength"], 14 + 9 + 5 + 7 + 5 + 4 + 7 + 5)  # locked QB still placed
+        self.assertIn("IR", a["sidelined"])
+        self.assertEqual(a["opp_ep"], 0.0)         # no usage rows on these fixtures
+        self.assertIn(pr.report({"league": "L", "season": 2026, "week": 2, "scoring": "std",
+                                 "weeks_played": 1, "rows": rows}).count("\n") > 3, (True,))
+
+    def test_opp_ep_sums_usage_of_skill_starters_only(self):
+        import power_rankings as pr
+        def U(pid, name, pos, v, ep, slot=20):
+            return P(pid, name, pos, v, slot=slot, sources={"ewma_ep": ep})
+        roster = [U(1, "QB", "QB", 20, 18.0, slot=0), U(2, "RB1", "RB", 15, 14.0, slot=2),
+                  U(3, "RB2", "RB", 12, 11.0, slot=2), U(4, "WR1", "WR", 14, 13.0, slot=4),
+                  U(5, "WR2", "WR", 10, 9.0, slot=4), U(6, "FLX", "WR", 9, 8.0, slot=3),
+                  U(7, "TE", "TE", 8, 7.0, slot=6),
+                  P(8, "K", "K", 8, slot=17, sources={"ewma_ep": 99.0}),   # K/DST usage is not modelled
+                  P(9, "D", "DST", 6, slot=16, sources={"ewma_ep": 99.0}),
+                  U(10, "BEN", "RB", 5, 40.0)]                             # bench usage does not count
+        st = pr.team_strength(roster, SLOTS)
+        self.assertEqual(st["opp_ep"], 18.0 + 14.0 + 11.0 + 13.0 + 9.0 + 8.0 + 7.0)
