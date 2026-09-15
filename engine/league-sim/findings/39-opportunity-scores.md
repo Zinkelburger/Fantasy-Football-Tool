@@ -134,3 +134,34 @@ fetched by `engine/weekly/nfl_data.py`. Outputs:
 player) and `opportunity_<season>_weekly.csv` (one row per
 player-week). Rebuilt Tuesday and Saturday by
 `.github/workflows/weekly.yml`.
+
+## vs Subvertadown's published scores (2024, 2025)
+
+Checked 2026-09-15 against his exported weekly tables (RB, WR, TE; he
+does not publish QB), matched by player name and week, byes and zero
+weeks dropped. Script: `research/opportunity-score/compare_subvertadown.py`.
+His score is on the half-PPR scale (regression slope on ours 0.97–1.04,
+means within 0.3 points).
+
+Pearson r, per player-game and per player season mean (8+ games), half-PPR:
+
+| season | pos | games | his vs ours | his vs actual | ours vs actual | season: his vs ours | his vs actual | ours vs actual |
+|---|---|---|---|---|---|---|---|---|
+| 2024 | RB | 1,216 | .991 | .824 | .827 | .998 | .952 | .953 |
+| 2024 | WR | 1,864 | .976 | .734 | .752 | .990 | .924 | .928 |
+| 2024 | TE | 759 | .979 | .763 | .778 | .991 | .893 | .912 |
+| 2025 | RB | 992 | .984 | .776 | .793 | .998 | .959 | .958 |
+| 2025 | WR | 1,500 | .922 | .859 | .752 | .976 | .964 | .935 |
+| 2025 | TE | 852 | .948 | .827 | .781 | .981 | .932 | .903 |
+
+2024: the two scores are the same number (r .98–.99 per game, .99+ per
+season) and predict actual points equally well. 2025 RB likewise.
+
+2025 WR and TE: his score agrees with ours less (.92–.95) and tracks
+actual points *better* than ours (.86 vs .75 per game for WR). A pure
+pre-snap usage model tops out around .75–.79 per game at WR (ours .752,
+ffverse .771 on the same season), so a .86 means his 2025 receiver
+score carries information from after the snap; his method page lists
+yards before catch, which needs a completion. That makes it a better
+descriptor of the week that happened and no longer a strictly
+opportunity-only number. Ours stays usage-only by design.

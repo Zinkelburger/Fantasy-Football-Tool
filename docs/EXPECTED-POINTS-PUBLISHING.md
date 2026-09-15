@@ -8,12 +8,17 @@ code in `engine/weekly/ep_model.py` and `engine/weekly/opportunity.py`.
 
 ## What is published
 
-Per player: role value (EWMA of expected points, α = 0.35, seeded from the
-prior season), expected and actual points per game, the gap, usage per game,
-and the upcoming week's opponent and market-implied team total. Top 40 QB,
-70 RB, 90 WR, 40 TE by half-PPR role value, in standard, half and full PPR.
-The numbers are exactly the `skill` rows of `data/weekly/latest.json`; the
-website script adds ranks and provenance, nothing else.
+Per player: expected and actual points for every week played (with that
+week's usage counts), season averages and totals, the average expected
+points over the last four games, the actual-minus-expected gap, and role
+value (EWMA of expected points, α = 0.35, seeded from the prior season).
+Top 40 QB, 70 RB, 90 WR, 40 TE by half-PPR role value, in standard, half
+and full PPR; players with no game yet this season are left out. The page
+offers a last-week view (default) and a season view with one column per
+week, in the style of Subvertadown's tables. Season-to-date numbers are
+the `skill` rows of `data/weekly/latest.json`; the per-week series comes
+from `opportunity_<season>_weekly.csv`. Next-week opponent and implied
+team totals are deliberately not shown: they are not part of the number.
 
 ## Weekly steps
 
@@ -42,7 +47,10 @@ website script adds ranks and provenance, nothing else.
   ffverse comparison) are finding 39's, re-verified 2026-09-15 from the cached
   2021–2025 play-by-play. Refitting the model (`ep_model.py fit`) means
   re-running that check and updating both the finding and the page.
-- Subvertadown comparison: his .93–.97 back-tested correlations are
-  season-level; ours are held-out season-level .92–.97. Say "same range", not
-  "better". No per-game benchmark on matched coverage exists.
+- Subvertadown comparison: on his published 2024 tables the two scores agree
+  at r .98–.99 per game (finding 39, "vs Subvertadown's published scores";
+  script `research/opportunity-score/compare_subvertadown.py`). Say "the same
+  number", never "better". His 2025 receiver scores track actual points more
+  closely than any usage-only model can, so do not treat them as a pure
+  opportunity benchmark.
 - Keep public pages about all players, never a private roster or league.
