@@ -7,6 +7,8 @@
 - Defense publication and accuracy work follows `docs/DEFENSE-PUBLISHING.md`.
   The public destination is andrewbernal.com, in the sibling
   `../Andrew-Bernal-Website` repo. This repo owns the fantasy engine.
+- Expected points publication follows `docs/EXPECTED-POINTS-PUBLISHING.md`:
+  a dated edition per completed week, built from the committed weekly bundle.
 - Keep numerical projections separate from narrative research. A good outcome
   does not establish that the model is accurate; grade the full pregame list.
 - Defense recommendations use our finding 27 methodology: lowest opponent
