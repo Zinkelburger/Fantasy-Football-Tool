@@ -230,7 +230,9 @@ test('Claude advice renders streamed output and sends current draft context', as
   // Your running back's handcuff sits under him in the team panel, green
   // while he can still be had.
   const teamText = await page.locator('#team-list').innerText();
-  assert.match(teamText, /RB1\s+Jahmyr Gibbs[\s\S]*Backup\s+Isiah Pacheco\s+#\d+\s+still available/i);
+  // The checked-in rankings change independently of roster/backup behavior.
+  // A listed backup can correctly be unranked in the selected scoring format.
+  assert.match(teamText, /RB1\s+Jahmyr Gibbs[\s\S]*Backup\s+Isiah Pacheco\s+(?:#\d+|unranked)\s+still available/i);
   assert.equal(await page.locator('#team-list .team-sub-avail').count(), 1);
   // ...and the Backups chip brings him up on the board, wherever he sits.
   await page.locator('#pos-filters button', { hasText: 'Backups' }).click();
