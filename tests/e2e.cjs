@@ -251,10 +251,11 @@ test('Claude advice renders streamed output and sends current draft context', as
   assert.equal(slatePos('QB'), 1, 'one QB once the user starts one');
   for (const text of ['Upside play', 'heading "Ranking"', 'Position room:', 'picks ahead of the next',
     'Availability: Simulation expects', 'What waiting costs, by position', 'Further down the board',
-    'RB1 Jahmyr Gibbs (his backup Isiah Pacheco, board #', 'Starting slots still open: RB, WR, TE, K, DST',
+    'Starting slots still open: RB, WR, TE, K, DST',
     'already starts a QB, so he would be a bench pick']) {
     assert.ok(prompt.includes(text), text);
   }
+  assert.match(prompt, /RB1 Jahmyr Gibbs \(his backup Isiah Pacheco, board (?:#\d+|unranked), is still available\)/);
   assert.doesNotMatch(prompt, /previous answer/);
   assert.equal(await page.locator('#btn-ask').isEnabled(), true);
   // The next question carries the last answer's Ranking forward.
