@@ -97,7 +97,8 @@ def build(season: int, week: int, refresh: bool = True) -> dict:
         "ecr_available": bool(ecr),
         "games_played_this_week": played_games,
         "model": {"fitted": coef["fitted"], "fit_seasons": coef["fit_seasons"],
-                  "holdout": coef["holdout"], "eval": coef["eval"]},
+                  "holdout": coef["holdout"], "eval": coef["eval"],
+                  "coef": coef["coef"], "features": coef["features"]},
         "teams": TEAMS,
     }
     (DATA / "latest.json").write_text(json.dumps(out, separators=(",", ":")))
@@ -112,7 +113,28 @@ def main(argv=None):
     ap.add_argument("--week", type=int)
     ap.add_argument("--season", type=int)
     ap.add_argument("--offline", action="store_true")
+    ap.add_argument("--opportunity-only", action="store_true", help="Rebuild usage from cache, preserving saved market and injury inputs")
     a = ap.parse_args(argv)
+    if a.opportunity_only:
+        out = json.loads((DATA / 'latest.json').read_text())
+        if (a.season and a.season != out['season']) or (a.week and a.week != out['week']):
+            ap.error('Opportunity-only rebuild must match the saved bundle season and decision week')
+        weekly, tbl = opportunity.write(out['season'], refresh=False)
+        # Keep the private advisor's metadata and list separate from the full
+        # public player-week export. No odds, news or roster requests here.
+        previous = {r['id']: r for r in out['skill']}
+        rows = skill_rows(tbl, weekly, pl.DataFrame(), pl.DataFrame())
+        for r in rows:
+            old = previous.get(r['id'], {})
+            for key in ('opp', 'home', 'imp_own', 'imp_opp', 'injury'):
+                r[key] = old.get(key)
+        out['skill'] = rows
+        coef = json.loads((MODEL / 'ep_coefficients.json').read_text())
+        out['model'] = {k: coef[k] for k in ('fitted', 'fit_seasons', 'holdout', 'eval', 'coef', 'features')}
+        out['opportunityGeneratedAt'] = now_iso()
+        (DATA / 'latest.json').write_text(json.dumps(out, separators=(',', ':')))
+        print(f"Rebuilt usage only: {weekly.height} player-games; saved market and injury inputs retained")
+        return
     st = nfl_state()
     season = a.season or st["season"]
     week = a.week or st["week"]

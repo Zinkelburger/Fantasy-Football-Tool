@@ -1,0 +1,1278 @@
+{
+  "method": "Temporal holdout. Fit only years before the evaluated season. Half PPR. Matched player-weeks. Next calendar week uses only earlier matched games (up to four).",
+  "sources": [
+    {
+      "file": "2024 Opportunity Score - RB.csv",
+      "sha256": "5d0f6d8c7a4142e3abf55b980678bdb19e93eebc0e8f2e06886a773aaf358940"
+    },
+    {
+      "file": "2024 Opportunity Score - WR.csv",
+      "sha256": "e377c84f82b0e7d3e0a2d70075cc2265ecfed1388bed53f782d59e5fb10b311c"
+    },
+    {
+      "file": "2024 Opportunity Score - TE.csv",
+      "sha256": "1ebbe17ea6bf833f9cf87c9b4e4b179d0b63394d5965b5fd10623de4752f1117"
+    },
+    {
+      "file": "2025 Opportunity Score - RB.csv",
+      "sha256": "0db14a1cb6dda7e7053bf1bca3585e1f62afda8c7ee0735501c2bec7aa9438bc"
+    },
+    {
+      "file": "2025 Opportunity Score - WR.csv",
+      "sha256": "c2bd834556a060ceea5d6d657483c28c2f378c59a87d89d9edde607deb877c7c"
+    },
+    {
+      "file": "2025 Opportunity Score - TE.csv",
+      "sha256": "aa41680923c141aaa6329fd44436d33d64ffa6d0bf4218d028593eb258b9da82"
+    }
+  ],
+  "comparisons": [
+    {
+      "season": 2024,
+      "position": "RB",
+      "n": 1241,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "unmatched": [
+        {
+          "player": "Dare Ogunbowale (HOU)",
+          "week": 15
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 1
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 6
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 7
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 8
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 9
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 10
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 11
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 12
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 13
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 15
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 16
+        },
+        {
+          "player": "Audric Estime (DEN)",
+          "week": 17
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 1
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 2
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 3
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 4
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 6
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 7
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 8
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 11
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 12
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 14
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 16
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 17
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 1
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 2
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 3
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 5
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 7
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 8
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 13
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 16
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 1
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 2
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 4
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 5
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 8
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 11
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 12
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 13
+        },
+        {
+          "player": "Michael Burton (DEN)",
+          "week": 16
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 1
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 5
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 12
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 16
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 17
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 4
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 8
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 13
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 16
+        },
+        {
+          "player": "Adam Prentice (NO)",
+          "week": 2
+        },
+        {
+          "player": "Adam Prentice (NO)",
+          "week": 8
+        },
+        {
+          "player": "Adam Prentice (NO)",
+          "week": 9
+        },
+        {
+          "player": "Adam Prentice (NO)",
+          "week": 17
+        },
+        {
+          "player": "Andrew Beck (HOU)",
+          "week": 16
+        },
+        {
+          "player": "Tyreik McAllister (LV)",
+          "week": 4
+        },
+        {
+          "player": "Velus Jones Jr. (CAR)",
+          "week": 17
+        }
+      ],
+      "zero_without_usage": 1815,
+      "agreement_shipped": 0.9901284465154275,
+      "same_game": {
+        "ours": {
+          "r": 0.8264168240381637,
+          "mae": 2.81740050674466,
+          "rmse": 4.236839332508317,
+          "bias": -0.2182575448253914
+        },
+        "theirs": {
+          "r": 0.8264998410129549,
+          "mae": 2.871490733279613,
+          "rmse": 4.232335370853534,
+          "bias": 0.01086220789685709
+        },
+        "candidate": {
+          "r": 0.8257552836072899,
+          "mae": 2.837631249674451,
+          "rmse": 4.2454312799984475,
+          "bias": -0.22747399485687125
+        },
+        "shipped": {
+          "r": 0.8281640523014633,
+          "mae": 2.8227599042634632,
+          "rmse": 4.2142234837917565,
+          "bias": -0.14848176471669447
+        }
+      },
+      "next_week_n": 997,
+      "next_week": {
+        "ours": {
+          "r": 0.5519622464463797,
+          "mae": 4.824460269940457,
+          "rmse": 6.5371323631296745,
+          "bias": -0.36222386144507823
+        },
+        "theirs": {
+          "r": 0.548613215112203,
+          "mae": 4.85189234369776,
+          "rmse": 6.532097940551667,
+          "bias": -0.15312938816449378
+        },
+        "candidate": {
+          "r": 0.5509258772149186,
+          "mae": 4.8146614247731705,
+          "rmse": 6.537966730719799,
+          "bias": -0.375903117282358
+        },
+        "box_score": {
+          "r": 0.5562123787206107,
+          "mae": 4.981626546305583,
+          "rmse": 6.661798777563544,
+          "bias": -0.012780006686726911
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.02743207375730378,
+        "player_bootstrap_95pct": [
+          -0.06535443397897442,
+          0.008950102298263478
+        ]
+      },
+      "candidate": "Four-input RB usage"
+    },
+    {
+      "season": 2024,
+      "position": "WR",
+      "n": 1909,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "unmatched": [
+        {
+          "player": "Michael Woods II (CLE)",
+          "week": 13
+        },
+        {
+          "player": "Michael Woods II (CLE)",
+          "week": 14
+        },
+        {
+          "player": "Michael Woods II (CLE)",
+          "week": 15
+        },
+        {
+          "player": "Michael Woods II (CLE)",
+          "week": 16
+        },
+        {
+          "player": "Michael Woods II (CLE)",
+          "week": 17
+        },
+        {
+          "player": "Trent Sherfield Sr. (MIN)",
+          "week": 1
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 3
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 8
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 14
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 15
+        },
+        {
+          "player": "Jordan Matthews (CAR)",
+          "week": 1
+        }
+      ],
+      "zero_without_usage": 3205,
+      "agreement_shipped": 0.9735570542191362,
+      "same_game": {
+        "ours": {
+          "r": 0.7521541695452173,
+          "mae": 3.203118806213834,
+          "rmse": 4.520659660341335,
+          "bias": -0.21205011415688488
+        },
+        "theirs": {
+          "r": 0.7391147813365678,
+          "mae": 3.3034992142482977,
+          "rmse": 4.623662305663671,
+          "bias": 0.05019381875327377
+        },
+        "candidate": {
+          "r": 0.862752896517816,
+          "mae": 2.4284619925100714,
+          "rmse": 3.477501398652587,
+          "bias": -0.28017787937356703
+        },
+        "shipped": {
+          "r": 0.7533065022676131,
+          "mae": 3.1942653718539398,
+          "rmse": 4.511122544611345,
+          "bias": -0.19023668242417285
+        }
+      },
+      "next_week_n": 1497,
+      "next_week": {
+        "ours": {
+          "r": 0.4393050710434145,
+          "mae": 4.668965469635483,
+          "rmse": 6.413415948469709,
+          "bias": -0.5215774077922508
+        },
+        "theirs": {
+          "r": 0.4457397692410662,
+          "mae": 4.7141638833222,
+          "rmse": 6.405441787066175,
+          "bias": -0.21309507904698308
+        },
+        "candidate": {
+          "r": 0.4119427883369842,
+          "mae": 4.8025242430017485,
+          "rmse": 6.613573375570765,
+          "bias": -0.509246331666736
+        },
+        "box_score": {
+          "r": 0.40858793634674767,
+          "mae": 4.926270318414607,
+          "rmse": 6.769403664316336,
+          "bias": -0.19838120685816077
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.0451984136867162,
+        "player_bootstrap_95pct": [
+          -0.09527136449191004,
+          0.005359308708507854
+        ]
+      },
+      "candidate": "Four-input receiver model with completed air yards (YBC proxy)"
+    },
+    {
+      "season": 2024,
+      "position": "TE",
+      "n": 771,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "unmatched": [
+        {
+          "player": "Nick Vannett (TEN)",
+          "week": 4
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 3
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 5
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 6
+        },
+        {
+          "player": "Jody Fortson Jr. (KC)",
+          "week": 5
+        },
+        {
+          "player": "Jody Fortson Jr. (KC)",
+          "week": 7
+        },
+        {
+          "player": "Jody Fortson Jr. (KC)",
+          "week": 8
+        },
+        {
+          "player": "Marcedes Lewis (CHI)",
+          "week": 8
+        },
+        {
+          "player": "John Samuel Shenker (LV)",
+          "week": 8
+        }
+      ],
+      "zero_without_usage": 1521,
+      "agreement_shipped": 0.9787436182651873,
+      "same_game": {
+        "ours": {
+          "r": 0.7794669942727412,
+          "mae": 2.173731525408147,
+          "rmse": 3.2336158459286715,
+          "bias": -0.08726062302224727
+        },
+        "theirs": {
+          "r": 0.7640681504775713,
+          "mae": 2.3010376134889756,
+          "rmse": 3.3482943370579865,
+          "bias": 0.22290531776913083
+        },
+        "candidate": {
+          "r": 0.84150526385361,
+          "mae": 1.8702660439962433,
+          "rmse": 2.787727045872872,
+          "bias": -0.012371668657138919
+        },
+        "shipped": {
+          "r": 0.7781875179830309,
+          "mae": 2.1751946276652077,
+          "rmse": 3.241562412439705,
+          "bias": -0.038131961226623
+        }
+      },
+      "next_week_n": 549,
+      "next_week": {
+        "ours": {
+          "r": 0.4343349965396412,
+          "mae": 3.508912154372089,
+          "rmse": 4.980486494644059,
+          "bias": -0.6229715702655388
+        },
+        "theirs": {
+          "r": 0.43392708675984193,
+          "mae": 3.5603430479659983,
+          "rmse": 4.976372441913029,
+          "bias": -0.2594930176077718
+        },
+        "candidate": {
+          "r": 0.4388351182813963,
+          "mae": 3.553107028537498,
+          "rmse": 4.987108771449044,
+          "bias": -0.5555431083481573
+        },
+        "box_score": {
+          "r": 0.41423940398128845,
+          "mae": 3.6957923497267764,
+          "rmse": 5.14247297552326,
+          "bias": -0.6165998785670918
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.05143089359390995,
+        "player_bootstrap_95pct": [
+          -0.09599696585177861,
+          -0.007730481098887733
+        ]
+      },
+      "candidate": "Four-input receiver model with completed air yards (YBC proxy)"
+    },
+    {
+      "season": 2025,
+      "position": "RB",
+      "n": 1010,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "unmatched": [
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 5
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 6
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 7
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 9
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 10
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 11
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 12
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 13
+        },
+        {
+          "player": "Zonovan Knight (ARI)",
+          "week": 14
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 1
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 2
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 3
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 4
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 5
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 6
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 7
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 8
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 9
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 10
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 11
+        },
+        {
+          "player": "Kyle Juszczyk (SF)",
+          "week": 13
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 1
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 4
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 5
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 6
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 7
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 9
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 10
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 11
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 13
+        },
+        {
+          "player": "Adam Prentice (DEN)",
+          "week": 14
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 1
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 2
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 5
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 6
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 8
+        },
+        {
+          "player": "Alec Ingold (MIA)",
+          "week": 10
+        },
+        {
+          "player": "Nathan Carter (ATL)",
+          "week": 3
+        },
+        {
+          "player": "Nathan Carter (ATL)",
+          "week": 8
+        },
+        {
+          "player": "Colson Yankoff (WAS)",
+          "week": 11
+        },
+        {
+          "player": "Colson Yankoff (WAS)",
+          "week": 13
+        },
+        {
+          "player": "Colson Yankoff (WAS)",
+          "week": 14
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 8
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 12
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 14
+        },
+        {
+          "player": "Audric Estime (NO)",
+          "week": 14
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 4
+        },
+        {
+          "player": "Scott Matlock (LAC)",
+          "week": 9
+        },
+        {
+          "player": "Velus Jones Jr. (SEA)",
+          "week": 14
+        },
+        {
+          "player": "C.J. Ham (MIN)",
+          "week": 7
+        },
+        {
+          "player": "Jack Westover (NE)",
+          "week": 10
+        }
+      ],
+      "zero_without_usage": 1561,
+      "agreement_shipped": 0.9824639288440474,
+      "same_game": {
+        "ours": {
+          "r": 0.7953339516388902,
+          "mae": 3.020679400135613,
+          "rmse": 4.722296064899385,
+          "bias": -0.20334267061449704
+        },
+        "theirs": {
+          "r": 0.7780874656057416,
+          "mae": 3.282118811881188,
+          "rmse": 4.92756903895454,
+          "bias": 0.4988316831683165
+        },
+        "candidate": {
+          "r": 0.7955875009382001,
+          "mae": 3.0409603789418536,
+          "rmse": 4.722383466251611,
+          "bias": -0.21281576216422077
+        },
+        "shipped": {
+          "r": 0.7959666284992462,
+          "mae": 3.0282212558826758,
+          "rmse": 4.714224248726287,
+          "bias": -0.17611338206934968
+        }
+      },
+      "next_week_n": 815,
+      "next_week": {
+        "ours": {
+          "r": 0.5368894495790137,
+          "mae": 4.888654023966167,
+          "rmse": 6.813123793531186,
+          "bias": -0.6075577546040016
+        },
+        "theirs": {
+          "r": 0.5331926931303591,
+          "mae": 5.017623721881391,
+          "rmse": 6.844271698171492,
+          "bias": 0.021415132924335046
+        },
+        "candidate": {
+          "r": 0.5354415048848304,
+          "mae": 4.890870971454104,
+          "rmse": 6.816828449758742,
+          "bias": -0.6067654024091009
+        },
+        "box_score": {
+          "r": 0.5092330771389029,
+          "mae": 5.166817995910021,
+          "rmse": 7.136329519549128,
+          "bias": -0.4189815950920246
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.1289696979152242,
+        "player_bootstrap_95pct": [
+          -0.185746042577902,
+          -0.07461669467001376
+        ]
+      },
+      "candidate": "Four-input RB usage"
+    },
+    {
+      "season": 2025,
+      "position": "WR",
+      "n": 1588,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "unmatched": [
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 1
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 2
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 3
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 4
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 5
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 6
+        },
+        {
+          "player": "Travis Hunter (JAC)",
+          "week": 7
+        },
+        {
+          "player": "Tyreek Hill (MIA)",
+          "week": 14
+        },
+        {
+          "player": "Chris Moore (WAS)",
+          "week": 14
+        },
+        {
+          "player": "Josh Reynolds (NYJ)",
+          "week": 14
+        },
+        {
+          "player": "Mitch Tinsley (CIN)",
+          "week": 4
+        },
+        {
+          "player": "Mitch Tinsley (CIN)",
+          "week": 9
+        },
+        {
+          "player": "Mitch Tinsley (CIN)",
+          "week": 12
+        },
+        {
+          "player": "Mitch Tinsley (CIN)",
+          "week": 13
+        },
+        {
+          "player": "Curtis Samuel (BUF)",
+          "week": 14
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 4
+        },
+        {
+          "player": "Scotty Miller (PIT)",
+          "week": 7
+        },
+        {
+          "player": "Laquon Treadwell (IND)",
+          "week": 14
+        }
+      ],
+      "zero_without_usage": 2587,
+      "agreement_shipped": 0.8995386213226149,
+      "same_game": {
+        "ours": {
+          "r": 0.7523556447174848,
+          "mae": 3.0236552198745885,
+          "rmse": 4.233886031712743,
+          "bias": 0.04794722994148819
+        },
+        "theirs": {
+          "r": 0.8462201259497009,
+          "mae": 2.409307304785894,
+          "rmse": 3.4234894994208522,
+          "bias": -0.045100755667506515
+        },
+        "candidate": {
+          "r": 0.8691233421446846,
+          "mae": 2.242851758409919,
+          "rmse": 3.1830110817541195,
+          "bias": 0.07983833345440941
+        },
+        "shipped": {
+          "r": 0.7527369532890494,
+          "mae": 3.0197904822319703,
+          "rmse": 4.229758602995376,
+          "bias": 0.03720648494109329
+        }
+      },
+      "next_week_n": 1217,
+      "next_week": {
+        "ours": {
+          "r": 0.4190455385119919,
+          "mae": 4.640549638775189,
+          "rmse": 6.161247178092059,
+          "bias": -0.09307212648500418
+        },
+        "theirs": {
+          "r": 0.42537311509746434,
+          "mae": 4.74618597644481,
+          "rmse": 6.240499704228591,
+          "bias": -0.2412421254450837
+        },
+        "candidate": {
+          "r": 0.4165345511481469,
+          "mae": 4.739299287954598,
+          "rmse": 6.274568856847394,
+          "bias": -0.05352373367650412
+        },
+        "box_score": {
+          "r": 0.40356788473274147,
+          "mae": 4.805902492467816,
+          "rmse": 6.420409925241836,
+          "bias": -0.16339359079704202
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.10563633766962041,
+        "player_bootstrap_95pct": [
+          -0.20523626001677087,
+          -0.001425254971132097
+        ]
+      },
+      "candidate": "Four-input receiver model with completed air yards (YBC proxy)"
+    },
+    {
+      "season": 2025,
+      "position": "TE",
+      "n": 860,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "unmatched": [
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 2
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 4
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 6
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 7
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 9
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 11
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 12
+        },
+        {
+          "player": "Connor Heyward (PIT)",
+          "week": 14
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 5
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 6
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 8
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 12
+        },
+        {
+          "player": "Andrew Beck (NYJ)",
+          "week": 14
+        },
+        {
+          "player": "Jelani Woods (NYJ)",
+          "week": 2
+        }
+      ],
+      "zero_without_usage": 1556,
+      "agreement_shipped": 0.947395085284685,
+      "same_game": {
+        "ours": {
+          "r": 0.7754586576728795,
+          "mae": 2.2057496136150188,
+          "rmse": 3.257901538030508,
+          "bias": -0.16385556788415073
+        },
+        "theirs": {
+          "r": 0.8275663512719066,
+          "mae": 1.9595813953488372,
+          "rmse": 2.905287401225726,
+          "bias": -0.31344186046511646
+        },
+        "candidate": {
+          "r": 0.8234602324106074,
+          "mae": 2.0075157096803364,
+          "rmse": 2.918154062355739,
+          "bias": -0.12028725353642293
+        },
+        "shipped": {
+          "r": 0.7813053022602493,
+          "mae": 2.192039060576028,
+          "rmse": 3.214984902221303,
+          "bias": -0.11937823957978352
+        }
+      },
+      "next_week_n": 613,
+      "next_week": {
+        "ours": {
+          "r": 0.41946153830274563,
+          "mae": 3.692285734169778,
+          "rmse": 5.182688307950461,
+          "bias": -0.46318062017048384
+        },
+        "theirs": {
+          "r": 0.4150940066719249,
+          "mae": 3.7188553561718325,
+          "rmse": 5.232515476507501,
+          "bias": -0.589545948885264
+        },
+        "candidate": {
+          "r": 0.40790041799151266,
+          "mae": 3.7649959355937077,
+          "rmse": 5.248710594843721,
+          "bias": -0.3626619546577133
+        },
+        "box_score": {
+          "r": 0.38290239216359784,
+          "mae": 3.9399129961935833,
+          "rmse": 5.455812021192213,
+          "bias": -0.1951060358890702
+        }
+      },
+      "next_week_paired_mae": {
+        "ours_minus_theirs_mae": -0.02656962200205387,
+        "player_bootstrap_95pct": [
+          -0.09533300405732889,
+          0.045445324675110824
+        ]
+      },
+      "candidate": "Four-input receiver model with completed air yards (YBC proxy)"
+    }
+  ],
+  "holdout2025": [
+    {
+      "position": "QB",
+      "format": "half",
+      "n": 640,
+      "r2": 0.5443523422356548,
+      "r": 0.7398864618441894,
+      "mae": 4.7652848420342835,
+      "rmse": 6.192454536769606,
+      "bias": -0.35207112597963
+    },
+    {
+      "position": "QB",
+      "format": "half6",
+      "n": 640,
+      "r2": 0.5047307535674994,
+      "r": 0.7127052138156309,
+      "mae": 6.054867777073355,
+      "rmse": 7.850046804065381,
+      "bias": -0.46550725911756696
+    },
+    {
+      "position": "RB",
+      "format": "half",
+      "n": 1358,
+      "r2": 0.6224530247836338,
+      "r": 0.7892808070346146,
+      "mae": 3.0845907475644605,
+      "rmse": 4.771638495422419,
+      "bias": -0.1398217705946579
+    },
+    {
+      "position": "RB",
+      "format": "half6",
+      "n": 1358,
+      "r2": 0.6219370402771325,
+      "r": 0.7889566551039928,
+      "mae": 3.0895104875755446,
+      "rmse": 4.778862811241458,
+      "bias": -0.14114673073684228
+    },
+    {
+      "position": "WR",
+      "format": "half",
+      "n": 2134,
+      "r2": 0.5685092072616351,
+      "r": 0.7544168104610215,
+      "mae": 2.953149345141426,
+      "rmse": 4.161524801241072,
+      "bias": 0.04775348384071313
+    },
+    {
+      "position": "WR",
+      "format": "half6",
+      "n": 2134,
+      "r2": 0.5679608725650697,
+      "r": 0.7540588969391971,
+      "mae": 2.9552720745474783,
+      "rmse": 4.165666662910153,
+      "bias": 0.04794478960267478
+    },
+    {
+      "position": "TE",
+      "format": "half",
+      "n": 1129,
+      "r2": 0.608829352957625,
+      "r": 0.7842322811411936,
+      "mae": 2.225534813065359,
+      "rmse": 3.293958774656943,
+      "bias": -0.19250369361178188
+    },
+    {
+      "position": "TE",
+      "format": "half6",
+      "n": 1129,
+      "r2": 0.6087539865129471,
+      "r": 0.7840797680115672,
+      "mae": 2.227626210398006,
+      "rmse": 3.2962114400986495,
+      "bias": -0.1904930813685174
+    }
+  ]
+}

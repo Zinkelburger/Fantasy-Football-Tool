@@ -44,6 +44,9 @@ import polars as pl
 from common import FORMATS, MODEL, SKILL, now_iso
 import nfl_data
 
+# Public scoring options; the advisor keeps its existing three formats.
+SCORING_FORMATS = list(FORMATS) + [f + '6' for f in FORMATS]
+
 FIT_SEASONS = [2021, 2022, 2023, 2024, 2025]
 HOLDOUT = 2025
 
@@ -119,9 +122,12 @@ def actuals(stats: pl.DataFrame) -> pl.DataFrame:
         "season", "week", "player_id",
         pl.col("player_display_name").alias("name"),
         "position",
+        pl.col("passing_tds").fill_null(0).alias("passing_tds"),
         pl.col("fantasy_points").fill_null(0.0).alias("pts_std"),
         pl.col("fantasy_points_ppr").fill_null(0.0).alias("pts_ppr"),
-    ]).with_columns(((pl.col("pts_std") + pl.col("pts_ppr")) / 2).alias("pts_half"))
+    ]).with_columns(((pl.col("pts_std") + pl.col("pts_ppr")) / 2).alias("pts_half")).with_columns([
+        (pl.col(f"pts_{f}") + 2 * pl.col("passing_tds")).alias(f"pts_{f}6") for f in FORMATS
+    ])
 
 
 def panel(season: int, refresh: bool = False) -> pl.DataFrame:
@@ -170,7 +176,7 @@ def fit(seasons=FIT_SEASONS, holdout=HOLDOUT) -> dict:
         out["coef"][pos] = {}
         out["eval"][pos] = {}
         tr, te = train.filter(pl.col("position") == pos), test.filter(pl.col("position") == pos)
-        for fmt in FORMATS:
+        for fmt in SCORING_FORMATS:
             tgt = f"pts_{fmt}"
             # Held-out score first (fit on the other seasons only)...
             c_ho = _fit(tr, feats, tgt)

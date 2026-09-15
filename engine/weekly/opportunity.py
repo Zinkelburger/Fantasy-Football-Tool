@@ -23,9 +23,11 @@ import sys
 
 import polars as pl
 
-from common import DATA, FORMATS, SKILL
+from common import DATA, SKILL
 import ep_model
 import nfl_data
+
+FORMATS = ep_model.SCORING_FORMATS
 
 ALPHA = 0.35
 PRIOR_GAMES = 4          # prior-season games at which the seed is trusted fully
@@ -34,6 +36,7 @@ REPLACEMENT = {           # half-PPR points/game a free agent is worth; the
 # Standard/PPR seeds scale from the half-PPR level; close enough for a
 # prior that fades after four games.
 REPL_SCALE = {"std": 0.85, "half": 1.0, "ppr": 1.15}
+REPL_SCALE.update({f + '6': v for f, v in list(REPL_SCALE.items())})
 
 
 def season_ep(season: int, refresh: bool) -> pl.DataFrame:
@@ -143,10 +146,10 @@ def write(season: int, refresh: bool = True) -> tuple[pl.DataFrame, pl.DataFrame
     wcols = ["season", "week", "player_id", "name", "position", "team"] + ep_model.ALL_FEATURES
     for f in FORMATS:
         wcols += [f"ep_{f}", f"pts_{f}", f"ewma_ep_pre_{f}", f"ewma_ep_{f}"]
-    wcols.append("seeded_from_prior")
+    wcols += ["seeded_from_prior", "passing_tds"]
     weekly.select([c for c in wcols if c in weekly.columns]).write_csv(
-        DATA / f"opportunity_{season}_weekly.csv", float_precision=2)
-    tbl.write_csv(DATA / f"opportunity_{season}.csv", float_precision=2)
+        DATA / f"opportunity_{season}_weekly.csv", float_precision=8)
+    tbl.write_csv(DATA / f"opportunity_{season}.csv", float_precision=8)
     return weekly, tbl
 
 

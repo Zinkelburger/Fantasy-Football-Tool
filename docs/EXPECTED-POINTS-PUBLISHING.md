@@ -12,12 +12,13 @@ Per player: expected and actual points for every week played (with that
 week's usage counts), season averages and totals, the average expected
 points over the last four games, the actual-minus-expected gap, and role
 value (EWMA of expected points, α = 0.35, seeded from the prior season).
-Top 40 QB, 70 RB, 90 WR, 40 TE by half-PPR role value, in standard, half
-and full PPR; players with no game yet this season are left out. The page
-offers a last-week view (default) and a season view with one column per
-week, in the style of Subvertadown's tables. Season-to-date numbers are
-the `skill` rows of `data/weekly/latest.json`; the per-week series comes
-from `opportunity_<season>_weekly.csv`. Next-week opponent and implied
+All QB, RB, WR and TE with recorded usage are included, in standard, half
+and full PPR, with 4- or 6-point passing touchdowns. The private advisor's
+capped `skill` list must not control public coverage. Weekly, last-four,
+season and recent averages come from the same full-precision
+`opportunity_<season>_weekly.csv`; round only for display. The page offers
+a weekly view and season average, with player details for weekly charts,
+usage and the calculation. Next-week opponent and implied
 team totals are deliberately not shown: they are not part of the number.
 
 ## Weekly steps
@@ -35,22 +36,35 @@ team totals are deliberately not shown: they are not part of the number.
    never overwrites an existing edition.
 4. Add `src/pages/football/expected-points/YEAR/week-N.astro` importing the new
    edition file, run the website tests and `npm run build`, inspect desktop and
-   mobile, commit, push, and verify the live URLs.
+   mobile, commit, push, and verify the live URLs. For same-week corrections,
+   leave that original route pinned and use the automatically generated dated
+   edition route. Do not change prior snapshot bytes or their rendering.
+
+For a scoring-only rebuild from saved data, use
+`build_week.py --opportunity-only --season YEAR --week DECISION_WEEK`.
+This never requests odds, injury news or ESPN rosters. It updates the usage
+timestamp independently of saved market inputs. Commit the resulting bundle.
 
 ## Rules
 
 - Never edit a published edition. Corrections are a new dated edition.
 - Expected points are usage only. Do not blend ESPN projections, matchup
   multipliers or injury news into the published number; those belong in the
-  private advisor. The page shows the implied team total beside the number.
+  private advisor.
 - Methodology numbers on the site (held-out R², season r, next-week r,
   ffverse comparison) are finding 39's, re-verified 2026-09-15 from the cached
   2021–2025 play-by-play. Refitting the model (`ep_model.py fit`) means
   re-running that check and updating both the finding and the page.
-- Subvertadown comparison: on his published 2024 tables the two scores agree
-  at r .98–.99 per game (finding 39, "vs Subvertadown's published scores";
-  script `research/opportunity-score/compare_subvertadown.py`). Say "the same
-  number", never "better". His 2025 receiver scores track actual points more
-  closely than any usage-only model can, so do not treat them as a pure
-  opportunity benchmark.
+- The current comparison is `research/opportunity-score/audit_public_scores.py`
+  and its dated JSON/report, superseding the original comparison's exclusion
+  of all zero scores and its in-sample next-week model. Credit the author,
+  F4NT4SYF00TB4LLF4N, hosted by Subvertadown. High correlation does not mean
+  identical values. Separate same-game description from next-week evaluation;
+  fit our evaluation model only on earlier seasons. Include matched real zeros,
+  record exclusions, show error in points and uncertainty. The author's own
+  explanation confirms completed yards before catch for receivers. Do not
+  infer feature usage, impossibility bounds or superiority from correlations.
+- Six-point passing TDs use a separate OLS fit to actual points plus two per
+  passing touchdown. Never multiply the total score by 1.5 or add observed TDs
+  to expected points. Keep the original three advisor formats unchanged.
 - Keep public pages about all players, never a private roster or league.

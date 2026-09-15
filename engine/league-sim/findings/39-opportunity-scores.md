@@ -1,5 +1,44 @@
 # 39 — Opportunity scores: a per-position price on every touch
 
+## September 15, 2026 correction and scoring extension
+
+The current audit is [REVIEW-2026-09-15.md](../../../research/opportunity-score/REVIEW-2026-09-15.md)
+with machine-readable results in `research/opportunity-score/audit-2026-09-15.json`.
+It supersedes the historical comparison and predictive claims below. The
+original text remains as research history, not current publication guidance.
+
+- Six-point passing TD scoring is fitted separately to fantasy points plus
+  two per actual passing touchdown. Expected points never use the current
+  game's touchdowns as inputs. The original 4-point fit remains unchanged.
+- All public QB/RB/WR/TE rows now come from recorded weekly usage, independent
+  of the private advisor's capped player list. Weekly values retain precision
+  so season and weekly views agree. The QB detail exposes passing air yards.
+- Temporal holdout uses only earlier seasons to fit our test model. The
+  previous next-week calculation reused production coefficients fitted on the
+  season being evaluated and must not be presented as fully held out.
+- Match verified name variants, retain true zero scores with observed usage,
+  report excluded records and compare the same player-weeks. Current scores
+  are highly correlated, not literally identical. The author is
+  F4NT4SYF00TB4LLF4N; Subvertadown hosts his tables.
+- Our up-to-four-game average has 0.03–0.13 points lower next-calendar-week
+  mean absolute error in all six comparisons. Three exploratory 95% intervals
+  include zero. Selection, publication timing and DNP coverage remain limits.
+  This is a trailing-average comparison, not validation of EWMA or a claim of
+  universal superiority. Keep the usage model; the tested alternatives do
+  not consistently improve next-week error.
+- The author's explanation confirms yards before catch for receivers. Do
+  not infer information leakage or an upper bound on accuracy from a
+  correlation. Our inputs also contain information observed during plays
+  (target depth, scrambles). Residuals contain skill, randomness and model
+  omissions, not just luck.
+
+Recomputed 2025 holdout (fit 2021–2024), half PPR: QB 4pt MAE 4.765,
+RMSE 6.192, R² .544; QB 6pt MAE 6.055, RMSE 7.850, R² .505 (640 games).
+RB/WR/TE holdout results remain in the linked JSON. All numerical claims on
+the revised page are generated from this audit rather than the older tables.
+
+## Original finding (historical)
+
 **Confidence: High.** 26,301 player-games, 2021–2025 regular season, held-out 2025.
 
 Opportunity score = expected fantasy points given usage. One linear
