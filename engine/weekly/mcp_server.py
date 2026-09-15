@@ -151,8 +151,9 @@ def _league(season: int):
     return espn_league.League(season)
 
 
-def _projected_roster(season: int, week: int):
-    """(settings, roster rows with projections, free agents with projections)."""
+def projector(season: int, week: int):
+    """(league, settings, attach): attach(espn_row) -> row with proj/value,
+    the same recipe for every roster in the league (advisor.project)."""
     lg = _league(season)
     s = lg.settings()
     fmt = s["scoring_format"]
@@ -173,6 +174,12 @@ def _projected_roster(season: int, week: int):
                                ecr=(ecr.get((_norm_name(p["name"]), p["pos"]))
                                     or ecr.get((p.get("team"), p["pos"]))))
 
+    return lg, s, attach
+
+
+def _projected_roster(season: int, week: int):
+    """(league, settings, my roster with projections, free agents with projections)."""
+    lg, s, attach = projector(season, week)
     roster = [attach(p) for p in lg.my_roster(week)]
     fas = [attach(p) for p in lg.free_agents(week) if p.get("team")]   # unsigned players are not pickups
     return lg, s, roster, fas
@@ -622,6 +629,16 @@ def league_settings() -> str:
     if s["my_team_id"] is None:
         out.append("your team was not identified: set ESPN_TEAM_ID in engine/weekly/.env")
     return "\n".join(out)
+
+
+@mcp.tool()
+def power_rankings(week: int = 0) -> str:
+    """Every team in the league ranked by roster strength: the best
+    lineup by season value (no matchup or injury term), bench depth,
+    this week's optimal projection, record and points scored so far."""
+    import power_rankings as pr
+    season, week = _week(week)
+    return pr.report(pr.league_rankings(season, week))
 
 
 @mcp.tool()
