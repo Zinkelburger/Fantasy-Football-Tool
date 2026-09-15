@@ -26,6 +26,7 @@ import polars as pl
 from common import DATA, SKILL
 import ep_model
 import nfl_data
+import player_plays
 
 FORMATS = ep_model.SCORING_FORMATS
 
@@ -150,6 +151,7 @@ def write(season: int, refresh: bool = True) -> tuple[pl.DataFrame, pl.DataFrame
     weekly.select([c for c in wcols if c in weekly.columns]).write_csv(
         DATA / f"opportunity_{season}_weekly.csv", float_precision=8)
     tbl.write_csv(DATA / f"opportunity_{season}.csv", float_precision=8)
+    player_plays.write(nfl_data.pbp(season, refresh=False), weekly, season)
     return weekly, tbl
 
 

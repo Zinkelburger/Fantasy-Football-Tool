@@ -21,6 +21,18 @@ a weekly view and season average, with player details for weekly charts,
 usage and the calculation. Next-week opponent and implied
 team totals are deliberately not shown: they are not part of the number.
 
+Player details also load the edition's saved play log on demand. The engine
+writes `opportunity_<season>_plays.json` from the same cached PBP and checks
+that its counted carries, targets and pass attempts match every weekly row.
+Include identified context plays (sacks, kneels, penalties and returns), but
+mark which plays count toward model usage. Use credited receiving/passing/
+rushing yards, not penalty-inclusive team gains. An incomplete target is not
+necessarily a drop; the feed does not provide reliable drop labels. Preserve
+original descriptions and structured player identities. Logs are context,
+not per-play expected fantasy-point estimates or a fantasy scoring ledger.
+The website copies a separate, immutable JSON per player under the edition
+URL, records the source hash, and fetches it only when a visitor opens plays.
+
 ## Weekly steps
 
 1. Wait for the Tuesday `weekly.yml` build (10:00 UTC) or run
