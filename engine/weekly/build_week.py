@@ -27,6 +27,7 @@ import fantasypros
 import injuries as inj_mod
 import lines as lines_mod
 import opportunity
+import advanced_usage
 
 TOP_PER_POS = {"QB": 40, "RB": 70, "WR": 90, "TE": 40}
 
@@ -70,6 +71,10 @@ def build(season: int, week: int, refresh: bool = True) -> dict:
     ln = lines_mod.build(season, week, refresh)
     print(f"» opportunity {season}")
     weekly, tbl = opportunity.write(season, refresh)
+    print(f"» advanced usage {season}")
+    # Reuse the exact PBP/stats cache that just produced expected points.
+    # FTN/PFR are optional and track missing/late data in their own manifest.
+    advanced_usage.write(season, refresh=refresh, refresh_base=False)
     print(f"» injuries/depth {season}")
     inj_all, depth = inj_mod.build(season, refresh)
     inj_wk = inj_all.filter(pl.col("week") == week)

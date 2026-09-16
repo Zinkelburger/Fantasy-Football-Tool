@@ -1,0 +1,66 @@
+{
+  "season": 2026,
+  "generated_at": "2026-09-16T16:57:15Z",
+  "sources": {
+    "pbp_2026": {
+      "status": "available",
+      "error": null,
+      "rows": 2756,
+      "sha256": "ec4a0376ab2f869c826a400ddfeea1f0d7dcebb76cde85f9227fb3159f86396b",
+      "cache_written_at": "2026-09-15T13:14:26.973436+00:00"
+    },
+    "player_stats_2026": {
+      "status": "available",
+      "error": null,
+      "rows": 1118,
+      "sha256": "90bc7e94a799f7ec70db82736b4264e8596db911df064343865ebc0a1d9e7a69",
+      "cache_written_at": "2026-09-15T13:14:27.104436+00:00"
+    },
+    "ftn_2026": {
+      "status": "available",
+      "error": null,
+      "rows": 2675,
+      "sha256": "2f5fc62ca3e308e686ba3625405ceb6122d37c3b9b335171ba4b28ecb9fd72d3",
+      "cache_written_at": "2026-09-16T16:57:15.222226+00:00"
+    },
+    "pfr_rush_week_2026": {
+      "status": "available",
+      "error": null,
+      "rows": 117,
+      "sha256": "320e6272381cf5a05474fb047d03a1d6e4a5c11b77b80133518ceca91e86a176",
+      "cache_written_at": "2026-09-16T16:57:15.330226+00:00"
+    },
+    "pfr_ids": {
+      "status": "available",
+      "error": null,
+      "rows": 24824,
+      "sha256": "e0eb992bf9b46608b0e4e2c32bfa19e6a7ac9cf7dfc2594f819f56c67c1610e0",
+      "cache_written_at": "2026-09-16T16:57:15.546226+00:00"
+    }
+  },
+  "output_sha256": "1fe9428818ff4e6ca762846332addee9041b1d9973be22e9d7f557f8d7705bcd",
+  "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing via nflverse; nflverse play-by-play/player stats",
+  "source_documentation": {
+    "ftn": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
+    "pfr": "https://nflreadr.nflverse.com/reference/load_pfr_advstats.html",
+    "schedule": "https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html"
+  },
+  "definitions": {
+    "target_share": "player targets / all identified team targets in that game",
+    "tgt_rz": "line of scrimmage <=20 yards to goal",
+    "tgt_rz_lt20": "line of scrimmage <20 yards to goal",
+    "ftn_catchable_targets": "FTN is_catchable_ball, not receptions plus drops",
+    "nulls": "unavailable or partial; zero only when observed",
+    "purpose": "descriptive context; not model inputs"
+  },
+  "coverage_by_week": [
+    {
+      "week": 1,
+      "games": 16,
+      "player_rows": 309,
+      "targeted_players": 251,
+      "players_with_complete_catchability": 251,
+      "players_with_ybcon": 101
+    }
+  ]
+}

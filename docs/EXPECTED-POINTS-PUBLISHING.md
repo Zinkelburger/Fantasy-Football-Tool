@@ -33,6 +33,22 @@ not per-play expected fantasy-point estimates or a fantasy scoring ledger.
 The website copies a separate, immutable JSON per player under the edition
 URL, records the source hash, and fetches it only when a visitor opens plays.
 
+Advanced context is exported separately as `advanced_usage_<season>_weekly.csv`
+with a `.sources.json` manifest. The regular weekly build refreshes FTN and PFR
+after computing expected points, using the same cached PBP/player stats. To
+refresh only context, run `engine/weekly/advanced_usage.py --season YEAR --refresh`.
+The website publisher validates the manifest hash and carry/target counts,
+then attaches target share, FTN catchability/drops and PFR contact yards to a
+new edition. Never fill missing or partially charted totals with zero. Season
+share is a ratio of totals over games with recorded player usage, not the mean
+of weekly percentages. Charted count averages remain blank if any relevant
+game is missing. Credit FTN Data via nflverse (CC-BY-SA 4.0) and identify PFR
+separately. Existing play descriptions and old editions remain unchanged.
+
+The [2026-09-16 model evaluation](../research/opportunity-score/ADVANCED-MODEL-REVIEW-2026-09-16.md)
+tested these features on 2024 validation and 2025 confirmation. None established
+a reliable next-week improvement. They are descriptive context, not score inputs.
+
 ## Weekly steps
 
 1. Wait for the Tuesday `weekly.yml` build (10:00 UTC) or run

@@ -1,0 +1,5320 @@
+{
+  "protocol": "Temporal tests for advanced features. Run directly with the league-sim Python.\n\nFrozen comparison: 2024 validation, 2025 confirmation; training only earlier\nseasons. No random row split, no fitting on the evaluated year's outcomes.\nThe candidate changes each game's descriptive score, then the same production\nEWMA (alpha .35, prior-season seed) turns it into a next-calendar-week forecast.\n",
+  "gate": {
+    "validation_and_confirmation_mae_gain": 0.05,
+    "confirmation_bootstrap_upper_below": 0.0,
+    "max_rmse_regression": 0.02,
+    "max_other_format_or_zero_usage_mae_regression": 0.02,
+    "selection": "Lowest 2024 half-PPR next-week EWMA MAE per position; baseline remains if gain <0.05. Only this selection is eligible on 2025."
+  },
+  "candidate_features": {
+    "target_share": [
+      "target_share"
+    ],
+    "catchability": [
+      "ftn_catchable_targets",
+      "catchable_rate"
+    ],
+    "drops": [
+      "ftn_drops",
+      "drop_rate"
+    ],
+    "contact": [
+      "pfr_yards_before_contact",
+      "ybc_per_carry"
+    ]
+  },
+  "scoring": [
+    "std",
+    "half",
+    "ppr"
+  ],
+  "evaluations": [
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 2.7318833889169927,
+        "rmse": 4.161969677319633,
+        "bias": -0.23619477599683042
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.472927158407419,
+          "rmse": 6.107516149703238,
+          "bias": -0.3849310465172651
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.550351169531419,
+          "rmse": 6.228767255530272,
+          "bias": -0.40863107236599583
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.462996128267631,
+          "rmse": 6.046335395972265,
+          "bias": 0.32916508294454505
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.492085478351712,
+          "rmse": 6.1593132428154895,
+          "bias": 0.2722021717579089
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.729457320038186,
+        "rmse": 4.129808512792127,
+        "bias": -0.2195969905309951
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.468789257293232,
+          "rmse": 6.1028986394327385,
+          "bias": -0.35773449689734566
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.550365356040442,
+          "rmse": 6.223369464962612,
+          "bias": -0.37493412239803814
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.458799379782192,
+          "rmse": 6.045763913183508,
+          "bias": 0.35163262142851265
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.4897231772047155,
+          "rmse": 6.157674857979194,
+          "bias": 0.29850247198895746
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.004137901114187281,
+        "player_bootstrap_95pct": [
+          -0.017158337826788734,
+          0.010436644830111697
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.717918760587957,
+        "rmse": 4.138101958245703,
+        "bias": -0.22970345058846048
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.476166733979094,
+          "rmse": 6.105437980997227,
+          "bias": -0.36954230570536883
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.56420083715084,
+          "rmse": 6.236665058782905,
+          "bias": -0.389443630009248
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.4679565539827255,
+          "rmse": 6.047940160442982,
+          "bias": 0.344463932369469
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.508157199176955,
+          "rmse": 6.170554079042975,
+          "bias": 0.29281611221807896
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.003239575571675306,
+        "player_bootstrap_95pct": [
+          -0.012341142290630734,
+          0.01803248540148707
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.723858018070299,
+        "rmse": 4.152398912619936,
+        "bias": -0.2161549393216128
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.473200999943891,
+          "rmse": 6.104872446743713,
+          "bias": -0.36261867873984666
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.551121136274131,
+          "rmse": 6.224832520520118,
+          "bias": -0.3817511285901755
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.463294590230436,
+          "rmse": 6.043689899977807,
+          "bias": 0.34821739488091175
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.492520779857636,
+          "rmse": 6.154842385623001,
+          "bias": 0.29485595496894296
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.00027384153647134335,
+        "player_bootstrap_95pct": [
+          -0.007896485850275059,
+          0.008514524459217502
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "contact",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.4415674131390523,
+        "rmse": 3.751250802986466,
+        "bias": -0.43719570200003766
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.426752847547201,
+          "rmse": 6.066000080044624,
+          "bias": -0.567367616465891
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.518474984730987,
+          "rmse": 6.193254262375991,
+          "bias": -0.6510764746274034
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.395587165348039,
+          "rmse": 5.99230383853924,
+          "bias": 0.14580272386479176
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.4214745134599,
+          "rmse": 6.0942651526520075,
+          "bias": 0.022405744547097622
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.04617431086021791,
+        "player_bootstrap_95pct": [
+          -0.10026944874833175,
+          0.007079867205158571
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239,
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239,
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.39619914029797,
+        "rmse": 3.704533235842054,
+        "bias": -0.39513343210025537
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.433186979672118,
+          "rmse": 6.063874888982022,
+          "bias": -0.511222841166539
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.530835562916011,
+          "rmse": 6.197087432978524,
+          "bias": -0.5748511841949749
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.404518194038609,
+          "rmse": 5.998194460135747,
+          "bias": 0.19703539895358863
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.437403160494424,
+          "rmse": 6.1055137524293555,
+          "bias": 0.09268054971388336
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.03974017873530063,
+        "player_bootstrap_95pct": [
+          -0.0949417624623183,
+          0.01749032881900952
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 2.7863901826660813,
+        "rmse": 4.227738942625366,
+        "bias": -0.2576481192887073
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.705117527303231,
+          "rmse": 6.359101496104015,
+          "bias": -0.39653381628438006
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.783847297696461,
+          "rmse": 6.491279893401277,
+          "bias": -0.4353231368024966
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.748640376819093,
+          "rmse": 6.357850678701696,
+          "bias": 0.40735172307509776
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.768721429181837,
+          "rmse": 6.474165437991454,
+          "bias": 0.32742901947498093
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.78115865382159,
+        "rmse": 4.193387702321391,
+        "bias": -0.24104127984789245
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.703331458957428,
+          "rmse": 6.355806715052369,
+          "bias": -0.3692237942799573
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.782016104315268,
+          "rmse": 6.486262386787436,
+          "bias": -0.4012813754816447
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.746394496295168,
+          "rmse": 6.359023848216745,
+          "bias": 0.429865379885004
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.76474194978951,
+          "rmse": 6.473515741014787,
+          "bias": 0.35397590120296074
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.001786068345803325,
+        "player_bootstrap_95pct": [
+          -0.015652148378050977,
+          0.013811664079383333
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.739969262695446,
+        "rmse": 4.174501505313253,
+        "bias": -0.25096281169529655
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.711998294327455,
+          "rmse": 6.360420172226372,
+          "bias": -0.37725049731743376
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.8081556762007045,
+          "rmse": 6.506603985305472,
+          "bias": -0.41060133025861995
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.757147710935312,
+          "rmse": 6.36424856794729,
+          "bias": 0.426413102225006
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.794657584252453,
+          "rmse": 6.494110820938724,
+          "bias": 0.3537169842512625
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.006880767024225483,
+        "player_bootstrap_95pct": [
+          -0.013612828681701848,
+          0.026442641297502144
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.7693502027371166,
+        "rmse": 4.208628134998574,
+        "bias": -0.22810466167339982
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.707561361590895,
+          "rmse": 6.3570564797622096,
+          "bias": -0.3640597117306677
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.791575025462669,
+          "rmse": 6.488341502956618,
+          "bias": -0.3957135727674184
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.751041085704493,
+          "rmse": 6.355971278136976,
+          "bias": 0.43530691673310484
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.775423895520871,
+          "rmse": 6.470611125222079,
+          "bias": 0.36126157462898933
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.0024438342876652347,
+        "player_bootstrap_95pct": [
+          -0.009645388666320252,
+          0.014560874623582307
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "contact",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.5051743961900725,
+        "rmse": 3.8220443848132164,
+        "bias": -0.46119432230142793
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.669106233169512,
+          "rmse": 6.3182486195672665,
+          "bias": -0.5813097928772457
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.759284498740401,
+          "rmse": 6.45488158626025,
+          "bias": -0.680665941832119
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.689291888915686,
+          "rmse": 6.302759707852154,
+          "bias": 0.2214108076336
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.70355936762441,
+          "rmse": 6.405847321854391,
+          "bias": 0.07439254808642926
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.03601129413371905,
+        "player_bootstrap_95pct": [
+          -0.09195967120661476,
+          0.020677883030636668
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239,
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239,
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.407042014946704,
+        "rmse": 3.72964595955476,
+        "bias": -0.4069584198489599
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.681005262185186,
+          "rmse": 6.322342528445578,
+          "bias": -0.5090729828582796
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 4.780879656601131,
+          "rmse": 6.468203089940313,
+          "bias": -0.5827516029015208
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 4.703603808837906,
+          "rmse": 6.316513099827521,
+          "bias": 0.28706761696911126
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 4.728814279940551,
+          "rmse": 6.428093689118355,
+          "bias": 0.1645918426285515
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.02411226511804411,
+        "player_bootstrap_95pct": [
+          -0.08355850054676514,
+          0.03683698267593188
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 2.854962405343975,
+        "rmse": 4.31388308518099,
+        "bias": -0.27898119047227554
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.984410938029888,
+          "rmse": 6.694166382355709,
+          "bias": -0.4080214429721167
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.08070449901687,
+          "rmse": 6.842771386602564,
+          "bias": -0.4619374379566782
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.074403964307551,
+          "rmse": 6.745599904363681,
+          "bias": 0.48567299562807675
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.099324942391733,
+          "rmse": 6.869800287677957,
+          "bias": 0.38277202017111084
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.8460055050595776,
+        "rmse": 4.277474041104904,
+        "bias": -0.2621586451321961
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.984840327392466,
+          "rmse": 6.692096834514641,
+          "bias": -0.3803566916481035
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.080181335058316,
+          "rmse": 6.838152129288174,
+          "bias": -0.42745350889136047
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.074033914057144,
+          "rmse": 6.748330455680071,
+          "bias": 0.5084790818677499
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.096427091425131,
+          "rmse": 6.870052522721812,
+          "bias": 0.40966371880517355
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.000429389362577647,
+        "player_bootstrap_95pct": [
+          -0.012858656000367796,
+          0.015804026316825336
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.7683545492913058,
+        "rmse": 4.220414456939129,
+        "bias": -0.2711598546376292
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.997092985681599,
+          "rmse": 6.700141675413523,
+          "bias": -0.3840788594922298
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.109729418334709,
+          "rmse": 6.866343694659093,
+          "bias": -0.4304342308278162
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.088281948622643,
+          "rmse": 6.75792465659568,
+          "bias": 0.5091332177586523
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.130189209088143,
+          "rmse": 6.899189737810846,
+          "bias": 0.4157452045551696
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.01268204765171056,
+        "player_bootstrap_95pct": [
+          -0.013412026421993836,
+          0.03751770486892233
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.8291929815182346,
+        "rmse": 4.282219389323495,
+        "bias": -0.23981135401430645
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.990262706244464,
+          "rmse": 6.693717409488618,
+          "bias": -0.365493522022859
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.093649724503515,
+          "rmse": 6.842441717934861,
+          "bias": -0.4096760169446652
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.079925641331322,
+          "rmse": 6.745439484866739,
+          "bias": 0.5224045211904356
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.1107637036645865,
+          "rmse": 6.868693960861566,
+          "bias": 0.42766719428903227
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": 0.005851768214576064,
+        "player_bootstrap_95pct": [
+          -0.009585286836243654,
+          0.021780862153409932
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "contact",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.5832416765349966,
+        "rmse": 3.9149054302637567,
+        "bias": -0.4832213178274796
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.961828689593684,
+          "rmse": 6.654077296063162,
+          "bias": -0.5934164809027466
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.063552975658104,
+          "rmse": 6.805439140297378,
+          "bias": -0.7082662517238435
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.026211986659668,
+          "rmse": 6.68993132065175,
+          "bias": 0.29893424790250556
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.0400880201135845,
+          "rmse": 6.798863533272436,
+          "bias": 0.1285149556803202
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -0.022582248436204547,
+        "player_bootstrap_95pct": [
+          -0.08049685136153574,
+          0.03378873012572708
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 2764,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7444771723122239,
+        "catchable_rate": 0.7444771723122239,
+        "ftn_drops": 0.7444771723122239,
+        "drop_rate": 0.7444771723122239,
+        "pfr_yards_before_contact": 0.9300441826215022,
+        "ybc_per_carry": 0.9300441826215022
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.4219039448595683,
+        "rmse": 3.76062186444556,
+        "bias": -0.4175875410789392
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1022,
+          "mae": 4.984351797232067,
+          "rmse": 6.6669648038596145,
+          "bias": -0.5055476574040662
+        },
+        "last4": {
+          "n": 1022,
+          "mae": 5.09519339810439,
+          "rmse": 6.831710243732907,
+          "bias": -0.5894393450962186
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1201,
+          "mae": 5.050161230809388,
+          "rmse": 6.7137850471478435,
+          "bias": 0.3784899213688146
+        },
+        "last4": {
+          "n": 1201,
+          "mae": 5.075133793860756,
+          "rmse": 6.835165935618795,
+          "bias": 0.23775272512551743
+        }
+      },
+      "missing_next_usage": 179,
+      "paired_ewma": {
+        "delta_mae": -5.914079782118956e-05,
+        "player_bootstrap_95pct": [
+          -0.058814374959224563,
+          0.06088626657555445
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2129,
+        "mae": 2.887409330412075,
+        "rmse": 4.150811523555119,
+        "bias": -0.12995275620580307
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.0514399969147785,
+          "rmse": 5.5238415470433555,
+          "bias": -0.2862324482617472
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.0553939427158845,
+          "rmse": 5.612629829502193,
+          "bias": -0.3547972705475264
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.9640115462827112,
+          "rmse": 5.331298904097292,
+          "bias": 0.3872132820036049
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.9224560718798998,
+          "rmse": 5.418856661966519,
+          "bias": 0.28585960773688507
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.8710148133870463,
+        "rmse": 4.111733967580733,
+        "bias": -0.08933696296745403
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.050711554401771,
+          "rmse": 5.509105070099059,
+          "bias": -0.23332303247823094
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.055008614394217,
+          "rmse": 5.589947885631297,
+          "bias": -0.29152958267501555
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.9591041825419806,
+          "rmse": 5.32222857012391,
+          "bias": 0.426535122030437
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.9172688105064517,
+          "rmse": 5.404703035358999,
+          "bias": 0.3331599421229185
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.0007284425130075163,
+        "player_bootstrap_95pct": [
+          -0.011368289194380803,
+          0.01030433581323451
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.3860051738891643,
+        "rmse": 3.6248513558364435,
+        "bias": -0.2350769122170672
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.0064280597654705,
+          "rmse": 5.514602018072538,
+          "bias": -0.3874698569979259
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.013694708775234,
+          "rmse": 5.605927968312418,
+          "bias": -0.4753068505816366
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.9125628799134615,
+          "rmse": 5.309848402260253,
+          "bias": 0.2894016936475134
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8839950248934003,
+          "rmse": 5.398889746642133,
+          "bias": 0.1824123930124826
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.04501193714930827,
+        "player_bootstrap_95pct": [
+          -0.08567964622681663,
+          -0.005836096982771315
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.871967348623431,
+        "rmse": 4.13246290509795,
+        "bias": -0.1115559505554275
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.054765351900472,
+          "rmse": 5.527774166527423,
+          "bias": -0.2673619680585833
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.06472543747593,
+          "rmse": 5.624078099047221,
+          "bias": -0.33218450973369784
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.967495694109608,
+          "rmse": 5.336774684012609,
+          "bias": 0.4035157736770215
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.931364096519785,
+          "rmse": 5.432362963799769,
+          "bias": 0.3057192221911247
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0033253549856941973,
+        "player_bootstrap_95pct": [
+          -0.004830298157336568,
+          0.011340988369023199
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334,
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.3328467409777107,
+        "rmse": 3.527402600822896,
+        "bias": -0.18182102792456742
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.009002794565491,
+          "rmse": 5.510582043537998,
+          "bias": -0.3274077429389315
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.020087657391106,
+          "rmse": 5.604396371703608,
+          "bias": -0.40212840584119963
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.9137427113169,
+          "rmse": 5.311580292584493,
+          "bias": 0.33798500259571246
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8916875357216543,
+          "rmse": 5.406194501050542,
+          "bias": 0.24517550901817364
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.042437202349287245,
+        "player_bootstrap_95pct": [
+          -0.08646773417318929,
+          0.0014556205747197424
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2129,
+        "mae": 3.165873707554183,
+        "rmse": 4.4772689678689,
+        "bias": -0.14061236609755792
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.6424539976921375,
+          "rmse": 6.271010271207488,
+          "bias": -0.35812097863436904
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.663690376859701,
+          "rmse": 6.392239738210888,
+          "bias": -0.4273395694099351
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.619448612795381,
+          "rmse": 6.139654681452114,
+          "bias": 0.4960280175839098
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.58642053832529,
+          "rmse": 6.2583642532564046,
+          "bias": 0.38841174320311034
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 3.1453291056232398,
+        "rmse": 4.434737637780531,
+        "bias": -0.09827447374113141
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.639197165264979,
+          "rmse": 6.253525718204318,
+          "bias": -0.30296821731962237
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.658040155230403,
+          "rmse": 6.3657809461074875,
+          "bias": -0.36138934795132993
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.612273762923876,
+          "rmse": 6.129140057921741,
+          "bias": 0.5370170934476495
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.576685435743213,
+          "rmse": 6.242069586410243,
+          "bias": 0.43771759952128547
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.0032568324271588585,
+        "player_bootstrap_95pct": [
+          -0.013841828551672578,
+          0.007828713572073534
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.481332068627827,
+        "rmse": 3.7729989083678612,
+        "bias": -0.277733364579012
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.5930762349475875,
+          "rmse": 6.260344007956952,
+          "bias": -0.4879626273085988
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.616507227242344,
+          "rmse": 6.383267617606205,
+          "bias": -0.5816318232595425
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.558409184573181,
+          "rmse": 6.111197750863656,
+          "bias": 0.3686389303757106
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.539601500327261,
+          "rmse": 6.232172826839813,
+          "bias": 0.2532716844391126
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.049377762744550455,
+        "player_bootstrap_95pct": [
+          -0.09532615770121941,
+          -0.004798174686737743
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 3.1389806642025424,
+        "rmse": 4.449578075237604,
+        "bias": -0.11582355630748248
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.6457728465622266,
+          "rmse": 6.276940968174837,
+          "bias": -0.33347768082262746
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.678514807468069,
+          "rmse": 6.409149602951766,
+          "bias": -0.3977612275383214
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.623800167808,
+          "rmse": 6.148076067254326,
+          "bias": 0.5179634849193754
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.601307360773298,
+          "rmse": 6.278408074567557,
+          "bias": 0.4154644829407894
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0033188488700889355,
+        "player_bootstrap_95pct": [
+          -0.007241411740831736,
+          0.013717463721911648
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334,
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.40028790984052,
+        "rmse": 3.640894693913649,
+        "bias": -0.22030384702647704
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 4.598733905626826,
+          "rmse": 6.258424287301751,
+          "bias": -0.42419054985111054
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 4.626548480742854,
+          "rmse": 6.38715759887264,
+          "bias": -0.5031938904908206
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.562294285213357,
+          "rmse": 6.116170126421313,
+          "bias": 0.42044454874082404
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.551386305577073,
+          "rmse": 6.246766476289261,
+          "bias": 0.3214556592391826
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.04372009206531214,
+        "player_bootstrap_95pct": [
+          -0.09422298099198173,
+          0.008281306664360923
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2129,
+        "mae": 3.4701161744707947,
+        "rmse": 4.834240308321472,
+        "bias": -0.15127197598929695
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 5.287388378885218,
+          "rmse": 7.0982437803677625,
+          "bias": -0.43000950900697393
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 5.327732474947039,
+          "rmse": 7.254428198249674,
+          "bias": -0.4998818682723267
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.319347847790755,
+          "rmse": 7.022837334086891,
+          "bias": 0.6048427531642303
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.296352282511075,
+          "rmse": 7.1752014574470895,
+          "bias": 0.4909638786693513
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 3.444690730891808,
+        "rmse": 4.78865592399783,
+        "bias": -0.10721198451483054
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 5.28154958404722,
+          "rmse": 7.078534623513776,
+          "bias": -0.3726134021610372
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 5.31588712927355,
+          "rmse": 7.224942046761357,
+          "bias": -0.43124911322766796
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.309861336481189,
+          "rmse": 7.0111747728270695,
+          "bias": 0.6474990648648404
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.28130228041295,
+          "rmse": 7.157216509018028,
+          "bias": 0.5422752569196309
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.005838794837997278,
+        "player_bootstrap_95pct": [
+          -0.016869341366232728,
+          0.005449144390140606
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.5922390496868557,
+        "rmse": 3.941411739112842,
+        "bias": -0.3179867346832194
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 5.237544702185116,
+          "rmse": 7.085809936995656,
+          "bias": -0.5862945952778654
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 5.278211690646729,
+          "rmse": 7.2423002589104755,
+          "bias": -0.6852582714413761
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.25252611107308,
+          "rmse": 6.987143872943279,
+          "bias": 0.45025056955087606
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.244513213411286,
+          "rmse": 7.142183653973413,
+          "bias": 0.32709972056068093
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.04984367670010272,
+        "player_bootstrap_95pct": [
+          -0.1025727021222477,
+          0.0002535081725633067
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 3.4285175519191773,
+        "rmse": 4.796323692646977,
+        "bias": -0.1197601951872792
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 5.2930646301842375,
+          "rmse": 7.106209094008005,
+          "bias": -0.39942688749918925
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 5.347472085821942,
+          "rmse": 7.276858266608271,
+          "bias": -0.46318565179385013
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.326684532946851,
+          "rmse": 7.034322282869501,
+          "bias": 0.6327169645762033
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.316962566868384,
+          "rmse": 7.201863455584772,
+          "bias": 0.5255563984899146
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": 0.0056762512990187804,
+        "player_bootstrap_95pct": [
+          -0.0074923895859119105,
+          0.01869644202529503
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 4346,
+      "test_n": 2129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9859088774072334,
+        "catchable_rate": 0.9859088774072334,
+        "ftn_drops": 0.9859088774072334,
+        "drop_rate": 0.9859088774072334
+      },
+      "same_game": {
+        "n": 2129,
+        "mae": 2.4771654117745174,
+        "rmse": 3.770145652937155,
+        "bias": -0.25622611311035826
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1556,
+          "mae": 5.2467765325788704,
+          "rmse": 7.086261319889317,
+          "bias": -0.5185822972603122
+        },
+        "last4": {
+          "n": 1556,
+          "mae": 5.295822775421417,
+          "rmse": 7.252096878910006,
+          "bias": -0.6015483141651904
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.259576379600799,
+          "rmse": 6.9953980503809285,
+          "bias": 0.505523205658155
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.263661244567506,
+          "rmse": 7.164255411108928,
+          "bias": 0.40075217440494026
+        }
+      },
+      "missing_next_usage": 331,
+      "paired_ewma": {
+        "delta_mae": -0.04061184630634827,
+        "player_bootstrap_95pct": [
+          -0.09802464180376953,
+          0.015952057290292868
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1087,
+        "mae": 1.903351640671484,
+        "rmse": 2.8710245958457596,
+        "bias": 0.01773647153232629
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 2.8670314226553524,
+          "rmse": 4.0596513733927715,
+          "bias": -0.31279250231098443
+        },
+        "last4": {
+          "n": 728,
+          "mae": 2.89011810625632,
+          "rmse": 4.1429359558372205,
+          "bias": -0.38234261983356
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 2.7960210001145764,
+          "rmse": 3.8647654219824137,
+          "bias": 0.35927171866668917
+        },
+        "last4": {
+          "n": 950,
+          "mae": 2.788844149552063,
+          "rmse": 3.9338880960165525,
+          "bias": 0.2811058247168712
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.896281612008027,
+        "rmse": 2.8432956192952292,
+        "bias": 0.03428261217243498
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 2.861316177258754,
+          "rmse": 4.041471836980013,
+          "bias": -0.28474306049447384
+        },
+        "last4": {
+          "n": 728,
+          "mae": 2.880883145236636,
+          "rmse": 4.124086542180386,
+          "bias": -0.34837049166166806
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 2.787803619787764,
+          "rmse": 3.8503739625499773,
+          "bias": 0.37692875127792186
+        },
+        "last4": {
+          "n": 950,
+          "mae": 2.7789906241445657,
+          "rmse": 3.9217184467320676,
+          "bias": 0.3043625739740764
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -0.005715245396598193,
+        "player_bootstrap_95pct": [
+          -0.018647883861920633,
+          0.007055466365915855
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.6343602189482387,
+        "rmse": 2.5671603633095215,
+        "bias": -0.02872756251149553
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 2.87395143354857,
+          "rmse": 4.084366959422014,
+          "bias": -0.351934536942023
+        },
+        "last4": {
+          "n": 728,
+          "mae": 2.8920360844673123,
+          "rmse": 4.161320332071221,
+          "bias": -0.42909556015341804
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 2.794119978959302,
+          "rmse": 3.869400778726338,
+          "bias": 0.3220726247307215
+        },
+        "last4": {
+          "n": 950,
+          "mae": 2.779732896104059,
+          "rmse": 3.9382019185730908,
+          "bias": 0.2346972779104892
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.006920010893217392,
+        "player_bootstrap_95pct": [
+          -0.027365805230625977,
+          0.04108947513254805
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.8759370371776871,
+        "rmse": 2.858886016457659,
+        "bias": 0.029702590466654993
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 2.8639502227946454,
+          "rmse": 4.058957525731412,
+          "bias": -0.30625599934773945
+        },
+        "last4": {
+          "n": 728,
+          "mae": 2.8857121483635804,
+          "rmse": 4.145974701128966,
+          "bias": -0.3805126635019606
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 2.794829042140931,
+          "rmse": 3.8645073630584377,
+          "bias": 0.3654499582255036
+        },
+        "last4": {
+          "n": 950,
+          "mae": 2.7853980160767553,
+          "rmse": 3.935943441642965,
+          "bias": 0.28243837077347717
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -0.003081199860706679,
+        "player_bootstrap_95pct": [
+          -0.0156770159879858,
+          0.00928748821808826
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281,
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.5853020611161732,
+        "rmse": 2.506398951179121,
+        "bias": 0.0072022122153293155
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 2.866965956790071,
+          "rmse": 4.071532363876378,
+          "bias": -0.31430559687263365
+        },
+        "last4": {
+          "n": 728,
+          "mae": 2.8906026626629435,
+          "rmse": 4.150892613872368,
+          "bias": -0.3912246696204818
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 2.788914932050244,
+          "rmse": 3.8614131768494135,
+          "bias": 0.3510563098750347
+        },
+        "last4": {
+          "n": 950,
+          "mae": 2.7787445869722402,
+          "rmse": 3.93487623332889,
+          "bias": 0.26382848391715197
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -6.546586528101371e-05,
+        "player_bootstrap_95pct": [
+          -0.03957206473201554,
+          0.03888498720948541
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1087,
+        "mae": 2.1102380443850315,
+        "rmse": 3.1092164461790786,
+        "bias": -0.013084395847229665
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 3.4270933224058733,
+          "rmse": 4.748762563518307,
+          "bias": -0.43757299307173514
+        },
+        "last4": {
+          "n": 728,
+          "mae": 3.4713662908215452,
+          "rmse": 4.867246489856092,
+          "bias": -0.5178748549202364
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 3.418250190478438,
+          "rmse": 4.610209388615255,
+          "bias": 0.4566953718808608
+        },
+        "last4": {
+          "n": 950,
+          "mae": 3.427005874422136,
+          "rmse": 4.7073880795109675,
+          "bias": 0.36998739642211764
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 2.1002468583063236,
+        "rmse": 3.079823911683605,
+        "bias": 0.004185282409438114
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 3.413889204112018,
+          "rmse": 4.728723012037337,
+          "bias": -0.40829699173785855
+        },
+        "last4": {
+          "n": 728,
+          "mae": 3.458137630124711,
+          "rmse": 4.8458853675260025,
+          "bias": -0.4824171771460733
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 3.4041261519165613,
+          "rmse": 4.594302311163156,
+          "bias": 0.47512451972844544
+        },
+        "last4": {
+          "n": 950,
+          "mae": 3.4139704961234223,
+          "rmse": 4.693307437571313,
+          "bias": 0.39426112802538893
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -0.013204118293854658,
+        "player_bootstrap_95pct": [
+          -0.02652109992043692,
+          -0.0007106819607255417
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.7016985678406875,
+        "rmse": 2.6722824451302096,
+        "bias": -0.08020556305653469
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 3.4372260097889913,
+          "rmse": 4.78933474040601,
+          "bias": -0.49357524337896386
+        },
+        "last4": {
+          "n": 728,
+          "mae": 3.4822992702445914,
+          "rmse": 4.9043858682441925,
+          "bias": -0.5827480803883771
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 3.4138089195082615,
+          "rmse": 4.618687075473459,
+          "bias": 0.4015738539227128
+        },
+        "last4": {
+          "n": 950,
+          "mae": 3.418568291693166,
+          "rmse": 4.719508759677201,
+          "bias": 0.303458321944954
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.010132687383117855,
+        "player_bootstrap_95pct": [
+          -0.035028682217553286,
+          0.055544250710152406
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 2.0664782245951243,
+        "rmse": 3.0857104880349158,
+        "bias": 0.007355506335782715
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 3.4248557565574322,
+          "rmse": 4.7497838896704945,
+          "bias": -0.4247318336728151
+        },
+        "last4": {
+          "n": 728,
+          "mae": 3.4678424788776634,
+          "rmse": 4.874006612811104,
+          "bias": -0.5111874873499692
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 3.4190260146945763,
+          "rmse": 4.612384018478902,
+          "bias": 0.4690262613391867
+        },
+        "last4": {
+          "n": 950,
+          "mae": 3.425166318042874,
+          "rmse": 4.712991310900673,
+          "bias": 0.3759728281336993
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -0.002237565848440929,
+        "player_bootstrap_95pct": [
+          -0.019492453848310352,
+          0.013803604898981827
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281,
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.621201864730421,
+        "rmse": 2.5796638552666082,
+        "bias": -0.0379932569930531
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 3.4295578311015658,
+          "rmse": 4.7783990935759,
+          "bias": -0.4518198911468931
+        },
+        "last4": {
+          "n": 728,
+          "mae": 3.4803699983758,
+          "rmse": 4.89707878798891,
+          "bias": -0.5425411354557096
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 3.408941561568786,
+          "rmse": 4.612923085523268,
+          "bias": 0.43458052809838865
+        },
+        "last4": {
+          "n": 950,
+          "mae": 3.4173313806064485,
+          "rmse": 4.719075129754553,
+          "bias": 0.33451105910188167
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.0024645086956917813,
+        "player_bootstrap_95pct": [
+          -0.047244603784123027,
+          0.05051631580389871
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1087,
+        "mae": 2.3475792761872927,
+        "rmse": 3.3806748856106164,
+        "bias": -0.043905263226785875
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 4.047091814204563,
+          "rmse": 5.535368068991797,
+          "bias": -0.562353483832487
+        },
+        "last4": {
+          "n": 728,
+          "mae": 4.115891912070158,
+          "rmse": 5.691974937594779,
+          "bias": -0.6534070900069141
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 4.086409737696056,
+          "rmse": 5.440436486491408,
+          "bias": 0.5541190250950322
+        },
+        "last4": {
+          "n": 950,
+          "mae": 4.113658098140109,
+          "rmse": 5.56854919832717,
+          "bias": 0.458868968127364
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 2.336894219447223,
+        "rmse": 3.3499562139583987,
+        "bias": -0.025912047353554422
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 4.031799843238259,
+          "rmse": 5.51404489298882,
+          "bias": -0.5318509229812398
+        },
+        "last4": {
+          "n": 728,
+          "mae": 4.099791361196996,
+          "rmse": 5.668834367836893,
+          "bias": -0.6164638626304747
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 4.070517927976652,
+          "rmse": 5.4234665450073685,
+          "bias": 0.5733202881789732
+        },
+        "last4": {
+          "n": 950,
+          "mae": 4.098300527283442,
+          "rmse": 5.553095884670347,
+          "bias": 0.4841596820767062
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": -0.01529197096630497,
+        "player_bootstrap_95pct": [
+          -0.02942627192863264,
+          -0.0015235453562006665
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.7782700291578677,
+        "rmse": 2.798962761439522,
+        "bias": -0.12942391668332967
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 4.067479741178934,
+          "rmse": 5.59096885722227,
+          "bias": -0.6326476496471093
+        },
+        "last4": {
+          "n": 728,
+          "mae": 4.143340577604391,
+          "rmse": 5.747346995503583,
+          "bias": -0.7335505965794199
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 4.085418654674256,
+          "rmse": 5.452348950203173,
+          "bias": 0.48363682254650947
+        },
+        "last4": {
+          "n": 950,
+          "mae": 4.112242897394182,
+          "rmse": 5.5881018349407965,
+          "bias": 0.37500418707227084
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.02038792697437049,
+        "player_bootstrap_95pct": [
+          -0.03273329665326089,
+          0.0732541747733602
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 2.284336204787415,
+        "rmse": 3.34354354033979,
+        "bias": -0.014991577795063766
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 4.049486920633715,
+          "rmse": 5.538341921443772,
+          "bias": -0.5432076679978636
+        },
+        "last4": {
+          "n": 728,
+          "mae": 4.1167538145356675,
+          "rmse": 5.702519193890992,
+          "bias": -0.6418623111979507
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 4.0920569439516195,
+          "rmse": 5.445285141019378,
+          "bias": 0.5726025644528946
+        },
+        "last4": {
+          "n": 950,
+          "mae": 4.116109958687708,
+          "rmse": 5.577754075026983,
+          "bias": 0.4695072854939466
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.0023951064291512537,
+        "player_bootstrap_95pct": [
+          -0.022604530092109682,
+          0.025860974953259636
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 2163,
+      "test_n": 1087,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9990800367985281,
+        "catchable_rate": 0.9990800367985281,
+        "ftn_drops": 0.9990800367985281,
+        "drop_rate": 0.9990800367985281
+      },
+      "same_game": {
+        "n": 1087,
+        "mae": 1.6612278799106244,
+        "rmse": 2.6680842229272588,
+        "bias": -0.081607112932434
+      },
+      "next_week": {
+        "ewma": {
+          "n": 728,
+          "mae": 4.066934095042424,
+          "rmse": 5.582776829431865,
+          "bias": -0.5875366944677224
+        },
+        "last4": {
+          "n": 728,
+          "mae": 4.14201323586357,
+          "rmse": 5.744179367457523,
+          "bias": -0.6919162144291763
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 950,
+          "mae": 4.086682388872488,
+          "rmse": 5.449289324515617,
+          "bias": 0.5198879312268175
+        },
+        "last4": {
+          "n": 950,
+          "mae": 4.111436884390376,
+          "rmse": 5.591045910037498,
+          "bias": 0.4071204214291977
+        }
+      },
+      "missing_next_usage": 222,
+      "paired_ewma": {
+        "delta_mae": 0.01984228083786085,
+        "player_bootstrap_95pct": [
+          -0.03838275087045535,
+          0.07440630595786962
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 3.0283835983845084,
+        "rmse": 4.7022349027078345,
+        "bias": -0.17974074207721197
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.660276769972907,
+          "rmse": 6.5595660016162585,
+          "bias": -0.48699633725624353
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.695559125126512,
+          "rmse": 6.641120202243086,
+          "bias": -0.5594304585853299
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.551208083722339,
+          "rmse": 6.3784331921516015,
+          "bias": 0.08188957199233096
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.548372532535043,
+          "rmse": 6.455428885866377,
+          "bias": -0.01447496674495439
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.042203281828002,
+        "rmse": 4.689488546636855,
+        "bias": -0.1335498298058446
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.667668443345536,
+          "rmse": 6.566498469739011,
+          "bias": -0.45222180892870084
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.708719371257084,
+          "rmse": 6.64903270476933,
+          "bias": -0.5270339381655529
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.558282449204119,
+          "rmse": 6.388588303832781,
+          "bias": 0.11274015800962559
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.5598247571227155,
+          "rmse": 6.464874703796826,
+          "bias": 0.013679895333764867
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.007391673372629825,
+        "player_bootstrap_95pct": [
+          -0.009526006109173446,
+          0.02537875808808401
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.0010289986392267,
+        "rmse": 4.670512618916855,
+        "bias": -0.16903536892296123
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.667165614583815,
+          "rmse": 6.553750230972203,
+          "bias": -0.46422787603296645
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.696625088184948,
+          "rmse": 6.63669661569644,
+          "bias": -0.5309353306894146
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.553766829528849,
+          "rmse": 6.372007322555809,
+          "bias": 0.09823640772652646
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.543428074188187,
+          "rmse": 6.449393941213876,
+          "bias": 0.004397005786370532
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.006888844610907371,
+        "player_bootstrap_95pct": [
+          -0.00724336448619601,
+          0.021187004100078708
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.0184245741900813,
+        "rmse": 4.687726737521728,
+        "bias": -0.18811651052290262
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.656762332726162,
+          "rmse": 6.556171374566286,
+          "bias": -0.4929460252455854
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.686142855513638,
+          "rmse": 6.634512463967282,
+          "bias": -0.5695266580484708
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.547347557177773,
+          "rmse": 6.375643263855282,
+          "bias": 0.07591454501270743
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.5374589119076285,
+          "rmse": 6.450317872381668,
+          "bias": -0.025978962703766623
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": -0.0035144372467449695,
+        "player_bootstrap_95pct": [
+          -0.012585969642963823,
+          0.005020308596561663
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "contact",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.6620186234130307,
+        "rmse": 4.055577722111591,
+        "bias": -0.21139464031049163
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.6626799494121025,
+          "rmse": 6.565749838958107,
+          "bias": -0.4934556500012198
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.701458979234101,
+          "rmse": 6.630596073031609,
+          "bias": -0.5743372573897858
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.535794873516208,
+          "rmse": 6.362026614475554,
+          "bias": 0.058781160938364926
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.5285591509783645,
+          "rmse": 6.418658966887906,
+          "bias": -0.052354527633818995
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0024031794391963196,
+        "player_bootstrap_95pct": [
+          -0.04107945112062975,
+          0.0484312341272784
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707,
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707,
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.621933621857861,
+        "rmse": 3.9921089983305627,
+        "bias": -0.17820631004851556
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.6677690821483715,
+          "rmse": 6.5609949262104115,
+          "bias": -0.4633499380995081
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.69844567177665,
+          "rmse": 6.621363724781323,
+          "bias": -0.5440237977782394
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.5403193289552926,
+          "rmse": 6.3605895436840445,
+          "bias": 0.08502722664274659
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.524652156502993,
+          "rmse": 6.411649484329831,
+          "bias": -0.02732427050146232
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.007492312175465231,
+        "player_bootstrap_95pct": [
+          -0.03726851970700531,
+          0.054467591245030395
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 3.084623580986807,
+        "rmse": 4.763953678812636,
+        "bias": -0.17836883782982588
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.872735225350002,
+          "rmse": 6.782660163391727,
+          "bias": -0.5043110364567035
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.900091662982509,
+          "rmse": 6.866645714384225,
+          "bias": -0.5863546577817378
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.802921010954718,
+          "rmse": 6.638789853282663,
+          "bias": 0.134093090677922
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.784274412393341,
+          "rmse": 6.7138600323439865,
+          "bias": 0.020455669112304658
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.097588951025839,
+        "rmse": 4.7512762207257095,
+        "bias": -0.13126173986725265
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.876566178172047,
+          "rmse": 6.789076674559808,
+          "bias": -0.4688070497336507
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.9096304612513,
+          "rmse": 6.873299862725183,
+          "bias": -0.5533147690414559
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.806797081361638,
+          "rmse": 6.6489979123013025,
+          "bias": 0.16547049505090047
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.792436197809823,
+          "rmse": 6.722646186885289,
+          "bias": 0.04902318325193542
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0038309528220459048,
+        "player_bootstrap_95pct": [
+          -0.014009695702830349,
+          0.02279930867427198
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.024734637806664,
+        "rmse": 4.702908150173594,
+        "bias": -0.16466352620580957
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.880000738826858,
+          "rmse": 6.775885443302207,
+          "bias": -0.4745081683344566
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.905919635502883,
+          "rmse": 6.865090919012636,
+          "bias": -0.548290728121413
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.8045253025369865,
+          "rmse": 6.631305768081722,
+          "bias": 0.1552663101611805
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.7818808403367346,
+          "rmse": 6.709865259367703,
+          "bias": 0.04605221084751885
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0072655134768566144,
+        "player_bootstrap_95pct": [
+          -0.012177942514221173,
+          0.02717747339738753
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.06304692626733,
+        "rmse": 4.737463377395106,
+        "bias": -0.19144659540534303
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.870695215972456,
+          "rmse": 6.778685514182302,
+          "bias": -0.5147514045319619
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.890674763789277,
+          "rmse": 6.858740502096115,
+          "bias": -0.6027724026740284
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.800324811214492,
+          "rmse": 6.636004129883962,
+          "bias": 0.12420295532349099
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.772660557108769,
+          "rmse": 6.708476206140975,
+          "bias": 0.0027630593826604394
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": -0.0020400093775460432,
+        "player_bootstrap_95pct": [
+          -0.014286445918425823,
+          0.00849890978463438
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "contact",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.718476070007848,
+        "rmse": 4.120913153887057,
+        "bias": -0.21183107495192283
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.869420194931462,
+          "rmse": 6.788171769594784,
+          "bias": -0.5124059924637017
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.914048876153412,
+          "rmse": 6.8527388455477425,
+          "bias": -0.6037563712154063
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.7820910139416455,
+          "rmse": 6.62064454921285,
+          "bias": 0.10911273881245548
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.771008591695423,
+          "rmse": 6.672710111160393,
+          "bias": -0.020038749769952992
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": -0.003315030418539577,
+        "player_bootstrap_95pct": [
+          -0.049467249442191906,
+          0.04770593983887907
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707,
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707,
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.6337818558453208,
+        "rmse": 4.006189845935371,
+        "bias": -0.18140616126265627
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 4.872058651499176,
+          "rmse": 6.780984333452414,
+          "bias": -0.4803818880763809
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 4.9063215039313315,
+          "rmse": 6.842731699270468,
+          "bias": -0.5708583027471166
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 4.783055682823427,
+          "rmse": 6.617519005143582,
+          "bias": 0.1355926304235097
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 4.760298382104763,
+          "rmse": 6.665240411127057,
+          "bias": 0.0045256472790970404
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": -0.0006765738508256302,
+        "player_bootstrap_95pct": [
+          -0.04711814871602415,
+          0.05119490854861013
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1358,
+        "mae": 3.156915767718922,
+        "rmse": 4.8423445115053045,
+        "bias": -0.17684911740600734
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.14269431076798,
+          "rmse": 7.086421744786536,
+          "bias": -0.5215181612385711
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.182671345908302,
+          "rmse": 7.178756116448568,
+          "bias": -0.6131587825055835
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.1046109110775575,
+          "rmse": 6.974914909300928,
+          "bias": 0.18643984687723802
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.087974647959811,
+          "rmse": 7.0534612481125825,
+          "bias": 0.05552147437896263
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.167632891700236,
+        "rmse": 4.829767227934933,
+        "bias": -0.12865798370839898
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.145792472829999,
+          "rmse": 7.092266719398721,
+          "bias": -0.48519715134897434
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.189514614512913,
+          "rmse": 7.184097802583692,
+          "bias": -0.5793585747979858
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.107863357357548,
+          "rmse": 6.985092579329498,
+          "bias": 0.21853931287328798
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.093793159438457,
+          "rmse": 7.061522296635025,
+          "bias": 0.08474638851833853
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.003098162062018646,
+        "player_bootstrap_95pct": [
+          -0.014807780697839442,
+          0.022405475639437303
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.0537290857828943,
+        "rmse": 4.743029331556735,
+        "bias": -0.15984241623069875
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.153817700593665,
+          "rmse": 7.079459397538502,
+          "bias": -0.4844824778618887
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.1964450281003645,
+          "rmse": 7.1823063718113564,
+          "bias": -0.5653840056815163
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.108467594945034,
+          "rmse": 6.967125362004575,
+          "bias": 0.21279587959142854
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.090983604949668,
+          "rmse": 7.053508589912887,
+          "bias": 0.08805319390583732
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.01112338982568441,
+        "player_bootstrap_95pct": [
+          -0.013781665884112865,
+          0.0367052952998701
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 3.118455846496934,
+        "rmse": 4.801060599031323,
+        "bias": -0.19466365080704245
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.142917033059977,
+          "rmse": 7.0825826173907585,
+          "bias": -0.5364341880008008
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.1729248076279255,
+          "rmse": 7.170747492211921,
+          "bias": -0.6359245542699162
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.103984656410734,
+          "rmse": 6.972876332601995,
+          "bias": 0.17266878913061245
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.075343972702287,
+          "rmse": 7.048938957423233,
+          "bias": 0.03158634722890937
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.000222722291996704,
+        "player_bootstrap_95pct": [
+          -0.015448023617899069,
+          0.014349812871852066
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "contact",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.7929515294330827,
+        "rmse": 4.205403930768074,
+        "bias": -0.2113112574809342
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.1481208254506825,
+          "rmse": 7.091036955951965,
+          "bias": -0.5303667183195998
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.177751972064071,
+          "rmse": 7.1615204847635034,
+          "bias": -0.6319501067491016
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.090953882328675,
+          "rmse": 6.955141307446082,
+          "bias": 0.1603879361858549
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.057905323591557,
+          "rmse": 7.008391838991581,
+          "bias": 0.013407293749582308
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.005426514682700961,
+        "player_bootstrap_95pct": [
+          -0.04013000786725848,
+          0.05371342165806514
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "RB",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 4122,
+      "test_n": 1358,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.7614138438880707,
+        "catchable_rate": 0.7614138438880707,
+        "ftn_drops": 0.7614138438880707,
+        "drop_rate": 0.7614138438880707,
+        "pfr_yards_before_contact": 0.9241531664212077,
+        "ybc_per_carry": 0.9241531664212077
+      },
+      "same_game": {
+        "n": 1358,
+        "mae": 2.647310635883599,
+        "rmse": 4.023901121337041,
+        "bias": -0.18327004194733573
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1035,
+          "mae": 5.148817777334291,
+          "rmse": 7.083167902981565,
+          "bias": -0.4965354640219625
+        },
+        "last4": {
+          "n": 1035,
+          "mae": 5.173742486580815,
+          "rmse": 7.155154991149249,
+          "bias": -0.596802803241244
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1192,
+          "mae": 5.089133233145299,
+          "rmse": 6.952133982374472,
+          "bias": 0.18733742374620277
+        },
+        "last4": {
+          "n": 1192,
+          "mae": 5.0480359933320305,
+          "rmse": 7.004592995219855,
+          "bias": 0.0375373566157293
+        }
+      },
+      "missing_next_usage": 157,
+      "paired_ewma": {
+        "delta_mae": 0.00612346656630997,
+        "player_bootstrap_95pct": [
+          -0.0408127125329039,
+          0.059300696484217146
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2134,
+        "mae": 2.685791341413105,
+        "rmse": 3.836918893455427,
+        "bias": 0.0362021828865141
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 3.878134599706285,
+          "rmse": 5.1619180931571655,
+          "bias": 0.027811942606351715
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 3.925253913622809,
+          "rmse": 5.265376098447976,
+          "bias": -0.015040025506576881
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.8293983713416706,
+          "rmse": 5.02764941548029,
+          "bias": 0.6605848649949841
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8402557645088695,
+          "rmse": 5.126103720250955,
+          "bias": 0.5973959407314785
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.6936632088531622,
+        "rmse": 3.8092491111318467,
+        "bias": 0.08843053222457059
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 3.8755435288411273,
+          "rmse": 5.149038804721384,
+          "bias": 0.08967672453786672
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 3.926760407743922,
+          "rmse": 5.251790969508028,
+          "bias": 0.04062714191691512
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.820759207044566,
+          "rmse": 5.01921017893388,
+          "bias": 0.7049928333916977
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8319002368126047,
+          "rmse": 5.115261149906363,
+          "bias": 0.6336146184610724
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.002591070865157726,
+        "player_bootstrap_95pct": [
+          -0.01568562245434252,
+          0.010754552099743553
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.2432572438273395,
+        "rmse": 3.3190645812276105,
+        "bias": 0.004224959170190194
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 3.85208487939686,
+          "rmse": 5.144293185665667,
+          "bias": -0.0017895693721464631
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 3.906326825244808,
+          "rmse": 5.247338591224964,
+          "bias": -0.03918838961487944
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.813516609627423,
+          "rmse": 5.012476204400636,
+          "bias": 0.6417799806193332
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8267770044271043,
+          "rmse": 5.107115199917538,
+          "bias": 0.5796200734906477
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.02604972030942506,
+        "player_bootstrap_95pct": [
+          -0.07876116835483611,
+          0.01985095162791033
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.6650806239705886,
+        "rmse": 3.811731441119329,
+        "bias": 0.017985823447076124
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 3.879146517109248,
+          "rmse": 5.165662472893676,
+          "bias": 0.013190657709347286
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 3.926834976843731,
+          "rmse": 5.271397725914482,
+          "bias": -0.03848640087319448
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.827383755651194,
+          "rmse": 5.028161989070239,
+          "bias": 0.6457041320963202
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.839108842695289,
+          "rmse": 5.128678710768779,
+          "bias": 0.5756514502234362
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": 0.0010119174029632188,
+        "player_bootstrap_95pct": [
+          -0.010848517073819636,
+          0.012233434277953759
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432,
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.173031281512064,
+        "rmse": 3.2061914003507845,
+        "bias": 0.014598993697565243
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 3.847306942763829,
+          "rmse": 5.139187671549724,
+          "bias": 0.018605688850635856
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 3.9005292134608034,
+          "rmse": 5.24176671302777,
+          "bias": -0.037510932518319016
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 3.8024010953562457,
+          "rmse": 5.0060855397210124,
+          "bias": 0.6513819923741634
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 3.8133725133404957,
+          "rmse": 5.0976300455805905,
+          "bias": 0.5723675601313924
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.030827656942456344,
+        "player_bootstrap_95pct": [
+          -0.09331702320671001,
+          0.021973373920205243
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2134,
+        "mae": 2.9550744287996196,
+        "rmse": 4.16638265305146,
+        "bias": 0.04299775647213622
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 4.434769756627222,
+          "rmse": 5.881241502815806,
+          "bias": 0.03744359689709163
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 4.5045611285602565,
+          "rmse": 6.015349776408303,
+          "bias": -0.007447091774355755
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.454166513380602,
+          "rmse": 5.816527466916459,
+          "bias": 0.8351694142492334
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.4794263479497465,
+          "rmse": 5.942518658890098,
+          "bias": 0.7660459737156948
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.965990232386541,
+        "rmse": 4.138793159858564,
+        "bias": 0.09886901830267
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 4.4241092109325795,
+          "rmse": 5.8661279595377405,
+          "bias": 0.10362830489074673
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 4.499122030847169,
+          "rmse": 5.999415402301015,
+          "bias": 0.05210732482678955
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.438430385325562,
+          "rmse": 5.80708840910566,
+          "bias": 0.8826768892561585
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.464680541501442,
+          "rmse": 5.930087192370344,
+          "bias": 0.8047897951052319
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.010660545694642693,
+        "player_bootstrap_95pct": [
+          -0.025080025750200772,
+          0.0027331126578840803
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.3370618928014495,
+        "rmse": 3.463297834241089,
+        "bias": -0.005445125563095067
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 4.4028217298569,
+          "rmse": 5.859794662672672,
+          "bias": -0.006706625392784661
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 4.492679748074596,
+          "rmse": 5.995912718090712,
+          "bias": -0.0453662121955639
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.432326557276358,
+          "rmse": 5.79616016104836,
+          "bias": 0.803287057698849
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.469425151918707,
+          "rmse": 5.919174468140235,
+          "bias": 0.7346157315161863
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.0319480267703221,
+        "player_bootstrap_95pct": [
+          -0.09260453299171997,
+          0.021177834687683826
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.9204660372011335,
+        "rmse": 4.127443802317436,
+        "bias": 0.018196655281308614
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 4.436557670056244,
+          "rmse": 5.885725506046916,
+          "bias": 0.01744812557586057
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 4.507362679308974,
+          "rmse": 6.02264776580371,
+          "bias": -0.03889337552376371
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.45186737864403,
+          "rmse": 5.816256678352214,
+          "bias": 0.8149425654071267
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.478408352037448,
+          "rmse": 5.944817697210571,
+          "bias": 0.7368420281607977
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": 0.0017879134290227248,
+        "player_bootstrap_95pct": [
+          -0.014119511982566524,
+          0.01698533799844909
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432,
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.2335199444648857,
+        "rmse": 3.305283449687809,
+        "bias": -0.005301285909870764
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 4.397745719418785,
+          "rmse": 5.85449925415932,
+          "bias": 0.005514837603062232
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 4.483761974650186,
+          "rmse": 5.990007573039578,
+          "bias": -0.055459387438928844
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 4.419566380347592,
+          "rmse": 5.787954971257913,
+          "bias": 0.8047626922395816
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 4.451904270774507,
+          "rmse": 5.906918546985322,
+          "bias": 0.7161274952978796
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.03702403720843713,
+        "player_bootstrap_95pct": [
+          -0.1105511168391686,
+          0.02479028523451181
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 2134,
+        "mae": 3.250641815414352,
+        "rmse": 4.528611771489239,
+        "bias": 0.04979333005773456
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 5.060821060129689,
+          "rmse": 6.675306465457971,
+          "bias": 0.047075251187804715
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 5.1485359136351505,
+          "rmse": 6.843020003873779,
+          "bias": 0.00014584195783814795
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.13606410726962,
+          "rmse": 6.674436289809337,
+          "bias": 1.0097539635034583
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.1718183073436945,
+          "rmse": 6.830678410101391,
+          "bias": 0.9346960066998867
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 3.2593469510561306,
+        "rmse": 4.50125043352693,
+        "bias": 0.1093117485305641
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 5.045956028259489,
+          "rmse": 6.658287717690814,
+          "bias": 0.11758035556179554
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 5.13997616741225,
+          "rmse": 6.825090957854397,
+          "bias": 0.06358784367821235
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.116413191890622,
+          "rmse": 6.664156476256473,
+          "bias": 1.0603626250122347
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.153833842243793,
+          "rmse": 6.816910115508394,
+          "bias": 0.9759689420005695
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.014865031870200354,
+        "player_bootstrap_95pct": [
+          -0.030212752515505904,
+          -0.0009087547063729391
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.4471549167798567,
+        "rmse": 3.6295364042258766,
+        "bias": -0.012616458576982775
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 5.026972907836809,
+          "rmse": 6.649949223705942,
+          "bias": -0.009426737831313781
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 5.145856109334935,
+          "rmse": 6.821939287502884,
+          "bias": -0.04899343523492777
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.112187019077522,
+          "rmse": 6.6489265052851865,
+          "bias": 0.9672327796908796
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.167989796088506,
+          "rmse": 6.802761786144602,
+          "bias": 0.8926313738749404
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.03384815229288081,
+        "player_bootstrap_95pct": [
+          -0.10376996231071717,
+          0.02797535343007122
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 3.199399225026318,
+        "rmse": 4.4742689845490435,
+        "bias": 0.02044735950448951
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 5.057527668564048,
+          "rmse": 6.680174352921264,
+          "bias": 0.022755172606139
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 5.149550288558705,
+          "rmse": 6.850983768013977,
+          "bias": -0.03798496183904803
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.129395747106482,
+          "rmse": 6.673303633164512,
+          "bias": 0.9857806510690513
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.169293576470189,
+          "rmse": 6.832295052700178,
+          "bias": 0.8999548144841208
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.0032933915656414995,
+        "player_bootstrap_95pct": [
+          -0.022534258797944382,
+          0.015228726220920906
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "WR",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 6475,
+      "test_n": 2134,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9803186504217432,
+        "catchable_rate": 0.9803186504217432,
+        "ftn_drops": 0.9803186504217432,
+        "drop_rate": 0.9803186504217432
+      },
+      "same_game": {
+        "n": 2134,
+        "mae": 2.302909930242729,
+        "rmse": 3.4201261419283346,
+        "bias": -0.022145825716540356
+      },
+      "next_week": {
+        "ewma": {
+          "n": 1553,
+          "mae": 5.0125067733161615,
+          "rmse": 6.644548986877349,
+          "bias": -0.005170796073371004
+        },
+        "last4": {
+          "n": 1553,
+          "mae": 5.134613361807905,
+          "rmse": 6.815926169970818,
+          "bias": -0.07107058867802085
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 1887,
+          "mae": 5.090395885463661,
+          "rmse": 6.638891388728587,
+          "bias": 0.9608499049326891
+        },
+        "last4": {
+          "n": 1887,
+          "mae": 5.147160502401964,
+          "rmse": 6.787907912422576,
+          "bias": 0.8628853698610817
+        }
+      },
+      "missing_next_usage": 334,
+      "paired_ewma": {
+        "delta_mae": -0.04831428681352871,
+        "player_bootstrap_95pct": [
+          -0.13369992889896934,
+          0.02363685835833514
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "std",
+      "variant": "baseline",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1129,
+        "mae": 2.0214568648890774,
+        "rmse": 3.0456484777235824,
+        "bias": -0.16203579690814562
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.141023673688893,
+          "rmse": 4.380595893369854,
+          "bias": -0.30783876316575204
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.1361211882344406,
+          "rmse": 4.426132582318569,
+          "bias": -0.34021079073092986
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 2.96954625433656,
+          "rmse": 4.066348979652892,
+          "bias": 0.321620839854566
+        },
+        "last4": {
+          "n": 999,
+          "mae": 2.9490399648146783,
+          "rmse": 4.11538813942978,
+          "bias": 0.2800243213047291
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "std",
+      "variant": "target_share",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.0243186381992526,
+        "rmse": 3.034306605737659,
+        "bias": -0.11026725684265859
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.1398496199283477,
+          "rmse": 4.365231137206141,
+          "bias": -0.2584516750247212
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.1369403342663613,
+          "rmse": 4.409316470938544,
+          "bias": -0.29144796390927263
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 2.9652203578046197,
+          "rmse": 4.058367559605449,
+          "bias": 0.3561141583761867
+        },
+        "last4": {
+          "n": 999,
+          "mae": 2.946186107379432,
+          "rmse": 4.108066945150228,
+          "bias": 0.31398007664798905
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": -0.0011740537605441624,
+        "player_bootstrap_95pct": [
+          -0.015824217773899158,
+          0.014338705024694136
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "std",
+      "variant": "catchability",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.8002904476144488,
+        "rmse": 2.79604320841559,
+        "bias": -0.12198898794506564
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.1575672734691915,
+          "rmse": 4.411321641872243,
+          "bias": -0.2684053748173717
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.190639181533561,
+          "rmse": 4.485298885575087,
+          "bias": -0.28101911383403566
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 2.991028615245901,
+          "rmse": 4.105647002722321,
+          "bias": 0.3606772426374985
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.001061977192513,
+          "rmse": 4.182295632534071,
+          "bias": 0.3356346373056791
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.01654359978029948,
+        "player_bootstrap_95pct": [
+          -0.023294450708872906,
+          0.05757991161884925
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "std",
+      "variant": "drops",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.003063739662874,
+        "rmse": 3.035485213586765,
+        "bias": -0.18217762514252667
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.139074018789454,
+          "rmse": 4.384324443729598,
+          "bias": -0.32397426556982667
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.1356194941440916,
+          "rmse": 4.432564426402829,
+          "bias": -0.36290776777939093
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 2.9633630719492268,
+          "rmse": 4.065279898736377,
+          "bias": 0.3045462209947039
+        },
+        "last4": {
+          "n": 999,
+          "mae": 2.944221675968252,
+          "rmse": 4.118842011291751,
+          "bias": 0.2581652096065788
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": -0.0019496548994384277,
+        "player_bootstrap_95pct": [
+          -0.011637056030328176,
+          0.008092959364692275
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "std",
+      "variant": "combined",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021,
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.7487854769890412,
+        "rmse": 2.7383402686031237,
+        "bias": -0.09888907149345322
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.1520457279031,
+          "rmse": 4.396601734647325,
+          "bias": -0.2435040430375866
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.1876913418385513,
+          "rmse": 4.467807620258304,
+          "bias": -0.26444025611396144
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 2.9808255617249855,
+          "rmse": 4.093057886441646,
+          "bias": 0.3738318937455002
+        },
+        "last4": {
+          "n": 999,
+          "mae": 2.992248073413744,
+          "rmse": 4.171452600501142,
+          "bias": 0.34181270241316625
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.011022054214207001,
+        "player_bootstrap_95pct": [
+          -0.03249562408716801,
+          0.052377464372413245
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "half",
+      "variant": "baseline",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1129,
+        "mae": 2.2192423659284484,
+        "rmse": 3.267317120729474,
+        "bias": -0.174758110712514
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.6304023573259787,
+          "rmse": 5.000149206291254,
+          "bias": -0.35040282950249113
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.642509814330537,
+          "rmse": 5.060959403683751,
+          "bias": -0.38367404358823415
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 3.5332596134297405,
+          "rmse": 4.730169402265081,
+          "bias": 0.47692570122009414
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.5242254051716126,
+          "rmse": 4.79495154229057,
+          "bias": 0.4330512119546982
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "half",
+      "variant": "target_share",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.220998541542729,
+        "rmse": 3.2561516495457883,
+        "bias": -0.11997160115752915
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.630982792215477,
+          "rmse": 4.9849004642217265,
+          "bias": -0.29813660424466715
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.643717083748089,
+          "rmse": 5.042978817509501,
+          "bias": -0.3320684724399409
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 3.5300811176440576,
+          "rmse": 4.723326753641314,
+          "bias": 0.5134298893308137
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.5214664999679113,
+          "rmse": 4.788192781325334,
+          "bias": 0.46898649837009465
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0005804348894983186,
+        "player_bootstrap_95pct": [
+          -0.014575583437366556,
+          0.01703983891048076
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "half",
+      "variant": "catchability",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.8728901642751308,
+        "rmse": 2.893394199307984,
+        "bias": -0.1344431754260911
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.6444028288622903,
+          "rmse": 5.042313376666491,
+          "bias": -0.3075166658986841
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.7168898695857924,
+          "rmse": 5.138861417963565,
+          "bias": -0.3164667329190162
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 3.551215857179237,
+          "rmse": 4.7816006024552165,
+          "bias": 0.51705944828868
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.589545272631659,
+          "rmse": 4.880090352652147,
+          "bias": 0.4928640773151546
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.014000471536310989,
+        "player_bootstrap_95pct": [
+          -0.03349087665813059,
+          0.06394163231014455
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "half",
+      "variant": "drops",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.1851379194665492,
+        "rmse": 3.242345369854351,
+        "bias": -0.2025745051511973
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.6322203626292042,
+          "rmse": 5.006011080975837,
+          "bias": -0.37214194794508754
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.645416506392329,
+          "rmse": 5.071958502376766,
+          "bias": -0.41506315081786344
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 3.528142543128271,
+          "rmse": 4.728472350556436,
+          "bias": 0.45372223060526634
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.519607433880681,
+          "rmse": 4.800881932588294,
+          "bias": 0.40210203139798045
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0018180053032254462,
+        "player_bootstrap_95pct": [
+          -0.011173032597317317,
+          0.015838329106863974
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "half",
+      "variant": "combined",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021,
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.7846610553878488,
+        "rmse": 2.8001198682821564,
+        "bias": -0.12183781102936146
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 3.6501011318715326,
+          "rmse": 5.031713821243757,
+          "bias": -0.29010100224578117
+        },
+        "last4": {
+          "n": 767,
+          "mae": 3.7182920293751813,
+          "rmse": 5.126368345050921,
+          "bias": -0.31055451977468806
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 3.547353145716682,
+          "rmse": 4.770164809276502,
+          "bias": 0.5221929486516373
+        },
+        "last4": {
+          "n": 999,
+          "mae": 3.5813243459604944,
+          "rmse": 4.872983452606668,
+          "bias": 0.48810582424082516
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.019698774545553643,
+        "player_bootstrap_95pct": [
+          -0.030500534790895963,
+          0.06766187774813084
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "baseline",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {},
+      "same_game": {
+        "n": 1129,
+        "mae": 2.4398652817219117,
+        "rmse": 3.5213801972256533,
+        "bias": -0.18748042451690283
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 4.17370977773795,
+          "rmse": 5.699076083749485,
+          "bias": -0.39296689583925076
+        },
+        "last4": {
+          "n": 767,
+          "mae": 4.209944927383052,
+          "rmse": 5.777637524663544,
+          "bias": -0.4271372964455597
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 4.138377718375105,
+          "rmse": 5.4681737948275995,
+          "bias": 0.6322305625856022
+        },
+        "last4": {
+          "n": 999,
+          "mae": 4.146280370549136,
+          "rmse": 5.55152259713537,
+          "bias": 0.5860781026046468
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0,
+        "player_bootstrap_95pct": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "target_share",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.441521200835492,
+        "rmse": 3.5104724531710656,
+        "bias": -0.12967594547242411
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 4.177250172907446,
+          "rmse": 5.684032001646978,
+          "bias": -0.3378215334646375
+        },
+        "last4": {
+          "n": 767,
+          "mae": 4.209850088580782,
+          "rmse": 5.75878734893731,
+          "bias": -0.3726889809706344
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 4.137272145598118,
+          "rmse": 5.462310099471065,
+          "bias": 0.6707456202854172
+        },
+        "last4": {
+          "n": 999,
+          "mae": 4.142318712230251,
+          "rmse": 5.545263932465743,
+          "bias": 0.6239929200921759
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.0035403951694962348,
+        "player_bootstrap_95pct": [
+          -0.011522406505468053,
+          0.019742004262370407
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "catchability",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.954519466578459,
+        "rmse": 3.0087808807450176,
+        "bias": -0.1443782138210395
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 4.185836113871601,
+          "rmse": 5.752343421994409,
+          "bias": -0.34480485621127666
+        },
+        "last4": {
+          "n": 767,
+          "mae": 4.305575755761071,
+          "rmse": 5.8734083929234515,
+          "bias": -0.3502014596612671
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 4.1540693539555,
+          "rmse": 5.531229667512284,
+          "bias": 0.6755892497977753
+        },
+        "last4": {
+          "n": 999,
+          "mae": 4.226752683338391,
+          "rmse": 5.653738939724193,
+          "bias": 0.6521970034295492
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.012126336133651163,
+        "player_bootstrap_95pct": [
+          -0.045643517934211494,
+          0.0707975456475318
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "drops",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 2.387480847505918,
+        "rmse": 3.479163920245481,
+        "bias": -0.2228779297873144
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 4.17993649369644,
+          "rmse": 5.707961249235789,
+          "bias": -0.4202614831359062
+        },
+        "last4": {
+          "n": 767,
+          "mae": 4.215568384211949,
+          "rmse": 5.794536028978507,
+          "bias": -0.4671841430103047
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 4.134818938034523,
+          "rmse": 5.466522943865681,
+          "bias": 0.6029352060721512
+        },
+        "last4": {
+          "n": 999,
+          "mae": 4.141331712206773,
+          "rmse": 5.5610402314646326,
+          "bias": 0.5460652573724697
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.006226715958490589,
+        "player_bootstrap_95pct": [
+          -0.010335490439703034,
+          0.024417406974544534
+        ]
+      }
+    },
+    {
+      "year": 2025,
+      "position": "TE",
+      "format": "ppr",
+      "variant": "combined",
+      "train_n": 3250,
+      "test_n": 1129,
+      "feature_coverage": {
+        "target_share": 1.0,
+        "ftn_catchable_targets": 0.9911426040744021,
+        "catchable_rate": 0.9911426040744021,
+        "ftn_drops": 0.9911426040744021,
+        "drop_rate": 0.9911426040744021
+      },
+      "same_game": {
+        "n": 1129,
+        "mae": 1.8236544010697542,
+        "rmse": 2.8713749507735358,
+        "bias": -0.14140861366490642
+      },
+      "next_week": {
+        "ewma": {
+          "n": 767,
+          "mae": 4.189335567642144,
+          "rmse": 5.746333453330709,
+          "bias": -0.3346676157008713
+        },
+        "last4": {
+          "n": 767,
+          "mae": 4.305143956652779,
+          "rmse": 5.866966271317401,
+          "bias": -0.3545926181501371
+        }
+      },
+      "zero_usage_sensitivity": {
+        "ewma": {
+          "n": 999,
+          "mae": 4.146336836426521,
+          "rmse": 5.520872999175893,
+          "bias": 0.6729530109769781
+        },
+        "last4": {
+          "n": 999,
+          "mae": 4.214673219707795,
+          "rmse": 5.650716993779107,
+          "bias": 0.637077671285536
+        }
+      },
+      "missing_next_usage": 232,
+      "paired_ewma": {
+        "delta_mae": 0.01562578990419475,
+        "player_bootstrap_95pct": [
+          -0.04287424278925705,
+          0.07352824796556477
+        ]
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "position": "RB",
+      "validation_best": "contact",
+      "validation_gain": 0.03601129413371851,
+      "confirmation_gain": 0.00331503041854031,
+      "adopt": false,
+      "reasons": [
+        "No candidate improves validation MAE by 0.05 points",
+        "Confirmation MAE improvement below 0.05 points",
+        "Confirmation paired interval includes no improvement"
+      ]
+    },
+    {
+      "position": "WR",
+      "validation_best": "catchability",
+      "validation_gain": 0.04937776274454997,
+      "confirmation_gain": 0.03194802677032271,
+      "adopt": false,
+      "reasons": [
+        "No candidate improves validation MAE by 0.05 points",
+        "Confirmation MAE improvement below 0.05 points",
+        "Confirmation paired interval includes no improvement"
+      ]
+    },
+    {
+      "position": "TE",
+      "validation_best": "target_share",
+      "validation_gain": 0.01320411829385515,
+      "confirmation_gain": -0.0005804348894984379,
+      "adopt": false,
+      "reasons": [
+        "No candidate improves validation MAE by 0.05 points",
+        "Confirmation MAE improvement below 0.05 points",
+        "Confirmation paired interval includes no improvement"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "file": "ftn_2022.parquet",
+      "sha256": "86a44b17037575ad9261172d4f7dceeac96ccdbfd1f503e2f9cbc755c935f377"
+    },
+    {
+      "file": "ftn_2023.parquet",
+      "sha256": "c406760352a00c3920a4f8996ddef5d640edf21915094cb4020ded753ccdb24e"
+    },
+    {
+      "file": "ftn_2024.parquet",
+      "sha256": "ef897aab5691c53bcdd853a4576806fbf201a63fc833164ebbb26356c6922669"
+    },
+    {
+      "file": "ftn_2025.parquet",
+      "sha256": "50afe542beb29d987776ac2b0ab49eab2eea6c902c689bafdd62918fb280426e"
+    },
+    {
+      "file": "pbp_2022.parquet",
+      "sha256": "311971fb4404dc8759a9f77c50ef2f4933fbd2d24deb5a747987058d0b6788a8"
+    },
+    {
+      "file": "pbp_2023.parquet",
+      "sha256": "19fc2ce8abb85be47fad16ceff178c67d6581309e87d53bb70c4531373867b1e"
+    },
+    {
+      "file": "pbp_2024.parquet",
+      "sha256": "e332d33a0c83a33073cde85f8e8f1ac0caebcc552eda7e7c92612ff306bafa73"
+    },
+    {
+      "file": "pbp_2025.parquet",
+      "sha256": "5ed293fdf54d79e34426133829f3111faf577db29b8cfc25cf910d75eb55b2ef"
+    },
+    {
+      "file": "pfr_ids.parquet",
+      "sha256": "e0eb992bf9b46608b0e4e2c32bfa19e6a7ac9cf7dfc2594f819f56c67c1610e0"
+    },
+    {
+      "file": "pfr_rush_week_2022.parquet",
+      "sha256": "cca191787976edf69808388d0b0e6f4f6fc7ea6536a404b10f83e89e5fa0ba08"
+    },
+    {
+      "file": "pfr_rush_week_2023.parquet",
+      "sha256": "8858622a7d6ab49cf704dadcb72a308709ebbba60be640e12af9e0738b49afea"
+    },
+    {
+      "file": "pfr_rush_week_2024.parquet",
+      "sha256": "4da7643129d1bb63de5c31d07af1b63641b83b6c4c2e3e17e8b4ff76f2973e78"
+    },
+    {
+      "file": "pfr_rush_week_2025.parquet",
+      "sha256": "c75abd7972eae2e2d01514af07fb5f4e46250bb4f70b5830f06d3d82e8cd26f5"
+    },
+    {
+      "file": "player_stats_2022.parquet",
+      "sha256": "b6a86865760bb11eb86bad0d3f51380a1d25287e74eaa2fae5c0ded99c21ba20"
+    },
+    {
+      "file": "player_stats_2023.parquet",
+      "sha256": "dc712abfb4f650be151ae11d3cc3aeb896b9c4cc2c9cf74a236604930c96ba51"
+    },
+    {
+      "file": "player_stats_2024.parquet",
+      "sha256": "9f828ff37574728e7c1815f9283d98401d436820e4c648cd985509149023b9c3"
+    },
+    {
+      "file": "player_stats_2025.parquet",
+      "sha256": "782c689a762e93508b9b6e11f1f9002bc7cde12aa0bfb0a6058aa00896bb9ae9"
+    }
+  ]
+}

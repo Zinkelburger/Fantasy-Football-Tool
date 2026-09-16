@@ -254,3 +254,29 @@ validated against 2026 outcomes yet — that is what the accuracy harness in
 
 Not used: ffverse `ep_weekly_<season>` (no 2026 file as of 2026-09-10; our
 own model in finding 39 agrees with it at r = .95–.98 on 2025).
+
+## Advanced weekly usage context (2026-09-16)
+
+`engine/weekly/advanced_usage.py --season 2026 --refresh` exports opportunities,
+target share, air/red-zone/end-zone usage, FTN catchability/drops and PFR
+rushing yards before contact. Run with `.venv-league-sim/bin/python`.
+Omit `--refresh` for strictly cache-only operation. The regular weekly build
+also refreshes optional FTN/PFR data after expected points, reusing the same
+PBP/player-stat cache. The additional fields do not change the scoring model.
+
+- [FTN charting via nflverse](https://nflreadr.nflverse.com/reference/load_ftn_charting.html):
+  free public subset, no key; FTN Data via nflverse attribution, CC-BY-SA 4.0.
+  Join on game/play IDs. Preserve unknown and partially charted totals as null.
+- [PFR advanced rushing via nflverse](https://nflreadr.nflverse.com/reference/load_pfr_advstats.html):
+  no key; use weekly rather than season summary. Join through PFR/GSIS IDs and
+  game/team; carry mismatches suppress contact-yard totals.
+- Outputs: `data/weekly/advanced_usage_<year>_weekly.csv` and `.sources.json`,
+  with source hashes, cache timestamps and coverage. Target share divides by
+  all identified team targets. Provider-specific labels are not interchangeable.
+- Verified Week 1 coverage: 16 games for FTN, 15 for PFR rushing. Missing Monday
+  contact yards remain blank. Recheck after source updates and Thursday stat
+  corrections; do not overwrite an already published expected-points edition.
+
+See the [screenshot comparison and improvement plan](../research/opportunity-score/ADVANCED-STATS-2026-09-16.md).
+The follow-up [temporal model evaluation](../research/opportunity-score/ADVANCED-MODEL-REVIEW-2026-09-16.md)
+found no reliable next-week improvement; the website displays the fields as context.

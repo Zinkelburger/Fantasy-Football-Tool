@@ -1,0 +1,160 @@
+{
+  "season": 2026,
+  "week": 1,
+  "sample_rows": 18,
+  "counts": {
+    "opportunities": {
+      "match": 6,
+      "different": 0,
+      "unavailable": 0
+    },
+    "rush_att": {
+      "match": 6,
+      "different": 0,
+      "unavailable": 0
+    },
+    "tgt": {
+      "match": 18,
+      "different": 0,
+      "unavailable": 0
+    },
+    "receptions": {
+      "match": 18,
+      "different": 0,
+      "unavailable": 0
+    },
+    "rushing_yards": {
+      "match": 6,
+      "different": 0,
+      "unavailable": 0
+    },
+    "pfr_yards_before_contact": {
+      "match": 5,
+      "different": 0,
+      "unavailable": 1
+    },
+    "receiving_yards": {
+      "match": 12,
+      "different": 0,
+      "unavailable": 0
+    },
+    "air_yds": {
+      "match": 10,
+      "different": 2,
+      "unavailable": 0
+    },
+    "target_share_pct": {
+      "match": 12,
+      "different": 0,
+      "unavailable": 0
+    },
+    "tgt_rz_lt20": {
+      "match": 12,
+      "different": 0,
+      "unavailable": 0
+    },
+    "ftn_catchable_targets": {
+      "match": 7,
+      "different": 5,
+      "unavailable": 0
+    },
+    "ftn_drops": {
+      "match": 7,
+      "different": 5,
+      "unavailable": 0
+    }
+  },
+  "differences": [
+    {
+      "name": "Kenneth Walker III",
+      "field": "pfr_yards_before_contact",
+      "screenshot": 0.0,
+      "ours": null,
+      "status": "unavailable"
+    },
+    {
+      "name": "Amon-Ra St. Brown",
+      "field": "ftn_drops",
+      "screenshot": 1.0,
+      "ours": 0.0,
+      "status": "different"
+    },
+    {
+      "name": "Chris Olave",
+      "field": "ftn_drops",
+      "screenshot": 2.0,
+      "ours": 1.0,
+      "status": "different"
+    },
+    {
+      "name": "Matthew Golden",
+      "field": "ftn_catchable_targets",
+      "screenshot": 7.0,
+      "ours": 6.0,
+      "status": "different"
+    },
+    {
+      "name": "Matthew Golden",
+      "field": "ftn_drops",
+      "screenshot": 1.0,
+      "ours": 0.0,
+      "status": "different"
+    },
+    {
+      "name": "Jaxon Smith-Njigba",
+      "field": "air_yds",
+      "screenshot": 75.0,
+      "ours": 76.0,
+      "status": "different"
+    },
+    {
+      "name": "Nico Collins",
+      "field": "ftn_catchable_targets",
+      "screenshot": 7.0,
+      "ours": 6.0,
+      "status": "different"
+    },
+    {
+      "name": "DK Metcalf",
+      "field": "ftn_drops",
+      "screenshot": 1.0,
+      "ours": 2.0,
+      "status": "different"
+    },
+    {
+      "name": "Trey McBride",
+      "field": "air_yds",
+      "screenshot": 88.0,
+      "ours": 89.0,
+      "status": "different"
+    },
+    {
+      "name": "Trey McBride",
+      "field": "ftn_catchable_targets",
+      "screenshot": 10.0,
+      "ours": 11.0,
+      "status": "different"
+    },
+    {
+      "name": "Noah Fant",
+      "field": "ftn_catchable_targets",
+      "screenshot": 4.0,
+      "ours": 5.0,
+      "status": "different"
+    },
+    {
+      "name": "Dalton Schultz",
+      "field": "ftn_catchable_targets",
+      "screenshot": 5.0,
+      "ours": 4.0,
+      "status": "different"
+    },
+    {
+      "name": "Dalton Schultz",
+      "field": "ftn_drops",
+      "screenshot": 1.0,
+      "ours": 0.0,
+      "status": "different"
+    }
+  ]
+}
