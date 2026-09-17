@@ -1,22 +1,26 @@
 """Official club-site reports: the daily practice grid, transactions,
 and the team-published depth chart, straight from each team's own site.
 
-Every NFL club runs the same league CMS, so one URL shape works for all 32:
+Every NFL club runs the same league CMS, but some publish their own report
+only in a news article. Start with the shared page shapes:
 
     https://<club host>/team/injury-report/week/REG-<week>
     https://<club host>/team/transactions/
     https://<club host>/team/depth-chart
 
-These pages are server-rendered HTML with no key, no login and no rate limit
-worth worrying about, and they carry two things nflverse's weekly injury
+Missing teams fall back to official injury-report articles discovered in the
+club's RSS feed, checked against the requested matchup and publication date.
+These pages are server-rendered HTML with no key or login and carry two
+things nflverse's weekly injury
 table does not: each practice day in its own column (so a Wed DNP that
 becomes a Thu LP is visible the moment it posts) and the club's own depth
 chart. nflverse remains the source of record for the season-long report;
 this module is what to call mid-week when a Thursday or Friday update
 decides a lineup.
 
-Timing: clubs post the day's report in the late afternoon ET, so Thursday's
-column is empty until roughly 4pm ET. Friday brings the game-status
+Timing: clubs post the day's report in the late afternoon ET. Sunday games
+usually report Wed/Thu/Fri; Thursday games Mon/Tue/Wed and Monday games
+Thu/Fri/Sat. Empty later columns mean "not posted yet". The final report brings the game-status
 designation (Out / Doubtful / Questionable); "UNSPECIFIED" means the club
 has not designated yet, not that the player is fine.
 
@@ -31,10 +35,15 @@ import json
 import re
 import urllib.error
 import urllib.request
+import urllib.parse
+import xml.etree.ElementTree as ET
+from datetime import date, datetime, timedelta
+from email.utils import parsedate_to_datetime
+from zoneinfo import ZoneInfo
 
 import polars as pl
 
-from common import DATA, nfl_state, norm_team, now_iso
+from common import DATA, TEAMS, nfl_state, norm_team, now_iso
 
 # nflverse abbreviation -> club site host.
 CLUB_HOSTS = {
@@ -125,39 +134,153 @@ def injury_report(team: str, week: int, season_type: str = "REG") -> list[dict]:
     host = CLUB_HOSTS[team]
     url = f"https://{host}/team/injury-report/week/{season_type}-{week}"
     page = _get(url)
-    rows: list[dict] = []
-    for owner, table in _labelled_tables(page):
-        headers, body = table
-        keys = [h.lower() for h in headers]
-        if "player" not in keys or not any(k in keys for k in DAYS):
+    return [row for owner, (headers, body) in _labelled_tables(page)
+            for row in _injury_rows(headers, body, owner or team, team, week, url)]
+
+
+def _injury_rows(headers, body, owner, page_team, week, url):
+    """Shared schema for the CMS grid and the club's news-article tables."""
+    aliases = {"name": "player", "pos": "position", "game statis": "game status"}
+    aliases.update({full: short for full, short in zip(
+        ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"), DAYS)})
+    keys = [aliases.get(h.lower().strip(), h.lower().strip()) for h in headers]
+    if "player" not in keys or not any(k in DAYS for k in keys):
+        return []
+    rows = []
+    for cells in body:
+        row = dict(zip(keys, cells))
+        if not row.get("player"):
             continue
-        for cells in body:
-            row = dict(zip(keys, cells))
-            if not row.get("player"):
-                continue
-            status = (row.get("game status") or "").strip()
-            # The opponent's table on a club page runs the position into the
-            # name cell ("Chig Okonkwo, TE") and leaves Position empty.
-            name, pos = row["player"], row.get("position", "").strip()
-            if not pos and "," in name:
-                name, _, pos = name.rpartition(",")
-                name, pos = name.strip(), pos.strip()
-            rows.append({
-                "team": owner or team,
-                "week": week,
-                "player": name,
-                "position": pos,
-                "injury": row.get("injury", ""),
-                **{day: row.get(day, "") for day in DAYS},
-                "practice_days": ",".join(k for k in keys if k in DAYS),
-                # A club writes UNSPECIFIED (own table) or "(-)" (opponent
-                # table) until it designates on Friday.
-                "game_status": "" if status.upper() in ("UNSPECIFIED", "(-)", "-")
-                               else status,
-                "page_team": team,
-                "source": url,
-            })
+        name, pos = row["player"], row.get("position", "").strip()
+        if not pos and "," in name:
+            name, _, pos = name.rpartition(",")
+            name, pos = name.strip(), pos.strip()
+        status = (row.get("game status") or "").strip()
+        rows.append({
+            "team": owner, "week": week, "player": name, "position": pos,
+            "injury": row.get("injury", ""),
+            **{day: row.get(day, "") for day in DAYS},
+            "practice_days": ",".join(k for k in keys if k in DAYS),
+            "game_status": "" if status.upper() in ("UNSPECIFIED", "(-)", "-") else status,
+            "page_team": page_team, "source": url,
+            "source_kind": "club_grid", "published_at": "",
+        })
     return rows
+
+
+def parse_article(page: str, team: str, week: int, url: str) -> list[dict]:
+    """Article tables need their own team heading, never a navigation logo.
+
+    Saints use Name and full weekday names; Jets also have an opponent's
+    table. Only return the requested club, with explicit heading attribution.
+    """
+    owner = None
+    rows = []
+    for match in re.finditer(r"<h[1-4]\b[^>]*>.*?</h[1-4]>|<table\b.*?</table>", page, re.S | re.I):
+        fragment = match.group()
+        if fragment.lower().startswith("<table"):
+            if owner == team:
+                headers, body = _parse_table(fragment)
+                rows.extend(_injury_rows(headers, body, owner, team, week, url))
+        else:
+            label = _text(fragment).casefold()
+            owner = next((abbr for abbr, nickname in TEAMS.items()
+                          if label == nickname.casefold()
+                          or label.endswith(" " + nickname.casefold())), None)
+    for row in rows:
+        row["source_kind"] = "club_article"
+    return rows
+
+
+def _game_schedule(season: int, week: int) -> dict:
+    import nfl_data
+    games = nfl_data.schedules(season).filter(
+        (pl.col("game_type") == "REG") & (pl.col("week") == week))
+    out = {}
+    for game in games.iter_rows(named=True):
+        for team, opp in ((game["home_team"], game["away_team"]),
+                          (game["away_team"], game["home_team"])):
+            out[team] = {"opponent": opp, "game_date": str(game["gameday"])}
+    return out
+
+
+def article_report(team: str, week: int, game: dict) -> tuple[list[dict], dict]:
+    """Bounded fallback: current matchup's official RSS-linked injury reports.
+
+    Check week, opponent, publication date and host before opening at most
+    three articles. Never infer practice participation from narrative prose.
+    """
+    host = CLUB_HOSTS[team]
+    rss_url = f"https://{host}/rss/news"
+    meta = {"status": "not_found", "feed": rss_url, "articles": []}
+    root = ET.fromstring(_get(rss_url))
+    game_date = date.fromisoformat(game["game_date"])
+    candidates = []
+    for item in root.findall(".//item"):
+        title, url = item.findtext("title") or "", item.findtext("link") or ""
+        # Some clubs (including the Giants) put Week N only in the slug.
+        identity = title + " " + urllib.parse.urlsplit(url).path.replace("-", " ").replace("_", " ")
+        stated_weeks = {int(w) for w in re.findall(r"\bweek\s+(\d+)\b", identity, re.I)}
+        if ("injury report" not in title.lower() or "preseason" in identity.lower()
+                or stated_weeks != {week}
+                or TEAMS[game["opponent"]].casefold() not in title.casefold()):
+            continue
+        parsed = urllib.parse.urlsplit(url)
+        if parsed.scheme != "https" or parsed.netloc != host or not parsed.path.startswith("/news/"):
+            continue
+        try:
+            published = parsedate_to_datetime(item.findtext("pubDate") or "")
+            if published.tzinfo is None:
+                continue
+            report_date = published.astimezone(ZoneInfo("America/New_York")).date()
+        except (ValueError, TypeError):
+            continue
+        if game_date - timedelta(days=6) <= report_date <= game_date:
+            candidates.append((published, url))
+    for published, url in sorted(set(candidates), reverse=True)[:3]:
+        try:
+            rows = parse_article(_get(url), team, week, url)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            meta["articles"].append({"url": url, "status": "failed", "error": str(exc)})
+            continue
+        meta["articles"].append({"url": url, "status": "available" if rows else "unparsed",
+                                 "published_at": published.isoformat(), "rows": len(rows)})
+        if rows:
+            for row in rows:
+                row["published_at"] = published.isoformat()
+            meta["status"] = "available"
+            return rows, meta
+    if candidates:
+        meta["status"] = "unavailable"
+    return [], meta
+
+
+def coverage(teams, rows, sources, games, now=None):
+    """Separate a late-game reporting window from missing/failed retrieval."""
+    eastern = ZoneInfo("America/New_York")
+    today = (now or datetime.now(eastern)).astimezone(eastern).date()
+    out = {}
+    for team in teams:
+        own = [r for r in rows if r["team"] == team]
+        info = {"status": "available" if own else "unavailable", "rows": len(own),
+                "sources": sorted({r["source"] for r in own})}
+        game = games.get(team)
+        if game:
+            game_day = date.fromisoformat(game["game_date"])
+            # Thursday: Mon/Tue/Wed; Sun: Wed/Thu/Fri; Mon: Thu/Fri/Sat.
+            lead = 3 if game_day.weekday() == 3 else 4
+            first = game_day - timedelta(days=lead)
+            info.update(game, expected_first_report_date=first.isoformat())
+            retrieval = sources.get(team, {})
+            fallback = retrieval.get("article_fallback", {})
+            if (not own and today <= first and retrieval.get("status") != "failed"
+                    and fallback.get("status") not in ("failed", "unavailable")):
+                info["status"] = "pending"
+                info["reason"] = "No report found yet; first practice report expected " + first.isoformat()
+        elif games and not own:
+            info["status"] = "not_scheduled"
+        out[team] = info
+    return out
 
 
 def transactions(team: str) -> list[dict]:
@@ -224,12 +347,31 @@ def build(season: int, week: int, teams: list[str] | None = None,
                              "reported_teams": sorted({r["team"] for r in got})}
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as e:
             sources[team] = {"status": "failed", "rows": 0, "error": str(e)}
+    missing = set(teams) - {r["team"] for r in rows}
+    games, schedule_error = {}, None
+    if missing:
+        try:
+            games = _game_schedule(season, week)
+        except Exception as exc:  # optional fallback cannot erase good grid rows
+            schedule_error = str(exc)
+        for team in sorted(missing):
+            if team not in games:
+                sources[team]["article_fallback"] = {
+                    "status": "skipped", "reason": "No verified matchup for this week"}
+                continue
+            try:
+                got, meta = article_report(team, week, games[team])
+                rows.extend(got)
+                sources[team]["article_fallback"] = meta
+            except (urllib.error.URLError, TimeoutError, ET.ParseError) as exc:
+                sources[team]["article_fallback"] = {"status": "failed", "error": str(exc)}
     df = pl.DataFrame(rows) if rows else pl.DataFrame(
         schema={"team": pl.Utf8, "week": pl.Int64, "player": pl.Utf8,
                 "position": pl.Utf8, "injury": pl.Utf8,
                 **{day: pl.Utf8 for day in DAYS}, "practice_days": pl.Utf8,
                 "game_status": pl.Utf8,
-                "page_team": pl.Utf8, "source": pl.Utf8})
+                "page_team": pl.Utf8, "source": pl.Utf8,
+                "source_kind": pl.Utf8, "published_at": pl.Utf8})
     if df.height:
         # Each table appears on both clubs' pages. Keep the copy with the
         # most practice days filled in, so a lagging host cannot hide a
@@ -242,6 +384,9 @@ def build(season: int, week: int, teams: list[str] | None = None,
                     descending=[False, False, True, True])
               .unique(subset=["team", "player"], keep="first", maintain_order=True)
               .drop("_filled", "_own"))
+    # Coverage describes the report, even if a skill-only view removes all
+    # of that team's rows (an all-defensive report is still a valid report).
+    team_coverage = coverage(teams, df.to_dicts(), sources, games)
     if skill_only and df.height:
         df = df.filter(pl.col("position").str.to_uppercase().is_in(SKILL))
     if df.height:
@@ -251,7 +396,11 @@ def build(season: int, week: int, teams: list[str] | None = None,
     out.with_suffix(".sources.json").write_text(
         json.dumps({"season": season, "week": week, "generated_at": now_iso(),
                     "requested_hosts": teams, "skill_only": skill_only,
-                    "missing_teams": sorted(set(teams) - set(df["team"].to_list())),
+                    "missing_teams": sorted(t for t, c in team_coverage.items()
+                                            if c["status"] in ("pending", "unavailable")),
+                    "pending_teams": sorted(t for t, c in team_coverage.items() if c["status"] == "pending"),
+                    "unavailable_teams": sorted(t for t, c in team_coverage.items() if c["status"] == "unavailable"),
+                    "coverage": team_coverage, "schedule_error": schedule_error,
                     "teams": sources}, indent=2) + "\n")
     return df
 
@@ -283,6 +432,12 @@ def main() -> None:
         a.season, a.week = a.season or state["season"], a.week or state["week"]
         df = build(a.season, a.week, teams, a.skill_only)
         print(f"{df.height} rows -> {report_path(a.season, a.week, teams, a.skill_only)}")
+        manifest = json.loads(report_path(a.season, a.week, teams, a.skill_only)
+                              .with_suffix(".sources.json").read_text())
+        for team, info in manifest["coverage"].items():
+            if info["status"] != "available":
+                print(f"{team}: {info['status']} — "
+                      + info.get("reason", "See source manifest for retrieval details"))
         with pl.Config(tbl_rows=-1, fmt_str_lengths=28):
             print(df.drop("source") if df.height else df)
         return

@@ -33,7 +33,7 @@ check their source manifests and warnings before using an empty result.
 | `opportunity.py` | `data/weekly/opportunity_<season>*.csv` | Per player-week expected points, actual points, leak-free EWMA seeded from last season. |
 | `injuries.py` | `data/weekly/injuries_<season>.csv`, `depth_<season>.csv` | NFL official injury report; latest depth chart. |
 | `team_context.py` | `data/weekly/team_context_<season>.csv` | Per team-week EPA, success rate, PROE, CPOE, explosive/deep rates, sacks, plays — each with a percentile against 2021-2025 team-games and a rank within the week. Computed locally from play-by-play. `fit` rebuilds the committed baseline. |
-| `club_reports.py` | `data/weekly/club_injuries_<season>_wkNN.csv` | The same official report scraped live from all 32 club sites, with each practice day in its own column; also club transactions and depth charts. Mid-week updates without a rebuild. |
+| `club_reports.py` | `data/weekly/club_injuries_<season>_wkNN.csv` | Official practice grids from all 32 clubs, with RSS-discovered club injury-report articles as a fallback. Preserves each practice day and distinguishes pending reports from retrieval failures; also club transactions and depth charts. Mid-week updates without a rebuild. |
 | `bluesky.py` | – | Curated news-wire accounts off the public AT Protocol app view (no key). `feed --match <names>` for the last N hours; `check` for which accounts are still alive. |
 | `fantasypros.py` | `data/weekly/ecr_<season>_wkNN.csv` | Expert consensus ranks from the paid API, only with `FANTASYPROS_API_KEY`. |
 | `fftiers.py` | the same `ecr_*.csv` | Keyless fallback: Boris Chen's public bucket, the same FantasyPros consensus **plus tiers**. Gitignored — third-party data, regenerated on demand. |
