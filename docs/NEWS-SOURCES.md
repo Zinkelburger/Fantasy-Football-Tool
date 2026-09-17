@@ -12,7 +12,8 @@ knowing whether a DNP is maintenance or a real absence.
 
 ## 1. Official club sites — the practice grid (primary)
 
-Every club runs the same league CMS, so one URL shape covers all 32:
+Every club runs the same league CMS, but a working URL does not guarantee
+that the club's own report is populated. Start with these pages:
 
 | Page | URL |
 |---|---|
@@ -30,7 +31,10 @@ Server-rendered HTML, no key, no login, plain `curl` works. Hosts are in
 
 Output: `data/weekly/club_injuries_<season>_wk<NN>.csv` +
 `.sources.json` (per-host row counts, `no_report` for empty pages, and
-`missing_teams` for gaps). Filtered exports use a team and/or `_skill`
+per-team `coverage`). `pending_teams` distinguishes a report not yet found
+before/on its expected first practice day from `unavailable_teams` with
+retrieval failures or later gaps; `missing_teams` retains both categories.
+Filtered exports use a team and/or `_skill`
 suffix so they cannot replace the complete league snapshot. Club URLs
 serve the current season only; historical season requests are rejected.
 
@@ -44,19 +48,37 @@ What this has that nflverse does not:
 - The club's **own depth chart** and **transaction log** (practice-squad
   elevations and IR moves show up here before any aggregator).
 
-Two quirks worth knowing, both handled in the module:
+Source differences handled in the module:
 
-- A club page carries the official report for **both** teams in its game,
+- A club page can carry the official report for **both** teams in its game,
   one table per club, so rows are attributed from the table's club logo,
-  not from whose site it is. That also gives every team two independent
-  hosts.
+  not from whose site it is. The opponent's site can therefore provide a
+  second copy, but neither page is guaranteed to contain both reports.
 - The opponent's table runs position into the name cell ("Chig Okonkwo,
   TE") and writes `(-)` instead of `UNSPECIFIED` for "not designated".
+- When the shared grids omit a team, the fetcher checks that club's
+  `/rss/news` feed for official injury-report articles. It verifies the week,
+  opponent, publication date against the game date, and same-club host, then
+  opens at most three candidates newest first. Article tables are assigned
+  by their team headings; `Name`/`Player` and full weekday names are normalized.
+  Narrative injury updates are never converted into practice designations.
+  Article URLs and publication timestamps remain attached to their rows.
+
+**Verified fallback, 2026-09-17:** the [Saints Wednesday report](https://www.neworleanssaints.com/news/injury-report-baltimore-ravens-vs-new-orleans-saints-2026-nfl-week-2-wednesday)
+supplies five Saints rows and the [Jets Wednesday report](https://www.newyorkjets.com/news/jets-injury-report-week-2-vs-packers-wednesday-09-16-2026)
+supplies eight Jets rows that their shared grid pages omit. The full fetch
+returns 194 rows across 30 teams. The Rams and Giants play Monday; their
+first report is expected Thursday and had not been found at this check.
+The [Giants' practice schedule](https://www.giants.com/news/week-2-tracker-latest-news-notes-roster-moves-los-angeles-rams)
+confirms Thursday replaces their usual Wednesday practice.
 
 **Timing.** Clubs post the day's report in the **late afternoon ET**
 (roughly 4pm), so Thursday's column is blank all morning. `UNSPECIFIED` /
 blank game status means the club has not designated yet — not that the
-player is fine. Friday brings Out / Doubtful / Questionable.
+player is fine. Sunday games normally report Wed/Thu/Fri, Thursday games
+Mon/Tue/Wed, and Monday games Thu/Fri/Sat. The last report carries the game
+designation. The pending label is a schedule-based expectation, not proof
+that no report has been published anywhere; failed retrieval stays visible.
 
 ## 2. NFL.com league-wide report
 

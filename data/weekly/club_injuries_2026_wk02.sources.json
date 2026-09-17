@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "week": 2,
-  "generated_at": "2026-09-17T16:15:07Z",
+  "generated_at": "2026-09-17T16:27:28Z",
   "requested_hosts": [
     "ARI",
     "ATL",
@@ -39,10 +39,334 @@
   "skill_only": false,
   "missing_teams": [
     "LA",
-    "NO",
-    "NYG",
-    "NYJ"
+    "NYG"
   ],
+  "pending_teams": [
+    "LA",
+    "NYG"
+  ],
+  "unavailable_teams": [],
+  "coverage": {
+    "ARI": {
+      "status": "available",
+      "rows": 11,
+      "sources": [
+        "https://www.azcardinals.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "SEA",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "ATL": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.atlantafalcons.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "CAR",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "BAL": {
+      "status": "available",
+      "rows": 11,
+      "sources": [
+        "https://www.baltimoreravens.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "NO",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "BUF": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.buffalobills.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "DET",
+      "game_date": "2026-09-17",
+      "expected_first_report_date": "2026-09-14"
+    },
+    "CAR": {
+      "status": "available",
+      "rows": 4,
+      "sources": [
+        "https://www.panthers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "ATL",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "CHI": {
+      "status": "available",
+      "rows": 9,
+      "sources": [
+        "https://www.chicagobears.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "MIN",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "CIN": {
+      "status": "available",
+      "rows": 3,
+      "sources": [
+        "https://www.bengals.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "HOU",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "CLE": {
+      "status": "available",
+      "rows": 7,
+      "sources": [
+        "https://www.clevelandbrowns.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "TB",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "DAL": {
+      "status": "available",
+      "rows": 4,
+      "sources": [
+        "https://www.dallascowboys.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "WAS",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "DEN": {
+      "status": "available",
+      "rows": 4,
+      "sources": [
+        "https://www.denverbroncos.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "JAX",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "DET": {
+      "status": "available",
+      "rows": 5,
+      "sources": [
+        "https://www.detroitlions.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "BUF",
+      "game_date": "2026-09-17",
+      "expected_first_report_date": "2026-09-14"
+    },
+    "GB": {
+      "status": "available",
+      "rows": 9,
+      "sources": [
+        "https://www.packers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "NYJ",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "HOU": {
+      "status": "available",
+      "rows": 7,
+      "sources": [
+        "https://www.houstontexans.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "CIN",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "IND": {
+      "status": "available",
+      "rows": 7,
+      "sources": [
+        "https://www.colts.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "KC",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "JAX": {
+      "status": "available",
+      "rows": 5,
+      "sources": [
+        "https://www.jaguars.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "DEN",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "KC": {
+      "status": "available",
+      "rows": 9,
+      "sources": [
+        "https://www.chiefs.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "IND",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "LA": {
+      "status": "pending",
+      "rows": 0,
+      "sources": [],
+      "opponent": "NYG",
+      "game_date": "2026-09-21",
+      "expected_first_report_date": "2026-09-17",
+      "reason": "No report found yet; first practice report expected 2026-09-17"
+    },
+    "LAC": {
+      "status": "available",
+      "rows": 9,
+      "sources": [
+        "https://www.chargers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "LV",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "LV": {
+      "status": "available",
+      "rows": 3,
+      "sources": [
+        "https://www.raiders.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "LAC",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "MIA": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.miamidolphins.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "SF",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "MIN": {
+      "status": "available",
+      "rows": 5,
+      "sources": [
+        "https://www.vikings.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "CHI",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "NE": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.patriots.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "PIT",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "NO": {
+      "status": "available",
+      "rows": 5,
+      "sources": [
+        "https://www.neworleanssaints.com/news/injury-report-baltimore-ravens-vs-new-orleans-saints-2026-nfl-week-2-wednesday"
+      ],
+      "opponent": "BAL",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "NYG": {
+      "status": "pending",
+      "rows": 0,
+      "sources": [],
+      "opponent": "LA",
+      "game_date": "2026-09-21",
+      "expected_first_report_date": "2026-09-17",
+      "reason": "No report found yet; first practice report expected 2026-09-17"
+    },
+    "NYJ": {
+      "status": "available",
+      "rows": 8,
+      "sources": [
+        "https://www.newyorkjets.com/news/jets-injury-report-week-2-vs-packers-wednesday-09-16-2026"
+      ],
+      "opponent": "GB",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "PHI": {
+      "status": "available",
+      "rows": 3,
+      "sources": [
+        "https://www.philadelphiaeagles.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "TEN",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "PIT": {
+      "status": "available",
+      "rows": 4,
+      "sources": [
+        "https://www.steelers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "NE",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "SEA": {
+      "status": "available",
+      "rows": 8,
+      "sources": [
+        "https://www.seahawks.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "ARI",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "SF": {
+      "status": "available",
+      "rows": 11,
+      "sources": [
+        "https://www.49ers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "MIA",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "TB": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.buccaneers.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "CLE",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "TEN": {
+      "status": "available",
+      "rows": 2,
+      "sources": [
+        "https://www.tennesseetitans.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "PHI",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    },
+    "WAS": {
+      "status": "available",
+      "rows": 11,
+      "sources": [
+        "https://www.commanders.com/team/injury-report/week/REG-2"
+      ],
+      "opponent": "DAL",
+      "game_date": "2026-09-20",
+      "expected_first_report_date": "2026-09-16"
+    }
+  },
+  "schedule_error": null,
   "teams": {
     "ARI": {
       "status": "available",
@@ -189,7 +513,12 @@
       "status": "no_report",
       "rows": 0,
       "error": null,
-      "reported_teams": []
+      "reported_teams": [],
+      "article_fallback": {
+        "status": "not_found",
+        "feed": "https://www.therams.com/rss/news",
+        "articles": []
+      }
     },
     "LAC": {
       "status": "available",
@@ -242,13 +571,30 @@
       "error": null,
       "reported_teams": [
         "BAL"
-      ]
+      ],
+      "article_fallback": {
+        "status": "available",
+        "feed": "https://www.neworleanssaints.com/rss/news",
+        "articles": [
+          {
+            "url": "https://www.neworleanssaints.com/news/injury-report-baltimore-ravens-vs-new-orleans-saints-2026-nfl-week-2-wednesday",
+            "status": "available",
+            "published_at": "2026-09-16T20:41:53+00:00",
+            "rows": 5
+          }
+        ]
+      }
     },
     "NYG": {
       "status": "no_report",
       "rows": 0,
       "error": null,
-      "reported_teams": []
+      "reported_teams": [],
+      "article_fallback": {
+        "status": "not_found",
+        "feed": "https://www.giants.com/rss/news",
+        "articles": []
+      }
     },
     "NYJ": {
       "status": "available",
@@ -256,7 +602,19 @@
       "error": null,
       "reported_teams": [
         "GB"
-      ]
+      ],
+      "article_fallback": {
+        "status": "available",
+        "feed": "https://www.newyorkjets.com/rss/news",
+        "articles": [
+          {
+            "url": "https://www.newyorkjets.com/news/jets-injury-report-week-2-vs-packers-wednesday-09-16-2026",
+            "status": "available",
+            "published_at": "2026-09-16T20:00:00+00:00",
+            "rows": 8
+          }
+        ]
+      }
     },
     "PHI": {
       "status": "available",
