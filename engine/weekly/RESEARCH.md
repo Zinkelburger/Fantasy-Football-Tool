@@ -14,6 +14,23 @@ returned by `ff-weekly.weekly_checklist()`; it is the canonical runbook.
   players supplied by the user; do not invent a personalized recommendation.
 - Tuesday/Wednesday: `waiver_recommendations()` gives needs and candidates.
   Thursday/weekend: `lineup_recommendation()` identifies moves and close calls.
+- `fantasypros_rankings(position)` gives the expert consensus with tiers.
+  Read the tier before the rank: inside a tier the experts cannot separate the
+  players, so our own projection decides; across a tier boundary they can, so
+  a projection that disagrees needs a reason. A high `sd` marks a player worth
+  researching. Coverage stops at the startable players, so an unranked player
+  is outside the consensus, not rated against it.
+- `team_context(team)` says how an offence actually played: PROE, CPOE, EPA
+  and success rate per dropback and per rush, each as a percentile against
+  2021-2025 team-games. It defaults to the latest **completed** week, so use
+  `last=N` from about Week 4 to pool recent form rather than react to one
+  game. This is environment, not a projection: finding 26 measured it as
+  real but small next to a player's own usage, so it breaks ties and
+  explains a projection, it does not overrule one.
+- `player_lookup(name)` now carries weekly snap share. Snaps are field time,
+  not routes run — we have no route or TPRR data — so falling snap share is
+  evidence of a shrinking role, while steady snaps with few targets is a
+  different problem.
 - Pick at most six players with a decision that could change: uncertain injury
   status, changed workload, a plausible waiver addition, or a close start/sit
   comparison (roughly two projected points). State the unresolved question for

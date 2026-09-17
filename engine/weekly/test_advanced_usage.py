@@ -58,6 +58,25 @@ class AdvancedUsageTests(unittest.TestCase):
         self.assertEqual(r["pfr_status"], "carry_mismatch")
         self.assertIsNone(r["pfr_yards_before_contact"])
 
+    def test_snaps_join_on_the_pfr_crosswalk_and_stay_null_when_absent(self):
+        ids = pl.DataFrame({"gsis_id": ["wr", "rb"], "pfr_id": ["Recv01", "Runner01"]})
+        snaps = pl.DataFrame({"season": [2026], "week": [1], "game_id": ["g"],
+            "game_type": ["REG"], "team": ["DET"], "pfr_player_id": ["Recv01"],
+            "offense_snaps": [42.], "offense_pct": [.72]})
+        out = au.build(self.pbp, self.stats, ids=ids, snaps=snaps)
+        r = self.row(out)
+        self.assertEqual((r["snaps_off"], r["snap_share"]), (42., .72))
+        self.assertEqual(r["snap_status"], "available")
+        # A player PFR has no snap row for is unavailable, not zero snaps.
+        rb = self.row(out, "rb")
+        self.assertIsNone(rb["snaps_off"])
+        self.assertEqual(rb["snap_status"], "unavailable")
+
+    def test_snaps_absent_entirely_is_not_a_failure(self):
+        r = self.row(au.build(self.pbp, self.stats))
+        self.assertIsNone(r["snaps_off"])
+        self.assertEqual(r["snap_status"], "unavailable")
+
 
 if __name__ == "__main__":
     unittest.main()

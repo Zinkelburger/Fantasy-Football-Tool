@@ -40,7 +40,10 @@ jobs:
         run: |
           git config user.name "weekly-bot"
           git config user.email "actions@github.com"
-          git add data/weekly/*.csv data/weekly/*.json
+          # Directory pathspec, not a shell glob: the glob expands to
+          # literal names, and `git add` on an explicitly named ignored
+          # file aborts the whole step. data/weekly/ecr_* is ignored.
+          git add data/weekly
           git diff --cached --quiet && echo "nothing changed" && exit 0
           git commit -m "data: weekly build $(date -u +%F)"
           git push

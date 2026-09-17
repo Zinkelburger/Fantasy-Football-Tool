@@ -12,6 +12,16 @@ python mcp_server.py            # the MCP server (Claude Code starts it from .mc
 python -m unittest test_weekly  # no venv needed
 ```
 Interpreter: `.venv-league-sim/bin/python` or `engine/league-sim/.venv/bin/python`
+
+From the repo root, run the full regression suite with the weekly environment:
+
+```sh
+PATH="$PWD/.venv-league-sim/bin:$PATH" npm test
+```
+
+This includes offline news/rankings failure cases and MCP stdio integration
+tests, plus the browser end-to-end suite. Live feeds can have coverage gaps;
+check their source manifests and warnings before using an empty result.
 (nflreadpy, polars, numpy, mcp); `engine/mcp_launch.sh weekly` picks whichever exists.
 
 ## What gets computed
@@ -22,7 +32,11 @@ Interpreter: `.venv-league-sim/bin/python` or `engine/league-sim/.venv/bin/pytho
 | `ep_model.py` | `model/ep_coefficients.json` | Opportunity score model: per-position OLS from play-by-play usage to fantasy points (finding 39). |
 | `opportunity.py` | `data/weekly/opportunity_<season>*.csv` | Per player-week expected points, actual points, leak-free EWMA seeded from last season. |
 | `injuries.py` | `data/weekly/injuries_<season>.csv`, `depth_<season>.csv` | NFL official injury report; latest depth chart. |
-| `fantasypros.py` | `data/weekly/ecr_<season>_wkNN.csv` | Expert consensus ranks, only with `FANTASYPROS_API_KEY`. |
+| `team_context.py` | `data/weekly/team_context_<season>.csv` | Per team-week EPA, success rate, PROE, CPOE, explosive/deep rates, sacks, plays — each with a percentile against 2021-2025 team-games and a rank within the week. Computed locally from play-by-play. `fit` rebuilds the committed baseline. |
+| `club_reports.py` | `data/weekly/club_injuries_<season>_wkNN.csv` | The same official report scraped live from all 32 club sites, with each practice day in its own column; also club transactions and depth charts. Mid-week updates without a rebuild. |
+| `bluesky.py` | – | Curated news-wire accounts off the public AT Protocol app view (no key). `feed --match <names>` for the last N hours; `check` for which accounts are still alive. |
+| `fantasypros.py` | `data/weekly/ecr_<season>_wkNN.csv` | Expert consensus ranks from the paid API, only with `FANTASYPROS_API_KEY`. |
+| `fftiers.py` | the same `ecr_*.csv` | Keyless fallback: Boris Chen's public bucket, the same FantasyPros consensus **plus tiers**. Gitignored — third-party data, regenerated on demand. |
 | `build_week.py` | `data/weekly/latest.json`, `week_<season>_wkNN.json` | The bundle `site/build_site.py` turns into the weekly page. |
 | `advisor.py` | – | Pure functions: projection blend, exact lineup optimiser, positional needs, drop candidates, add/drop proposals. |
 | `espn_league.py` | – | ESPN read (settings, rosters, free agents, matchup, projections) and write (lineup, add/drop, waiver claim). |
@@ -38,14 +52,18 @@ Copy `.env.example` to `engine/weekly/.env` (or put the same keys in
 each machine). The league is private, so
 `ESPN_S2` + `ESPN_SWID` are needed for any roster tool; without them
 only the public tools work. `ESPN_TEAM_ID` is optional (found from
-your SWID). `FANTASYPROS_API_KEY` is optional.
+your SWID). `FANTASYPROS_API_KEY` is optional: without it the consensus
+ranks come from `fftiers.py` instead, which needs no credential. The key
+buys start/sit grades and full-depth coverage; the keyless feed buys
+tiers and stops at the startable players (QB 26, RB 40, WR 60, TE 24,
+K/DST 20, FLX 20-95), so most of the waiver tail has no rank either way.
 
 ## The MCP tools (`ff-weekly`)
 
 Public, from `data/weekly/`: `weekly_checklist`, `week_status`,
 `refresh_week`, `vegas_lines`, `opportunity_scores`, `player_lookup`,
 `injury_report`, `dst_rankings`, `kicker_rankings`,
-`fantasypros_rankings`.
+`fantasypros_rankings`, `team_context`.
 
 Your league (ESPN read): `league_settings`, `my_roster`,
 `lineup_recommendation`, `free_agents`, `waiver_recommendations`,

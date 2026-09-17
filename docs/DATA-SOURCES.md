@@ -181,7 +181,109 @@ tracking possible on a static site with no backend. Re-checked
     `fan.api.espn.com` matches it, so no new permission was needed.
 - **Yahoo** needs OAuth and therefore a backend; not supported.
 
-## 7. nflverse play-by-play (in-game model)
+## 7. fftiers — FantasyPros expert consensus, clustered into tiers
+
+- **Link:** `https://s3-us-west-1.amazonaws.com/fftiers/out/weekly-<POS>[-HALF|-PPR].csv`
+  — Boris Chen's public bucket (https://github.com/borisachen/fftiers), the
+  data behind borischen.co and fantasyfootballtiers.com. That site itself is
+  static PNGs and has no data layer; this is the source it renders.
+- **Gives us:** per position, `Rank, Player.Name, Matchup, Best.Rank,
+  Worst.Rank, Avg.Rank, Std.Dev, Tier` — the same FantasyPros ECR
+  `engine/weekly/fantasypros.py` wants an API key for, **plus the tier**,
+  with no key. QB/K/DST are one file each; RB/WR/TE/FLX split by scoring
+  format (`-HALF`, `-PPR`, or no suffix for standard).
+- **Used by:** `engine/weekly/fftiers.py` → `data/weekly/ecr_<season>_wkNN.csv`
+  (same columns as the API path, plus `tier` and `source`) → `my_roster`,
+  `lineup_recommendation`, `waiver_recommendations`, `fantasypros_rankings`.
+  `build_week.py` calls the paid API first and falls back to this.
+- **Refresh:** `python3 engine/weekly/fftiers.py` (or any `refresh_week()`).
+  Seconds, no credential.
+- **Not committed** — third-party rankings and this repo is public, so we
+  read them and don't republish them. Gitignored; regenerate on demand.
+- **How to read a tier:** a rank gap inside a tier is expert disagreement,
+  a tier boundary is a real ordering. High `Std.Dev` is the cue that the
+  player is worth researching rather than sorting.
+- **Coverage is shallow on purpose:** QB 26, RB 40, WR 60, TE 24, K 20,
+  D/ST 20, FLX ranks 20–95. Startable players, not the waiver tail — on a
+  real ESPN roster check this matched 15/16 players but only 34 of 283 free
+  agents. Don't read a missing rank as a negative opinion.
+- **No team column** (except D/ST, where the team is the player) and **no
+  `start_sit_grade`**; both are API-only. D/ST rows are rewritten from
+  "Philadelphia Eagles" to ESPN's "Eagles D/ST" and carry `PHI`, so the
+  roster join lands on either.
+- **No week number in the filenames.** There is one live copy per position,
+  rewritten in place, so a fetch cannot be aimed at a past or future week.
+  `fftiers.off_week()` checks every ranking against the week's schedule and
+  the build refuses a mismatch. Before the byes start, every team plays every
+  week, so only the D/ST rows — the only ones naming both sides — actually
+  prove the week; that is 20 of 32 teams checked exactly.
+  Both the CLI and build require the current regular-season week and a
+  schedule; missing D/ST matchups prevent writing an unverified snapshot.
+  Per-position fetch failures are reported in stderr and the source manifest.
+- **No ROS or draft tiers** in the bucket; weekly only. Ten naming variants
+  probed 2026-09-17, all 403. Bucket listing is 403 too, so the filename
+  convention is the index.
+- **Unofficial, no terms, no SLA.** A failure is logged and skipped, never
+  fatal; the engine treats consensus as absent exactly as it did before.
+- **Verified live 2026-09-17:** all 15 files 200, updated that morning
+  13:00 UTC, 266 rows written for week 2.
+
+## 8. PFR snap counts (via nflverse)
+
+- **Link:** `nflreadpy.load_snap_counts([season])` —
+  https://nflreadr.nflverse.com/reference/load_snap_counts.html
+- **Gives us:** offensive snaps and snap share per player-game, from
+  Pro-Football-Reference. Joined on the same gsis↔pfr crosswalk the
+  advanced rushing feed uses; team abbreviations and `game_id` match the
+  play-by-play exactly (checked 2026-09-17).
+- **Used by:** `engine/weekly/advanced_usage.py` → `snaps_off`,
+  `snap_share`, `snap_status` in `data/weekly/advanced_usage_<season>_weekly.csv`
+  → `player_lookup`.
+- **Why it matters:** it separates "earned targets on a full workload" from
+  "earned targets in a package". Deebo Samuel's seven Week 1 targets came on
+  27 of 65 snaps; the target count alone does not say that.
+- **`snap_share` is not route share.** Snaps say a player was on the field.
+  Routes run, route share and targets per route run are PFF/FTN charting we
+  do not have and cannot get free — `load_participation` stops at 2025,
+  NGS receiving and PFR advanced receiving carry no route columns (all
+  checked 2026-09-17). `target_share` is the free stand-in.
+- **Coverage:** 308 of 309 skill player-weeks in 2026 Week 1. A player PFR
+  has no row for stays null, never zero.
+
+## 9. Team context — computed locally, not fetched
+
+Not an external feed: `engine/weekly/team_context.py` derives it from the
+nflverse play-by-play in section 10, and it is listed here because it is
+what several paid advanced-stats products sell.
+
+- **Gives us:** per team-week PROE, CPOE, EPA and success rate per dropback
+  and per designed rush, 1st-down success, explosive pass/rush rates, deep
+  (20+ air yard) attempt rate, air yards per attempt, sack rate and play
+  volume. Each carries a percentile against all 2,718 team-games from
+  2021-2025 and a rank within its own week, plus `<metric>_n`, its own
+  non-null count, so weeks pool as an exact weighted mean.
+- **Baseline:** `engine/weekly/model/team_context_baseline.json` (committed,
+  20K, 101 breakpoints per metric). Rebuild once a season with
+  `python engine/weekly/team_context.py fit`, which needs 2021-2025
+  play-by-play in the gitignored cache.
+- **Used by:** `build_week.py` → `data/weekly/team_context_<season>.csv` →
+  the `team_context` MCP tool. **Never an input to the expected-points
+  model**; it is descriptive matchup context, and finding 26 measured team
+  environment as real but small next to a player's own usage.
+- **Validated 2026-09-17** against a published 4for4 column (Stephen
+  Hoopes, Week 2 previews) that quotes the same metrics: PROE ranks matched
+  exactly for PHI 24th, TEN 2nd, PIT 1st, CLE 30th; PROE values to the
+  decimal for ATL −17.1%, MIA −2.7%, BUF +3.7%; percentiles within a few
+  points (CHI 95th/88th vs his 95th/87th, BUF 96th exact). Where we differ
+  it is his play filter, which is not published. The point of writing this
+  down: an outside column can now be checked against our own numbers
+  instead of believed.
+- **One game is one game.** Early-season percentiles describe what
+  happened; they do not forecast. The MCP tool takes `last=N` to pool the
+  N most recent completed weeks and defaults to the latest completed week,
+  not the week being decided.
+
+## 10. nflverse play-by-play (in-game model)
 
 - **Link:** `https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_<year>.parquet`
 - **Gives us:** every play with `game_seconds_remaining`, fantasy
@@ -199,7 +301,7 @@ tracking possible on a static site with no backend. Re-checked
 - **Staleness:** refit once the 2026 season is a few weeks old; the
   clock curve is stable year to year, the sigma table less so.
 
-## 8. Preseason win totals (backtest history only)
+## 11. Preseason win totals (backtest history only)
 
 - **Links:** https://github.com/greerreNFL/nfl-win-total-data (2003–2022,
   no longer updated) and https://www.sportsoddshistory.com/nfl-win/

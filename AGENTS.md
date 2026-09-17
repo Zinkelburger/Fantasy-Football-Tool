@@ -11,6 +11,16 @@
   a dated edition per completed week, built from the committed weekly bundle.
 - Keep numerical projections separate from narrative research. A good outcome
   does not establish that the model is accurate; grade the full pregame list.
+- There is no usable "chance to play" model. `research/injury_predictor/` is
+  abandoned research and is not wired into the weekly engine: it recalls only
+  56% of players who sat, so it cannot answer the one question it is asked.
+  Do not revive it for a lineup call. Use the official Wed–Fri practice reports
+  and the Friday game designation. See that directory's README.
+- Mid-week practice status comes from `engine/weekly/club_reports.py` (all 32
+  club sites, one column per practice day) and news from
+  `engine/weekly/bluesky.py`; `docs/NEWS-SOURCES.md` lists every source, what
+  it contains and when it posts. Clubs post each day's report late afternoon
+  ET, so a blank Thursday column means "not posted yet", not "no change".
 - Defense recommendations use our finding 27 methodology: lowest opponent
   implied total first. Do not use ESPN fantasy projections to rank or break
   ties. ESPN supplies roster availability, league scoring, and actual results.

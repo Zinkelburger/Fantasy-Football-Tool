@@ -1,0 +1,182 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source
+ARI,2,Garrett Williams,CB,Achilles,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Max Melton,CB,Ankle,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Roy Lopez,DL,Groin,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Cody Simon,ILB,Shoulder,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Jack Gibbens,ILB,Shoulder,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Isaac Seumalo,OL,Shoulder,"","",DNP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Isaiah Adams,OL,Knee,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Josh Sweat,OLB,NIR-Rest,"","",DNP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Budda Baker,S,NIR-Rest,"","",DNP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Dadrion Taylor-Demerson,S,Ribs,"","",LP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ARI,2,Trey McBride,TE,NIR-Rest/Back,"","",DNP,"","","","","wed,thu,fri","",ARI,https://www.azcardinals.com/team/injury-report/week/REG-2
+ATL,2,A.J. Terrell,CB,Shoulder,"","",DNP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+ATL,2,Billy Bowman Jr.,CB,Achilles,"","",FP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+ATL,2,Chris Lindstrom,G,Concussion,"","",DNP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+ATL,2,Cooper Rush,QB,Back,"","",FP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+ATL,2,Michael Penix Jr.,QB,Knee,"","",FP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+ATL,2,Tua Tagovailoa,QB,Oblique,"","",DNP,"","","","","wed,thu,fri","",ATL,https://www.atlantafalcons.com/team/injury-report/week/REG-2
+BAL,2,T.J. Tampa,CB,Knee,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Calais Campbell,DL,NIR - Rest,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Nnamdi Madubuike,DL,Neck,"","",LP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,John Simpson,G,Groin,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Teddye Buchanan,ILB,Knee,"","",LP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Trey Hendrickson,OLB,Finger,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Jaylinn Hawkins,S,Chest,"","",FP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Keondre Jackson,S,Shoulder,"","",LP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Ronnie Stanley,T,Toe,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Devontez Walker,WR,Groin,"","",FP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BAL,2,Zay Flowers,WR,Hamstring,"","",DNP,"","","","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2
+BUF,2,Jordan Hancock,DB,Quad,FP,FP,FP,"","","","","mon,tue,wed","",BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+BUF,2,T.J. Sanders,DL,Knee/Illness,LP,DNP,LP,"","","","","mon,tue,wed",QUESTIONABLE,BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+BUF,2,Terrel Bernard,ILB,Calf,LP,LP,LP,"","","","","mon,tue,wed","",BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+BUF,2,Bradley Chubb,OLB,Thumb,FP,FP,"","","","","","mon,tue,wed","",BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+BUF,2,Ty Johnson,RB,Hamstring,LP,LP,LP,"","","","","mon,tue,wed",QUESTIONABLE,BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+BUF,2,Cole Bishop,S,Knee/Groin,FP,LP,LP,"","","","","mon,tue,wed",QUESTIONABLE,BUF,https://www.buffalobills.com/team/injury-report/week/REG-2
+CAR,2,Bobby Brown III,DT,Back,"","",DNP,"","","","","wed,thu,fri","",CAR,https://www.panthers.com/team/injury-report/week/REG-2
+CAR,2,Patrick Jones II,OLB,Back,"","",DNP,"","","","","wed,thu,fri","",CAR,https://www.panthers.com/team/injury-report/week/REG-2
+CAR,2,Darren Waller,TE,Not injury-related/rest,"","",DNP,"","","","","wed,thu,fri","",CAR,https://www.panthers.com/team/injury-report/week/REG-2
+CAR,2,Jalen Coker,WR,Ankle,"","",LP,"","","","","wed,thu,fri","",CAR,https://www.panthers.com/team/injury-report/week/REG-2
+CHI,2,Malik Muhammad,DB,Ankle,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Xavier Woods,DB,Groin,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Dayo Odeyingbo,DL,Shoulder,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Grady Jarrett,DL,Non-Injury Related (Rest),"","",DNP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Neville Gallimore,DL,Illness,"","",DNP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Darnell Wright,OL,Knee,"","",DNP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Ozzy Trapilo,OL,Knee,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,D'Andre Swift,RB,Ankle/Knee,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CHI,2,Kyle Monangai,RB,Hamstring,"","",LP,"","","","","wed,thu,fri","",CHI,https://www.chicagobears.com/team/injury-report/week/REG-2
+CIN,2,Shemar Stewart,DE,Knee,"","",FP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-2
+CIN,2,B.J. Hill,DT,NIR - Rest,"","",DNP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-2
+CIN,2,Joe Burrow,QB,Back,"","",LP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-2
+CLE,2,Parker Brailsford,C,"","","",LP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Elgton Jenkins,C/G,"","","",LP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Maliek Collins,DT,"","","",LP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Teven Jenkins,G,"","","",DNP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Zion Johnson,G,"","","",FP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Dawand Jones,T,"","","",LP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+CLE,2,Jerry Jeudy,WR,"","","",FP,"","","","","wed,thu,fri","",CLE,https://www.clevelandbrowns.com/team/injury-report/week/REG-2
+DAL,2,DeMarvion Overshown,LB,Hamstring,"","",DNP,"","","","","wed,thu,fri","",DAL,https://www.dallascowboys.com/team/injury-report/week/REG-2
+DAL,2,James Houston,OLB,Shoulder,"","",LP,"","","","","wed,thu,fri","",DAL,https://www.dallascowboys.com/team/injury-report/week/REG-2
+DAL,2,Malik Hooker,S,Forearm,"","",DNP,"","","","","wed,thu,fri","",DAL,https://www.dallascowboys.com/team/injury-report/week/REG-2
+DAL,2,Ajani Cornelius,T,Knee,"","",FP,"","","","","wed,thu,fri","",DAL,https://www.dallascowboys.com/team/injury-report/week/REG-2
+DEN,2,Jonah Elliss,OLB,Shoulder,"","",FP,"","","","","wed,thu,fri","",DEN,https://www.denverbroncos.com/team/injury-report/week/REG-2
+DEN,2,RJ Harvey,RB,Hamstring,"","",DNP,"","","","","wed,thu,fri","",DEN,https://www.denverbroncos.com/team/injury-report/week/REG-2
+DEN,2,Marvin Mims Jr.,WR,Foot,"","",DNP,"","","","","wed,thu,fri","",DEN,https://www.denverbroncos.com/team/injury-report/week/REG-2
+DEN,2,Troy Franklin,WR,Knee,"","",FP,"","","","","wed,thu,fri","",DEN,https://www.denverbroncos.com/team/injury-report/week/REG-2
+DET,2,D.J. Reed,CB,Foot,(-),LP,LP,"","","","","mon,tue,wed",QUESTIONABLE,DET,https://www.detroitlions.com/team/injury-report/week/REG-2
+DET,2,Christian Izien,DB,Groin,FP,FP,FP,"","","","","mon,tue,wed","",DET,https://www.detroitlions.com/team/injury-report/week/REG-2
+DET,2,Christian Mahogany,OL,Hip,DNP,DNP,DNP,"","","","","mon,tue,wed",OUT,DET,https://www.detroitlions.com/team/injury-report/week/REG-2
+DET,2,Juice Scruggs,OL,Knee,LP,LP,FP,"","","","","mon,tue,wed","",DET,https://www.detroitlions.com/team/injury-report/week/REG-2
+DET,2,Blake Miller,T,Knee,DNP,DNP,DNP,"","","","","mon,tue,wed",OUT,DET,https://www.detroitlions.com/team/injury-report/week/REG-2
+GB,2,Brandon Cisse,CB,Cramps,"","",FP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Devonte Wyatt,DT,Ankle,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Javon Hargrave,DT,Knee / Concussion,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Warren Brinson,DT,Calf,"","",DNP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Barryn Sorrell,EDGE,Foot,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Lukas Van Ness,EDGE,Concussion,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Aaron Banks,G,Knee,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Ty'Ron Hopper,LB,Achilles,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+GB,2,Zach Bako-Bewele,OL,Knee,"","",LP,"","","","","wed,thu,fri","",GB,https://www.packers.com/team/injury-report/week/REG-2
+HOU,2,Jadeveon Clowney,DE,"","","",DNP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Will Anderson Jr.,DE,"","","",LP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Jacob Hummel,LB,"","","",DNP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Wade Woodaz,LB,"","","",FP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Trent Brown,T,"","","",FP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Dalton Schultz,TE,"","","",DNP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+HOU,2,Nico Collins,WR,"","","",LP,"","","","","wed,thu,fri","",HOU,https://www.houstontexans.com/team/injury-report/week/REG-2
+IND,2,DeForest Buckner,DT,"","","",FP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Akeem Davis-Gaither,LB,"","","",FP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Austin Ajiake,LB,"","","",LP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Anthony Richardson,QB,"","","",DNP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Alec Pierce,WR,"","","",FP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Ashton Dulin,WR,"","","",DNP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+IND,2,Keenan Allen,WR,"","","",LP,"","","","","wed,thu,fri","",IND,https://www.colts.com/team/injury-report/week/REG-2
+JAX,2,Foye Oluokun,LB,Wrist,"","",LP,"","","","","wed,thu,fri","",JAX,https://www.jaguars.com/team/injury-report/week/REG-2
+JAX,2,Cole Van Lanen,OL,Knee,"","",LP,"","","","","wed,thu,fri","",JAX,https://www.jaguars.com/team/injury-report/week/REG-2
+JAX,2,LeQuint Allen Jr.,RB,Hip,"","",LP,"","","","","wed,thu,fri","",JAX,https://www.jaguars.com/team/injury-report/week/REG-2
+JAX,2,Brian Thomas Jr.,WR,Shoulder,"","",LP,"","","","","wed,thu,fri","",JAX,https://www.jaguars.com/team/injury-report/week/REG-2
+JAX,2,Jakobi Meyers,WR,Thumb,"","",LP,"","","","","wed,thu,fri","",JAX,https://www.jaguars.com/team/injury-report/week/REG-2
+KC,2,L'Jarius Sneed,CB,Knee,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Mansoor Delane,CB,Shoulder,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Chamarri Conner,DB,Knee,"","",DNP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Ashton Gillotte,DE,Foot,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,R Mason Thomas,DE,Hamstring,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Chris Jones,DT,Calf,"","",LP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Patrick Mahomes,QB,Knee,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Josh Simmons,T,Back,"","",DNP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+KC,2,Rashee Rice,WR,Knee,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-2
+LAC,2,Deane Leonard,DB,Abdomen,"","",LP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Elijah Molden,DB,Hamstring,"","",DNP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Dalvin Tomlinson,DL,Hamstring,"","",LP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Teair Tart,DL,Ankle,"","",DNP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Akheem Mesidor,OLB,Calf,"","",FP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Khalil Mack,OLB,NIR/Rest,"","",DNP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Trey Pipkins,T,Knee,"","",DNP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Derius Davis,WR,Calf,"","",FP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LAC,2,Ladd McConkey,WR,Rib,"","",DNP,"","","","","wed,thu,fri","",LAC,https://www.chargers.com/team/injury-report/week/REG-2
+LV,2,Darien Porter,CB,Foot,"","",DNP,"","","","","wed,thu,fri","",LV,https://www.raiders.com/team/injury-report/week/REG-2
+LV,2,Ashton Jeanty,RB,Ankle,"","",FP,"","","","","wed,thu,fri","",LV,https://www.raiders.com/team/injury-report/week/REG-2
+LV,2,Brock Bowers,TE,Knee,"","",DNP,"","","","","wed,thu,fri","",LV,https://www.raiders.com/team/injury-report/week/REG-2
+MIA,2,Chop Robinson,EDGE,Concussion,"","",LP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIA,2,Ronnie Harrison,ILB,Hamstring,"","",DNP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIA,2,Tucker Addington,LS,Shoulder,"","",LP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIA,2,Malik Willis,QB,Toe,"","",FP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIA,2,Dante Trader Jr.,S,Hamstring,"","",FP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIA,2,Seydou Traore,TE,Thumb / Achilles,"","",LP,"","","","","wed,thu,fri","",MIA,https://www.miamidolphins.com/team/injury-report/week/REG-2
+MIN,2,Blake Cashman,LB,Wrist,"","",LP,"","","","","wed,thu,fri","",MIN,https://www.vikings.com/team/injury-report/week/REG-2
+MIN,2,Andrew Van Ginkel,OLB,Chest,"","",LP,"","","","","wed,thu,fri","",MIN,https://www.vikings.com/team/injury-report/week/REG-2
+MIN,2,Kyler Murray,QB,Concussion,"","",LP,"","","","","wed,thu,fri","",MIN,https://www.vikings.com/team/injury-report/week/REG-2
+MIN,2,Brian O'Neill,T,Knee,"","",LP,"","","","","wed,thu,fri","",MIN,https://www.vikings.com/team/injury-report/week/REG-2
+MIN,2,Jauan Jennings,WR,NIR - Personal,"","",DNP,"","","","","wed,thu,fri","",MIN,https://www.vikings.com/team/injury-report/week/REG-2
+NE,2,Ben Brown,C,Knee,"","",LP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+NE,2,Carlton Davis III,CB,Neck,"","",DNP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+NE,2,Dre'Mont Jones,LB,Foot,"","",LP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+NE,2,Robert Spillane,LB,Knee,"","",LP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+NE,2,TreVeyon Henderson,RB,Ankle,"","",FP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+NE,2,Dametrious Crownover,T,Knee,"","",DNP,"","","","","wed,thu,fri","",NE,https://www.patriots.com/team/injury-report/week/REG-2
+PHI,2,Cooper DeJean,DB,Calf/Abdomen,"","",DNP,"","","","","wed,thu,fri","",PHI,https://www.philadelphiaeagles.com/team/injury-report/week/REG-2
+PHI,2,Jalen Carter,DT,Wrist,"","",DNP,"","","","","wed,thu,fri","",PHI,https://www.philadelphiaeagles.com/team/injury-report/week/REG-2
+PHI,2,Jonathan Greenard,OLB,Pectoral,"","",LP,"","","","","wed,thu,fri","",PHI,https://www.philadelphiaeagles.com/team/injury-report/week/REG-2
+PIT,2,Joey Porter Jr.,CB,NIR/Conditioning,"","",LP,"","","","","wed,thu,fri","",PIT,https://www.steelers.com/team/injury-report/week/REG-2
+PIT,2,Troy Fautanu,OT,Ankle,"","",DNP,"","","","","wed,thu,fri","",PIT,https://www.steelers.com/team/injury-report/week/REG-2
+PIT,2,Darnell Washington,TE,NIR/Personal,"","",DNP,"","","","","wed,thu,fri","",PIT,https://www.steelers.com/team/injury-report/week/REG-2
+PIT,2,Michael Pittman,WR,Foot,"","",LP,"","","","","wed,thu,fri","",PIT,https://www.steelers.com/team/injury-report/week/REG-2
+SEA,2,Josh Jobe,CB,Wrist,"","",FP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Anthony Bradford,G,Knee,"","",LP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Josh Jones,G/T,Knee,"","",LP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Sam Darnold,QB,Glute,"","",DNP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Nick Emmanwori,S,"Ankle, Hip","","",LP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Ty Okada,S,Hamstring,"","",DNP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Cooper Kupp,WR,Back,"","",LP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SEA,2,Tory Horton,WR,Hamstring,"","",FP,"","","","","wed,thu,fri","",SEA,https://www.seahawks.com/team/injury-report/week/REG-2
+SF,2,Upton Stout,CB,Achilles,"","",FP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Keion White,DL,Back,"","",LP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Khalid Kareem,DL,Shoulder,"","",LP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Nick Bosa,DL,"Not injury related - resting player, Knee","","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Kyle Juszczyk,FB,Finger,"","",LP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Eddy Pineiro,K,Illness,"","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Dre Greenlaw,LB,"Not injury related - resting player, Achilles","","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Christian McCaffrey,RB,Not injury related - resting player,"","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,Trent Williams,T,Not injury related - resting player,"","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,George Kittle,TE,Achilles,"","",LP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+SF,2,De'Zhaun Stribling,WR,Ankle,"","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-2
+TB,2,Jacob Parrish,CB,Back,"","",LP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TB,2,Christian Rozeboom,LB,Foot,"","",FP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TB,2,Sean Tucker,RB,Hamstring,"","",FP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TB,2,Miles Killebrew,S,Concussion,"","",LP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TB,2,Justin Skule,T,Oblique,"","",FP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TB,2,Jalen McMillan,WR,Knee,"","",FP,"","","","","wed,thu,fri","",TB,https://www.buccaneers.com/team/injury-report/week/REG-2
+TEN,2,Cedric Gray,LB,Concussion,"","",FP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-2
+TEN,2,James Williams,LB,Elbow,"","",LP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-2
+WAS,2,Charles Omenihu,DE,Ankle,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Daron Payne,DT,Knee,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Chris Paul,G,Ankle,"","",FP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Frankie Luvu,LB,Goirn,"","",DNP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Dorance Armstrong,OLB,Knee,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,K'Lavon Chaisson,OLB,Knee,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Odafe Oweh,OLB,Calf,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Kaytron Allen,RB,Ankle/Knee,"","",FP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Tyler Owens,S,Ankle,"","",FP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Chig Okonkwo,TE,Hamstring,"","",DNP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
+WAS,2,Jaylin Lane,WR,Groin,"","",LP,"","","","","wed,thu,fri","",WAS,https://www.commanders.com/team/injury-report/week/REG-2
