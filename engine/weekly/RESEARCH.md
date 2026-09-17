@@ -14,6 +14,16 @@ returned by `ff-weekly.weekly_checklist()`; it is the canonical runbook.
   players supplied by the user; do not invent a personalized recommendation.
 - Tuesday/Wednesday: `waiver_recommendations()` gives needs and candidates.
   Thursday/weekend: `lineup_recommendation()` identifies moves and close calls.
+- Slot timing is already applied and should be repeated to the user, because
+  it is the part they will not have done themselves. Points choose the
+  starters; of those starters the **latest kickoffs go in the open slots**
+  (OP, FLEX, RB/WR, WR/TE) and a Thursday or Wednesday night player never
+  does. A flex slot takes any RB/WR/TE, so the player sitting in it is the
+  one still replaceable when someone is ruled out 90 minutes before kickoff.
+  Moves marked `slot timing only, no points change` cost nothing and change
+  no projection; present them as such rather than burying them among the
+  start/sit moves. `docs/LINEUP-SLOTTING.md` has the reasoning and the
+  cases where eligibility makes it impossible.
 - `fantasypros_rankings(position)` gives the expert consensus with tiers.
   Read the tier before the rank: inside a tier the experts cannot separate the
   players, so our own projection decides; across a tier boundary they can, so
@@ -41,6 +51,14 @@ returned by `ff-weekly.weekly_checklist()`; it is the canonical runbook.
 Use current injury reports, usage and projections first. Check the timestamp of
 an official status report, especially before kickoff; the cached bundle or a
 Reddit headline is not confirmation of availability.
+
+**Reddit is only reachable through the `ff-reddit` MCP server.** Do not fetch
+`reddit.com`, `old.reddit.com` or a `.json` endpoint with the web reader, `curl`
+or `wget`: those return a login interstitial or an outright block, never the
+thread, and retrying with a different user agent or mirror does not change that.
+The MCP server holds the authenticated client. This applies to a Reddit permalink
+a user pastes as much as to search — resolve it with `fetch_thread`/
+`read_research_thread` on the submission id.
 
 Call `ff-reddit.research_brief(players=[full names], focus="weekly", days=3)`
 **once for the batch**. Use `injury`, `usage` or `waivers` for narrower decisions.

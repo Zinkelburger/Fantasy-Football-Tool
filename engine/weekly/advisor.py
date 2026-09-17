@@ -20,10 +20,21 @@ environment effect on skill players as real but small next to usage.
 "Value" for waiver decisions is not this week's projection; it is
   value = mean of {ewma_ep, espn_proj} (whatever exists), no matchup or
   injury term, so a stud on a bye is not a drop candidate.
+
+Which slot a starter sits in
+----------------------------
+Points first, then timing. `optimal_lineup` picks the starting eleven on
+projection alone, then re-labels that same set so the open slots (OP,
+FLEX, RB/WR, WR/TE) hold the starters with the latest kickoffs. Same
+players, same projected total; only the labels move. See
+`reslot_by_kickoff` and `docs/LINEUP-SLOTTING.md`.
 """
 from __future__ import annotations
 
+from datetime import datetime, timezone
+from functools import lru_cache
 from itertools import combinations
+from zoneinfo import ZoneInfo
 
 from common import ESPN_SLOTS, NON_STARTING_SLOTS, SKILL
 
@@ -34,6 +45,18 @@ LEAGUE_AVG_IMPLIED = 22.5
 REPLACEMENT_DEFAULT = {"QB": 12.0, "RB": 6.0, "WR": 6.0, "TE": 4.0, "K": 6.0, "DST": 5.0}
 
 DEDICATED = {0: "QB", 2: "RB", 4: "WR", 6: "TE", 16: "DST", 17: "K"}
+
+# How open a starting slot is: how many positions ESPN will accept in it.
+# A dedicated slot takes one, RB/WR and WR/TE take two, FLEX takes three,
+# OP (superflex) takes four. This is the whole ordering `reslot_by_kickoff`
+# needs -- the more positions a slot accepts, the more of the bench and the
+# wire can still fill it after a late scratch, so the later the kickoff that
+# belongs in it.
+SLOT_OPENNESS = {0: 1, 1: 1, 2: 1, 4: 1, 6: 1, 16: 1, 17: 1,
+                 3: 2, 5: 2, 23: 3, 7: 4}
+EASTERN = ZoneInfo("America/New_York")
+# Guard on the bitmask search below. A real lineup fills about nine slots.
+MAX_RESLOT = 14
 
 
 def matchup_factor(imp_own: float | None, avg: float = LEAGUE_AVG_IMPLIED) -> float:
@@ -98,12 +121,136 @@ def project(player: dict, opp_row: dict | None, line: dict | None,
 
 
 # ------------------------------------------------------------------ lineup
+def kickoff_dt(player: dict) -> datetime | None:
+    """When this player's game starts, in UTC, or None if we do not know.
+
+    nflverse writes a naive Eastern stamp ("2026-09-13T13:00"); the ESPN
+    scoreboard overlay writes UTC with a Z. Both can appear in the same
+    week's lines file, so normalise before comparing -- 13:00 ET and
+    17:00Z are the same kickoff, and a raw string sort reads them as four
+    hours apart in the wrong direction.
+    """
+    raw = (player.get("matchup") or {}).get("kickoff")
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=EASTERN)
+    return dt.astimezone(timezone.utc)
+
+
+def kickoff_label(player: dict) -> str:
+    """"Mon 20:15 ET" for display, or "" when the kickoff is unknown."""
+    dt = kickoff_dt(player)
+    return dt.astimezone(EASTERN).strftime("%a %H:%M ET") if dt else ""
+
+
+def reslot_by_kickoff(starters: list[tuple[int, dict | None]]) -> list[tuple[int, dict | None]]:
+    """Re-label an already-chosen lineup so open slots hold late kickoffs.
+
+    Points decide who starts; this decides only which slot each starter is
+    labelled with, so it never changes the projected total. The rule, in
+    one line: of the players you have already decided to start, the one
+    whose game kicks off last goes in the most open slot, and the Thursday
+    game never does.
+
+    It matters because a slot is a constraint on replacement, not on
+    scoring. If a starter is declared inactive 90 minutes before kickoff,
+    whoever sits in FLEX can be swapped for any RB/WR/TE still on the bench
+    or the wire, while the same player labelled RB can only be replaced by
+    an RB. Leaving the open slots unlocked as long as possible is free: no
+    lineup is ever worse for it, and occasionally it is the difference
+    between a replacement and a zero.
+
+    Locked players (game underway) keep their slot. Players whose kickoff
+    we do not know sort as earliest, so a missing line never promotes
+    someone into FLEX on no evidence.
+    """
+    movable = [(i, s, p) for i, (s, p) in enumerate(starters)
+               if p is not None and not p.get("locked")]
+    n = len(movable)
+    if n < 2 or n > MAX_RESLOT:
+        return starters
+    openness = [SLOT_OPENNESS.get(s, 1) for _, s, _ in movable]
+    if len(set(openness)) < 2:
+        return starters                       # nothing to compete for
+    times = [kickoff_dt(p) for _, _, p in movable]
+    known = sorted({t for t in times if t is not None})
+    if len(known) < 2:
+        return starters                       # one kickoff, or none known
+    # Dense rank, unknown kickoff = 0 = below the earliest known one.
+    rank = [known.index(t) + 1 if t is not None else 0 for t in times]
+    ok = tuple(tuple(j == k or movable[j][1] in (movable[k][2].get("eligible_slots") or ())
+                     for k in range(n))
+               for j in range(n))
+
+    # Maximising sum(openness[slot] * rank[player]) over the legal
+    # assignments pairs the most open slot with the latest kickoff
+    # (rearrangement inequality), and respects eligibility where it cannot.
+    @lru_cache(maxsize=None)
+    def best(j: int, used: int) -> float:
+        if j == n:
+            return 0.0
+        return max((openness[j] * rank[k] + best(j + 1, used | (1 << k))
+                    for k in range(n) if not used & (1 << k) and ok[j][k]),
+                   default=float("-inf"))
+
+    order, used = [], 0
+    for j in range(n):
+        target = best(j, used)
+        # The player already in this slot is tried first, so an equally
+        # good arrangement is never churned into a pointless move.
+        pick = next((k for k in [j] + [x for x in range(n) if x != j]
+                     if not used & (1 << k) and ok[j][k]
+                     and openness[j] * rank[k] + best(j + 1, used | (1 << k)) >= target),
+                    None)
+        if pick is None:
+            return starters                   # no legal assignment; leave it
+        order.append(pick)
+        used |= 1 << pick
+    out = list(starters)
+    for j, k in enumerate(order):
+        out[movable[j][0]] = (movable[j][1], movable[k][2])
+    return out
+
+
+def timing_note(starters: list[tuple[int, dict | None]]) -> list[str]:
+    """One line per open slot: who is in it and when he actually plays.
+
+    Flags the case `reslot_by_kickoff` cannot fix -- an open slot stuck
+    with an early game because no later-starting starter is eligible for
+    it -- since that one is a roster problem, not a slotting mistake.
+    """
+    kicks = [k for k in (kickoff_dt(p) for _, p in starters if p) if k is not None]
+    latest = max(kicks, default=None)
+    lines = []
+    for slot, p in starters:
+        if p is None or SLOT_OPENNESS.get(slot, 1) < 2:
+            continue
+        when = kickoff_label(p) or "kickoff unknown"
+        tail = ""
+        if latest is not None and kickoff_dt(p) != latest:
+            later = [q["name"] for _, q in starters if q and kickoff_dt(q) is not None
+                     and (kickoff_dt(p) is None or kickoff_dt(q) > kickoff_dt(p))
+                     and slot in (q.get("eligible_slots") or ())]
+            tail = ("  <- forced: no later-starting eligible starter" if not later
+                    else "  <- later starters available: " + ", ".join(later[:3]))
+        lines.append(f"  {ESPN_SLOTS.get(slot, slot):6} {p['name']:24} {when}{tail}")
+    return lines
+
+
 def optimal_lineup(players: list[dict], slots: dict[int, int]) -> dict:
     """Exact best assignment of players to starting slots by `proj`.
 
     Locked players (game started) keep whatever slot they are in; a
     locked bench player cannot be started. Slot eligibility is the
-    player's own ESPN eligibleSlots list. Returns
+    player's own ESPN eligibleSlots list. Once the starters are chosen,
+    `reslot_by_kickoff` re-labels them so the open slots hold the latest
+    kickoffs; that never changes who starts or what the lineup projects,
+    and the moves it causes are tagged `"timing": True`. Returns
       {"total": pts, "starters": [(slot, player)], "bench": [player],
        "moves": [{player_id, from_slot, to_slot, name}]}
     """
@@ -160,7 +307,12 @@ def optimal_lineup(players: list[dict], slots: dict[int, int]) -> dict:
         if p:
             used.add(p["id"])
     bench = [p for p in players if p["id"] not in used]
+    # Points chose the starters; kickoff order chooses their labels.
+    by_points = {p["id"]: s for s, p in starters if p}
+    starters = reslot_by_kickoff(starters)
     moves = _moves(players, starters, slots)
+    for m in moves:
+        m["timing"] = by_points.get(m["player_id"], m["to_slot"]) != m["to_slot"]
     return {"total": round(max(best["total"], 0.0), 2), "starters": starters,
             "bench": bench, "moves": moves}
 

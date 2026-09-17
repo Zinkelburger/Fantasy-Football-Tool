@@ -21,7 +21,8 @@ def P(pid, name, pos, proj, slot=20, slots=None, **kw):
             "eligible_slots": elig, "slot": slot, "proj": proj,
             "value": kw.get("value", proj), "locked": kw.get("locked", False),
             "injury": kw.get("injury", "ACTIVE"), "pct_owned": kw.get("own", 50),
-            "pct_change": kw.get("chg", 0), "sources": kw.get("sources", {})}
+            "pct_change": kw.get("chg", 0), "sources": kw.get("sources", {}),
+            "matchup": {"kickoff": kw["kickoff"]} if "kickoff" in kw else None}
 
 
 SLOTS = {0: 1, 2: 2, 3: 1, 4: 2, 6: 1, 16: 1, 17: 1, 20: 7}
@@ -224,6 +225,97 @@ class Bundle(unittest.TestCase):
         self.assertEqual(positions, {"QB", "RB", "WR", "TE"})
         imps = [r["imp"] for r in d["dst"]]
         self.assertEqual(imps, sorted(imps))
+
+
+
+# Kickoff stamps as the two sources actually write them: nflverse is naive
+# Eastern, the ESPN scoreboard overlay is UTC with a Z.
+THU = "2026-09-10T20:15"          # Thursday night
+SUN_EARLY = "2026-09-13T13:00"    # Sunday 1pm
+SUN_LATE = "2026-09-13T16:25"     # Sunday afternoon
+SNF = "2026-09-14T00:20Z"         # Sunday night, as ESPN writes it
+MNF = "2026-09-15T00:15Z"         # Monday night, as ESPN writes it
+
+
+class SlotTiming(unittest.TestCase):
+    """Open slots hold the latest kickoff. See docs/LINEUP-SLOTTING.md."""
+
+    def roster(self, **when):
+        # Same lineup as Lineup.roster(); only the kickoffs are interesting.
+        k = {"QB1": SUN_EARLY, "RB1": MNF, "RB2": THU, "RB3": SUN_EARLY,
+             "WR1": SUN_EARLY, "WR2": SUN_EARLY, "WR3": SUN_LATE,
+             "TE1": SUN_EARLY, "K": SUN_EARLY, "DST": SUN_EARLY}
+        k.update(when)
+        return [P(1, "QB1", "QB", 18, slot=0, kickoff=k["QB1"]), P(2, "QB2", "QB", 14, kickoff=k["QB1"]),
+                P(3, "RB1", "RB", 15, slot=2, kickoff=k["RB1"]),
+                P(4, "RB2", "RB", 9, slot=2, kickoff=k["RB2"]),
+                P(5, "RB3", "RB", 12, kickoff=k["RB3"]),
+                P(6, "WR1", "WR", 14, slot=4, kickoff=k["WR1"]),
+                P(7, "WR2", "WR", 8, slot=4, kickoff=k["WR2"]),
+                P(8, "WR3", "WR", 11, slot=3, kickoff=k["WR3"]),
+                P(9, "TE1", "TE", 7, slot=6, kickoff=k["TE1"]),
+                P(10, "K", "K", 8, slot=17, kickoff=k["K"]),
+                P(11, "DST", "DST", 6, slot=16, kickoff=k["DST"])]
+
+    def test_naive_eastern_and_utc_are_the_same_kickoff(self):
+        # 13:00 ET and 17:00Z are one game; a raw string sort puts them
+        # four hours apart in the wrong direction.
+        self.assertEqual(advisor.kickoff_dt({"matchup": {"kickoff": "2026-09-13T13:00"}}),
+                         advisor.kickoff_dt({"matchup": {"kickoff": "2026-09-13T17:00Z"}}))
+        self.assertIsNone(advisor.kickoff_dt({"matchup": None}))
+        self.assertIsNone(advisor.kickoff_dt({"matchup": {"kickoff": "not a date"}}))
+        self.assertEqual(advisor.kickoff_label({"matchup": {"kickoff": MNF}}), "Mon 20:15 ET")
+
+    def test_latest_kickoff_takes_the_open_slot(self):
+        res = advisor.optimal_lineup(self.roster(), SLOTS)
+        at = {p["name"]: slot for slot, p in res["starters"] if p}
+        self.assertEqual(at["RB1"], 3)        # Monday night -> RB/WR flex
+        self.assertEqual(at["RB2"], 2)        # Thursday -> dedicated RB
+        self.assertEqual(at["RB3"], 2)
+
+    def test_slotting_does_not_change_who_starts_or_the_total(self):
+        blind = advisor.optimal_lineup([dict(p, matchup=None) for p in self.roster()], SLOTS)
+        timed = advisor.optimal_lineup(self.roster(), SLOTS)
+        self.assertAlmostEqual(blind["total"], timed["total"])
+        self.assertEqual({p["id"] for _, p in blind["starters"] if p},
+                         {p["id"] for _, p in timed["starters"] if p})
+
+    def test_thursday_starter_never_sits_in_an_open_slot(self):
+        # Three startable WRs for two WR slots and the flex, so the flex is
+        # a WR contest. WR3 plays Thursday, WR1 plays Sunday night.
+        r = self.roster(WR3=THU, WR1=SNF, WR2=SUN_EARLY,
+                        RB1=SUN_EARLY, RB2=SUN_EARLY, RB3=SUN_EARLY)
+        next(p for p in r if p["name"] == "WR2")["proj"] = 10.0   # beats RB2 for the flex
+        res = advisor.optimal_lineup(r, SLOTS)
+        at = {p["name"]: slot for slot, p in res["starters"] if p}
+        self.assertEqual(at["WR1"], 3)       # Sunday night -> flex
+        self.assertEqual(at["WR3"], 4)       # Thursday -> dedicated WR
+
+    def test_timing_moves_are_labelled_as_such(self):
+        res = advisor.optimal_lineup(self.roster(), SLOTS)
+        by_name = {m["name"]: m for m in res["moves"]}
+        self.assertTrue(by_name["RB1"]["timing"])      # RB -> RB/WR, same points
+        self.assertFalse(by_name["RB3"]["timing"])     # RB3 starts on merit
+
+    def test_no_kickoff_data_leaves_the_slotting_alone(self):
+        before = advisor.optimal_lineup(Lineup().roster(), SLOTS)["starters"]
+        self.assertEqual(advisor.reslot_by_kickoff(list(before)), before)
+
+    def test_locked_starter_keeps_his_slot(self):
+        r = self.roster()
+        r[2]["locked"] = True                          # RB1, Monday night, locked
+        res = advisor.optimal_lineup(r, SLOTS)
+        at = {p["name"]: slot for slot, p in res["starters"] if p}
+        self.assertEqual(at["RB1"], 2)
+        self.assertFalse(any(m["name"] == "RB1" for m in res["moves"]))
+
+    def test_timing_note_flags_a_forced_early_flex(self):
+        # Every starter plays Thursday except the TE, who cannot fill RB/WR.
+        r = self.roster(**{n: THU for n in ("QB1", "RB1", "RB2", "RB3", "WR1", "WR2", "WR3", "K", "DST")})
+        res = advisor.optimal_lineup(r, SLOTS)
+        note = "\n".join(advisor.timing_note(res["starters"]))
+        self.assertIn("RB/WR", note)
+        self.assertIn("forced", note)
 
 
 if __name__ == "__main__":

@@ -21,6 +21,16 @@
   `engine/weekly/bluesky.py`; `docs/NEWS-SOURCES.md` lists every source, what
   it contains and when it posts. Clubs post each day's report late afternoon
   ET, so a blank Thursday column means "not posted yet", not "no change".
+- Lineup slots follow `docs/LINEUP-SLOTTING.md`: projection picks the starters,
+  then the latest kickoffs take the open slots (OP/FLEX/RB-WR/WR-TE) and a
+  Thursday night player never sits in one. `advisor.reslot_by_kickoff` already
+  does this and never changes the projected total; surface the resulting
+  timing-only moves to the user instead of dropping them.
+- Reddit is reachable only through the `ff-reddit` MCP server. Never point the
+  web reader, `curl` or `wget` at `reddit.com`, `old.reddit.com` or a `.json`
+  endpoint — they return a login interstitial or a block, not the thread, and a
+  different user agent or mirror does not help. A pasted Reddit link is a
+  submission id to hand to an `ff-reddit` tool.
 - Defense recommendations use our finding 27 methodology: lowest opponent
   implied total first. Do not use ESPN fantasy projections to rank or break
   ties. ESPN supplies roster availability, league scoring, and actual results.

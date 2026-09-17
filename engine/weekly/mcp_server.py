@@ -655,6 +655,11 @@ def lineup_recommendation(week: int = 0) -> str:
     out = [f"week {week} optimal lineup: {res['total']:.1f} proj (current lineup {cur:.1f})"]
     for slot, p in res["starters"]:
         out.append(f"  {ESPN_SLOTS.get(slot, slot):6} " + (_fmt_player(p) if p else "(empty — no eligible healthy player)"))
+    timing = advisor.timing_note(res["starters"])
+    if timing:
+        out.append("open slots hold the latest kickoffs (same points, more room to "
+                   "replace a late scratch):")
+        out += timing
     out.append("bench:")
     for p in sorted(res["bench"], key=lambda p: -p["proj"]):
         out.append("         " + _fmt_player(p, with_sources=False))
@@ -670,7 +675,9 @@ def lineup_recommendation(week: int = 0) -> str:
     if res["moves"]:
         token = _save_proposal("lineup", {"moves": res["moves"]}, week)
         out.append("moves:")
-        out += [f"  {m['name']}: {m['from']} -> {m['to']}" for m in res["moves"]]
+        out += [f"  {m['name']}: {m['from']} -> {m['to']}"
+                + ("  (slot timing only, no points change)" if m.get("timing") else "")
+                for m in res["moves"]]
         out.append(f"apply with apply_lineup(token='{token}', confirmed=True) after the user approves")
     else:
         out.append("no moves: the current lineup is already optimal")
