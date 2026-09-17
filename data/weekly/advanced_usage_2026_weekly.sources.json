@@ -1,48 +1,56 @@
 {
   "season": 2026,
-  "generated_at": "2026-09-16T16:57:15Z",
+  "generated_at": "2026-09-17T15:58:44Z",
   "sources": {
     "pbp_2026": {
       "status": "available",
       "error": null,
       "rows": 2756,
-      "sha256": "ec4a0376ab2f869c826a400ddfeea1f0d7dcebb76cde85f9227fb3159f86396b",
-      "cache_written_at": "2026-09-15T13:14:26.973436+00:00"
+      "sha256": "b6cd690547308dc718061c3b5de1974cde3d6bed040966b1ee9b643931d6e681",
+      "cache_written_at": "2026-09-17T15:58:43.404374+00:00"
     },
     "player_stats_2026": {
       "status": "available",
       "error": null,
       "rows": 1118,
-      "sha256": "90bc7e94a799f7ec70db82736b4264e8596db911df064343865ebc0a1d9e7a69",
-      "cache_written_at": "2026-09-15T13:14:27.104436+00:00"
+      "sha256": "f9d800288ef0787c1f3712cf6e49cdc91202fe089c45cb508b0a893f3528b5e6",
+      "cache_written_at": "2026-09-17T15:58:43.463374+00:00"
     },
     "ftn_2026": {
       "status": "available",
       "error": null,
       "rows": 2675,
-      "sha256": "2f5fc62ca3e308e686ba3625405ceb6122d37c3b9b335171ba4b28ecb9fd72d3",
-      "cache_written_at": "2026-09-16T16:57:15.222226+00:00"
+      "sha256": "a85aff2328a9a641c60dc0d9ba6f2d59c2db5b412300e9395a2bb5d783a511e9",
+      "cache_written_at": "2026-09-17T15:58:43.568374+00:00"
     },
     "pfr_rush_week_2026": {
       "status": "available",
       "error": null,
-      "rows": 117,
-      "sha256": "320e6272381cf5a05474fb047d03a1d6e4a5c11b77b80133518ceca91e86a176",
-      "cache_written_at": "2026-09-16T16:57:15.330226+00:00"
+      "rows": 124,
+      "sha256": "70330628dab079ecc809d182bac77a3278eebb514f2cc77ddb7f260e822177e8",
+      "cache_written_at": "2026-09-17T15:58:43.668375+00:00"
     },
     "pfr_ids": {
       "status": "available",
       "error": null,
       "rows": 24824,
-      "sha256": "e0eb992bf9b46608b0e4e2c32bfa19e6a7ac9cf7dfc2594f819f56c67c1610e0",
-      "cache_written_at": "2026-09-16T16:57:15.546226+00:00"
+      "sha256": "9e56fe1a6d4199ec5542e83392d8f5e048de97ebbc00848bc3bf8c012dd650a4",
+      "cache_written_at": "2026-09-17T15:58:43.846375+00:00"
+    },
+    "snaps_2026": {
+      "status": "available",
+      "error": null,
+      "rows": 1492,
+      "sha256": "575a9f139b50df70c8773a3b2757c97a98825226bae7d5d1c68d352d57bc0d66",
+      "cache_written_at": "2026-09-17T15:58:43.970375+00:00"
     }
   },
-  "output_sha256": "1fe9428818ff4e6ca762846332addee9041b1d9973be22e9d7f557f8d7705bcd",
-  "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing via nflverse; nflverse play-by-play/player stats",
+  "output_sha256": "4012bda7b65ab165c722d449c5605005da9d6bd90d19d5e18877b5d898bc69ed",
+  "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing and snap counts via nflverse; nflverse play-by-play/player stats",
   "source_documentation": {
     "ftn": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
     "pfr": "https://nflreadr.nflverse.com/reference/load_pfr_advstats.html",
+    "snaps": "https://nflreadr.nflverse.com/reference/load_snap_counts.html",
     "schedule": "https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html"
   },
   "definitions": {
@@ -50,6 +58,9 @@
     "tgt_rz": "line of scrimmage <=20 yards to goal",
     "tgt_rz_lt20": "line of scrimmage <20 yards to goal",
     "ftn_catchable_targets": "FTN is_catchable_ball, not receptions plus drops",
+    "snaps_off": "PFR offensive snaps played in that game",
+    "snap_share": "PFR offense_pct, the player's share of team offensive snaps",
+    "snap_share_is_not_route_share": "snaps say a player was on the field. Routes run, route share and targets per route run are PFF/FTN charting we do not have; target_share is the free stand-in.",
     "nulls": "unavailable or partial; zero only when observed",
     "purpose": "descriptive context; not model inputs"
   },
@@ -60,7 +71,8 @@
       "player_rows": 309,
       "targeted_players": 251,
       "players_with_complete_catchability": 251,
-      "players_with_ybcon": 101
+      "players_with_ybcon": 106,
+      "players_with_snaps": 308
     }
   ]
 }

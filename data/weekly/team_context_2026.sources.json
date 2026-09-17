@@ -1,0 +1,38 @@
+{
+  "season": 2026,
+  "generated_at": "2026-09-17T16:16:45Z",
+  "source": "nflverse play-by-play (nflfastR), computed locally",
+  "baseline": {
+    "fit_seasons": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "team_games": 2718,
+    "fitted": "2026-09-17T15:58:06Z"
+  },
+  "definitions": {
+    "proe": "mean nflfastR pass_oe over pass/rush plays, in points of pass rate",
+    "epa_pass": "EPA per dropback (scrambles and sacks included)",
+    "epa_rush": "EPA per designed rush (scrambles excluded)",
+    "sr_first": "success rate on 1st down",
+    "expl_pass": "share of dropbacks gaining 20+ yards",
+    "expl_rush": "share of designed rushes gaining 10+ yards",
+    "deep_rate": "share of pass attempts thrown 20+ air yards",
+    "*_pctl": "percentile among 2718 team-games 2021-2025",
+    "*_rk": "rank among the 32 teams within that week (1 = best, or most for proe/aypa/plays, fewest for sack_rate)",
+    "<metric>_n": "plays carrying a value for that metric; its exact weight when pooling weeks. Not the same as attempts: nflfastR leaves cpoe and air_yards null on some attempts",
+    "excluded": "kneels, spikes, two-point tries, and all non-REG games",
+    "purpose": "descriptive matchup context; never an input to the expected-points model"
+  },
+  "coverage_by_week": [
+    {
+      "week": 1,
+      "teams": 32,
+      "plays": 2006,
+      "teams_above_play_floor": 32
+    }
+  ]
+}

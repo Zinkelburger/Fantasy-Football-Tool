@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 import advisor
+import fftiers
 from common import ROOT
 
 LATEST = ROOT / "data" / "weekly" / "latest.json"
@@ -144,6 +145,71 @@ class Waivers(unittest.TestCase):
         lineup = advisor.optimal_lineup(roster, SLOTS)
         props = advisor.proposals(roster, lineup, fas, SLOTS)
         self.assertEqual([p["add"] for p in props], ["FA RB"])
+
+
+# One position's file as the bucket serves it, including the quoting and
+# the "vs." with a dot. No network in these tests.
+FFTIERS_CSV = (
+    '"Rank","Player.Name","Matchup","Best.Rank","Worst.Rank","Avg.Rank","Std.Dev","Tier"\n'
+    '1,"Jahmyr Gibbs","at BUF",1,6,1.33,0.89,"1"\n'
+    '2,"Bijan Robinson","vs. CAR",1,4,2.15,0.7,"1"\n'
+    '3,"Derrick Henry","vs. NO",1,9,3.19,1.25,"2"\n')
+FFTIERS_DST = (
+    '"Rank","Player.Name","Matchup","Best.Rank","Worst.Rank","Avg.Rank","Std.Dev","Tier"\n'
+    '1,"Philadelphia Eagles","at TEN",1,6,1.5,0.92,"1"\n'
+    '2,"San Francisco 49ers","vs. MIA",1,9,3.15,1.37,"1"\n'
+    '3,"Washington Commanders","vs. NYG",2,11,4.0,1.4,"2"\n')
+
+
+class FFTiers(unittest.TestCase):
+    def test_urls_split_by_format_only_where_the_bucket_does(self):
+        self.assertEqual(fftiers.url("RB", "half"),
+                         fftiers.BASE + "/weekly-RB-HALF.csv")
+        self.assertEqual(fftiers.url("RB", "std"), fftiers.BASE + "/weekly-RB.csv")
+        # QB/K/DST tiers do not move with receptions: one file each.
+        for pos in ("QB", "K", "DST"):
+            self.assertEqual(fftiers.url(pos, "ppr"),
+                             fftiers.url(pos, "std"), pos)
+
+    def test_parse_maps_onto_the_ecr_contract(self):
+        rows = fftiers.parse(FFTIERS_CSV, "RB")
+        self.assertEqual([r["name"] for r in rows],
+                         ["Jahmyr Gibbs", "Bijan Robinson", "Derrick Henry"])
+        self.assertEqual(set(rows[0]), set(fftiers.FIELDS))
+        self.assertEqual(rows[0]["opp"], "BUF")
+        self.assertEqual(rows[0]["tier"], "1")
+        self.assertEqual(rows[2]["tier"], "2")
+        # The bucket has no team and no grade for a skill player.
+        self.assertEqual(rows[0]["team"], "")
+        self.assertEqual(rows[0]["start_sit_grade"], "")
+
+    def test_matchup_side_and_home(self):
+        self.assertEqual(fftiers.parse_matchup("at BUF"), ("BUF", False))
+        self.assertEqual(fftiers.parse_matchup("vs. CAR"), ("CAR", True))
+        self.assertEqual(fftiers.parse_matchup("BYE"), (None, None))
+        self.assertEqual(fftiers.parse_matchup(None), (None, None))
+        # nflverse spells the Rams LA, not LAR.
+        self.assertEqual(fftiers.parse_matchup("at LAR")[0], "LA")
+
+    def test_dst_rows_get_espns_spelling_and_a_team(self):
+        rows = fftiers.parse(FFTIERS_DST, "DST")
+        self.assertEqual([(r["name"], r["team"]) for r in rows],
+                         [("Eagles D/ST", "PHI"), ("49ers D/ST", "SF"),
+                          ("Commanders D/ST", "WAS")])
+
+    def test_wrong_week_is_caught_by_the_pairings(self):
+        rows = fftiers.parse(FFTIERS_DST, "DST")
+        right = {"PHI": "TEN", "SF": "MIA", "WAS": "NYG",
+                 "TEN": "PHI", "MIA": "SF", "NYG": "WAS"}
+        self.assertEqual(fftiers.off_week(rows, right), [])
+        # Same teams, different week: every team still plays, so only the
+        # pairing gives it away.
+        wrong = dict(right, PHI="NYG", NYG="PHI", WAS="SF", SF="WAS")
+        self.assertEqual(len(fftiers.off_week(rows, wrong)), 3)
+        # An opponent on a bye that week.
+        self.assertTrue(fftiers.off_week(rows, {"PHI": "TEN", "TEN": "PHI"}))
+        # No schedule to check against: accept rather than block the build.
+        self.assertEqual(fftiers.off_week(rows, None), [])
 
 
 class Bundle(unittest.TestCase):

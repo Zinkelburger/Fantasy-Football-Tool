@@ -1,0 +1,325 @@
+{
+  "season": 2026,
+  "week": 2,
+  "generated_at": "2026-09-17T16:15:07Z",
+  "requested_hosts": [
+    "ARI",
+    "ATL",
+    "BAL",
+    "BUF",
+    "CAR",
+    "CHI",
+    "CIN",
+    "CLE",
+    "DAL",
+    "DEN",
+    "DET",
+    "GB",
+    "HOU",
+    "IND",
+    "JAX",
+    "KC",
+    "LA",
+    "LAC",
+    "LV",
+    "MIA",
+    "MIN",
+    "NE",
+    "NO",
+    "NYG",
+    "NYJ",
+    "PHI",
+    "PIT",
+    "SEA",
+    "SF",
+    "TB",
+    "TEN",
+    "WAS"
+  ],
+  "skill_only": false,
+  "missing_teams": [
+    "LA",
+    "NO",
+    "NYG",
+    "NYJ"
+  ],
+  "teams": {
+    "ARI": {
+      "status": "available",
+      "rows": 19,
+      "error": null,
+      "reported_teams": [
+        "ARI",
+        "SEA"
+      ]
+    },
+    "ATL": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "ATL",
+        "CAR"
+      ]
+    },
+    "BAL": {
+      "status": "available",
+      "rows": 11,
+      "error": null,
+      "reported_teams": [
+        "BAL"
+      ]
+    },
+    "BUF": {
+      "status": "available",
+      "rows": 11,
+      "error": null,
+      "reported_teams": [
+        "BUF",
+        "DET"
+      ]
+    },
+    "CAR": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "ATL",
+        "CAR"
+      ]
+    },
+    "CHI": {
+      "status": "available",
+      "rows": 14,
+      "error": null,
+      "reported_teams": [
+        "CHI",
+        "MIN"
+      ]
+    },
+    "CIN": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "CIN",
+        "HOU"
+      ]
+    },
+    "CLE": {
+      "status": "available",
+      "rows": 13,
+      "error": null,
+      "reported_teams": [
+        "CLE",
+        "TB"
+      ]
+    },
+    "DAL": {
+      "status": "available",
+      "rows": 15,
+      "error": null,
+      "reported_teams": [
+        "DAL",
+        "WAS"
+      ]
+    },
+    "DEN": {
+      "status": "available",
+      "rows": 4,
+      "error": null,
+      "reported_teams": [
+        "DEN"
+      ]
+    },
+    "DET": {
+      "status": "available",
+      "rows": 11,
+      "error": null,
+      "reported_teams": [
+        "BUF",
+        "DET"
+      ]
+    },
+    "GB": {
+      "status": "available",
+      "rows": 9,
+      "error": null,
+      "reported_teams": [
+        "GB"
+      ]
+    },
+    "HOU": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "CIN",
+        "HOU"
+      ]
+    },
+    "IND": {
+      "status": "available",
+      "rows": 16,
+      "error": null,
+      "reported_teams": [
+        "IND",
+        "KC"
+      ]
+    },
+    "JAX": {
+      "status": "available",
+      "rows": 9,
+      "error": null,
+      "reported_teams": [
+        "DEN",
+        "JAX"
+      ]
+    },
+    "KC": {
+      "status": "available",
+      "rows": 16,
+      "error": null,
+      "reported_teams": [
+        "IND",
+        "KC"
+      ]
+    },
+    "LA": {
+      "status": "no_report",
+      "rows": 0,
+      "error": null,
+      "reported_teams": []
+    },
+    "LAC": {
+      "status": "available",
+      "rows": 12,
+      "error": null,
+      "reported_teams": [
+        "LAC",
+        "LV"
+      ]
+    },
+    "LV": {
+      "status": "available",
+      "rows": 12,
+      "error": null,
+      "reported_teams": [
+        "LAC",
+        "LV"
+      ]
+    },
+    "MIA": {
+      "status": "available",
+      "rows": 17,
+      "error": null,
+      "reported_teams": [
+        "MIA",
+        "SF"
+      ]
+    },
+    "MIN": {
+      "status": "available",
+      "rows": 14,
+      "error": null,
+      "reported_teams": [
+        "CHI",
+        "MIN"
+      ]
+    },
+    "NE": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "NE",
+        "PIT"
+      ]
+    },
+    "NO": {
+      "status": "available",
+      "rows": 11,
+      "error": null,
+      "reported_teams": [
+        "BAL"
+      ]
+    },
+    "NYG": {
+      "status": "no_report",
+      "rows": 0,
+      "error": null,
+      "reported_teams": []
+    },
+    "NYJ": {
+      "status": "available",
+      "rows": 9,
+      "error": null,
+      "reported_teams": [
+        "GB"
+      ]
+    },
+    "PHI": {
+      "status": "available",
+      "rows": 5,
+      "error": null,
+      "reported_teams": [
+        "PHI",
+        "TEN"
+      ]
+    },
+    "PIT": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "NE",
+        "PIT"
+      ]
+    },
+    "SEA": {
+      "status": "available",
+      "rows": 19,
+      "error": null,
+      "reported_teams": [
+        "ARI",
+        "SEA"
+      ]
+    },
+    "SF": {
+      "status": "available",
+      "rows": 17,
+      "error": null,
+      "reported_teams": [
+        "MIA",
+        "SF"
+      ]
+    },
+    "TB": {
+      "status": "available",
+      "rows": 13,
+      "error": null,
+      "reported_teams": [
+        "CLE",
+        "TB"
+      ]
+    },
+    "TEN": {
+      "status": "available",
+      "rows": 5,
+      "error": null,
+      "reported_teams": [
+        "PHI",
+        "TEN"
+      ]
+    },
+    "WAS": {
+      "status": "available",
+      "rows": 15,
+      "error": null,
+      "reported_teams": [
+        "DAL",
+        "WAS"
+      ]
+    }
+  }
+}

@@ -49,3 +49,10 @@ public/
 chrome-extension/dist/
 node_modules/
 test-results/
+
+# Expert consensus ranks. Third-party (FantasyPros, via the fftiers
+# bucket or the paid API) and this repo is public, so we use them and
+# do not republish them. Regenerate in seconds, no key needed:
+# python engine/weekly/fftiers.py
+data/weekly/ecr_*.csv
+data/weekly/ecr_*.sources.json

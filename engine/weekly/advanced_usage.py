@@ -19,7 +19,7 @@ import ep_model
 KEY = ["season", "week", "game_id", "player_id", "team"]
 
 
-def build(pbp, stats, ftn=None, pfr=None, ids=None):
+def build(pbp, stats, ftn=None, pfr=None, ids=None, snaps=None):
     usage = ep_model.usage(pbp)
     # Denominator includes every identified receiver, even non-skill players.
     usage = usage.with_columns(
@@ -73,8 +73,9 @@ def build(pbp, stats, ftn=None, pfr=None, ids=None):
                                .then(pl.col(label)).alias(label))
     out = out.with_columns(pl.when(pl.col("tgt") > 0)
         .then(pl.col("ftn_catchable_known_targets") / pl.col("tgt")).alias("ftn_target_coverage"))
-    if pfr is not None and pfr.height and ids is not None:
-        crosswalk = ids.select(pl.col("gsis_id").alias("player_id"), "pfr_id").drop_nulls().unique()
+    crosswalk = (ids.select(pl.col("gsis_id").alias("player_id"), "pfr_id")
+                 .drop_nulls().unique() if ids is not None else None)
+    if pfr is not None and pfr.height and crosswalk is not None:
         rush = pfr.filter(pl.col("game_type") == "REG").join(
             crosswalk, left_on="pfr_player_id", right_on="pfr_id", validate="m:1").select(
                 *KEY, pl.col("carries").alias("pfr_carries"),
@@ -90,12 +91,30 @@ def build(pbp, stats, ftn=None, pfr=None, ids=None):
         .otherwise(pl.lit("available")).alias("pfr_status"))
     out = out.with_columns(pl.when(pl.col("pfr_status") == "available")
                            .then(pl.col("pfr_yards_before_contact")).alias("pfr_yards_before_contact"))
+    # PFR snap counts. offense_pct is PFR's own share of team offensive
+    # snaps; we carry it rather than divide by a denominator of our own,
+    # which would disagree with them on penalties and kneels. This is the
+    # closest free stand-in for the route share the paid charting sells:
+    # it says a player was on the field, not that he ran a route.
+    if snaps is not None and snaps.height and crosswalk is not None:
+        sn = snaps.filter(pl.col("game_type") == "REG").join(
+            crosswalk, left_on="pfr_player_id", right_on="pfr_id", validate="m:1").select(
+                *KEY, pl.col("offense_snaps").alias("snaps_off"),
+                pl.col("offense_pct").alias("snap_share"))
+        out = out.join(sn, on=KEY, how="left", validate="1:1")
+    else:
+        out = out.with_columns(pl.lit(None, dtype=pl.Float64).alias("snaps_off"),
+                               pl.lit(None, dtype=pl.Float64).alias("snap_share"))
+    out = out.with_columns(
+        pl.when(pl.col("snaps_off").is_null()).then(pl.lit("unavailable"))
+        .otherwise(pl.lit("available")).alias("snap_status"))
     return out.select(*KEY, "name", "position", "opportunities", "rush_att", "tgt",
         "team_targets", "target_share", "receptions", "rushing_yards", "receiving_yards",
         "air_yds", "air_yards_known_targets", "tgt_rz", "tgt_rz_lt20", "tgt_ez",
         "ftn_catchable_targets", "ftn_drops", "ftn_catchable_known_targets",
         "ftn_drop_known_targets", "ftn_target_coverage", "pfr_carries",
-        "pfr_yards_before_contact", "pfr_status").sort(["week", "position", "player_id"])
+        "pfr_yards_before_contact", "pfr_status", "snaps_off", "snap_share",
+        "snap_status").sort(["week", "position", "player_id"])
 
 
 def write(season, refresh=False, refresh_base=True):
@@ -131,25 +150,33 @@ def write(season, refresh=False, refresh_base=True):
     pfr = read(f"pfr_rush_week_{season}", lambda: nfl.load_pfr_advstats(
         seasons=[season], stat_type="rush", summary_level="week"), True)
     ids = read("pfr_ids", lambda: nfl.load_players().select("gsis_id", "pfr_id"), True)
-    out = build(pbp, stats, ftn, pfr, ids)
+    snaps = read(f"snaps_{season}", lambda: nfl.load_snap_counts([season]), True)
+    out = build(pbp, stats, ftn, pfr, ids, snaps)
     path = DATA / f"advanced_usage_{season}_weekly.csv"
     out.write_csv(path, float_precision=8)
     manifest = {"season": season, "generated_at": now_iso(), "sources": sources,
         "output_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-        "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing via nflverse; nflverse play-by-play/player stats",
+        "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing and snap counts via nflverse; nflverse play-by-play/player stats",
         "source_documentation": {
             "ftn": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
             "pfr": "https://nflreadr.nflverse.com/reference/load_pfr_advstats.html",
+            "snaps": "https://nflreadr.nflverse.com/reference/load_snap_counts.html",
             "schedule": "https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html"},
         "definitions": {"target_share": "player targets / all identified team targets in that game",
             "tgt_rz": "line of scrimmage <=20 yards to goal", "tgt_rz_lt20": "line of scrimmage <20 yards to goal",
             "ftn_catchable_targets": "FTN is_catchable_ball, not receptions plus drops",
+            "snaps_off": "PFR offensive snaps played in that game",
+            "snap_share": "PFR offense_pct, the player's share of team offensive snaps",
+            "snap_share_is_not_route_share": "snaps say a player was on the field. "
+                "Routes run, route share and targets per route run are PFF/FTN "
+                "charting we do not have; target_share is the free stand-in.",
             "nulls": "unavailable or partial; zero only when observed", "purpose": "descriptive context; not model inputs"},
         "coverage_by_week": out.group_by("week").agg(
             pl.col("game_id").n_unique().alias("games"), pl.len().alias("player_rows"),
             (pl.col("tgt") > 0).sum().alias("targeted_players"),
             pl.col("ftn_catchable_targets").count().alias("players_with_complete_catchability"),
-            (pl.col("pfr_status") == "available").sum().alias("players_with_ybcon")).sort("week").to_dicts()}
+            (pl.col("pfr_status") == "available").sum().alias("players_with_ybcon"),
+            (pl.col("snap_status") == "available").sum().alias("players_with_snaps")).sort("week").to_dicts()}
     path.with_suffix(".sources.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return out, manifest
 

@@ -8,7 +8,9 @@ Steps, all deterministic given the fetched inputs:
   1. lines      -> data/weekly/lines_<season>.csv        (Vegas, live + lookahead)
   2. opportunity-> data/weekly/opportunity_<season>*.csv (expected points)
   3. injuries   -> data/weekly/injuries_<season>.csv, depth_<season>.csv
-  4. ecr        -> data/weekly/ecr_<season>_wkNN.csv     (only with an API key)
+     team ctx   -> data/weekly/team_context_<season>.csv   (EPA/PROE/CPOE percentiles)
+  4. ecr        -> data/weekly/ecr_<season>_wkNN.csv     (FantasyPros API with
+                   a key, else the keyless fftiers bucket, which also has tiers)
   5. latest.json + week_<season>_wkNN.json               (what the site reads)
 
 The GitHub workflow runs this Tuesday and Saturday mornings and commits
@@ -24,10 +26,12 @@ import polars as pl
 
 from common import DATA, FORMATS, MODEL, SKILL, TEAMS, nfl_state, now_iso, week_key
 import fantasypros
+import fftiers
 import injuries as inj_mod
 import lines as lines_mod
 import opportunity
 import advanced_usage
+import team_context
 
 TOP_PER_POS = {"QB": 40, "RB": 70, "WR": 90, "TE": 40}
 
@@ -75,16 +79,34 @@ def build(season: int, week: int, refresh: bool = True) -> dict:
     # Reuse the exact PBP/stats cache that just produced expected points.
     # FTN/PFR are optional and track missing/late data in their own manifest.
     advanced_usage.write(season, refresh=refresh, refresh_base=False)
+    print(f"» team context {season}")
+    try:
+        tc, _ = team_context.write(season)
+        print(f"  {tc.height} team-weeks")
+    except Exception as e:  # noqa: BLE001 - descriptive context, never fatal
+        print(f"  team context skipped: {e}", file=sys.stderr)
     print(f"» injuries/depth {season}")
     inj_all, depth = inj_mod.build(season, refresh)
     inj_wk = inj_all.filter(pl.col("week") == week)
-    print("» fantasypros ECR")
+    lines_wk = ln.filter(pl.col("week") == week)
+    print("» expert consensus ranks")
     ecr = None
     try:
-        ecr = fantasypros.fetch(season, week) if refresh else fantasypros.load(season, week)
+        if not refresh:
+            ecr = fantasypros.load(season, week)
+        else:
+            # The paid API when a key is configured, otherwise Boris Chen's
+            # public bucket: the same FantasyPros consensus plus tiers, no
+            # key, checked against this week's schedule because its files
+            # carry no week number.
+            ecr = fantasypros.fetch(season, week)
+            if ecr is None:
+                schedule = {r["team"]: r["opp"] for r in lines_wk.iter_rows(named=True)}
+                ecr = fftiers.fetch(season, week, schedule=schedule)
+        src = (ecr[0].get("source") if ecr else None) or "fantasypros API"
+        print(f"  {len(ecr or [])} rows ({src})")
     except Exception as e:  # noqa: BLE001 - optional feed
         print(f"  ECR skipped: {e}", file=sys.stderr)
-    lines_wk = ln.filter(pl.col("week") == week)
     ranks = lines_mod.rankings(ln, week)
     coef = json.loads((MODEL / "ep_coefficients.json").read_text())
     played_games = int(lines_wk.filter(pl.col("played")).height // 2)
@@ -100,6 +122,7 @@ def build(season: int, week: int, refresh: bool = True) -> dict:
                      for r in inj_wk.iter_rows(named=True)
                      if r["position"] in ("QB", "RB", "WR", "TE", "K")],
         "ecr_available": bool(ecr),
+        "ecr_source": (ecr[0].get("source") or "fantasypros") if ecr else None,
         "games_played_this_week": played_games,
         "model": {"fitted": coef["fitted"], "fit_seasons": coef["fit_seasons"],
                   "holdout": coef["holdout"], "eval": coef["eval"],

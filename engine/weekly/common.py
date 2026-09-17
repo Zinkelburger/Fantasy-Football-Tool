@@ -2,8 +2,8 @@
 abbreviations, scoring formats, and the .env loader.
 
 Everything in engine/weekly/ is deterministic given its inputs. Network
-fetches are isolated in nfl_data.py, espn_league.py and fantasypros.py;
-the rest is pure computation over what those wrote to disk.
+fetches are isolated in nfl_data.py, espn_league.py, fantasypros.py and
+fftiers.py; the rest is pure computation over what those wrote to disk.
 """
 from __future__ import annotations
 
@@ -82,7 +82,8 @@ def load_env() -> dict:
                     k, v = line.split("=", 1)
                     env[k.strip()] = v.strip().strip('"').strip("'")
     for k in list(env) + ["ESPN_LEAGUE_ID", "ESPN_TEAM_ID", "ESPN_S2",
-                          "ESPN_SWID", "FANTASYPROS_API_KEY", "ODDS_API_KEY"]:
+                          "ESPN_SWID", "FANTASYPROS_API_KEY", "ODDS_API_KEY",
+                          "BSKY_HANDLE", "BSKY_APP_PASSWORD"]:
         if os.environ.get(k):
             env[k] = os.environ[k]
     return env
@@ -95,6 +96,14 @@ def http_json(url: str, headers: dict | None = None, timeout: int = 30):
     req = urllib.request.Request(url, headers=dict(headers or {}))
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode())
+
+
+def http_text(url: str, headers: dict | None = None, timeout: int = 30) -> tuple[str, str | None]:
+    """Body and Last-Modified, for plain-text feeds. The header is the
+    only freshness signal some static buckets give us."""
+    req = urllib.request.Request(url, headers=dict(headers or {}))
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8-sig"), r.headers.get("Last-Modified")
 
 
 def nfl_state() -> dict:

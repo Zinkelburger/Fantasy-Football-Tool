@@ -62,7 +62,7 @@ def build(season: int, current_week: int, refresh: bool = True) -> pl.DataFrame:
         roofs[(r["week"], r["team"])] = r["dome"]
     # Overlay the live ESPN line for the current week where it exists.
     try:
-        live = nfl_data.espn_scoreboard_odds(season, current_week)
+        live = nfl_data.espn_scoreboard_odds(season, current_week) if refresh else []
     except Exception as e:  # noqa: BLE001 - keep the schedule line
         print(f"  espn scoreboard unavailable: {e}", file=sys.stderr)
         live = []
