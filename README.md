@@ -35,6 +35,7 @@ Inside `engine/`:
 | `engine/league-sim/` | the stats engine: season + weekly models, league simulator, findings 01–28 |
 | `engine/reddit-scraper/` | pipeline that turns r/fantasyfootball discussion into the per-player notes; in-season `research_brief` / `read_research_thread` for bounded weekly research; separate live-game tools |
 | `engine/weekly/` | the in-season engine: opportunity scores (finding 39), lines, injuries, and the `ff-weekly` MCP server for start/sit, waivers and ESPN roster moves (see its README) |
+| `engine/youtube/` | `ff-youtube` MCP server: YouTube channel uploads, search and transcripts, e.g. a sports-medicine doctor's injury breakdowns (see its README) |
 | `engine/update_ranks.py` | refreshes all scoring-format boards from FFC plus ESPN/Sleeper comparisons (twice weekly via GitHub Actions) |
 | `engine/fetch_juicebox.py` | pulls the JuiceBoxOne ranking sheets into `data/juicebox/<year>/` |
 

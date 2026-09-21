@@ -7,6 +7,10 @@
     "ff-weekly": {
       "command": "engine/mcp_launch.sh",
       "args": ["weekly"]
+    },
+    "ff-youtube": {
+      "command": "engine/mcp_launch.sh",
+      "args": ["youtube"]
     }
   }
 }

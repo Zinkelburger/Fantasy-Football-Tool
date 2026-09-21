@@ -6,6 +6,7 @@
 #
 #   engine/mcp_launch.sh reddit   -> engine/reddit-scraper/mcp_server.py
 #   engine/mcp_launch.sh weekly   -> engine/weekly/mcp_server.py
+#   engine/mcp_launch.sh youtube  -> engine/youtube/mcp_server.py
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 case "${1:-}" in
@@ -13,7 +14,9 @@ case "${1:-}" in
           VENVS=("$ROOT/.venv-reddit-scraper" "$DIR/.venv" "$DIR/venv") ;;
   weekly) DIR="$ROOT/engine/weekly"
           VENVS=("$ROOT/.venv-league-sim" "$ROOT/engine/league-sim/.venv" "$DIR/.venv") ;;
-  *) echo "usage: $0 reddit|weekly" >&2; exit 2 ;;
+  youtube) DIR="$ROOT/engine/youtube"
+          VENVS=("$ROOT/.venv-youtube" "$DIR/.venv") ;;
+  *) echo "usage: $0 reddit|weekly|youtube" >&2; exit 2 ;;
 esac
 for v in "${VENVS[@]}"; do
   if [ -x "$v/bin/python" ]; then

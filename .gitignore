@@ -49,3 +49,6 @@ public/
 chrome-extension/dist/
 node_modules/
 test-results/
+
+# YouTube transcripts and metadata (creator content; do not commit)
+engine/youtube/cache
