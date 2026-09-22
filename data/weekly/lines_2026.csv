@@ -31,67 +31,67 @@ week,team,opp,home,imp_own,imp_opp,spread,total,dome,kickoff,provider,played
 1,TB,CIN,false,23.5,27.0,3.5,50.5,false,2026-09-13T13:00,nflverse,true
 1,TEN,NYJ,true,20.5,19.0,-1.5,39.5,false,2026-09-13T13:00,nflverse,true
 1,WAS,PHI,false,18.8,24.8,6.0,43.5,false,2026-09-13T16:25,nflverse,true
-2,ARI,SEA,true,18.5,22.0,3.5,40.5,false,2026-09-20T20:25Z,DraftKings,false
-2,ATL,CAR,true,20.5,23.0,2.5,43.5,false,2026-09-20T17:00Z,DraftKings,false
-2,BAL,NO,true,27.5,19.0,-8.5,46.5,false,2026-09-20T17:00Z,DraftKings,false
+2,ARI,SEA,true,18.5,22.0,3.5,40.5,true,2026-09-20T16:25,nflverse,true
+2,ATL,CAR,true,20.5,23.0,2.5,43.5,true,2026-09-20T13:00,nflverse,true
+2,BAL,NO,true,27.0,18.5,-8.5,45.5,false,2026-09-20T13:00,nflverse,true
 2,BUF,DET,true,30.0,24.5,-5.5,54.5,false,2026-09-17T20:15,nflverse,true
-2,CAR,ATL,false,23.0,20.5,-2.5,43.5,false,2026-09-20T17:00Z,DraftKings,false
-2,CHI,MIN,true,26.0,21.5,-4.5,47.5,false,2026-09-20T17:00Z,DraftKings,false
-2,CIN,HOU,false,21.5,24.0,2.5,45.5,false,2026-09-20T17:00Z,DraftKings,false
-2,CLE,TB,false,16.5,25.0,8.5,41.5,false,2026-09-20T17:00Z,DraftKings,false
-2,DAL,WAS,true,27.0,23.5,-3.5,50.5,false,2026-09-20T20:25Z,DraftKings,false
-2,DEN,JAX,true,24.0,21.5,-2.5,45.5,false,2026-09-20T20:05Z,DraftKings,false
+2,CAR,ATL,false,23.0,20.5,-2.5,43.5,true,2026-09-20T13:00,nflverse,true
+2,CHI,MIN,true,25.5,21.0,-4.5,46.5,false,2026-09-20T13:00,nflverse,true
+2,CIN,HOU,false,21.2,24.2,3.0,45.5,true,2026-09-20T13:00,nflverse,true
+2,CLE,TB,false,16.5,25.0,8.5,41.5,false,2026-09-20T13:00,nflverse,true
+2,DAL,WAS,true,27.5,24.0,-3.5,51.5,true,2026-09-20T16:25,nflverse,true
+2,DEN,JAX,true,24.0,21.5,-2.5,45.5,false,2026-09-20T16:05,nflverse,true
 2,DET,BUF,false,24.5,30.0,5.5,54.5,false,2026-09-17T20:15,nflverse,true
-2,GB,NYJ,false,24.0,20.5,-3.5,44.5,false,2026-09-20T17:00Z,DraftKings,false
-2,HOU,CIN,true,24.0,21.5,-2.5,45.5,false,2026-09-20T17:00Z,DraftKings,false
-2,IND,KC,false,20.2,26.2,6.0,46.5,false,2026-09-21T00:20Z,DraftKings,false
-2,JAX,DEN,false,21.5,24.0,2.5,45.5,false,2026-09-20T20:05Z,DraftKings,false
-2,KC,IND,true,26.2,20.2,-6.0,46.5,false,2026-09-21T00:20Z,DraftKings,false
-2,LA,NYG,true,27.8,20.8,-7.0,48.5,true,2026-09-22T00:15Z,DraftKings,false
-2,LAC,LV,true,25.0,18.5,-6.5,43.5,true,2026-09-20T20:05Z,DraftKings,false
-2,LV,LAC,false,18.5,25.0,6.5,43.5,true,2026-09-20T20:05Z,DraftKings,false
-2,MIA,SF,false,15.5,29.0,13.5,44.5,false,2026-09-20T20:25Z,DraftKings,false
-2,MIN,CHI,false,21.5,26.0,4.5,47.5,false,2026-09-20T17:00Z,DraftKings,false
-2,NE,PIT,true,23.5,18.0,-5.5,41.5,false,2026-09-20T17:00Z,DraftKings,false
-2,NO,BAL,false,19.0,27.5,8.5,46.5,false,2026-09-20T17:00Z,DraftKings,false
-2,NYG,LA,false,20.8,27.8,7.0,48.5,true,2026-09-22T00:15Z,DraftKings,false
-2,NYJ,GB,true,20.5,24.0,3.5,44.5,false,2026-09-20T17:00Z,DraftKings,false
-2,PHI,TEN,false,23.2,16.2,-7.0,39.5,false,2026-09-20T17:00Z,DraftKings,false
-2,PIT,NE,false,18.0,23.5,5.5,41.5,false,2026-09-20T17:00Z,DraftKings,false
-2,SEA,ARI,false,22.0,18.5,-3.5,40.5,false,2026-09-20T20:25Z,DraftKings,false
-2,SF,MIA,true,29.0,15.5,-13.5,44.5,false,2026-09-20T20:25Z,DraftKings,false
-2,TB,CLE,true,25.0,16.5,-8.5,41.5,false,2026-09-20T17:00Z,DraftKings,false
-2,TEN,PHI,true,16.2,23.2,7.0,39.5,false,2026-09-20T17:00Z,DraftKings,false
-2,WAS,DAL,false,23.5,27.0,3.5,50.5,false,2026-09-20T20:25Z,DraftKings,false
-3,ARI,SF,false,19.5,28.0,8.5,47.5,false,2026-09-27T16:05,nflverse,false
-3,ATL,GB,false,20.0,26.5,6.5,46.5,false,2026-09-24T20:15,nflverse,false
-3,BAL,DAL,false,27.8,24.8,-3.0,52.5,false,2026-09-27T16:25,nflverse,false
-3,BUF,LAC,true,27.5,23.0,-4.5,50.5,false,2026-09-27T13:00,nflverse,false
-3,CAR,CLE,false,21.5,19.0,-2.5,40.5,false,2026-09-27T13:00,nflverse,false
-3,CHI,PHI,true,24.5,23.0,-1.5,47.5,false,2026-09-28T20:15,nflverse,false
-3,CIN,PIT,false,24.0,21.5,-2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,CLE,CAR,true,19.0,21.5,2.5,40.5,false,2026-09-27T13:00,nflverse,false
-3,DAL,BAL,true,24.8,27.8,3.0,52.5,false,2026-09-27T16:25,nflverse,false
-3,DEN,LA,true,22.0,24.5,2.5,46.5,false,2026-09-27T20:20,nflverse,false
-3,DET,NYJ,true,28.0,20.5,-7.5,48.5,true,2026-09-27T13:00,nflverse,false
-3,GB,ATL,true,26.5,20.0,-6.5,46.5,false,2026-09-24T20:15,nflverse,false
-3,HOU,IND,false,24.0,21.5,-2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,IND,HOU,true,21.5,24.0,2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,JAX,NE,true,24.0,21.5,-2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,KC,MIA,false,26.5,18.0,-8.5,44.5,false,2026-09-27T13:00,nflverse,false
-3,LA,DEN,false,24.5,22.0,-2.5,46.5,false,2026-09-27T20:20,nflverse,false
-3,LAC,BUF,false,23.0,27.5,4.5,50.5,false,2026-09-27T13:00,nflverse,false
-3,LV,NO,false,21.2,24.2,3.0,45.5,true,2026-09-27T16:25,nflverse,false
-3,MIA,KC,true,18.0,26.5,8.5,44.5,false,2026-09-27T13:00,nflverse,false
-3,MIN,TB,false,22.0,23.5,1.5,45.5,false,2026-09-27T16:05,nflverse,false
-3,NE,JAX,false,21.5,24.0,2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,NO,LV,true,24.2,21.2,-3.0,45.5,true,2026-09-27T16:25,nflverse,false
-3,NYG,TEN,true,24.5,19.0,-5.5,43.5,false,2026-09-27T13:00,nflverse,false
-3,NYJ,DET,false,20.5,28.0,7.5,48.5,true,2026-09-27T13:00,nflverse,false
-3,PHI,CHI,false,23.0,24.5,1.5,47.5,false,2026-09-28T20:15,nflverse,false
-3,PIT,CIN,true,21.5,24.0,2.5,45.5,false,2026-09-27T13:00,nflverse,false
-3,SEA,WAS,false,22.0,19.5,-2.5,41.5,false,2026-09-27T13:00,nflverse,false
-3,SF,ARI,true,28.0,19.5,-8.5,47.5,false,2026-09-27T16:05,nflverse,false
-3,TB,MIN,true,23.5,22.0,-1.5,45.5,false,2026-09-27T16:05,nflverse,false
-3,TEN,NYG,false,19.0,24.5,5.5,43.5,false,2026-09-27T13:00,nflverse,false
-3,WAS,SEA,true,19.5,22.0,2.5,41.5,false,2026-09-27T13:00,nflverse,false
+2,GB,NYJ,false,24.0,20.5,-3.5,44.5,false,2026-09-20T13:00,nflverse,true
+2,HOU,CIN,true,24.2,21.2,-3.0,45.5,true,2026-09-20T13:00,nflverse,true
+2,IND,KC,false,20.2,26.2,6.0,46.5,false,2026-09-20T20:20,nflverse,true
+2,JAX,DEN,false,21.5,24.0,2.5,45.5,false,2026-09-20T16:05,nflverse,true
+2,KC,IND,true,26.2,20.2,-6.0,46.5,false,2026-09-20T20:20,nflverse,true
+2,LA,NYG,true,27.0,20.5,-6.5,47.5,true,2026-09-21T20:15,nflverse,true
+2,LAC,LV,true,25.0,18.5,-6.5,43.5,true,2026-09-20T16:05,nflverse,true
+2,LV,LAC,false,18.5,25.0,6.5,43.5,true,2026-09-20T16:05,nflverse,true
+2,MIA,SF,false,16.0,28.5,12.5,44.5,false,2026-09-20T16:25,nflverse,true
+2,MIN,CHI,false,21.0,25.5,4.5,46.5,false,2026-09-20T13:00,nflverse,true
+2,NE,PIT,true,23.0,18.5,-4.5,41.5,false,2026-09-20T13:00,nflverse,true
+2,NO,BAL,false,18.5,27.0,8.5,45.5,false,2026-09-20T13:00,nflverse,true
+2,NYG,LA,false,20.5,27.0,6.5,47.5,true,2026-09-21T20:15,nflverse,true
+2,NYJ,GB,true,20.5,24.0,3.5,44.5,false,2026-09-20T13:00,nflverse,true
+2,PHI,TEN,false,23.2,16.2,-7.0,39.5,false,2026-09-20T13:00,nflverse,true
+2,PIT,NE,false,18.5,23.0,4.5,41.5,false,2026-09-20T13:00,nflverse,true
+2,SEA,ARI,false,22.0,18.5,-3.5,40.5,true,2026-09-20T16:25,nflverse,true
+2,SF,MIA,true,28.5,16.0,-12.5,44.5,false,2026-09-20T16:25,nflverse,true
+2,TB,CLE,true,25.0,16.5,-8.5,41.5,false,2026-09-20T13:00,nflverse,true
+2,TEN,PHI,true,16.2,23.2,7.0,39.5,false,2026-09-20T13:00,nflverse,true
+2,WAS,DAL,false,24.0,27.5,3.5,51.5,true,2026-09-20T16:25,nflverse,true
+3,ARI,SF,false,19.5,28.0,8.5,47.5,false,2026-09-27T20:05Z,Draft Kings,false
+3,ATL,GB,false,18.8,24.8,6.0,43.5,false,2026-09-25T00:15Z,Draft Kings,false
+3,BAL,DAL,false,27.8,24.8,-3.0,52.5,false,2026-09-27T20:25Z,Draft Kings,false
+3,BUF,LAC,true,28.8,21.8,-7.0,50.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,CAR,CLE,false,22.5,20.0,-2.5,42.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,CHI,PHI,true,20.8,23.8,3.0,44.5,false,2026-09-29T00:15Z,Draft Kings,false
+3,CIN,PIT,false,23.0,19.5,-3.5,42.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,CLE,CAR,true,20.0,22.5,2.5,42.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,DAL,BAL,true,24.8,27.8,3.0,52.5,false,2026-09-27T20:25Z,Draft Kings,false
+3,DEN,LA,true,21.5,24.0,2.5,45.5,false,2026-09-28T00:20Z,Draft Kings,false
+3,DET,NYJ,true,27.5,21.0,-6.5,48.5,true,2026-09-27T17:00Z,Draft Kings,false
+3,GB,ATL,true,24.8,18.8,-6.0,43.5,false,2026-09-25T00:15Z,Draft Kings,false
+3,HOU,IND,false,23.0,20.5,-2.5,43.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,IND,HOU,true,20.5,23.0,2.5,43.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,JAX,NE,true,24.2,21.2,-3.0,45.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,KC,MIA,false,28.5,17.0,-11.5,45.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,LA,DEN,false,24.0,21.5,-2.5,45.5,false,2026-09-28T00:20Z,Draft Kings,false
+3,LAC,BUF,false,21.8,28.8,7.0,50.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,LV,NO,false,20.2,23.2,3.0,43.5,true,2026-09-27T20:25Z,Draft Kings,false
+3,MIA,KC,true,17.0,28.5,11.5,45.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,MIN,TB,false,22.0,20.5,-1.5,42.5,false,2026-09-27T20:05Z,Draft Kings,false
+3,NE,JAX,false,21.2,24.2,3.0,45.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,NO,LV,true,23.2,20.2,-3.0,43.5,true,2026-09-27T20:25Z,Draft Kings,false
+3,NYG,TEN,true,22.0,18.5,-3.5,40.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,NYJ,DET,false,21.0,27.5,6.5,48.5,true,2026-09-27T17:00Z,Draft Kings,false
+3,PHI,CHI,false,23.8,20.8,-3.0,44.5,false,2026-09-29T00:15Z,Draft Kings,false
+3,PIT,CIN,true,19.5,23.0,3.5,42.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,SEA,WAS,false,23.8,16.8,-7.0,40.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,SF,ARI,true,28.0,19.5,-8.5,47.5,false,2026-09-27T20:05Z,Draft Kings,false
+3,TB,MIN,true,20.5,22.0,1.5,42.5,false,2026-09-27T20:05Z,Draft Kings,false
+3,TEN,NYG,false,18.5,22.0,3.5,40.5,false,2026-09-27T17:00Z,Draft Kings,false
+3,WAS,SEA,true,16.8,23.8,7.0,40.5,false,2026-09-27T17:00Z,Draft Kings,false

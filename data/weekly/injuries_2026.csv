@@ -244,6 +244,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 2,CIN,00-0040756,Shemar Stewart,DE,,,Full Participation in Practice,Knee
 2,CLE,00-0033131,Maliek Collins,DT,,,Limited Participation in Practice,Quadricep
 2,CLE,00-0035526,Elgton Jenkins,C,,,Full Participation in Practice,Back
+2,CLE,00-0036287,Noah Igbinoghene,CB,Questionable,Hand,,
 2,CLE,00-0036407,Jerry Jeudy,WR,,,Full Participation in Practice,Wrist
 2,CLE,00-0036953,Teven Jenkins,G,Out,Back,Did Not Participate In Practice,Back
 2,CLE,00-0036974,Tyson Campbell,CB,Questionable,Ankle,Limited Participation in Practice,Ankle
@@ -309,12 +310,16 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 2,KC,00-0041501,R Mason Thomas,DE,,,Full Participation in Practice,Hamstring
 2,KC,00-0041543,Mansoor Delane,CB,Questionable,Shoulder,Limited Participation in Practice,Shoulder
 2,LA,00-0031381,Davante Adams,WR,,,Full Participation in Practice,Not injury related - resting player
+2,LA,00-0031388,Aaron Donald,DT,,,Did Not Participate In Practice,Not injury related - resting player
+2,LA,00-0033110,Tyler Higbee,TE,,,Did Not Participate In Practice,Not injury related - resting player
 2,LA,00-0036349,Kam Curl,S,,,Limited Participation in Practice,Ankle
+2,LA,00-0036603,Alaric Jackson,T,,,Did Not Participate In Practice,Not injury related - resting player
 2,LA,00-0037587,Nate Landman,LB,,,Limited Participation in Practice,Shoulder
-2,LA,00-0039075,Puka Nacua,WR,,,Did Not Participate In Practice,Hip
-2,LA,00-0039751,Jordan Whittington,WR,,,Did Not Participate In Practice,Quadricep
-2,LA,00-0039774,Omar Speights,LB,,,Limited Participation in Practice,Hip
-2,LA,00-0039834,Kamren Kinchens,S,,,Did Not Participate In Practice,Hamstring
+2,LA,00-0039075,Puka Nacua,WR,Questionable,Hip,Did Not Participate In Practice,Hip
+2,LA,00-0039137,Byron Young,LB,,,Did Not Participate In Practice,Not injury related - resting player
+2,LA,00-0039751,Jordan Whittington,WR,Doubtful,Quadricep,Did Not Participate In Practice,Quadricep
+2,LA,00-0039774,Omar Speights,LB,,,Full Participation in Practice,Hip
+2,LA,00-0039834,Kamren Kinchens,S,Out,Hamstring,Did Not Participate In Practice,Hamstring
 2,LAC,00-0031040,Khalil Mack,DE,,,Full Participation in Practice,Not injury related - resting player
 2,LAC,00-0032146,Bud Dupree,DE,,,Full Participation in Practice,Not injury related - resting player
 2,LAC,00-0033546,Dalvin Tomlinson,DT,,,Full Participation in Practice,Hamstring
@@ -343,7 +348,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 2,MIN,00-0036259,Jauan Jennings,WR,Out,Not injury related - personal matter,Did Not Participate In Practice,Not injury related - personal matter
 2,MIN,00-0036616,Christian Darrisaw,T,,,Did Not Participate In Practice,Not injury related - resting player
 2,NE,00-0034720,Robert Spillane,LB,,,Full Participation in Practice,Knee
-2,NE,00-0034778,Carlton Davis III,CB,Questionable,Neck,Did Not Participate In Practice,Neck
+2,NE,00-0034778,Carlton Davis III,CB,Out,Neck,Did Not Participate In Practice,Neck
 2,NE,00-0035678,Dre'Mont Jones,LB,Questionable,Foot,Limited Participation in Practice,Foot
 2,NE,00-0037413,Ben Brown,C,Questionable,Knee,Limited Participation in Practice,Knee
 2,NE,00-0040734,TreVeyon Henderson,RB,,,Full Participation in Practice,Ankle
@@ -360,11 +365,11 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 2,NO,00-0041390,Christen Miller,DT,Questionable,Toe,Limited Participation in Practice,Toe
 2,NYG,00-0036386,Andrew Thomas,T,,,Limited Participation in Practice,Ankle
 2,NYG,00-0036937,Paulson Adebo,CB,,,Did Not Participate In Practice,Knee
-2,NYG,00-0036982,Chauncey Golston,DE,,,Limited Participation in Practice,Neck
-2,NYG,00-0036996,Greg Newsome II,CB,,,Limited Participation in Practice,Rib
-2,NYG,00-0037259,Micah McFadden,LB,,,Limited Participation in Practice,Neck
-2,NYG,00-0039000,Deonte Banks,CB,,,Did Not Participate In Practice,Calf
-2,NYG,00-0041505,Francis Mauigoa,T,,,Limited Participation in Practice,Shoulder
+2,NYG,00-0036982,Chauncey Golston,DE,,,Full Participation in Practice,Neck
+2,NYG,00-0036996,Greg Newsome II,CB,,,Full Participation in Practice,Rib
+2,NYG,00-0037259,Micah McFadden,LB,Questionable,Neck,Limited Participation in Practice,Neck
+2,NYG,00-0039000,Deonte Banks,CB,Questionable,Calf,Did Not Participate In Practice,Calf
+2,NYG,00-0041505,Francis Mauigoa,T,,,Full Participation in Practice,Shoulder
 2,NYJ,00-0033051,David Onyemata,DT,,,Full Participation in Practice,Not injury related - resting player
 2,NYJ,00-0034789,Minkah Fitzpatrick,S,Out,Groin,Did Not Participate In Practice,Groin
 2,NYJ,00-0036500,Jamien Sherwood,LB,,,Full Participation in Practice,Knee
@@ -390,7 +395,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 2,SEA,00-0036363,Josh Jones,T,,,Full Participation in Practice,Knee
 2,SEA,00-0037137,Josh Jobe,CB,,,Full Participation in Practice,Wrist
 2,SEA,00-0038765,Ty Okada,S,Out,Hamstring,Did Not Participate In Practice,Hamstring
-2,SEA,00-0039020,Anthony Bradford,G,Questionable,Knee,Did Not Participate In Practice,Knee
+2,SEA,00-0039020,Anthony Bradford,G,Out,Knee,Did Not Participate In Practice,Knee
 2,SEA,00-0040648,Tory Horton,WR,,,Full Participation in Practice,Hamstring
 2,SEA,00-0040733,Nick Emmanwori,S,Questionable,Ankle,Limited Participation in Practice,Ankle
 2,SF,00-0027857,Trent Williams,T,,,Full Participation in Practice,Not injury related - resting player
