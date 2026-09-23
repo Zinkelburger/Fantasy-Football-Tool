@@ -47,6 +47,7 @@ ACCOUNTS = {
     "rotoworld-fb.bsky.social": "Rotoworld player notes",
     "rotowirenfl.bsky.social": "RotoWire player notes",
     "rapsheet.bsky.social": "Ian Rapoport (NFL Network/ESPN insider)",
+    "adamscheftermirror.bsky.social": "unofficial mirror of Schefter's X, incl. his reposts",
 }
 
 # Live but not in the rotation: pff.com.web.brid.gy is an RSS bridge whose

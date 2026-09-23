@@ -118,6 +118,7 @@ Curated accounts (all posting within hours as of 2026-09-17):
 | `rotoworld-fb.bsky.social` | Rotoworld player notes |
 | `rotowirenfl.bsky.social` | RotoWire player notes |
 | `rapsheet.bsky.social` | Ian Rapoport |
+| `adamscheftermirror.bsky.social` | unofficial mirror of Adam Schefter's X feed, including his reposts of beat reporters (added 2026-09-23; posts in batches roughly every 15–30 min) |
 
 `check` exists because **a dead account still resolves and still returns a
 feed**. Several big names left Bluesky and their handles look live until you
@@ -125,6 +126,14 @@ read the timestamp: `adamschefter` (Nov 2024), `jamisonhensley` (Nov 2024),
 `schultzreport` (Apr 2025), `fieldyates` (Oct 2025), `injurybot.nflverse.com`
 (Feb 2025), `nflfantasynews` (shut down Jan 2026). They are listed in
 `bluesky.DORMANT` so a quiet week is not mistaken for quiet news.
+
+**X (Twitter) is not readable for free.** Checked 2026-09-23 for
+@UnderdogNFL: the X API's free tier cannot read timelines, the unauthenticated
+embed endpoint (`syndication.twitter.com`) returns a timeline frozen months in
+the past, and Nitter instances are gone. Underdog's own Bluesky handles are
+empty (`underdognfl`) or dead (`underdog-nfl-mir`, Dec 2024). An X account is
+usable only when someone mirrors it to Bluesky, as with Schefter above;
+Underdog mostly relays insiders who are already covered here.
 
 **Keyword search across all of Bluesky needs auth.**
 `app.bsky.feed.searchPosts` returns 403 on the public app view. To enable
