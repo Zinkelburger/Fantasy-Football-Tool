@@ -1,0 +1,41 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-23T16:03:21Z",
+  "requested_hosts": [
+    "PHI"
+  ],
+  "skill_only": true,
+  "missing_teams": [
+    "PHI"
+  ],
+  "pending_teams": [
+    "PHI"
+  ],
+  "unavailable_teams": [],
+  "coverage": {
+    "PHI": {
+      "status": "pending",
+      "rows": 0,
+      "sources": [],
+      "opponent": "CHI",
+      "game_date": "2026-09-28",
+      "expected_first_report_date": "2026-09-24",
+      "reason": "No report found yet; first practice report expected 2026-09-24"
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "PHI": {
+      "status": "no_report",
+      "rows": 0,
+      "error": null,
+      "reported_teams": [],
+      "article_fallback": {
+        "status": "not_found",
+        "feed": "https://www.philadelphiaeagles.com/rss/news",
+        "articles": []
+      }
+    }
+  }
+}

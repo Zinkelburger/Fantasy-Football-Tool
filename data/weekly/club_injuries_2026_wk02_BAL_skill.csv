@@ -1,0 +1,7 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source,source_kind,published_at
+BAL,2,Devontez Walker,WR,Groin,"","",FP,FP,FP,"","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""
+BAL,2,Zay Flowers,WR,Hamstring,"","",DNP,DNP,LP,"","","wed,thu,fri",DOUBTFUL,BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""
+NO,2,Alvin Kamara,RB,Knee,"","",FP,FP,FP,"","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""
+NO,2,Juwan Johnson,TE,Illness,"","",DNP,LP,FP,"","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""
+NO,2,Oscar Delp,TE,Hamstring,"","",LP,LP,FP,"","","wed,thu,fri","",BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""
+NO,2,Chris Olave,WR,Hamstring,"","",(-),LP,LP,"","","wed,thu,fri",QUESTIONABLE,BAL,https://www.baltimoreravens.com/team/injury-report/week/REG-2,club_grid,""

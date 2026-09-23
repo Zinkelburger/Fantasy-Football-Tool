@@ -1,0 +1,41 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-23T16:03:23Z",
+  "requested_hosts": [
+    "BAL"
+  ],
+  "skill_only": true,
+  "missing_teams": [
+    "BAL"
+  ],
+  "pending_teams": [
+    "BAL"
+  ],
+  "unavailable_teams": [],
+  "coverage": {
+    "BAL": {
+      "status": "pending",
+      "rows": 0,
+      "sources": [],
+      "opponent": "DAL",
+      "game_date": "2026-09-27",
+      "expected_first_report_date": "2026-09-23",
+      "reason": "No report found yet; first practice report expected 2026-09-23"
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "BAL": {
+      "status": "no_report",
+      "rows": 0,
+      "error": null,
+      "reported_teams": [],
+      "article_fallback": {
+        "status": "not_found",
+        "feed": "https://www.baltimoreravens.com/rss/news",
+        "articles": []
+      }
+    }
+  }
+}
