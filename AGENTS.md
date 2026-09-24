@@ -21,6 +21,10 @@
   `engine/weekly/bluesky.py`; `docs/NEWS-SOURCES.md` lists every source, what
   it contains and when it posts. Clubs post each day's report late afternoon
   ET, so a blank Thursday column means "not posted yet", not "no change".
+- Weather comes from the `ff-weather` MCP server (`engine/weather/`):
+  `weather(place)` for anywhere, `game_weather(week)` for every game at its
+  stadium. Venues, roofs and time zones are fixed in `stadiums.json`. It is
+  context only; no ranking adjusts for weather.
 - Lineup slots follow `docs/LINEUP-SLOTTING.md`: projection picks the starters,
   then the latest kickoffs take the open slots (OP/FLEX/RB-WR/WR-TE) and a
   Thursday night player never sits in one. `advisor.reslot_by_kickoff` already

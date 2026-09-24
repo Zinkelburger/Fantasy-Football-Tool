@@ -11,6 +11,10 @@
     "ff-youtube": {
       "command": "engine/mcp_launch.sh",
       "args": ["youtube"]
+    },
+    "ff-weather": {
+      "command": "engine/mcp_launch.sh",
+      "args": ["weather"]
     }
   }
 }

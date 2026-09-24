@@ -52,6 +52,7 @@ test-results/
 
 # YouTube transcripts and metadata (creator content; do not commit)
 engine/youtube/cache
+engine/weather/cache
 
 # Expert consensus ranks. Third-party (FantasyPros, via the fftiers
 # bucket or the paid API) and this repo is public, so we use them and
