@@ -1,0 +1,5 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source,source_kind,published_at
+ARI,3,Jacoby Brissett,QB,Hip,"","",FP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-3,club_grid,""
+SF,3,Christian McCaffrey,RB,"","","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-3,club_grid,""
+SF,3,Demarcus Robinson,WR,"","","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-3,club_grid,""
+SF,3,Mike Evans,WR,"","","",DNP,"","","","","wed,thu,fri","",SF,https://www.49ers.com/team/injury-report/week/REG-3,club_grid,""

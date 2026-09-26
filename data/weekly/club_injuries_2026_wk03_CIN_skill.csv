@@ -1,0 +1,5 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source,source_kind,published_at
+CIN,3,Andrei Iosivas,WR,Thumb,"","",DNP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-3,club_grid,""
+PIT,3,Jaylen Warren,RB,Shoulder,"","",LP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-3,club_grid,""
+PIT,3,Rico Dowdle,RB,Toe,"","",DNP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-3,club_grid,""
+PIT,3,Michael Pittman,WR,Foot,"","",LP,"","","","","wed,thu,fri","",CIN,https://www.bengals.com/team/injury-report/week/REG-3,club_grid,""

@@ -1,0 +1,5 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source,source_kind,published_at
+NYG,3,Jaxson Dart,QB,Knee,"","",DNP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-3,club_grid,""
+NYG,3,Malik Nabers,WR,Shoulder,"","",LP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-3,club_grid,""
+TEN,3,Tony Pollard,RB,Ankle,"","",DNP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-3,club_grid,""
+TEN,3,Tyjae Spears,RB,"","","",DNP,"","","","","wed,thu,fri","",TEN,https://www.tennesseetitans.com/team/injury-report/week/REG-3,club_grid,""

@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:09Z",
+  "requested_hosts": [
+    "BAL"
+  ],
+  "skill_only": false,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "BAL": {
+      "status": "available",
+      "rows": 10,
+      "sources": [
+        "https://www.baltimoreravens.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "BAL": {
+      "status": "available",
+      "rows": 15,
+      "error": null,
+      "reported_teams": [
+        "BAL",
+        "DAL"
+      ]
+    }
+  }
+}

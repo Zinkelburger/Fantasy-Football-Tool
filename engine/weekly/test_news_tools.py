@@ -108,5 +108,57 @@ class RankingsFetch(unittest.TestCase):
         self.assertTrue(fftiers.off_week(rows, {"TEN": "SF", "SF": "TEN", "MIA": "WAS", "WAS": "MIA"}))
 
 
+SUBVERT_ROW = """<tr
+          x-show="matchesPosition(
+            'WR',
+            'BAL'          )"
+        >
+          <td><span x-text="JSON.parse('{\\u0022WR\\u0022:17,\\u0022FLEX\\u0022:37,\\u0022RB\\\\\\/WR\\u0022:37}')[positionView] ?? ''">37</span></td>
+          <td class="-text" title="Zay Flowers"><a>Zay Flowers</a></td>
+          <td class="whitespace-nowrap">
+            BAL-1
+          </td>
+          <td><span class="sub-text-muted">
+                                  @
+                              </span>
+              DAL
+                      </td>
+          <td><span x-data><span><span
+          class="block dark:text-gray-100">
+          11.5
+        </span></span></span></td>        </tr>"""
+SUBVERT_PAGE = ("<h1>Rankings for Fantasy Football Flex Players</h1><div>-</div><div>Week 3</div>"
+                + SUBVERT_ROW)
+
+
+class SubvertadownFetch(unittest.TestCase):
+    def test_parse_reads_rank_map_depth_matchup_and_half_ppr_points(self):
+        import subvertadown
+        week, rows = subvertadown.parse(SUBVERT_PAGE)
+        self.assertEqual(week, 3)
+        self.assertEqual(rows, [{"name": "Zay Flowers", "pos": "WR", "team": "BAL", "depth": 1,
+                                 "opp": "DAL", "home": False, "rank_flex": 37, "rank_pos": 17,
+                                 "points_half": 11.5}])
+
+    def test_fetch_refuses_another_weeks_page_and_writes_nothing(self):
+        import io
+        import subvertadown
+        with tempfile.TemporaryDirectory() as tmp, patch.object(subvertadown, "CACHE", Path(tmp)), \
+                patch.object(subvertadown, "nfl_state", return_value={"season": 2026, "week": 4}), \
+                patch("urllib.request.urlopen", return_value=io.BytesIO(SUBVERT_PAGE.encode())):
+            with self.assertRaisesRegex(RuntimeError, "week 3, not week 4"):
+                subvertadown.fetch(2026, 4, schedule={"BAL": "DAL", "DAL": "BAL"})
+            self.assertEqual(list(Path(tmp).iterdir()), [])
+
+    def test_fetch_rejects_matchups_that_disagree_with_the_schedule(self):
+        import io
+        import subvertadown
+        with tempfile.TemporaryDirectory() as tmp, patch.object(subvertadown, "CACHE", Path(tmp)), \
+                patch.object(subvertadown, "nfl_state", return_value={"season": 2026, "week": 3}), \
+                patch("urllib.request.urlopen", return_value=io.BytesIO(SUBVERT_PAGE.encode())):
+            with self.assertRaisesRegex(RuntimeError, "disagree"):
+                subvertadown.fetch(2026, 3, schedule={"BAL": "PIT", "PIT": "BAL"})
+
+
 if __name__ == "__main__":
     unittest.main()

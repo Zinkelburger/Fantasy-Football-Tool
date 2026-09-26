@@ -37,6 +37,7 @@ check their source manifests and warnings before using an empty result.
 | `bluesky.py` | – | Curated news-wire accounts off the public AT Protocol app view (no key). `feed --match <names>` for the last N hours; `check` for which accounts are still alive. |
 | `fantasypros.py` | `data/weekly/ecr_<season>_wkNN.csv` | Expert consensus ranks from the paid API, only with `FANTASYPROS_API_KEY`. |
 | `fftiers.py` | the same `ecr_*.csv` | Keyless fallback: Boris Chen's public bucket, the same FantasyPros consensus **plus tiers**. Gitignored — third-party data, regenerated on demand. |
+| `subvertadown.py` | `engine/weekly/cache/subvertadown_flex_<season>_wkNN.json` | Subvertadown's weekly RB/WR/TE ranks, depth slot and projected points: one model beside the FantasyPros consensus. **0.5 PPR, not our standard scoring** — compare ranks, not points. Members-only content for personal use, so cache only: never in `data/weekly/`, never committed or published. |
 | `build_week.py` | `data/weekly/latest.json`, `week_<season>_wkNN.json` | The bundle `site/build_site.py` turns into the weekly page. |
 | `advisor.py` | – | Pure functions: projection blend, exact lineup optimiser, positional needs, drop candidates, add/drop proposals. |
 | `espn_league.py` | – | ESPN read (settings, rosters, free agents, matchup, projections) and write (lineup, add/drop, waiver claim). |
@@ -64,11 +65,22 @@ K/DST 20, FLX 20-95), so most of the waiver tail has no rank either way.
 Public, from `data/weekly/`: `weekly_checklist`, `week_status`,
 `refresh_week`, `vegas_lines`, `opportunity_scores`, `player_lookup`,
 `injury_report`, `dst_rankings`, `kicker_rankings`,
-`fantasypros_rankings`, `team_context`.
+`fantasypros_rankings`, `subvertadown_rankings`, `team_context`.
+
+Live public evidence: `practice_report(team, week, season, player)`,
+`player_news(names, week, season, hours)`. These use ignored local caches,
+not committed weekly publication files. Both support `refresh=True` and
+`cache_only=True` with explicit retrieval/coverage labels. `research_sources()`
+returns [the source and cache map](../../docs/TEAM-QUESTIONS.md).
+`week_status(week, season)` separates the current NFL week, decision week,
+matching bundle and recorded usage weeks. Saved injury/DST/kicker reads also
+accept week/season and reject a bundle from another week.
 
 Your league (ESPN read): `league_settings`, `my_roster`,
 `lineup_recommendation`, `free_agents`, `waiver_recommendations`,
-`propose_transaction`, `power_rankings`.
+`propose_transaction`, `power_rankings`, `team_roster(team_id, week)`.
+The latter shows any team's current roster and legal optimal lineup with locks,
+using the same recipe as your own. No lineup writes or proposals are made.
 
 ESPN write, gated: `execute_transaction(token, confirmed=True)` and
 `apply_lineup(token, confirmed=True)`. The token comes from the

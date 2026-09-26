@@ -1758,16 +1758,34 @@ def research_brief(players: list[str], focus: Literal["weekly", "injury", "usage
 
 
 @mcp.tool()
-def read_research_thread(thread_id: str, max_comments: int = 5) -> dict[str, Any]:
+def cached_research_threads(query: str = "", limit: int = 10) -> dict[str, Any]:
+    """Find locally saved thread IDs by player name/title/comment phrase, without Reddit access.
+
+    Retains the latest post/comment samples for 30 days. Results show posting
+    and retrieval times, stale status and saved comment count. Empty means no
+    local match, not no news. Read a result with read_research_thread(cache_only=True).
+    """
+    return _research_cache().saved_threads(query, limit)
+
+
+@mcp.tool()
+def read_research_thread(thread_id: str, max_comments: int = 5,
+                         refresh: bool = False, cache_only: bool = False) -> dict[str, Any]:
     """Read a selected research_brief/search_reddit thread; do not loop over all hits.
 
     Bare submission id. Cached 5 minutes, at most 25 initial comments requested,
     0–10 top-level comments returned, no expansion. max_comments=0 reads just the
     post. Use for at most two threads per weekly pass with an explicit unresolved
     question. Comment sample and votes are not a representative consensus.
+    Snapshots are retained locally for 30 days. cache_only=True reads them
+    without network, even after expiry, with stale/fetched_at labels; never
+    treat an old injury thread as current. refresh=True rechecks on demand
+    within the same retrieval budgets and error cooldown, not a bypass.
     """
     try:
-        return {"status": "ok", **NEWS.read_thread(_research_cache(), _research_reddit, thread_id, max_comments)}
+        result = NEWS.read_thread(_research_cache(), _research_reddit, thread_id, max_comments,
+                                  refresh=refresh, cache_only=cache_only)
+        return {"status": "stale" if result['retrieval']['stale'] else "ok", **result}
     except NEWS.RetrievalStopped as exc:
         return {"status": "unavailable", "reason": str(exc),
                 "next_step": "Report incomplete coverage; do not retry or switch Reddit tools."}

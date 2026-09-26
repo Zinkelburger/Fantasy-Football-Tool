@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:23Z",
+  "requested_hosts": [
+    "TEN"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "TEN": {
+      "status": "available",
+      "rows": 6,
+      "sources": [
+        "https://www.tennesseetitans.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "TEN": {
+      "status": "available",
+      "rows": 18,
+      "error": null,
+      "reported_teams": [
+        "NYG",
+        "TEN"
+      ]
+    }
+  }
+}

@@ -25,9 +25,13 @@ stadium name takes precedence over its id, because nflverse has reused a
 team's id for its London game. If a new venue appears, `game_weather` prints
 "unmapped venue", and `test_cached_schedules_all_map` fails until you add it.
 
-**Caching.** Place-name geocodes and the NWS grid for each point never
-change, so they are stored in `cache/` (gitignored). Forecasts are cached in
-memory for 20 minutes.
+**Caching.** Place-name geocodes and the NWS grid are stored in `cache/`
+(gitignored). Forecasts persist in `cache/forecasts.sqlite3` for reuse across
+sessions, with a 20-minute freshness window. `refresh=True` on either weather
+tool rechecks early; expired normal reads refresh automatically. Output includes
+actual retrieval time, cache reuse, expiration and provider issue time when
+available. Failed refreshes never return an expired forecast as current.
+Past-date results remain labeled model analysis/reanalysis, not pregame forecasts.
 
 **Flags** mark wind of 15 mph or more, gusts of 25 mph or more, rain chance of
 50% or more (or at least 0.10 in), temperatures at or below 32°F and at or

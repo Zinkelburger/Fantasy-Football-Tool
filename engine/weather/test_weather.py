@@ -4,6 +4,7 @@
 """
 import glob
 import sys
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -126,6 +127,46 @@ class SourceChoice(unittest.TestCase):
         far = datetime.now(UTC) + timedelta(days=30)
         with self.assertRaises(LookupError):
             W.hours(44.5, -88.0, far, far + timedelta(hours=3), True)
+
+
+class ForecastCache(unittest.TestCase):
+    def test_persistent_reuse_refresh_and_distinct_windows(self):
+        row = {'t': datetime(2026, 9, 27, 17, tzinfo=UTC), 'temp_f': 60}
+        fetch = mock.Mock(return_value={'rows': [row], 'issued': 'provider-time'})
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(W, 'CACHE', Path(tmp)):
+            first = W._memo(('om', '2026-09-27'), fetch)
+            second = W._memo(('om', '2026-09-27'), fetch)
+            self.assertEqual(first['rows'], second['rows'])
+            self.assertEqual(first['retrieval']['fetched_at'], second['retrieval']['fetched_at'])
+            self.assertTrue(second['retrieval']['cache_hit'])
+            fetch.assert_called_once()
+            W._memo(('om', '2026-09-27'), fetch, refresh=True)
+            W._memo(('om', '2026-09-28'), fetch)
+            self.assertEqual(fetch.call_count, 3)
+            self.assertTrue(Path(tmp, 'forecasts.sqlite3').exists())
+
+    def test_expired_forecast_failure_is_not_returned_as_current(self):
+        row = {'t': datetime(2026, 9, 27, 17, tzinfo=UTC), 'temp_f': 60}
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(W, 'CACHE', Path(tmp)), \
+                mock.patch('evidence_cache.time.time', return_value=100000) as clock:
+            W._memo(('nws', 'url'), lambda: {'rows': [row], 'issued': None})
+            clock.return_value += W.FORECAST_TTL + 1
+            with self.assertRaisesRegex(RuntimeError, 'unavailable'):
+                W._memo(('nws', 'url'), mock.Mock(side_effect=OSError('secret')))
+
+    def test_game_output_keeps_actual_retrieval_time(self):
+        _, venue = W.find_stadium('GB')
+        game = {'venue': venue, 'kickoff': datetime(2026, 9, 27, 17, tzinfo=UTC),
+                'home': 'GB', 'away': 'DET', 'raw_stadium': 'Lambeau Field'}
+        rows = Summary().rows()
+        with mock.patch.object(W, 'current_week', return_value=(2026, 3)), \
+                mock.patch.object(W, 'week_games', return_value=[game]), \
+                mock.patch.object(W, 'hours', return_value=('NWS; retrieved OLD-TIME; cache_hit=True', 'ISSUED', rows)) as get:
+            output = S.game_weather(week=3, team='GB', refresh=True)
+        self.assertIn('requested at', output)
+        self.assertIn('retrieved OLD-TIME', output)
+        self.assertIn('issued ISSUED', output)
+        self.assertTrue(get.call_args.kwargs['refresh'])
 
 
 if __name__ == "__main__":

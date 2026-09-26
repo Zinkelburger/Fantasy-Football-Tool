@@ -1,0 +1,15 @@
+---
+description: Fantasy team questions, injuries, matchups, lineup and waiver advice, source lookup, Reddit and weather cache freshness
+alwaysApply: false
+---
+
+# Team questions
+
+Read `engine/weekly/RESEARCH.md` for the decision workflow and
+`docs/TEAM-QUESTIONS.md` for the source map and cache policy. The ff-weekly tools
+`weekly_checklist()` and `research_sources()` return those same files.
+
+Establish the decision season/week once, separate it from observed usage weeks,
+and pass it explicitly. Use existing read tools and their dated caches before
+assembling new scripts. A prior-week status or a newly retrieved old report is
+not current availability. Refresh the particular source when needed, then answer.

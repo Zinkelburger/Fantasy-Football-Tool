@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:33Z",
+  "requested_hosts": [
+    "HOU"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "HOU": {
+      "status": "available",
+      "rows": 11,
+      "sources": [
+        "https://www.houstontexans.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "HOU": {
+      "status": "available",
+      "rows": 19,
+      "error": null,
+      "reported_teams": [
+        "HOU",
+        "IND"
+      ]
+    }
+  }
+}

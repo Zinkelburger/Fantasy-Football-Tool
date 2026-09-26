@@ -67,6 +67,17 @@ and are unaffected.
 | [35](35-in-game-model.md) | **Live win probability.** Fantasy points accrue linearly with the game clock (quarters 21.6/28.6/22.6/27.1%; the only bumps are the two 2-minute drills), so `remaining = 0.92 × proj × frac_left` is the whole model — game script, live production and Vegas add 1–2% combined. Same-team WR↔WR correlation is **0.00**; only QB↔own pass-catcher (0.28) and opposing QB↔QB (0.12) are real. Every simulation is overconfident at the tails (we say 85%, reality 78%); zero-inflated marginals, stack correlation and heteroskedastic sigma **all fail to fix it**, and a flat 0.87 shrink toward 50% beats all three. Ceiling is set by projection quality, not simulation machinery | data (5 seasons pbp) | High / Medium |
 | [36](36-draft-order.md) | QB timing is the only draft-order lever: round 4 +10 pts, round 10 −17 (27-pt spread, monotone). Everything else is noise — QB2 wins +0.4% titles ±2.9, TE timing flat, late RB vs late WR +1.6 ±2.3. A TE2 is worse than nothing. Open 2-3 RB in rounds 1-4. The observational "late RBs win" gap is endogenous and vanishes when forced | sim v5 | High |
 
+## External research and descriptive replications
+
+These numbered notes preserve useful outside results and distinguish them
+from our own measurements. Inclusion does not establish a predictive edge
+or add a production ranking rule.
+
+| # | Finding | Evidence | Confidence |
+|---|---|---|---|
+| [40](40-receiver-route-mix.md) | Short-route roles draw more targets in external research; our free data lacks the short/deep route shares needed to replicate it | external reports; original full methods unavailable | Low for prediction; not replicated |
+| [41](41-receiver-opportunity-and-scheme.md) | Flowers' opportunity and QB splits largely reproduce with free data; play-action targets yielded 16.96 vs 8.18 yards/target in 2025 | local descriptive reproduction + external hypothesis | High for reproduced totals; Low for prediction |
+
 Open hypotheses with test designs live in [BACKLOG.md](BACKLOG.md)
 (B4–B12: waiver expected-points, RYOE screening, O-line health,
 rookie RB paths, seat advantage, rookie-reach EV, QB2 insurance,

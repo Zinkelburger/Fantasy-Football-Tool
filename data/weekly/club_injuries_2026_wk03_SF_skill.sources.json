@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:27Z",
+  "requested_hosts": [
+    "SF"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "SF": {
+      "status": "available",
+      "rows": 8,
+      "sources": [
+        "https://www.49ers.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "SF": {
+      "status": "available",
+      "rows": 17,
+      "error": null,
+      "reported_teams": [
+        "ARI",
+        "SF"
+      ]
+    }
+  }
+}

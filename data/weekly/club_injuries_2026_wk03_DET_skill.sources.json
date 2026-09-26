@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:34Z",
+  "requested_hosts": [
+    "DET"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "DET": {
+      "status": "available",
+      "rows": 8,
+      "sources": [
+        "https://www.detroitlions.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "DET": {
+      "status": "available",
+      "rows": 14,
+      "error": null,
+      "reported_teams": [
+        "DET",
+        "NYJ"
+      ]
+    }
+  }
+}

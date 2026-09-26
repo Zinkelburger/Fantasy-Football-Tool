@@ -228,6 +228,61 @@ tracking possible on a static site with no backend. Re-checked
 - **Verified live 2026-09-17:** all 15 files 200, updated that morning
   13:00 UTC, 266 rows written for week 2.
 
+## 7b. Subvertadown — weekly FLEX rankings (personal use only)
+
+- **Link:** `https://subvertadown.com/weekly/flex` — server-rendered HTML,
+  readable without a login as of 2026-09-24. Robots.txt allows `/weekly/`.
+- **Gives us:** the week's top ~150 RB/WR/TE with a FLEX rank, a position
+  rank, the team depth slot (`BAL-1`), home/away + opponent, and projected
+  points.
+- **Scoring: 0.5 PPR. Our league is standard.** Ranks transfer; points run
+  high, most for pass-catching backs, slot receivers and tight ends. Compare
+  ranks, and read his points only against his other points.
+- **Terms:** the page is marked members-only content for the personal use of
+  Subvertadown members, with no copying or sharing. So the parsed rows live in
+  `engine/weekly/cache/` (gitignored), never `data/weekly/` (committed, public,
+  feeds the website). Never publish or quote the table.
+- **Used by:** `engine/weekly/subvertadown.py` →
+  `cache/subvertadown_flex_<season>_wkNN.json` → the `subvertadown_rankings`
+  MCP tool. Not part of `build_week.py` or any projection.
+- **Refresh:** on demand, cached six hours; `python3 engine/weekly/subvertadown.py`
+  or `subvertadown_rankings(refresh=True)`. A failed refetch shows the old copy
+  marked stale.
+- **Week check:** the page names its week in the heading and every row names
+  both teams, so `fetch()` refuses a page whose week or matchups disagree with
+  the schedule. A layout change parses to zero rows and fails loudly.
+- **Not listed = outside his top ~150**, e.g. Stefon Diggs in 2026 Week 3.
+
+## 7c. First Down Studio — Vegas player-prop projections (saved pages only)
+
+- **Link:** `https://www.firstdown.studio/rankings/rb` (also `/wr`, `/te`,
+  `/flex`, `/k`). A Next.js page; every one embeds the same weekly snapshot of
+  all positions as JSON in its `self.__next_f` script chunks.
+- **Gives us:** about 200 QB/RB/WR/TE/K rows (201 in 2026 Week 3) with points
+  in **standard**, half and full PPR, plus the underlying prop lines: rush
+  attempts and yards, receptions, receiving yards, anytime-TD expectation,
+  passing yards/TDs/INTs and kicking points. `projected_fields` names the
+  stats with no sportsbook prop, which First Down filled with its own
+  estimate; about half the rows are fully market-based. A player with no
+  props is absent. In Week 3 that included Zay Flowers, who missed practice.
+- **Terms: no scrapers.** The terms of service prohibit "automated tools,
+  scrapers, or bots without our written permission" and reproducing their
+  content. Robots.txt allows the page, but the terms are stricter. So
+  **nothing in this repo fetches it**: the user saves the page from a browser
+  (Ctrl+S) into `engine/weekly/cache/firstdown/` or `~/Downloads`, and the
+  parsed rows stay in the gitignored cache, never `data/weekly/`.
+- **Used by:** `engine/weekly/firstdown.py` →
+  `cache/firstdown_<season>_wkNN.json` → the `firstdown_rankings` MCP tool.
+  Not part of `build_week.py` or any projection.
+- **Refresh:** the snapshot changes rarely. The Week 3 snapshot was generated
+  Thursday 16:57 ET. The tool flags a snapshot generated before the latest
+  checkpoint (Thursday 12:00 ET, Sunday 09:00 ET) and asks for a fresh save.
+  Every call rescans the save folders and keeps the newest snapshot for the
+  current week.
+- **Week check:** season/week come from the snapshot, and every row names
+  both teams, so a save whose week or matchups disagree with the schedule is
+  refused.
+
 ## 8. PFR snap counts (via nflverse)
 
 - **Link:** `nflreadpy.load_snap_counts([season])` —

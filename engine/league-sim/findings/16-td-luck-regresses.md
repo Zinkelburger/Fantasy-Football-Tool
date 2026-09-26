@@ -1,5 +1,7 @@
 # 16 — TD luck regresses hard (the one repricing edge in this study)
 
+> **Superseded 2026-09-24** by `research/regression-to-expected/`. A from-scratch redo holds for WRs (8/8 seasons) and TEs, but **not for RBs or QBs**: RB touchdowns above expectation partly persist. Pooling positions overstated the effect. Do not cite the −1.6 PPG figure.
+
 **Confidence: High.** p = 0.0002, negative in 8/8 season pairs,
 clustered CI well clear of zero, coherent mechanism.
 

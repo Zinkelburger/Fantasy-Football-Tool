@@ -1,5 +1,7 @@
 # 39 — Opportunity scores: a per-position price on every touch
 
+> **Re-checked 2026-09-24** in `research/regression-to-expected/`. Usage beats points for next-week MAE at every position, confirmed with both our model (leave-one-season-out) and nflverse. But a 20–30% blend of actual points beats usage alone, and the gap between actual and expected points partly persists (about a third of last season's gap carries forward). It is not pure luck.
+
 ## September 15, 2026 correction and scoring extension
 
 The current audit is [REVIEW-2026-09-15.md](../../../research/opportunity-score/REVIEW-2026-09-15.md)

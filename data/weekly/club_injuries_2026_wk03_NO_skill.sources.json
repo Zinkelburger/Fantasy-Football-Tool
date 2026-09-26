@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:19Z",
+  "requested_hosts": [
+    "NO"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "NO": {
+      "status": "available",
+      "rows": 8,
+      "sources": [
+        "https://www.neworleanssaints.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "NO": {
+      "status": "available",
+      "rows": 17,
+      "error": null,
+      "reported_teams": [
+        "LV",
+        "NO"
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:18Z",
+  "requested_hosts": [
+    "CHI"
+  ],
+  "skill_only": true,
+  "missing_teams": [
+    "CHI"
+  ],
+  "pending_teams": [
+    "CHI"
+  ],
+  "unavailable_teams": [],
+  "coverage": {
+    "CHI": {
+      "status": "pending",
+      "rows": 0,
+      "sources": [],
+      "opponent": "PHI",
+      "game_date": "2026-09-28",
+      "expected_first_report_date": "2026-09-24",
+      "reason": "No report found yet; first practice report expected 2026-09-24"
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "CHI": {
+      "status": "no_report",
+      "rows": 0,
+      "error": null,
+      "reported_teams": [],
+      "article_fallback": {
+        "status": "not_found",
+        "feed": "https://www.chicagobears.com/rss/news",
+        "articles": []
+      }
+    }
+  }
+}

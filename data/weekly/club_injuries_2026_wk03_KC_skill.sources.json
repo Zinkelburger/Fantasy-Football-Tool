@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:28Z",
+  "requested_hosts": [
+    "KC"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "KC": {
+      "status": "available",
+      "rows": 12,
+      "sources": [
+        "https://www.chiefs.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "KC": {
+      "status": "available",
+      "rows": 22,
+      "error": null,
+      "reported_teams": [
+        "KC",
+        "MIA"
+      ]
+    }
+  }
+}

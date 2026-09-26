@@ -1,0 +1,8 @@
+team,week,player,position,injury,mon,tue,wed,thu,fri,sat,sun,practice_days,game_status,page_team,source,source_kind,published_at
+KC,3,Patrick Mahomes,QB,Knee,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+KC,3,Rashee Rice,WR,Knee,"","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+MIA,3,Jaylen Wright,RB,"","","",LP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+MIA,3,Seydou Traore,TE,"","","",FP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+MIA,3,Caleb Douglas,WR,"","","",DNP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+MIA,3,Chris Bell,WR,"","","",LP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""
+MIA,3,Ryan Miller,WR,"","","",LP,"","","","","wed,thu,fri","",KC,https://www.chiefs.com/team/injury-report/week/REG-3,club_grid,""

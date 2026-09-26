@@ -329,10 +329,9 @@ def report_path(season: int, week: int, teams: list[str] | None = None,
     return DATA / f"club_injuries_{season}_wk{week:02d}{suffix}.csv"
 
 
-def build(season: int, week: int, teams: list[str] | None = None,
-          skill_only: bool = False) -> pl.DataFrame:
-    """Fetch all 32 club injury reports and write the week's CSV. Teams that
-    fail are recorded in the sources file rather than failing the build."""
+def collect(season: int, week: int, teams: list[str] | None = None,
+            skill_only: bool = False) -> tuple[pl.DataFrame, dict]:
+    """Fetch reports and coverage without changing published/committed files."""
     if season != nfl_state()["season"]:
         raise ValueError("Club report URLs serve only the current season")
     teams = teams or list(CLUB_HOSTS)
@@ -391,17 +390,24 @@ def build(season: int, week: int, teams: list[str] | None = None,
         df = df.filter(pl.col("position").str.to_uppercase().is_in(SKILL))
     if df.height:
         df = df.sort(["team", "position", "player"])
-    out = report_path(season, week, teams, skill_only)
-    df.write_csv(out)
-    out.with_suffix(".sources.json").write_text(
-        json.dumps({"season": season, "week": week, "generated_at": now_iso(),
+    manifest = {"season": season, "week": week, "generated_at": now_iso(),
                     "requested_hosts": teams, "skill_only": skill_only,
                     "missing_teams": sorted(t for t, c in team_coverage.items()
                                             if c["status"] in ("pending", "unavailable")),
                     "pending_teams": sorted(t for t, c in team_coverage.items() if c["status"] == "pending"),
                     "unavailable_teams": sorted(t for t, c in team_coverage.items() if c["status"] == "unavailable"),
                     "coverage": team_coverage, "schedule_error": schedule_error,
-                    "teams": sources}, indent=2) + "\n")
+                    "teams": sources}
+    return df, manifest
+
+
+def build(season: int, week: int, teams: list[str] | None = None,
+          skill_only: bool = False) -> pl.DataFrame:
+    """Refresh the week's CSV and coverage manifest for the weekly build."""
+    df, manifest = collect(season, week, teams, skill_only)
+    out = report_path(season, week, teams, skill_only)
+    df.write_csv(out)
+    out.with_suffix(".sources.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return df
 
 

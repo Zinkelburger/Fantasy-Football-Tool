@@ -1,9 +1,9 @@
 """ff-weekly: MCP tools for the in-season week.
 
-Every tool is deterministic over files the fetchers wrote (data/weekly/)
-plus, for the league tools, a live read of the ESPN league. The agent
-reads these next to Reddit/news context and decides; the only tools
-that change anything are execute_transaction and apply_lineup, and both
+Numerical tools read saved weekly inputs plus live ESPN league data.
+Practice/news tools use dated local caches of public sources. The agent
+reads these next to Reddit context and decides; the only tools that
+write to ESPN are execute_transaction and apply_lineup, and both
 refuse to run without a proposal token the agent previewed AND
 confirmed=True, which the agent may only pass after the user said yes.
 
@@ -25,7 +25,13 @@ from common import (CACHE, DATA, ESPN_SLOTS, SKILL, TEAMS, load_env, nfl_state,
                     norm_team, now_iso, week_key)
 import advisor
 
-mcp = MCPServer("ff-weekly", version="1.0.0")
+mcp = MCPServer("ff-weekly", version="1.0.0", instructions=(
+    "For team questions read weekly_checklist and research_sources. Establish the decision "
+    "season/week with week_status and pass it explicitly; observed usage weeks are different. "
+    "Use practice_report for current official status and player_news for dated context. "
+    "Check source dates, coverage and cache freshness; old injury tags are not current designations. "
+    "Research does not authorize ESPN writes; exact proposal/token confirmation is still required."
+))
 PROPOSALS = CACHE / "proposals.json"
 PROPOSAL_TTL = 24 * 3600
 
@@ -43,9 +49,24 @@ def _state() -> tuple[int, int]:
     return st["season"], st["week"]
 
 
-def _week(week: int) -> tuple[int, int]:
-    season, cur = _state()
-    return season, (week or cur)
+def _week(week: int, season: int = 0) -> tuple[int, int]:
+    if not season or not week:
+        current_season, cur = _state()
+        season, week = season or current_season, week or cur
+    if not 1 <= week <= 18 or not 2000 <= season <= 2100:
+        raise ValueError("Use an NFL regular-season week 1–18 and an explicit season")
+    return season, week
+
+
+def _bundle(season: int, week: int) -> dict:
+    """Never return another decision week's latest.json as the requested week."""
+    for path in (DATA / f"week_{week_key(season, week)}.json", DATA / "latest.json"):
+        if path.exists():
+            data = json.loads(path.read_text())
+            if (data.get("season"), data.get("week")) == (season, week):
+                return data
+    raise ValueError(f"No saved bundle for {season} week {week}. "
+                     "Do not substitute another week; build the requested bundle first.")
 
 
 def _read_csv(path: Path) -> list[dict]:
@@ -230,12 +251,14 @@ def weekly_checklist() -> str:
 
 
 @mcp.tool()
-def week_status() -> str:
-    """Current NFL season/week, when the data was last built, and which
-    optional feeds/credentials are configured."""
-    season, week = _state()
+def week_status(week: int = 0, season: int = 0) -> str:
+    """Current NFL week versus requested decision season/week, matching saved bundle,
+    recorded usage weeks, timestamps and configured optional feeds. Usage can be partial."""
+    current_season, current_week = _state()
+    season, week = _week(week, season)
     env = load_env()
-    out = [f"NFL season {season}, week {week} (Sleeper state)"]
+    out = [f"NFL season {current_season}, week {current_week} (Sleeper state)",
+           f"Decision: season {season}, week {week}. As of {now_iso()}."]
     p = DATA / "latest.json"
     if p.exists():
         d = json.loads(p.read_text())
@@ -243,9 +266,18 @@ def week_status() -> str:
                    f"({d.get('games_played_this_week', 0)} games already played, "
                    f"{len(d['skill'])} skill rows)")
         if (d.get("season"), d["week"]) != (season, week):
-            out.append("  -> stale season/week: run refresh_week()")
+            out.append(f"  -> stale season/week for this decision: do not use latest as week {week}")
     else:
         out.append("data/weekly/latest.json missing -> run refresh_week()")
+    try:
+        requested = _bundle(season, week)
+        out.append(f"requested-week bundle: {requested['label']}, built {requested['generated']}")
+    except ValueError as exc:
+        out.append(str(exc))
+    usage = _read_csv(DATA / f"opportunity_{season}_weekly.csv")
+    observed = sorted({int(r['week']) for r in usage if r.get('week')})
+    out.append(f"recorded usage weeks: {observed or 'none'}; decision week is not a usage week. "
+               "A listed week can be partial; check game coverage before calling it complete.")
     ecr_path = DATA / f"ecr_{week_key(season, week)}.csv"
     ecr_rows = _read_csv(ecr_path)
     if ecr_rows:
@@ -270,6 +302,47 @@ def week_status() -> str:
                if env.get("FANTASYPROS_API_KEY")
                else "absent -> keyless fftiers bucket (same consensus, plus tiers)"))
     return "\n".join(out)
+
+
+@mcp.tool()
+def research_sources() -> str:
+    """Where to look for team questions: tools, week semantics and local cache/refresh policy."""
+    return (Path(__file__).parents[2] / "docs" / "TEAM-QUESTIONS.md").read_text()
+
+
+@mcp.tool()
+def practice_report(team: str, week: int = 0, season: int = 0, player: str = "",
+                    refresh: bool = False, cache_only: bool = False) -> dict:
+    """Current official club practice grid and game designation. Use before ESPN injury tags.
+
+    One team; optional player-name filter. Explicit season/week prevent carryover.
+    Local cache lasts 5 minutes; refresh=True rechecks, cache_only=True does no
+    network and labels expired evidence stale. Not listed/blank is not clearance.
+    Other seasons/weeks can only be read from an existing cache, never live pages.
+    """
+    import evidence
+    season, week = _week(week, season)
+    if not cache_only and (season, week) != _state():
+        raise ValueError("Live practice reports are current-week only. Use cache_only=True "
+                         "for an earlier snapshot; future-week designations are not known.")
+    return evidence.practice(team, season, week, player, refresh, cache_only)
+
+
+@mcp.tool()
+def player_news(names: str, week: int = 0, season: int = 0, hours: int = 24,
+                refresh: bool = False, cache_only: bool = False) -> dict:
+    """Dated Bluesky news for 1–6 comma-separated full player names, with source links/gaps.
+
+    Cached locally per account and decision season/week for 10 minutes. Reuses
+    feeds across players. refresh=True rechecks; cache_only=True is offline and
+    labels old evidence stale. Decision week does not establish a post's event week.
+    Recent wire reporting is context, not an official game designation.
+    """
+    import evidence
+    season, week = _week(week, season)
+    if not cache_only and (season != _state()[0] or week < _state()[1]):
+        raise ValueError("Live news cannot reconstruct a past week. Use cache_only=True for saved context.")
+    return evidence.news(names, season, week, hours, refresh, cache_only)
 
 
 @mcp.tool()
@@ -389,18 +462,21 @@ def player_lookup(name: str) -> str:
 
 
 @mcp.tool()
-def injury_report(team: str = "", position: str = "") -> str:
-    """This week's official injury report (NFL practice + game status)
-    for skill positions, filtered by team and/or position."""
-    d = _latest()
+def injury_report(team: str = "", position: str = "", week: int = 0, season: int = 0) -> str:
+    """Saved weekly injury snapshot, NOT live practice status. For current news use practice_report.
+    Select the explicit season/week; never substitute another week's bundle."""
+    season, week = _week(week, season)
+    d = _bundle(season, week)
     rows = d["injuries"]
     if team:
         rows = [r for r in rows if r["team"] == team.upper()]
     if position:
         rows = [r for r in rows if r["pos"] == position.upper()]
     if not rows:
-        return "no injury rows match (reports post Wed-Fri; refresh_week() Friday evening)"
-    out = [f"{d['label']} injury report ({len(rows)} rows)"]
+        return (f"{d['label']} saved injury snapshot built {d.get('generated', 'unknown')}: "
+                "no rows match; this is not clearance. Use practice_report for current status.")
+    out = [f"{d['label']} injury snapshot ({len(rows)} rows), built {d.get('generated', 'unknown')}. "
+           "Cached weekly data; use practice_report for current status."]
     for r in sorted(rows, key=lambda r: (r["team"], r["pos"], r["name"])):
         out.append(f"  {r['team']:4} {r['pos']:3} {r['name']:24} {r['status'] or '-':12} "
                    f"{r['injury'] or '':16} {r['practice'] or ''}")
@@ -408,10 +484,11 @@ def injury_report(team: str = "", position: str = "") -> str:
 
 
 @mcp.tool()
-def dst_rankings() -> str:
+def dst_rankings(week: int = 0, season: int = 0) -> str:
     """Defences ranked by opponent implied total (lowest first)."""
-    d = _latest()
-    out = [f"{d['label']} D/ST — opponent implied total, ascending (top 3 = stream)"]
+    d = _bundle(*_week(week, season))
+    out = [f"{d['label']} D/ST — opponent implied total, ascending (top 3 = stream); "
+           f"bundle built {d.get('generated', 'unknown')} (not a live odds retrieval)"]
     for i, r in enumerate(d["dst"], 1):
         out.append(f"  {i:>2} {r['abbr']:4} {'vs' if r['home'] else '@ '} {r['opp']:12} {r['imp']:5.1f}"
                    f"{'  (played)' if r.get('played') else ''}")
@@ -419,9 +496,9 @@ def dst_rankings() -> str:
 
 
 @mcp.tool()
-def kicker_rankings() -> str:
+def kicker_rankings(week: int = 0, season: int = 0) -> str:
     """Kicker slots ranked by own-offence implied total (+0.7 dome)."""
-    d = _latest()
+    d = _bundle(*_week(week, season))
     out = [f"{d['label']} K — own implied total, descending, dome +0.7"]
     for i, r in enumerate(d["k"], 1):
         out.append(f"  {i:>2} {r['abbr']:4} {'vs' if r['home'] else '@ '} {r['opp']:12} {r['imp']:5.1f}"
@@ -587,9 +664,9 @@ def fantasypros_rankings(position: str = "RB", week: int = 0, top: int = 30) -> 
     FANTASYPROS_API_KEY the paid API fills the same file instead and
     supplies a start/sit grade but no tiers.
 
-    Read the tier before the rank. Players inside one tier are a coin
-    flip the experts cannot separate; a tier boundary is a real gap. A
-    high sd is the cue to go read the news on that player.
+    Tiers group nearby expert ranks; they are not calibrated win
+    probabilities or proof of a performance gap. A high sd or a tier
+    disagreement is a cue to inspect the relevant usage and news.
     """
     season, week = _week(week)
     pos = position.upper()
@@ -606,8 +683,100 @@ def fantasypros_rankings(position: str = "RB", week: int = 0, top: int = 30) -> 
         if r.get("tier") and r["tier"] != tier:
             tier = r["tier"]
             out.append(f"  -- tier {tier} --")
-        out.append(f"  {r['rank_ecr']:>3} {r['name']:24} {r['team'] or '':4} {r['opp'] or '':5} "
+        # fftiers supplies only the opponent for skill players. An unlabeled
+        # abbreviation after a blank team was being read as the player's club.
+        out.append(f"  {r['rank_ecr']:>3} {r['name']:24} "
+                   f"team={r['team'] or 'unknown'} opp={r['opp'] or 'unknown'} "
                    f"range {r['rank_min']}-{r['rank_max']} sd {r['rank_std']} {r.get('start_sit_grade') or ''}".rstrip())
+    return "\n".join(out)
+
+
+@mcp.tool()
+def subvertadown_rankings(position: str = "FLEX", top: int = 40, names: str = "",
+                          refresh: bool = False) -> str:
+    """Subvertadown's weekly RB/WR/TE rankings and projected points: one
+    model's projection, a second opinion beside the FantasyPros consensus.
+
+    SCORING: Subvertadown's page is 0.5 PPR and this league is STANDARD.
+    Compare ranks, not points; his points run higher than a standard
+    projection, most for pass-catching backs, slot WRs and TEs.
+
+    position: FLEX (default), RB, WR or TE. names: comma-separated players
+    to look up (e.g. "Stefon Diggs,Jameson Williams"); a name he does not
+    list is outside his top ~150, which is itself an answer. Cached for six
+    hours; refresh=True refetches. Members-only content for personal use:
+    never commit, publish or quote it anywhere public.
+    """
+    import subvertadown
+    season, week = _state()
+    try:
+        data = subvertadown.load(season, week, refresh=refresh)
+    except Exception as e:  # noqa: BLE001 - report, do not crash the server
+        return f"Subvertadown unavailable: {e}"
+    pos = position.upper()
+    key = "rank_flex" if pos == "FLEX" else "rank_pos"
+    rows = [r for r in data["rows"] if pos == "FLEX" or r["pos"] == pos]
+    out = [f"Subvertadown {pos} {season} week {data['week']}, fetched {data['fetched_at']}",
+           f"  NOTE: {subvertadown.SCORING_NOTE}"]
+    if data.get("stale"):
+        out.append(f"  STALE: {data['stale']}")
+
+    def line(r):
+        return (f"  {pos} {r[key]:>3}  {r['name']:24} {r['pos']:2} {r['team']}-{r['depth']} "
+                f"{'vs' if r['home'] else '@ '} {r['opp'] or '?':3}  {r['points_half']:5.1f} (half-PPR)"
+                + (f"  [FLEX {r['rank_flex']}]" if pos != "FLEX" else ""))
+
+    if names:
+        by = {_norm_name(r["name"]): r for r in rows}
+        for n in (x.strip() for x in names.split(",") if x.strip()):
+            r = by.get(_norm_name(n))
+            out.append(line(r) if r else f"  {n}: not in his {pos} list (outside his top ~150)")
+    else:
+        out += [line(r) for r in sorted(rows, key=lambda r: r[key] or 999)[:top]]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def firstdown_rankings(position: str = "RB", top: int = 30, names: str = "") -> str:
+    """First Down Studio's weekly projections built from sportsbook player
+    props (yards, attempts, receptions, anytime-TD odds), in STANDARD
+    scoring like this league: the betting market's view, a third opinion
+    beside the FantasyPros consensus and our usage model.
+
+    position: RB (default), WR, TE, QB, K or FLEX. names: comma-separated
+    players to look up. A player missing from the list has no props posted
+    (often an injury or a small role), which is not a low ranking.
+    "not from props" marks stats First Down filled with its own estimate.
+
+    Reads ONLY pages the user saved from their browser: First Down's terms
+    forbid scrapers, so this never downloads anything. If it reports no
+    save or a stale snapshot, ask the user to open
+    https://www.firstdown.studio/rankings/rb and save it (Ctrl+S) into
+    engine/weekly/cache/firstdown/ or ~/Downloads (Thursday evening and
+    Sunday morning are enough). Personal use: never commit, publish or
+    quote the table anywhere public.
+    """
+    import firstdown
+    season, week = _state()
+    try:
+        data = firstdown.load(season, week)
+    except Exception as e:  # noqa: BLE001 - report, do not crash the server
+        return f"First Down unavailable: {e}"
+    pos = position.upper()
+    rows = firstdown.select(data["rows"], pos)
+    out = [f"First Down Vegas-props {pos} {season} week {data['week']} (standard scoring), "
+           f"snapshot generated {data['generated_at']}, from {data.get('source_file')}"]
+    note = firstdown.freshness(data)
+    if note:
+        out.append(f"  STALE: {note}")
+    if names:
+        ranked = {_norm_name(r["name"]): (i, r) for i, r in enumerate(rows, 1)}
+        for n in (x.strip() for x in names.split(",") if x.strip()):
+            hit = ranked.get(_norm_name(n))
+            out.append(firstdown.line(hit[1], hit[0]) if hit
+                       else f"  {n}: not listed at {pos} (no props posted)")
+    else:
+        out += [firstdown.line(r, i) for i, r in enumerate(rows[:top], 1)]
     return "\n".join(out)
 
 
@@ -657,6 +826,40 @@ def my_roster(week: int = 0) -> str:
     out += [_fmt_player(p) for p in order]
     starters = [p for p in roster if p.get("slot") not in (20, 21)]
     out.append(f"current starters total proj: {sum(p['proj'] for p in starters):.1f}")
+    return "\n".join(out)
+
+
+@mcp.tool()
+def team_roster(team_id: int, week: int = 0) -> str:
+    """Read any league team's roster and legal optimal lineup using the same model as yours.
+
+    Get team_id from league_settings. Current live roster, not a historical
+    roster reconstruction. Pass the decision week explicitly. Retains locks;
+    exposes bench alternatives, projections and injury tags. No win probability,
+    proposal token or ESPN write. Verify injuries with practice_report.
+    """
+    season, week = _week(week)
+    lg, settings, attach = projector(season, week)
+    teams = {t['id']: t['name'] for t in settings['teams']}
+    if team_id not in teams:
+        raise ValueError("Unknown team_id; read league_settings first")
+    rosters = lg.rosters(week)
+    if team_id not in rosters:
+        raise ValueError("Requested team's roster is unavailable")
+    roster = [attach(p) for p in rosters[team_id]]
+    current = sum(p['proj'] for p in roster if p.get('slot') not in (20, 21))
+    res = advisor.optimal_lineup(roster, settings['slots'])
+    out = [f"{teams[team_id]} — {season} decision week {week}, {settings['scoring_format']}; "
+           f"live roster read {now_iso()}",
+           "ESPN injury tags may lag; confirm current official status with practice_report.",
+           f"Current starters: {current:.1f} projected points; legal optimal: {res['total']:.1f}",
+           "Current roster:"]
+    out += [_fmt_player(p) for p in roster]
+    out.append("Legal optimal starters (locks retained):")
+    out += [f"  {ESPN_SLOTS.get(slot, slot)}: {p['name']} ({p['proj']:.1f})" if p
+            else f"  {ESPN_SLOTS.get(slot, slot)}: empty" for slot, p in res['starters']]
+    out += advisor.timing_note(res['starters'])
+    out.append("Point totals are not a calibrated chance of winning. No changes made.")
     return "\n".join(out)
 
 

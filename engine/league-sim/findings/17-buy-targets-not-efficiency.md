@@ -1,5 +1,7 @@
 # 17 — Buy targets, not efficiency (YAC and catch rate add nothing)
 
+> **Re-checked 2026-09-24** in `research/regression-to-expected/`. The WR target signal and the WR efficiency nulls hold. Corrections: TE targets *do* predict beyond PPG, TE YAC/reception is a real signal, and RB carries are borderline.
+
 **Confidence: High** for the WR target signal (p = 0.0004, positive
 in 7/8 season pairs) and for the efficiency nulls. The RB/TE
 analogues are weaker.

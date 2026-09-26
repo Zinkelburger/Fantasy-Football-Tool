@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:30Z",
+  "requested_hosts": [
+    "CIN"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "CIN": {
+      "status": "available",
+      "rows": 3,
+      "sources": [
+        "https://www.bengals.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "CIN": {
+      "status": "available",
+      "rows": 10,
+      "error": null,
+      "reported_teams": [
+        "CIN",
+        "PIT"
+      ]
+    }
+  }
+}

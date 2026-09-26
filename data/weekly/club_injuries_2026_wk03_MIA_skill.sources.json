@@ -1,0 +1,33 @@
+{
+  "season": 2026,
+  "week": 3,
+  "generated_at": "2026-09-24T19:15:27Z",
+  "requested_hosts": [
+    "MIA"
+  ],
+  "skill_only": true,
+  "missing_teams": [],
+  "pending_teams": [],
+  "unavailable_teams": [],
+  "coverage": {
+    "MIA": {
+      "status": "available",
+      "rows": 10,
+      "sources": [
+        "https://www.miamidolphins.com/team/injury-report/week/REG-3"
+      ]
+    }
+  },
+  "schedule_error": null,
+  "teams": {
+    "MIA": {
+      "status": "available",
+      "rows": 22,
+      "error": null,
+      "reported_teams": [
+        "KC",
+        "MIA"
+      ]
+    }
+  }
+}

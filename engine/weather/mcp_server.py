@@ -45,7 +45,8 @@ def _window(start: str, hours: int, tz: ZoneInfo) -> tuple[datetime, datetime]:
 
 
 @mcp.tool()
-def weather(place: str, start: str = "", hours: int = 0, source: str = "auto") -> str:
+def weather(place: str, start: str = "", hours: int = 0, source: str = "auto",
+            refresh: bool = False) -> str:
     """Hourly weather for a place.
 
     place: "Green Bay, WI", "London", "Buffalo NY", a team ("GB",
@@ -56,11 +57,13 @@ def weather(place: str, start: str = "", hours: int = 0, source: str = "auto") -
     hours: how many hours (default 12 from now, 24 for a date; max 168).
     source: auto (NWS for US points within ~6.5 days, else Open-Meteo),
     nws, or open-meteo.
+    Forecasts persist locally for 20 minutes across sessions. refresh=True
+    rechecks early when needed; output shows actual retrieval time and cache reuse.
     """
     p = W.resolve_place(place)
     tz = ZoneInfo(p["tz"]) if p.get("tz") else UTC
     begin, end = _window(start, min(max(hours, 0), 168), tz)
-    src, issued, rows = W.hours(p["lat"], p["lon"], begin, end, p.get("us"), source)
+    src, issued, rows = W.hours(p["lat"], p["lon"], begin, end, p.get("us"), source, refresh=refresh)
     if not rows:
         return f"{p['name']}: no hourly data for {begin:%Y-%m-%d %H:%M} to {end:%H:%M}"
     head = [f"{p['name']}  ({p['lat']:.4f}, {p['lon']:.4f}, {tz.key})",
@@ -76,7 +79,7 @@ def weather(place: str, start: str = "", hours: int = 0, source: str = "auto") -
 
 
 @mcp.tool()
-def game_weather(week: int = 0, team: str = "", season: int = 0) -> str:
+def game_weather(week: int = 0, team: str = "", season: int = 0, refresh: bool = False) -> str:
     """Weather at every NFL game in a week, kickoff to about 3.5 hours after,
     at the venue's own coordinates and local time.
 
@@ -84,16 +87,21 @@ def game_weather(week: int = 0, team: str = "", season: int = 0) -> str:
     just that team's game. Fixed-roof venues are marked indoors and not
     fetched. Flags (wind >= 15 mph, gusts >= 25, rain likely, <= 32F,
     >= 90F) are for reading only; no ranking in this repo adjusts for them.
+    Forecasts persist on disk for 20 minutes; refresh=True rechecks early.
+    Retrieval timestamps are per venue. Past weather is labeled model analysis
+    or reanalysis, never presented as a saved pregame forecast.
     """
     cur_season, cur_week = W.current_week()
     season, week = season or cur_season, week or cur_week
+    if not 1 <= week <= 18 or not 2000 <= season <= 2100:
+        raise ValueError("Use a regular-season week 1–18 and valid season")
     games = W.week_games(season, week)
     if team:
         t = team.strip().upper()
         games = [g for g in games if t in (g["away"], g["home"])]
         if not games:
             return f"no {t} game in {season} week {week} (bye?)"
-    out = [f"{season} Week {week} game weather, fetched "
+    out = [f"{season} Week {week} game weather, requested at "
            f"{datetime.now(UTC):%Y-%m-%d %H:%M}Z. Kickoffs ET; window local."]
     for g in games:
         v = g["venue"]
@@ -109,7 +117,7 @@ def game_weather(week: int = 0, team: str = "", season: int = 0) -> str:
             continue
         end = k + timedelta(hours=W.GAME_HOURS)
         try:
-            src, _, rows = W.hours(v["lat"], v["lon"], k, end, W.is_us(v["tz"]))
+            src, issued, rows = W.hours(v["lat"], v["lon"], k, end, W.is_us(v["tz"]), refresh=refresh)
         except LookupError as e:
             out.append(line + f"  | no forecast yet ({e})")
             continue
@@ -124,7 +132,7 @@ def game_weather(week: int = 0, team: str = "", season: int = 0) -> str:
         sky = sorted({r["sky"] for r in rows if r["sky"]}, key=[r["sky"] for r in rows].index)
         out.append(line + f" ({k.astimezone(vtz):%H:%M} local){roof}\n"
                    f"      {W.fmt_summary(s)}; {' / '.join(sky[:3])}"
-                   f"  [{src.split(' (')[0]}]"
+                   f"  [{src}" + (f"; issued {issued}" if issued else "") + "]"
                    + (f"\n      FLAGS: {', '.join(s['flags'])}" if s["flags"] else ""))
     return "\n".join(out)
 

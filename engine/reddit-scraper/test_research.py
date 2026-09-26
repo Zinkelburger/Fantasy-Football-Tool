@@ -35,6 +35,71 @@ class ResearchTests(unittest.TestCase):
     def discover(self, **kwargs):
         return N.discover(self.cache, self.factory, ['nfl', 'fantasyfootball'], 'Breece Hall', **kwargs)
 
+    def test_retained_thread_reads_offline_without_becoming_current(self):
+        key = ['detail-v1', 'abc', False]
+        self.cache.get_or_fetch(key, 'detail', N.DETAIL_TTL,
+                                lambda: {'thread': {'id': 'abc'}, 'comments': []})
+        self.now += N.DETAIL_TTL + 1
+        result = N.read_thread(self.cache, self.factory, 'abc', 0, cache_only=True)
+        self.assertTrue(result['retrieval']['stale'])
+        self.assertEqual(result['retrieval']['retrieval_operations'], 0)
+        self.factory.assert_not_called()
+        with self.assertRaises(N.RetrievalStopped):
+            N.read_thread(self.cache, self.factory, 'missing', 0, cache_only=True)
+        self.factory.assert_not_called()
+
+    def test_refresh_obeys_budget_and_negative_cache(self):
+        fetch = Mock(return_value={'thread': {'id': 'abc'}, 'comments': []})
+        key = ['detail-v1', 'abc', False]
+        self.cache.get_or_fetch(key, 'detail', 300, fetch)
+        self.cache.get_or_fetch(key, 'detail', 300, fetch, refresh=True)
+        self.assertEqual(fetch.call_count, 2)
+        for i in range(N.MAX_DETAILS_PER_HOUR - 2):
+            self.cache.get_or_fetch(i, 'detail', 300, lambda: {})
+        with self.assertRaisesRegex(N.RetrievalStopped, 'budget'):
+            self.cache.get_or_fetch(key, 'detail', 300, fetch, refresh=True)
+        self.assertTrue(self.cache.get_or_fetch(key, 'detail', 300, fetch)[1]['cache_hit'])
+        fail = Mock(side_effect=OSError('private credential'))
+        for _ in range(2):
+            with self.assertRaises(N.RetrievalStopped):
+                self.cache.get_or_fetch('bad', 'discovery', 300, fail, refresh=True)
+        fail.assert_called_once()
+
+    def test_retention_limit_removes_old_snapshots(self):
+        key = ['detail-v1', 'abc', False]
+        self.cache.get_or_fetch(key, 'detail', 300, lambda: {})
+        self.now += N.RETENTION + 1
+        with self.assertRaises(N.RetrievalStopped):
+            self.cache.get_or_fetch(key, 'detail', 300, Mock(), cache_only=True)
+
+    def test_failed_refresh_retains_prior_snapshot_for_offline_review(self):
+        key = ['detail-v1', 'abc', False]
+        self.cache.get_or_fetch(key, 'detail', 300,
+                                lambda: {'thread': {'id': 'abc'}, 'comments': []})
+        self.now += 301
+        with self.assertRaises(N.RetrievalStopped):
+            self.cache.get_or_fetch(key, 'detail', 300, Mock(side_effect=OSError()), refresh=True)
+        result = N.read_thread(self.cache, self.factory, 'abc', 0, cache_only=True)
+        self.assertEqual(result['thread']['id'], 'abc')
+        self.assertTrue(result['retrieval']['stale'])
+        self.factory.assert_not_called()
+
+    def test_local_thread_search_excludes_discovery_and_expired_retention(self):
+        detail = {'thread': {'id': 'abc', 'title': 'Breece Hall update', 'posted_at': 'original'},
+                  'comments': [{'body': 'Practice report'}]}
+        self.cache.get_or_fetch(['detail-v1', 'abc', True], 'detail', 300, lambda: detail)
+        self.cache.get_or_fetch(['discovery-v1'], 'discovery', 300, lambda: detail)
+        self.now += 301
+        result = self.cache.saved_threads('breece hall')
+        self.assertEqual(len(result['threads']), 1)
+        self.assertTrue(result['threads'][0]['stale'])
+        self.assertEqual(result['threads'][0]['posted_at'], 'original')
+        self.assertEqual(result['retrieval_operations'], 0)
+        self.assertEqual(self.cache.saved_threads('not here')['threads'], [])
+        self.now += N.RETENTION
+        self.assertEqual(self.cache.saved_threads()['threads'], [])
+        self.factory.assert_not_called()
+
     def test_discovery_metadata_only_and_cache_across_instances(self):
         first = self.discover()
         self.cache = N.ResearchCache(self.cache.path, lambda: self.now)

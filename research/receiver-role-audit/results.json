@@ -1,0 +1,223 @@
+{
+  "season": 2025,
+  "purpose": "descriptive reproduction, not a predictive backtest",
+  "flowers_full_regular_season": {
+    "targets": 118,
+    "receptions": 86,
+    "receiving_yards": 1211,
+    "receiving_air_yards": 1204,
+    "receiving_yards_after_catch": 458,
+    "receiving_tds": 5,
+    "receiving_16": 28,
+    "games": 17,
+    "yards_per_target": 10.26271186440678,
+    "adot": 10.203389830508474,
+    "yac_per_reception": 5.325581395348837,
+    "ppr_ppg": 14.311764705882354
+  },
+  "flowers_weeks_1_17": {
+    "targets": 112,
+    "receptions": 82,
+    "receiving_yards": 1073,
+    "receiving_air_yards": 1103,
+    "receiving_yards_after_catch": 400,
+    "receiving_tds": 3,
+    "receiving_16": 26,
+    "games": 16,
+    "yards_per_target": 9.580357142857142,
+    "adot": 9.848214285714286,
+    "yac_per_reception": 4.878048780487805,
+    "ppr_ppg": 13.34375
+  },
+  "flowers_opportunity": {
+    "team_targets": 407,
+    "team_air_yards": 3376,
+    "target_share": 0.28992628992628994,
+    "air_yards_share": 0.3566350710900474,
+    "wopr": 0.6845339846524681
+  },
+  "flowers_lamar_game_splits": {
+    "definition": "Lamar recorded at least one pass attempt; not a health or on-field split",
+    "with": {
+      "targets": 89,
+      "receptions": 64,
+      "receiving_yards": 1000,
+      "receiving_air_yards": 962,
+      "receiving_yards_after_catch": 373,
+      "receiving_tds": 4,
+      "receiving_16": 25,
+      "games": 13,
+      "yards_per_target": 11.235955056179776,
+      "adot": 10.808988764044944,
+      "yac_per_reception": 5.828125,
+      "ppr_ppg": 15.030769230769234
+    },
+    "without": {
+      "targets": 29,
+      "receptions": 22,
+      "receiving_yards": 211,
+      "receiving_air_yards": 242,
+      "receiving_yards_after_catch": 85,
+      "receiving_tds": 1,
+      "receiving_16": 3,
+      "games": 4,
+      "yards_per_target": 7.275862068965517,
+      "adot": 8.344827586206897,
+      "yac_per_reception": 3.8636363636363638,
+      "ppr_ppg": 11.975000000000001
+    }
+  },
+  "team_context": {
+    "BAL": {
+      "plays": 954,
+      "dropbacks": 501,
+      "games": 17,
+      "dropback_rate": 0.5251572327044025,
+      "mean_pass_oe_percentage_points": -8.843459733088249,
+      "pass_oe_known_plays": 954,
+      "first_down_dropback_rate": 0.44208037825059104,
+      "is_play_action_known": 501,
+      "is_play_action_population": 501,
+      "is_play_action_rate": 0.22355289421157684,
+      "is_motion_known": 954,
+      "is_motion_population": 954,
+      "is_motion_rate": 0.539832285115304
+    },
+    "CHI": {
+      "plays": 1090,
+      "dropbacks": 640,
+      "games": 17,
+      "dropback_rate": 0.5871559633027523,
+      "mean_pass_oe_percentage_points": -3.8982048182996043,
+      "pass_oe_known_plays": 1090,
+      "first_down_dropback_rate": 0.5243128964059197,
+      "is_play_action_known": 640,
+      "is_play_action_population": 640,
+      "is_play_action_rate": 0.3140625,
+      "is_motion_known": 1090,
+      "is_motion_population": 1090,
+      "is_motion_rate": 0.5798165137614679
+    },
+    "DEN": {
+      "plays": 1073,
+      "dropbacks": 671,
+      "games": 17,
+      "dropback_rate": 0.625349487418453,
+      "mean_pass_oe_percentage_points": 1.5696713608886634,
+      "pass_oe_known_plays": 1073,
+      "first_down_dropback_rate": 0.5391304347826087,
+      "is_play_action_known": 671,
+      "is_play_action_population": 671,
+      "is_play_action_rate": 0.2399403874813711,
+      "is_motion_known": 1073,
+      "is_motion_population": 1073,
+      "is_motion_rate": 0.46318732525629075
+    }
+  },
+  "flowers_target_splits": {
+    "is_play_action": [
+      {
+        "label": false,
+        "targets": 90,
+        "receptions": 62.0,
+        "receiving_yards": 736.0,
+        "yards_per_target": 8.177777777777777
+      },
+      {
+        "label": true,
+        "targets": 28,
+        "receptions": 24.0,
+        "receiving_yards": 475.0,
+        "yards_per_target": 16.964285714285715
+      }
+    ],
+    "is_motion": [
+      {
+        "label": false,
+        "targets": 51,
+        "receptions": 37.0,
+        "receiving_yards": 637.0,
+        "yards_per_target": 12.490196078431373
+      },
+      {
+        "label": true,
+        "targets": 67,
+        "receptions": 49.0,
+        "receiving_yards": 574.0,
+        "yards_per_target": 8.567164179104477
+      }
+    ],
+    "is_screen_pass": [
+      {
+        "label": false,
+        "targets": 103,
+        "receptions": 73.0,
+        "receiving_yards": 1133.0,
+        "yards_per_target": 11.0
+      },
+      {
+        "label": true,
+        "targets": 15,
+        "receptions": 13.0,
+        "receiving_yards": 78.0,
+        "yards_per_target": 5.2
+      }
+    ],
+    "read_thrown": [
+      {
+        "label": "1",
+        "targets": 68,
+        "receptions": 49.0,
+        "receiving_yards": 800.0,
+        "yards_per_target": 11.764705882352942
+      },
+      {
+        "label": "2",
+        "targets": 20,
+        "receptions": 11.0,
+        "receiving_yards": 172.0,
+        "yards_per_target": 8.6
+      },
+      {
+        "label": "CHK",
+        "targets": 7,
+        "receptions": 7.0,
+        "receiving_yards": 32.0,
+        "yards_per_target": 4.571428571428571
+      },
+      {
+        "label": "DES",
+        "targets": 16,
+        "receptions": 14.0,
+        "receiving_yards": 79.0,
+        "yards_per_target": 4.9375
+      },
+      {
+        "label": "SD",
+        "targets": 7,
+        "receptions": 5.0,
+        "receiving_yards": 128.0,
+        "yards_per_target": 18.285714285714285
+      }
+    ]
+  },
+  "definitions_and_limits": [
+    "All games are 2025 REG; separate weeks 1-17 sensitivity excludes Week 18.",
+    "PPR is nflverse fantasy_points_ppr, including rushing and fumbles.",
+    "Team target denominator includes all identified receivers, not just WRs.",
+    "WOPR = 1.5 * target share + 0.7 * air-yards share.",
+    "FTN motion identifies motion on the play, not which player moved or motion specifically at snap.",
+    "FTN read_thrown labels the targeted read, not every receiver's assigned progression.",
+    "Team PA denominator is all retained dropbacks; motion denominator is all retained offensive plays.",
+    "Missing charting is unknown; aggregate rates require full coverage, and splits retain a null bucket.",
+    "Target splits are yards per TARGET. Routes, route types, route depth and YPRR are unavailable.",
+    "Provider play/target definitions can differ. Rank among 250-route qualifiers cannot be reproduced.",
+    "Historical finalized caches do not establish when data was available for a live decision."
+  ],
+  "attribution": "nflverse player stats/PBP; FTN Data via nflverse (CC-BY-SA 4.0)",
+  "source_sha256": {
+    "engine/weekly/cache/player_stats_2025.parquet": "782c689a762e93508b9b6e11f1f9002bc7cde12aa0bfb0a6058aa00896bb9ae9",
+    "engine/weekly/cache/pbp_2025.parquet": "5ed293fdf54d79e34426133829f3111faf577db29b8cfc25cf910d75eb55b2ef",
+    "engine/weekly/cache/ftn_2025.parquet": "50afe542beb29d987776ac2b0ab49eab2eea6c902c689bafdd62918fb280426e"
+  }
+}

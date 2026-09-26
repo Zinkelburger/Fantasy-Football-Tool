@@ -13,7 +13,7 @@ Venues come from stadiums.json (committed), keyed by the nflverse
 stadium_id, so a game's coordinates, time zone and roof are looked up, never
 geocoded. Lookups that do not change are cached on disk under cache/
 (gitignored): place-name geocodes and the NWS grid for each point. Forecasts
-are cached in memory for FORECAST_TTL, because they do change.
+are cached on disk for FORECAST_TTL and carry their actual retrieval time.
 
 Nothing here feeds a projection. Weather is context for the reader; the
 kicker and defense rankings do not use it (see finding 27).
@@ -23,7 +23,6 @@ from __future__ import annotations
 import json
 import re
 import sys
-import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -102,16 +101,28 @@ def _disk_put(name: str, key: str, value) -> None:
     (CACHE / name).write_text(json.dumps(d, indent=1, sort_keys=True))
 
 
-_MEMO: dict[tuple, tuple[float, object]] = {}
+def _memo(key: tuple, fn, refresh=False):
+    from evidence_cache import EvidenceCache  # weekly path initialized below
+
+    def fetch():
+        value = fn()
+        return {**value, "rows": [{**r, "t": r["t"].isoformat()} for r in value["rows"]]}
+
+    result = EvidenceCache(CACHE / "forecasts.sqlite3").read(
+        ["forecast-v1", *map(str, key)], fetch, FORECAST_TTL, refresh=refresh)
+    if result["data"] is None:
+        raise RuntimeError(result["retrieval"].get("error", "Forecast unavailable"))
+    value = result["data"]
+    return {**value, "rows": [{**r, "t": datetime.fromisoformat(r["t"])} for r in value["rows"]],
+            "retrieval": result["retrieval"]}
 
 
-def _memo(key: tuple, fn):
-    hit = _MEMO.get(key)
-    if hit and time.time() - hit[0] < FORECAST_TTL:
-        return hit[1]
-    val = fn()
-    _MEMO[key] = (time.time(), val)
-    return val
+def _retrieval_label(data):
+    r = data.get("retrieval")
+    if not r:
+        return ""
+    return (f"; retrieved {r['fetched_at']}; cache_hit={r['cache_hit']}; "
+            f"age {r['age_seconds']}s; expires {r['expires_at']}")
 
 
 # ------------------------------------------------------------------ venues
@@ -257,7 +268,7 @@ def _mph(s) -> float | None:
     return max(nums) if nums else None
 
 
-def nws_hours(lat: float, lon: float) -> list[dict]:
+def nws_hours(lat: float, lon: float, refresh: bool = False) -> dict:
     url = _nws_hourly_url(lat, lon)
     if not url:
         raise LookupError("point is outside NWS coverage")
@@ -278,7 +289,7 @@ def nws_hours(lat: float, lon: float) -> list[dict]:
                 "precip_in": None, "sky": p.get("shortForecast", "")})
         return {"rows": rows, "issued": d["properties"].get("updateTime")
                 or d["properties"].get("generatedAt")}
-    return _memo(("nws", url), fetch)
+    return _memo(("nws", url), fetch, refresh)
 
 
 def _compass(deg) -> str:
@@ -288,7 +299,7 @@ def _compass(deg) -> str:
     return pts[int((deg % 360) / 22.5 + 0.5) % 16]
 
 
-def open_meteo_hours(lat: float, lon: float, start: date, end: date) -> dict:
+def open_meteo_hours(lat: float, lon: float, start: date, end: date, refresh: bool = False) -> dict:
     today = datetime.now(UTC).date()
     archive = end < today - timedelta(days=OM_PAST_DAYS)
     base = ("https://archive-api.open-meteo.com/v1/archive" if archive
@@ -319,11 +330,11 @@ def open_meteo_hours(lat: float, lon: float, start: date, end: date) -> dict:
         kind = ("archive (observed reanalysis)" if archive
                 else "past hours (model analysis)" if end < today else "forecast")
         return {"rows": rows, "issued": None, "kind": kind}
-    return _memo(("om", base, lat, lon, start, end), fetch)
+    return _memo(("om", base, lat, lon, start, end), fetch, refresh)
 
 
 def hours(lat: float, lon: float, start: datetime, end: datetime,
-          us: bool | None, source: str = "auto") -> tuple[str, str | None, list[dict]]:
+          us: bool | None, source: str = "auto", refresh: bool = False) -> tuple[str, str | None, list[dict]]:
     """Hourly rows covering [start, end) (aware datetimes) and the source
     used. auto: NWS for a US point inside its range, else Open-Meteo."""
     now = datetime.now(UTC)
@@ -333,10 +344,10 @@ def hours(lat: float, lon: float, start: datetime, end: datetime,
     errors = []
     if nws_ok:
         try:
-            d = nws_hours(lat, lon)
+            d = nws_hours(lat, lon, refresh=refresh)
             rows = [r for r in d["rows"] if start - timedelta(hours=1) < r["t"] < end]
             if rows and rows[0]["t"] <= start + timedelta(minutes=59):
-                return "NWS hourly forecast", d["issued"], rows
+                return "NWS hourly forecast" + _retrieval_label(d), d["issued"], rows
             errors.append("NWS: window not covered")
         except Exception as e:  # noqa: BLE001 - fall back to Open-Meteo
             errors.append(f"NWS: {e}")
@@ -345,12 +356,12 @@ def hours(lat: float, lon: float, start: datetime, end: datetime,
     if start.date() > (now + timedelta(days=OM_FORECAST_DAYS - 1)).date():
         raise LookupError(f"beyond the {OM_FORECAST_DAYS}-day forecast horizon")
     d = open_meteo_hours(lat, lon, start.astimezone(UTC).date(),
-                         end.astimezone(UTC).date())
+                         end.astimezone(UTC).date(), refresh=refresh)
     rows = [r for r in d["rows"] if start - timedelta(hours=1) < r["t"] < end]
     label = f"Open-Meteo {d['kind']}"
     if errors and source == "auto" and nws_ok:
         label += f" (fell back: {errors[-1]})"
-    return label, d["issued"], rows
+    return label + _retrieval_label(d), d["issued"], rows
 
 
 # ------------------------------------------------------------------ summary

@@ -68,8 +68,9 @@ class ToolIntegration(unittest.TestCase):
     def test_stdio_discovery_and_read_tools(self):
         async def run():
             code = (
-                "import sys; from pathlib import Path; import mcp_server as s; "
+                "import sys; from pathlib import Path; import mcp_server as s; import evidence; "
                 "s.DATA=Path(sys.argv[1]); s._state=lambda:(2026,2); "
+                "evidence.CACHE=Path(sys.argv[1]); "
                 "s.load_env=lambda:{}; s.mcp.run()")
             params = StdioServerParameters(
                 command=sys.executable, args=["-c", code, str(self.root)],
@@ -79,12 +80,16 @@ class ToolIntegration(unittest.TestCase):
                     async with ClientSession(read, write) as client:
                         await client.initialize()
                         names = {t.name for t in (await client.list_tools()).tools}
-                        self.assertTrue({"team_context", "fantasypros_rankings", "player_lookup"} <= names)
+                        self.assertTrue({"team_context", "fantasypros_rankings", "player_lookup",
+                                         "practice_report", "player_news", "research_sources", "team_roster"} <= names)
                         for name, args, expected in [
                             ("team_context", {}, "week 1 offences"),
                             ("team_context", {"team": "DET", "week": 2, "last": 2}, "weeks 1-2 pooled"),
                             ("fantasypros_rankings", {"position": "RB", "week": 2}, "tier 1"),
                             ("week_status", {}, "expert consensus: 1 ranked"),
+                            ("research_sources", {}, "Where to look for team questions"),
+                            ("practice_report", {"team": "BAL", "week": 2, "cache_only": True}, '"missing"'),
+                            ("player_news", {"names": "Test Player", "week": 2, "cache_only": True}, '"posts": []'),
                         ]:
                             result = await client.call_tool(name, args)
                             self.assertFalse(result.is_error, result)

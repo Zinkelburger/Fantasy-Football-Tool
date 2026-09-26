@@ -124,6 +124,7 @@ class League:
                 "league": s.get("name"), "season": self.season,
                 "current_week": d.get("scoringPeriodId"),
                 "matchup_period": d.get("status", {}).get("currentMatchupPeriod"),
+                "matchup_periods": s.get("scheduleSettings", {}).get("matchupPeriods", {}),
                 "slots": slots, "scoring_format": fmt,
                 "scoring_items": items, "teams": teams, "members": members,
                 "my_team_id": my,
@@ -186,17 +187,26 @@ class League:
     def matchup(self, week: int) -> dict | None:
         """My matchup this week: opponent team id/name and both scores."""
         s = self.settings()
+        periods = [int(period) for period, weeks in s.get("matchup_periods", {}).items()
+                   if week in weeks]
+        if len(periods) == 1:
+            period = periods[0]
+        elif not periods and week == s.get("current_week") and s.get("matchup_period"):
+            period = s["matchup_period"]
+        else:
+            raise EspnError(f"Cannot map scoring week {week} to a league matchup period; "
+                            "refusing to substitute the current opponent")
         d = self.get(["mMatchupScore", "mTeam"], f"&scoringPeriodId={week}")
         names = {t["id"]: t["name"] for t in s["teams"]}
         for m in d.get("schedule", []):
-            if m.get("matchupPeriodId") != (s.get("matchup_period") or week):
+            if m.get("matchupPeriodId") != period:
                 continue
             sides = {k: m[k] for k in ("home", "away") if k in m}
             ids = {k: v["teamId"] for k, v in sides.items()}
             if s["my_team_id"] in ids.values():
                 me = "home" if ids.get("home") == s["my_team_id"] else "away"
                 opp = "away" if me == "home" else "home"
-                return {"week": week, "opponent_id": ids.get(opp),
+                return {"week": week, "matchup_period": period, "opponent_id": ids.get(opp),
                         "opponent": names.get(ids.get(opp)),
                         "my_points": sides[me].get("totalPoints"),
                         "opp_points": sides.get(opp, {}).get("totalPoints"),
