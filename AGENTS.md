@@ -12,6 +12,7 @@
 - Recommendations do not authorize ESPN writes. Use the existing exact
   proposal/token and confirmation workflow when the user requests a move.
 - Current injury status comes from official club reports, not old ESPN tags.
+  Start injury questions with `ff-weekly.injury_check(names)` and quote its summary.
   `docs/NEWS-SOURCES.md` covers practice days, source timing, Bluesky and rankings.
   There is no usable chance-to-play model; `research/injury_predictor/` is abandoned.
 - Keep numerical projections separate from narrative judgment. Do not turn a

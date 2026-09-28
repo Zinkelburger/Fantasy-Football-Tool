@@ -1704,6 +1704,11 @@ def research_brief(players: list[str], focus: Literal["weekly", "injury", "usage
     primary reports first; read_research_thread(id) only if comments can resolve
     a specific uncertainty. At most one targeted follow-up search per pass.
     Empty/blocked results mean incomplete evidence, not that nothing happened.
+
+    When the brief has nothing on a player: the one follow-up is
+    search_reddit(query="Full Name", days=7..14) for a longer window or a
+    different subreddit; player_dossier(name) reads what the local corpus
+    already holds with no Reddit call. Do not rerun the brief with new wording.
     """
     NEWS.bounded(days, 1, 31, "days")
     NEWS.bounded(limit, 1, 12, "limit")

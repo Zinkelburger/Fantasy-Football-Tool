@@ -128,14 +128,42 @@ class EvidenceTools(unittest.TestCase):
         self.assertEqual(result['retrieval']['reporter']['status'], 'stale')
         self.assertEqual(result['posts'][0]['created_at'], old.isoformat())
 
-    def test_wrong_week_practice_never_fetches_live(self):
-        with patch.object(S, '_state', return_value=(2026, 3)), patch.object(evidence, 'practice') as get:
-            for season, week in [(2026, 2), (2026, 4), (2025, 3)]:
-                with self.assertRaises(ValueError):
-                    S.practice_report('BAL', week=week, season=season)
-            get.assert_not_called()
+    def test_past_week_practice_reads_the_cache_only(self):
+        with patch.object(S, '_state', return_value=(2026, 3)), \
+                patch.object(evidence, 'practice', return_value={}) as get:
+            for season, week in [(2026, 2), (2025, 3)]:
+                result = S.practice_report('BAL', week=week, season=season)
+                self.assertIn('saved cache only', result['mode'])
+            self.assertTrue(all(call.args[5] is True for call in get.call_args_list))
             S.practice_report('BAL', week=2, season=2026, cache_only=True)
-            get.assert_called_once()
+            self.assertEqual(get.call_count, 3)
+
+    def test_next_week_practice_waits_for_the_first_report_day(self):
+        def lines(days_to_kickoff):
+            ko = (datetime.now(timezone.utc) + timedelta(days=days_to_kickoff)).strftime('%Y-%m-%dT%H:%M')
+            return [{'week': '4', 'team': 'BAL', 'kickoff': ko}]
+        with patch.object(S, '_state', return_value=(2026, 3)), \
+                patch.object(evidence, 'practice', return_value={}) as get:
+            with patch.object(S, '_read_csv', return_value=lines(8)):
+                early = S.practice_report('BAL', week=4, season=2026)
+            self.assertEqual(early['state'], 'not published yet')
+            get.assert_not_called()
+            with patch.object(S, '_read_csv', return_value=lines(2)):
+                live = S.practice_report('BAL', week=4, season=2026)
+            self.assertIn('first report day reached', live['mode'])
+            self.assertIs(get.call_args.args[5], False)
+            with patch.object(S, '_read_csv', return_value=[]):
+                self.assertEqual(S.practice_report('BAL', week=4, season=2026)['state'], 'no game on file')
+
+    def test_news_caps_long_windows_and_reads_past_weeks_offline(self):
+        with patch.object(S, '_state', return_value=(2026, 3)), \
+                patch.object(evidence, 'news', return_value={}) as get:
+            result = S.player_news('Player One', week=3, season=2026, hours=240)
+            self.assertEqual(get.call_args.args[3], 168)
+            self.assertIn('capped at 168', result['mode'])
+            result = S.player_news('Player One', week=2, season=2026)
+            self.assertIs(get.call_args.args[5], True)
+            self.assertIn('past week', result['mode'])
 
     def test_explicit_week_cache_only_needs_no_state_network(self):
         with patch.object(S, '_state', side_effect=AssertionError('offline')):

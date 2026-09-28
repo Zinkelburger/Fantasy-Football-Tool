@@ -145,7 +145,9 @@ Underdog mostly relays insiders who are already covered here.
     BSKY_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
 
 Following accounts is enough for beat and wire news; search is only for
-catching a name on an account we do not follow.
+catching a name on an account we do not follow. The `ff-weekly.player_news`
+tool reads the followed feeds only (newest 100 posts per account, window up
+to 168 hours); it never searches, with or without an app password.
 
 `feed` examines at most `--limit` items per account (default 30, maximum
 100), then applies the time and name filters. It does not promise full
@@ -169,11 +171,18 @@ ESPN's `QUESTIONABLE` tag in `my_roster`.
 
 ## 6. Already in the toolchain
 
-- **`ff-weekly` MCP** — `injury_report`, `player_lookup`, `my_roster`,
-  `vegas_lines`, `opportunity_scores`, built from the weekly bundle.
+- **`ff-weekly` MCP** — `injury_check`, `practice_report`, `player_news`,
+  `player_lookup` (with game logs and past seasons), `schedule`,
+  `depth_chart`, `target_share`, `league_points`, `standings`, plus
+  `query_data` for read-only SQL over the saved weekly files. See
+  [TEAM-QUESTIONS.md](TEAM-QUESTIONS.md) for which tool answers what.
 - **`ff-reddit` MCP** — `research_brief`, `player_news`, game threads.
   Good for *why* (beat-writer context, practice-field reports), not for
   status of record; start with `research_brief` and respect the budgets.
+  A thread's linked article can be paywalled or refuse automated reads
+  (USA Today did). Then find the same report on the club site or the
+  Bluesky wire (`player_news`), or label the claim unverified; do not try
+  mirrors or other workarounds.
 - **ESPN league API** — `engine/weekly/espn_league.py`, cookies in `.env`.
   Roster availability and league scoring, not medical news.
 - **FantasyPros** — `fantasypros_rankings` reads the saved consensus.

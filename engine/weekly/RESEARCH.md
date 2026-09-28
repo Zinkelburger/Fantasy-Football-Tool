@@ -15,12 +15,22 @@ Honor explicitly retrospective questions rather than silently changing the week.
 
 | Question | Start here | Extend only as needed |
 |---|---|---|
-| Will a player play / when will we know? | `practice_report(team, week=N, season=YEAR)` | `player_news(names, week=N, season=YEAR)`; kickoff, final report and inactive deadline |
+| Will a player play / when is he back? | `injury_check(names)`: next game, official reports, absences, ESPN tag, 72h news, report/inactive timing | `practice_report(team, week=N, season=YEAR, refresh=True)` for a fresher grid; `player_news(...)` for up to 168h |
+| Status of a whole fantasy roster / both sides of a matchup | `injury_check(roster="mine")`, `injury_check(roster="opponent")` | `injury_check(names=...)` for one player's full detail |
+| Who takes an injured player's targets? | `target_share(flagged_only=True)` league-wide, then `target_share(team=...)` | `player_lookup(name, weekly=True)` for the candidate's own usage |
+| How did he do last week / in earlier weeks / last year? | `player_lookup(names, weekly=True, seasons="2023-2025")` (kickers too) | `league_points(names=...)` for this league's exact scoring |
+| Who else is on that team / who backs him up? | `depth_chart(team, position)`: depth, usage, league owner | `target_share(team=...)` for who actually gets the ball |
+| Is X available in my league? | `free_agents(names="A,B")` | `propose_transaction(add_name=..., drop_name=...)` when the user wants the move |
 | Who should I start? | `league_settings()`, `my_roster(week=N)`, `lineup_recommendation(week=N)` | Usage, injuries and relevant rankings for close calls |
 | Who should I add/drop? | Settings, roster, `waiver_recommendations(week=N)`, `free_agents(week=N)` | Current role, actual availability, drop cost, immediate need versus stash |
 | Is my team good / can I beat this opponent? | Settings, roster/matchup, `power_rankings(week=N)` | `team_roster(team_id, week=N)` for the opponent, scored by the same recipe |
-| Why did a player score well/badly? | `player_lookup(name)` and dated weekly usage | News, team context or requested Reddit discussion |
-| Weather / defense | `ff-weather.game_weather(week=N, season=YEAR)` / `dst_rankings(week=N, season=YEAR)` | Weather is context only; D/ST uses finding 27 and `docs/DEFENSE-PUBLISHING.md` |
+| Can I make the playoffs? | `standings()`: records, points for, playoff line, remaining schedule | `power_rankings` for roster strength; no playoff probability exists |
+| Why did a player score well/badly? | `player_lookup(name, weekly=True)` and `team_context(team)` | News, `schedule(team)` for the game, requested Reddit discussion |
+| Schedule, scores, byes, upcoming matchups | `schedule(team, weeks="4-9")` or `schedule(week=N)` | Far weeks show a labelled preseason prior, not a line |
+| Top-scoring kickers/defences, points in league scoring | `league_points(position="K", available_only=True)` | Finding 04/28: past kicker points do not predict |
+| Weather / defense | `ff-weather.game_weather(week=N, season=YEAR)` / `dst_rankings(week=N, season=YEAR)`; `dst_rankings(week=N, horizon=3)` to plan several weeks | Weather is context only; D/ST uses finding 27 and `docs/DEFENSE-PUBLISHING.md` |
+| Have we studied X? | `findings(topic)` | Read the file's latest correction before quoting |
+| Anything else in the saved data (splits by QB, custom cuts) | `data_tables()`, then `query_data(sql)` | Aggregate in SQL; do not write scratch scripts or dump whole files |
 
 Reuse settings/roster already verified in this exchange unless a move or elapsed
 time makes them stale. Verify league scoring, current team assignments, slots,
@@ -38,7 +48,7 @@ The final practice report carries the designation; unresolved cases need the
 inactive list about 90 minutes before kickoff. Use actual kickoff/venue/time zone,
 including international games. There is no usable chance-to-play model.
 
-Use `practice_report` and `player_news` first; their local caches show retrieval
+Use `injury_check` (which wraps both) or `practice_report` and `player_news` first; their local caches show retrieval
 times and source coverage. `refresh=True` rechecks early when needed;
 `cache_only=True` reads retained evidence without fetching it and marks stale
 results. For CLI fallback, substitute the established season/week/team/names:

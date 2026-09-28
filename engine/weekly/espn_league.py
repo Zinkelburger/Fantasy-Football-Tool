@@ -131,6 +131,11 @@ class League:
                 "waiver_type": s.get("acquisitionSettings", {}).get("acquisitionType"),
                 "waiver_order_reset": s.get("acquisitionSettings", {}).get("waiverOrderReset"),
                 "trade_deadline": s.get("tradeSettings", {}).get("deadlineDate"),
+                "ir_slots": int(s["rosterSettings"]["lineupSlotCounts"].get("21", 0) or 0),
+                "keeper_count": s.get("draftSettings", {}).get("keeperCount"),
+                "regular_season_weeks": s.get("scheduleSettings", {}).get("matchupPeriodCount"),
+                "playoff_teams": s.get("scheduleSettings", {}).get("playoffTeamCount"),
+                "playoff_seeding": s.get("scheduleSettings", {}).get("playoffSeedingRule"),
                 "fetched": now_iso(),
             }
         return self._settings
@@ -208,8 +213,9 @@ class League:
                 opp = "away" if me == "home" else "home"
                 return {"week": week, "matchup_period": period, "opponent_id": ids.get(opp),
                         "opponent": names.get(ids.get(opp)),
-                        "my_points": sides[me].get("totalPoints"),
-                        "opp_points": sides.get(opp, {}).get("totalPoints"),
+                        "my_points": sides[me].get("totalPointsLive", sides[me].get("totalPoints")),
+                        "opp_points": sides.get(opp, {}).get("totalPointsLive",
+                                                             sides.get(opp, {}).get("totalPoints")),
                         "my_projected": sides[me].get("totalProjectedPointsLive"),
                         "opp_projected": sides.get(opp, {}).get("totalProjectedPointsLive")}
         return None
@@ -225,6 +231,44 @@ class League:
             out.append({"home_id": home["teamId"], "home_pts": home.get("totalPoints", 0.0),
                         "away_id": away.get("teamId"), "away_pts": away.get("totalPoints", 0.0),
                         "winner": m.get("winner")})
+        return out
+
+    def schedule(self) -> list[dict]:
+        """Every matchup of the season: period, both team ids, points, winner
+        (UNDECIDED until the period is final), playoff tier."""
+        d = self.get(["mMatchupScore"])
+        out = []
+        for m in d.get("schedule", []):
+            home, away = m.get("home") or {}, m.get("away") or {}
+            # totalPoints stays 0 until a period is final; totalPointsLive is the running score.
+            live = m.get("winner") == "UNDECIDED"
+            key = "totalPointsLive" if live else "totalPoints"
+            out.append({"period": m.get("matchupPeriodId"), "home_id": home.get("teamId"),
+                        "home_pts": home.get(key), "away_id": away.get("teamId"),
+                        "away_pts": away.get(key), "winner": m.get("winner"),
+                        "tier": m.get("playoffTierType")})
+        return out
+
+    def player_points(self, week: int, slot_ids: list[int] | None = None,
+                      limit: int = 400) -> list[dict]:
+        """League-scored actual points for one week, for rostered and
+        available players alike, with owner and ownership."""
+        filt = {"players": {
+            "filterStatus": {"value": ["FREEAGENT", "WAIVERS", "ONTEAM"]},
+            "limit": limit, "offset": 0,
+            "sortPercOwned": {"sortAsc": False, "sortPriority": 1},
+            "filterRanksForScoringPeriodIds": {"value": [week]},
+            "filterStatsForCurrentSeasonScoringPeriodId": {"value": [week]},
+        }}
+        if slot_ids:
+            filt["players"]["filterSlotIds"] = {"value": slot_ids}
+        d = self.get(["kona_player_info"], f"&scoringPeriodId={week}",
+                     headers={"X-Fantasy-Filter": json.dumps(filt)})
+        out = []
+        for pp in d.get("players", []):
+            row = self._player({"playerPoolEntry": pp, "lineupSlotId": None}, week)
+            row["waiver"] = pp.get("status") == "WAIVERS"
+            out.append(row)
         return out
 
     def free_agents(self, week: int, positions: list[str] | None = None,

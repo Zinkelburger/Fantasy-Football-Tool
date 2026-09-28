@@ -40,6 +40,9 @@ class ToolIntegration(unittest.TestCase):
             "pos": "RB", "rank_ecr": 1, "name": "Jahmyr Gibbs", "team": "DET",
             "opp": "BUF", "tier": 1, "rank_min": 1, "rank_max": 6,
             "rank_std": 0.89, "source": "fftiers"}])
+        csv_file(self.root, "advanced_usage_2026_weekly.csv", [
+            {"week": 1, "team": "DET", "player_id": "p", "name": "Test Player",
+             "position": "WR", "tgt": 6, "team_targets": 30, "snap_share": 0.8}])
 
     def test_pooling_uses_production_denominators_and_handles_empty_range(self):
         with patch.object(server, "DATA", self.root):
@@ -47,8 +50,21 @@ class ToolIntegration(unittest.TestCase):
             self.assertEqual(weeks, [1, 2])
             self.assertAlmostEqual(rows["DET"]["epa_pass"], -1 / 3)
             self.assertEqual(server._team_context(2026, -1), ({}, []))
+            # Explicit week: the same calendar week for everyone.
+            rows, weeks = server._team_context(2026, 1)
+            self.assertEqual({t: r["_weeks"] for t, r in rows.items()}, {"DET": [1], "BUF": [1]})
+
+    def test_default_week_is_each_teams_own_latest_game(self):
+        # DET has played week 2 while BUF's week-2 game is still to come
+        # (a Monday night game): DET's finished game counts already.
+        with patch.object(server, "DATA", self.root):
             rows, weeks = server._team_context(2026, 0)
-            self.assertEqual(weeks, [1])
+            self.assertEqual(weeks, [1, 2])
+            self.assertEqual(rows["DET"]["_weeks"], [2])
+            self.assertEqual(rows["BUF"]["_weeks"], [1])
+            rows, _ = server._team_context(2026, 0, last=2)
+            self.assertEqual(rows["DET"]["_weeks"], [1, 2])
+            self.assertAlmostEqual(rows["DET"]["epa_pass"], -1 / 3)
 
     def test_player_lookup_accepts_legacy_and_partial_snap_exports(self):
         player = {"player_id": "p", "name": "Test Player", "pos": "WR", "team": "DET",
@@ -70,6 +86,7 @@ class ToolIntegration(unittest.TestCase):
             code = (
                 "import sys; from pathlib import Path; import mcp_server as s; import evidence; "
                 "s.DATA=Path(sys.argv[1]); s._state=lambda:(2026,2); "
+                "import datastore; datastore.DATA=Path(sys.argv[1]); "
                 "evidence.CACHE=Path(sys.argv[1]); "
                 "s.load_env=lambda:{}; s.mcp.run()")
             params = StdioServerParameters(
@@ -81,9 +98,18 @@ class ToolIntegration(unittest.TestCase):
                         await client.initialize()
                         names = {t.name for t in (await client.list_tools()).tools}
                         self.assertTrue({"team_context", "fantasypros_rankings", "player_lookup",
-                                         "practice_report", "player_news", "research_sources", "team_roster"} <= names)
+                                         "practice_report", "player_news", "research_sources", "team_roster",
+                                         "target_share", "injury_check", "schedule", "depth_chart",
+                                         "data_tables", "query_data", "standings", "league_points",
+                                         "findings"} <= names)
                         for name, args, expected in [
-                            ("team_context", {}, "week 1 offences"),
+                            ("team_context", {}, "each team's latest game"),
+                            ("team_context", {"team": "BUF"}, "BUF offence, 2026 week 1"),
+                            ("target_share", {"team": "DET"}, "active .20"),
+                            ("target_share", {}, "DET Test Player WR .20"),
+                            ("target_share", {"team": "DET", "format": "json"}, '"share_when_active": 0.2'),
+                            ("query_data", {"sql": "SELECT name, tgt FROM usage"}, "Test Player,6"),
+                            ("data_tables", {}, "Tables for season 2026"),
                             ("team_context", {"team": "DET", "week": 2, "last": 2}, "weeks 1-2 pooled"),
                             ("fantasypros_rankings", {"position": "RB", "week": 2}, "tier 1"),
                             ("week_status", {}, "expert consensus: 1 ranked"),
