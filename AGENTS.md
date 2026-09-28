@@ -2,6 +2,9 @@
 
 - Preserve unrelated working-tree changes. Never print or publish ESPN cookies
   or API keys. Use `.venv-league-sim/bin/python` for weekly Python commands.
+- If an `ff-*` MCP server fails to connect, run `engine/mcp_launch.sh setup
+  <name>` (builds or resumes its venv from requirements.txt, errors on stderr),
+  then have the user reconnect it with `/mcp`. Don't work around it by hand.
 - For questions about the team, injuries, matchups, waivers or lineups, read
   `engine/weekly/RESEARCH.md` (also `ff-weekly.weekly_checklist()`). Follow only
   the relevant task path. `docs/TEAM-QUESTIONS.md` (`research_sources()`) maps

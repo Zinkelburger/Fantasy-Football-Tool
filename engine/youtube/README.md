@@ -6,12 +6,11 @@ channels. A sports-medicine doctor going through the replay usually says
 more about how long a player will be out than the team's first injury
 report does.
 
-```
-python -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python mcp_server.py   # Claude Code starts it from .mcp.json
-```
-`engine/mcp_launch.sh youtube` uses `engine/youtube/.venv` or
-`.venv-youtube` at the repo root. Create one of these on each machine.
+Claude Code starts it from `.mcp.json` via `engine/mcp_launch.sh youtube`,
+which uses `.venv-youtube` at the repo root (or `engine/youtube/.venv`) and
+builds it from `requirements.txt` if neither exists. A cold build can outlast
+Claude Code's ~30s startup wait, so on a new machine run
+`engine/mcp_launch.sh setup youtube` once, or reconnect with `/mcp`.
 
 | tool | what |
 |---|---|
