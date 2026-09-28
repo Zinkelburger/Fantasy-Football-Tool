@@ -480,15 +480,15 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 3,CAR,00-0038493,Claudin Cherelus,LB,Out,Shoulder,Did Not Participate In Practice,Shoulder
 3,CAR,00-0039342,Xavier Legette,WR,Questionable,Knee,Limited Participation in Practice,Knee
 3,CAR,00-0039491,Jalen Coker,WR,Questionable,Ankle,Limited Participation in Practice,Ankle
-3,CHI,00-0031203,Cairo Santos,K,,,Did Not Participate In Practice,Hip
+3,CHI,00-0031203,Cairo Santos,K,,,Full Participation in Practice,Hip
 3,CHI,00-0031583,Grady Jarrett,DT,,,Full Participation in Practice,Not injury related - resting player
-3,CHI,00-0032391,Joe Thuney,G,,,Did Not Participate In Practice,Not injury related - resting player
-3,CHI,00-0038390,Noah Sewell,LB,,,Limited Participation in Practice,Achilles
-3,CHI,00-0038416,Tyson Bagent,QB,,,Did Not Participate In Practice,Concussion
-3,CHI,00-0039071,Tyrique Stevenson,CB,,,Limited Participation in Practice,Hamstring
-3,CHI,00-0039918,Caleb Williams,QB,,,Did Not Participate In Practice,Hamstring
+3,CHI,00-0032391,Joe Thuney,G,,,Full Participation in Practice,Not injury related - resting player
+3,CHI,00-0038390,Noah Sewell,LB,Out,Achilles,Limited Participation in Practice,Achilles
+3,CHI,00-0038416,Tyson Bagent,QB,Questionable,Concussion,Full Participation in Practice,Concussion
+3,CHI,00-0039071,Tyrique Stevenson,CB,,,Full Participation in Practice,Hamstring
+3,CHI,00-0039918,Caleb Williams,QB,Out,Hamstring,Did Not Participate In Practice,Hamstring
 3,CHI,00-0040236,Kyle Monangai,RB,,,Full Participation in Practice,Knee
-3,CHI,00-0040741,Shemar Turner,DE,,,Limited Participation in Practice,Knee
+3,CHI,00-0040741,Shemar Turner,DE,Out,Knee,Limited Participation in Practice,Knee
 3,CIN,00-0033523,Jonathan Allen,DT,,,Full Participation in Practice,Not injury related - resting player
 3,CIN,00-0034800,B.J. Hill,DT,Doubtful,Achilles,Did Not Participate In Practice,Achilles
 3,CIN,00-0035683,Dexter Lawrence,DT,,,Did Not Participate In Practice,Not injury related - resting player
@@ -664,13 +664,14 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 3,NYJ,00-0040186,Francisco Mauigoa,LB,Out,Quadricep,Did Not Participate In Practice,Quadricep
 3,NYJ,00-0040736,Mason Taylor,TE,Out,Thumb,Did Not Participate In Practice,Thumb
 3,NYJ,00-0041026,David Bailey,DE,,,Full Participation in Practice,Elbow
-3,PHI,00-0034351,Dallas Goedert,TE,,,Did Not Participate In Practice,Knee
+3,PHI,00-0034351,Dallas Goedert,TE,Out,Knee,Did Not Participate In Practice,Knee
 3,PHI,00-0034844,Saquon Barkley,RB,,,Full Participation in Practice,Neck
-3,PHI,00-0035662,Marquise Brown,WR,,,Did Not Participate In Practice,Ankle
-3,PHI,00-0036224,Jonathan Greenard,LB,,,Limited Participation in Practice,Pectoral
-3,PHI,00-0036912,DeVonta Smith,WR,,,Limited Participation in Practice,Hamstring
+3,PHI,00-0034951,Fred Johnson,T,Out,Knee,Did Not Participate In Practice,Knee
+3,PHI,00-0035662,Marquise Brown,WR,Out,Ankle,Did Not Participate In Practice,Ankle
+3,PHI,00-0036224,Jonathan Greenard,LB,Questionable,Pectoral,Full Participation in Practice,Pectoral
+3,PHI,00-0036912,DeVonta Smith,WR,,,Full Participation in Practice,Hamstring
 3,PHI,00-0038386,Jalen Carter,DT,,,Full Participation in Practice,Wrist
-3,PHI,00-0038555,Tank Bigsby,RB,,,Limited Participation in Practice,Abdomen
+3,PHI,00-0038555,Tank Bigsby,RB,,,Full Participation in Practice,Abdomen
 3,PHI,00-0039001,Tyler Steen,G,,,Full Participation in Practice,Shoulder
 3,PHI,00-0039746,Will Shipley,RB,,,Limited Participation in Practice,Foot
 3,PHI,00-0040749,Andrew Mukuba,S,,,Full Participation in Practice,Knee
