@@ -30,9 +30,12 @@ import re
 import time
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
+from mcp.types import ToolAnnotations
+from pydantic import Field
 
 import adjudicate as A
 import claims as C
@@ -52,6 +55,11 @@ INDEX_CACHE = CORPUS / "index_cache.json"
 SKIPPED = CORPUS / "skipped.json"
 NOTE_LOG = CORPUS / "notes_written.json"
 LEASE_MINUTES = 45
+
+
+class InputError(ToolError, ValueError):
+    """Expected, safe-to-display argument failure; never wrap provider secrets."""
+
 
 mcp = MCPServer("ff-reddit-scraper", version="1.0.0", instructions=(
     "For weekly decisions, read ff-weekly.weekly_checklist first. Start Reddit "
@@ -1692,9 +1700,11 @@ def _research_text(result, limit, comments_per_thread):
     return "\n".join(out)
 
 
-@mcp.tool()
-def research_brief(players: list[str], focus: Literal["weekly", "injury", "usage", "waivers"] = "weekly",
-                   days: int = 3, limit: int = 6) -> dict[str, Any]:
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+def research_brief(players: Annotated[list[str], Field(min_length=1, max_length=6, description="Full names tied to unresolved questions; not search syntax.")],
+                   focus: Literal["weekly", "injury", "usage", "waivers"] = "weekly",
+                   days: Annotated[int, Field(ge=1, le=31)] = 3,
+                   limit: Annotated[int, Field(ge=1, le=12)] = 6) -> dict[str, Any]:
     """START HERE for weekly Reddit research after the roster/waiver/lineup tools.
 
     Supply 1–6 full player names tied to unresolved roster decisions. One cached
@@ -1713,16 +1723,16 @@ def research_brief(players: list[str], focus: Literal["weekly", "injury", "usage
     NEWS.bounded(days, 1, 31, "days")
     NEWS.bounded(limit, 1, 12, "limit")
     if focus not in {"weekly", "injury", "usage", "waivers"}:
-        raise ValueError("Invalid research focus")
+        raise InputError("Invalid research focus")
     if not 1 <= len(players) <= 6:
-        raise ValueError("Choose 1–6 full player names from the roster decisions")
+        raise InputError("Choose 1–6 full player names from the roster decisions")
     names = []
     terms = set()
     _, aliases, _, cap, _, _ = pool()
     for raw in players:
         raw = " ".join(raw.split())
         if not 3 <= len(raw) <= 80 or not re.fullmatch(r"[\w .’'()-]+", raw) or len(raw.split()) < 2:
-            raise ValueError("Use full player names, not surnames or search syntax")
+            raise InputError("Use full player names, not surnames or search syntax")
         name = _canon_name(raw) or raw
         if name not in names:
             names.append(name)
@@ -1773,12 +1783,13 @@ def cached_research_threads(query: str = "", limit: int = 10) -> dict[str, Any]:
     return _research_cache().saved_threads(query, limit)
 
 
-@mcp.tool()
-def read_research_thread(thread_id: str, max_comments: int = 5,
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+def read_research_thread(thread_id: Annotated[str, Field(description="Submission ID or pasted Reddit /comments/ permalink or redd.it link.")],
+                         max_comments: Annotated[int, Field(ge=0, le=10)] = 5,
                          refresh: bool = False, cache_only: bool = False) -> dict[str, Any]:
     """Read a selected research_brief/search_reddit thread; do not loop over all hits.
 
-    Bare submission id. Cached 5 minutes, at most 25 initial comments requested,
+    Submission id or pasted permalink. Cached 5 minutes, at most 25 initial comments requested,
     0–10 top-level comments returned, no expansion. max_comments=0 reads just the
     post. Use for at most two threads per weekly pass with an explicit unresolved
     question. Comment sample and votes are not a representative consensus.
@@ -1787,6 +1798,12 @@ def read_research_thread(thread_id: str, max_comments: int = 5,
     treat an old injury thread as current. refresh=True rechecks on demand
     within the same retrieval budgets and error cooldown, not a bypass.
     """
+    try:
+        thread_id = NEWS.submission_id(thread_id)
+    except ValueError as exc:
+        raise InputError(str(exc)) from None
+    if refresh and cache_only:
+        raise InputError("Choose refresh=True or cache_only=True, not both.")
     try:
         result = NEWS.read_thread(_research_cache(), _research_reddit, thread_id, max_comments,
                                   refresh=refresh, cache_only=cache_only)

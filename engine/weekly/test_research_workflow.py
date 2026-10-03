@@ -26,7 +26,7 @@ class ResearchWorkflow(unittest.TestCase):
         self.assertIn('team=unknown opp=unknown', report)
 
     def test_checklist_uses_canonical_runbook(self):
-        self.assertEqual(S.weekly_checklist(), Path(S.__file__).with_name('RESEARCH.md').read_text())
+        self.assertEqual(S.weekly_checklist(task='full'), Path(S.__file__).with_name('RESEARCH.md').read_text())
         self.assertIn('research_brief', S.weekly_checklist())
 
     def test_same_week_from_old_season_is_stale(self):

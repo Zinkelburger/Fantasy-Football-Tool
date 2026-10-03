@@ -209,9 +209,26 @@ def discover(cache, reddit_factory, names, query="", days=3, sort="new", mode="s
             "coverage_note": "Bounded title/body discovery, not exhaustive; comments are not searched. Empty results do not establish no news."}
 
 
+def submission_id(value):
+    """Accept a discovery ID or pasted permalink without fetching arbitrary URLs."""
+    value = value.strip()
+    if re.fullmatch(r"[a-z0-9]{3,12}", value):
+        return value
+    url = urlsplit(value)
+    if url.scheme in {"http", "https"} and not url.username and not url.password:
+        if url.hostname == "redd.it":
+            match = re.fullmatch(r"/([a-z0-9]{3,12})/?", url.path)
+        elif url.hostname in {"reddit.com", "www.reddit.com", "old.reddit.com", "new.reddit.com", "np.reddit.com"}:
+            match = re.match(r"/(?:r/[\w]+/)?comments/([a-z0-9]{3,12})(?:/|$)", url.path)
+        else:
+            match = None
+        if match:
+            return match.group(1)
+    raise ValueError("Use a Reddit submission ID or full /comments/ permalink (opaque /s/ share links are unsupported).")
+
+
 def read_thread(cache, reddit_factory, thread_id, max_comments=5, *, refresh=False, cache_only=False):
-    if not re.fullmatch(r"[a-z0-9]{3,12}", thread_id):
-        raise ValueError("thread_id must be a bare Reddit submission id from discovery")
+    thread_id = submission_id(thread_id)
     bounded(max_comments, 0, 10, "max_comments")
 
     def fetch():

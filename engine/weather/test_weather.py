@@ -72,6 +72,16 @@ class Parsing(unittest.TestCase):
         p = W.resolve_place("44.5, -88.06")
         self.assertEqual((p["lat"], p["lon"]), (44.5, -88.06))
 
+    def test_coordinate_weather_without_timezone_returns_utc_instead_of_crashing(self):
+        with mock.patch.object(W, 'hours', return_value=('fixture', None, Summary().rows())):
+            self.assertIn('UTC)', S.weather('44.5, -88.06', hours=4))
+
+    def test_unknown_team_is_an_argument_error_not_a_bye(self):
+        with mock.patch.object(W, 'current_week', return_value=(2026, 4)), \
+                mock.patch.object(W, 'week_games', return_value=[]):
+            with self.assertRaisesRegex(ValueError, 'Unknown teams are not byes'):
+                S.game_weather(week=4, team='ZZ', season=2026)
+
     def test_geocode_state_qualifier(self):
         fake = {"results": [
             {"name": "Buffalo", "admin1": "Minnesota", "country_code": "US",

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import bluesky
 import club_reports
+from injury_check import norm as normalized_name
 from common import CACHE, norm_team
 from evidence_cache import EvidenceCache
 
@@ -61,7 +62,7 @@ def news(names, season, week, hours=24, refresh=False, cache_only=False):
                 in_window = end - timedelta(hours=hours) <= when <= end + timedelta(minutes=1)
             except (ValueError, TypeError):
                 continue
-            if in_window and any(n.casefold() in p["text"].casefold() for n in names):
+            if in_window and any(normalized_name(n) in normalized_name(p["text"]) for n in names):
                 posts.append(p)
     posts = sorted({p["url"]: p for p in posts}.values(), key=lambda p: p["created_at"], reverse=True)
     return {"decision_season": season, "decision_week": week, "names": names,

@@ -1,6 +1,10 @@
 # Weekly decision workflow
 
-Canonical runbook, also returned by `ff-weekly.weekly_checklist()`.
+Canonical runbook, returned by `ff-weekly.weekly_checklist(task="full")`.
+The default tool response is a short routing map; choose `task="injury"`,
+`"receiving"`, `"lineup"`, `"waivers"`, `"matchup"`, `"history"`, `"defense"`
+or `"reddit"` for a focused path with a stop rule. Do not load the full runbook
+for a narrow question unless the short guide leaves a relevant rule unresolved.
 Use the relevant path below; a narrow question does not require a full roster audit.
 
 ## 1. Establish scope and current facts
@@ -15,10 +19,10 @@ Honor explicitly retrospective questions rather than silently changing the week.
 
 | Question | Start here | Extend only as needed |
 |---|---|---|
-| Will a player play / when is he back? | `injury_check(names)`: next game, official reports, absences, ESPN tag, 72h news, report/inactive timing | `practice_report(team, week=N, season=YEAR, refresh=True)` for a fresher grid; `player_news(...)` for up to 168h |
-| Status of a whole fantasy roster / both sides of a matchup | `injury_check(roster="mine")`, `injury_check(roster="opponent")` | `injury_check(names=...)` for one player's full detail |
-| Who takes an injured player's targets? | `target_share(flagged_only=True)` league-wide, then `target_share(team=...)` | `player_lookup(name, weekly=True)` for the candidate's own usage |
-| How did he do last week / in earlier weeks / last year? | `player_lookup(names, weekly=True, seasons="2023-2025")` (kickers too) | `league_points(names=...)` for this league's exact scoring |
+| Will a player play / when is he back? | `injury_check(names, week=N, season=YEAR)`: compact status, summary and freshness; omit week to choose each player's next kickoff | `detail=True` for history/news; `team=` for unknown/ambiguous names; `practice_report(team, week=N, season=YEAR)` for a full official grid across all positions |
+| Status of a whole fantasy roster / both sides of a matchup | `injury_check(roster="mine")`, `injury_check(roster="opponent")` | `injury_check(names=..., detail=True)` for one player's full detail |
+| Who might benefit from an injured receiver / is he a pickup? | `injury_check(names)` first, then `receiving_opportunity(team, week=N, season=YEAR, concern="Full Name")` | Recent common-denominator shares, partial-game snap-drop signals, current official coverage, competing receivers and live availability; roster fit/drop cost separately |
+| How did he do last week / in earlier weeks / last year? | `player_lookup(name=..., weekly=True, seasons="2023-2025")` (kickers too) | `league_points(names=...)` for this league's exact scoring |
 | Who else is on that team / who backs him up? | `depth_chart(team, position)`: depth, usage, league owner | `target_share(team=...)` for who actually gets the ball |
 | Is X available in my league? | `free_agents(names="A,B")` | `propose_transaction(add_name=..., drop_name=...)` when the user wants the move |
 | Who should I start? | `league_settings()`, `my_roster(week=N)`, `lineup_recommendation(week=N)` | Usage, injuries and relevant rankings for close calls |
@@ -48,6 +52,25 @@ The final practice report carries the designation; unresolved cases need the
 inactive list about 90 minutes before kickoff. Use actual kickoff/venue/time zone,
 including international games. There is no usable chance-to-play model.
 
+`injury_check` resolves identities from live fantasy rosters/pool, saved depth
+charts, saved injury records and usage, so kickers and zero-usage players are not
+excluded. These sources are not a complete live NFL directory: for an unknown
+lineman/defender or new signing, pass the full name and `team=` to check the club
+report directly. The supplied identity stays unverified without an exact report
+match. Saved identity/team information can lag trades; check `identity_source`.
+Status distinguishes pending, unavailable, not listed and a listed player without
+a designation from Out/Doubtful/Questionable. Fetch failure does not mean a report
+is unpublished. Missing betting lines do not establish byes; the saved NFL
+schedule supplies games. Explicit week requests never silently roll forward.
+Compact output is the default; use `detail=True` only when the underlying report,
+absence history or dated news is needed. Report reads are reused per team/week.
+Each result's `next_step` states how to answer, recover or wait; do not turn a
+pending report into a loop through alternate tools. Expected invalid arguments
+produce actionable MCP errors. A source failure is a different condition.
+There is no automated official game-day inactive-list or IR-activation feed.
+Check the club's announcement/transactions before asserting final active status
+or eligibility; a blank report and ESPN ACTIVE tag are insufficient.
+
 Use `injury_check` (which wraps both) or `practice_report` and `player_news` first; their local caches show retrieval
 times and source coverage. `refresh=True` rechecks early when needed;
 `cache_only=True` reads retained evidence without fetching it and marks stale
@@ -73,6 +96,29 @@ recheck the disputed premise; change the recommendation for new evidence or an
 explicit user preference, explaining which. Do not invent a new numerical penalty
 or count an injury/matchup effect twice: the advisor already includes usage EWMA,
 a mild Vegas adjustment, QUESTIONABLE ×0.8 / DOUBTFUL ×0.15 / OUT ×0, and byes.
+
+**Receiving opportunity:** `receiving_opportunity` compares the latest observed
+game with the preceding team games (default three games total, maximum six).
+The baseline is not automatically a healthy sample. If a player left the latest
+game, his prior share is conditional opportunity at risk, not a confirmed vacancy.
+For example, an injured receiver's 27% prior share and a tight end's increase from
+8% to 19% do not prove that the tight end inherits the missing 27%. Check dated
+injury reporting, alternatives, routes and game timing. Whole-game changes cannot
+establish post-injury causation; no target share becomes projected points here.
+The shortlist includes at most eight other receivers and may omit smaller roles;
+all fields ending `_pct` use percentages (27.27 means 27.27%, not 0.2727).
+`decision_status` and `next_step` state the remaining evidence/roster check;
+candidate order is observed targets, not pickup value.
+use `target_share(team=..., last=3)` for the rest. Historical `target_share` flags
+can miss midgame injuries and are not confirmed decision-week absences.
+
+**Backups / handcuffs:** judge who inherits a starter's work from the games
+the starter missed or left: carries, inside-10 carries and targets per
+player, taken from `usage`/`pbp` via `query_data`. Snap share alone
+misleads, because a passing-down back can lead in snaps while another back
+gets the early-down and goal-line carries. Weight those by league scoring:
+in standard scoring, carries and goal-line work matter more than receptions.
+Report both backs' lines side by side before you call one of them droppable.
 
 **Research claims:** consult a finding's latest correction/audit before quoting
 historical results. Actual-minus-expected includes skill, noise and omissions;

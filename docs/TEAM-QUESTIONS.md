@@ -1,6 +1,7 @@
 # Where to look for team questions
 
-This is the source/tool map, also returned by `ff-weekly.research_sources()`.
+This is the full source/tool map, returned by `ff-weekly.research_sources(topic="full")`.
+The default is a short source map; `topic="cache"` gives just refresh rules.
 The decision workflow is `engine/weekly/RESEARCH.md` (`weekly_checklist()`).
 Use the existing ff-weekly, ff-reddit and ff-weather servers in `.mcp.json`;
 routine team questions need no new plugins, scrapers or scratch Python scripts.
@@ -37,15 +38,17 @@ The cached data and research are not a leak-free historical backtest.
 | Opponent / another manager's players | `ff-weekly.team_roster(team_id=ID, week=N)` | Same projection recipe, current and optimal lineups, locks and bench alternatives |
 | Lineup changes | `ff-weekly.lineup_recommendation(week=N)` | Preserve timing-only moves; recheck legal slots after manual changes |
 | Waivers | `ff-weekly.waiver_recommendations(week=N)`, `free_agents(position=..., week=N)` | Actual availability and drop cost; immediate need versus future stash |
-| Will a player play / when is he back? | `ff-weekly.injury_check(names="Full Name,Full Name")` | Picks the next unplayed game itself; quote `summary`; no odds; not listed is not clearance |
+| Will a player play / when is he back? | `ff-weekly.injury_check(names="Full Name,Full Name", week=N, season=YEAR)` | Compact status + summary + freshness by default; `detail=True` adds full evidence. Omit week to select each player's next kickoff. Includes rostered kickers and zero-usage players; unknown/ambiguous names can use `team="PHI"`. A team hint is unverified until an exact official report match. Not listed is not clearance |
 | Practice / will a player play? | `ff-weekly.practice_report(team="BAL", player="Zay Flowers", season=YEAR, week=N)` | Per-day columns, official designation, source URL, fetched time and coverage |
+| All injuries on one NFL team, including linemen and defenders | `ff-weekly.practice_report(team="PHI", season=YEAR, week=N)` | All positions in the official grid; omit player to read the full report. This is not a complete active/IR roster or game-day inactive list |
 | New reporting / role changes | `ff-weekly.player_news(names="Full Name,Full Name", season=YEAR, week=N, hours=24)` | Dated Bluesky posts and original links; mirrors aren't independent sources |
 | Weekly saved injury table | `ff-weekly.injury_report(team=..., season=YEAR, week=N)` | Explicit bundle date; use practice_report for live status |
 | Usage / why a box score differs | `ff-weekly.player_lookup(name="A,B", weekly=True)`, `opportunity_scores(...)` | Game log per week; completed-game usage, scoring format, snaps versus routes; no automatic rebound |
 | Past seasons / "has he been good before" | `ff-weekly.player_lookup(name=..., seasons="2023-2025")` | Box scores back to 2021 with position rank; nflverse points are standard rules, kickers approximate |
-| Target share / who absorbs an injured player's targets | `ff-weekly.target_share(flagged_only=True)`, then `target_share(team=...)` or `(player=...)` | One line per team league-wide; detail per team/player. Weeks on file, no-usage weeks versus report designations; vacated share is freed opportunity, not a forecast |
-| Depth chart / backups | `ff-weekly.depth_chart(team="MIA", position="RB")` | Latest ESPN snapshot with usage and league owner; depth charts lag real snaps |
-| Availability of named players | `ff-weekly.free_agents(names="A,B")` | Free agent, waivers or which fantasy team; ids for `propose_transaction` (which also takes `add_name`/`drop_name`) |
+| Who might benefit from an injured receiver / is he a pickup? | `ff-weekly.injury_check(names)` then `receiving_opportunity(team="CAR", week=N, season=YEAR, concern="Full Name")` | Required decision week/season; 3 recent games by default (max 6), latest versus prior common-denominator shares, current official coverage, live league status/scoring, up to 8 other receivers. Exact full concern name; missing availability stays unknown. Conditional opportunity is not projected targets/points |
+| Historical target share / broader team scan | `ff-weekly.target_share(flagged_only=True)`, then `target_share(team=..., last=3)` or `(player=...)` | Historical flags miss midgame injuries and do not establish current absence. Legacy JSON `vacated_share` sums different active-week samples and is not an additive team share. Use `receiving_opportunity` for a decision |
+| Depth chart / backups | `ff-weekly.depth_chart(team="MIA", position="RB")` | Latest ESPN snapshot with usage and league owner; depth charts lag real snaps. For "who is the real backup", compare carries/inside-10/targets in the games the starter missed, not snap % alone (`RESEARCH.md` §2) |
+| Availability of named players | `ff-weekly.free_agents(names="A,B", week=N)` | Live check independent of projection files: free agent, waivers, rostered or unknown. Ambiguous names are not guessed. Returned ESPN ids identify a proposal; availability alone does not authorize a move |
 | Schedule, results, byes | `ff-weekly.schedule(team="MIA", weeks="4-9")`, `schedule(week=N)` | Implied totals are labelled line / nflverse line / preseason prior |
 | Standings and playoff race | `ff-weekly.standings()` | Records, points for (the tiebreak), playoff line, remaining schedule; no playoff probability |
 | Points in league scoring (K, D/ST, anyone) | `ff-weekly.league_points(position="K", weeks="1-3", available_only=True)` | ESPN's scored results per week and owner; top ~400 owned per read |
@@ -55,10 +58,11 @@ The cached data and research are not a leak-free historical backtest.
 | Close start/sit | `ff-weekly.fantasypros_rankings(position=..., week=N)` | Weekly rank versus season points rank; team and opponent are separately labeled |
 | Extra model/market opinion | `ff-weekly.subvertadown_rankings(...)`, `firstdown_rankings(...)` | See NEWS-SOURCES.md: scoring mismatch, timestamps, private use; First Down saved pages only |
 | Reddit reporting/discussion | `ff-reddit.research_brief(players=[...], days=3)` | One batch up to six players, post dates, coverage and original reporting |
-| A selected/pasted Reddit thread | `ff-reddit.read_research_thread(thread_id="ID", max_comments=5)` | Submission ID, dated sampled comments; not representative consensus |
+| A selected/pasted Reddit thread | `ff-reddit.read_research_thread(thread_id="ID_OR_PERMALINK", max_comments=5)` | Accepts a bare ID, full /comments/ permalink or redd.it link; no manual extraction needed. Dated sampled comments are not representative consensus |
 | Find a thread from an earlier conversation | `ff-reddit.cached_research_threads(query="Player Name")` | Local retained samples only; zero Reddit fetches, original dates and stale labels |
 | Stadium weather | `ff-weather.game_weather(season=YEAR, week=N, team="GB")` | Venue/roof, kickoff, forecast window, provider issue time and actual retrieval time |
 | Any location's weather | `ff-weather.weather(place="Green Bay, WI", start="YYYY-MM-DD")` | Date and local time zone; historical analysis is not a saved pregame forecast |
+| A requested video analysis | `ff-youtube.player_videos(player_name="Full Name")`, then `video_transcript(url_or_id="ID")` | Default transcript page is 6,000 characters; follow next_offset only if needed. Upload date must match the injury/event. Creator analysis is not official game status |
 | Defense / kicker | `ff-weekly.dst_rankings(season=YEAR, week=N)`, `kicker_rankings(...)`; `dst_rankings(week=N, horizon=3, team=...)` to plan ahead | Matching saved bundle and market timestamps; no ESPN-based D/ST ranking; far weeks are preseason priors |
 
 If a tool is absent from discovery after a code update, reconnect that server.

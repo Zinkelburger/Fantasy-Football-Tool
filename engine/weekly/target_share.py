@@ -9,8 +9,10 @@ A player has a usage row only in a game where he had a carry, target or pass,
 so a missing row means "no usage", not a confirmed inactive. The injury report
 supplies the designation. Neither is current status: use practice_report.
 
-Vacated share is the share a flagged player earned in the weeks he had usage.
-It is what his absence frees up, not a forecast of who absorbs it or how much.
+The legacy vacated_share field sums shares from different active-week samples.
+It is diagnostic only: neither confirmed missing opportunity nor an additive
+team share. Text views show individual flags instead. For decision-week
+opportunity, use receiving_opportunity with common team-game denominators.
 """
 from __future__ import annotations
 
@@ -124,7 +126,8 @@ def build(usage: list[dict], injuries: list[dict], team: str = "", last: int = 0
             "flagged": vacated,
             "vacated_share": round(sum(v["share_when_active"] for v in vacated), 3),
         }
-    return {"weeks_requested": weeks, "injury_report_week": report_week, "teams": out}
+    return {"weeks_requested": weeks, "injury_report_week": report_week, "teams": out,
+            "interpretation": "Historical flags, not confirmed current absences. Legacy vacated_share sums different active-week samples; do not treat it as an additive team share or forecast. Use receiving_opportunity for decision-week evidence."}
 
 
 def load(data: Path, season: int, team: str = "", last: int = 0,
@@ -183,8 +186,9 @@ def team_text(code: str, t: dict, position: str = "", report_week=None) -> str:
            f"latest injury report week {report_week or 'none'}"]
     out += [player_line(p, weeks, flags) for p in players]
     if t["flagged"]:
-        out.append(f"  vacated share {_pct(t['vacated_share'])}: "
+        out.append("  historical absence flags (not confirmed vacancies): "
                    + ", ".join(_flag_text(f) for f in t["flagged"]))
+    out.append("For injury-related pickups: receiving_opportunity(team, week, season, concern). Saved reports and missing usage do not establish current absence.")
     return "\n".join(out)
 
 
@@ -200,13 +204,14 @@ def league_text(result: dict, position: str = "", flagged_only: bool = False, to
         line = (f"  {code:3} " + ", ".join(f"{p['name']} {p['pos']} {_pct(p['share_when_active'])}"
                                            for p in players))
         if flagged:
-            line += (f" | vacated {_pct(sum(f['share_when_active'] for f in flagged))}: "
+            line += (" | historical flags: "
                      + ", ".join(_flag_text(f) for f in flagged))
         out.append(line)
     if len(out) == 1:
         out.append("  no team matches" + (" (no flagged players)" if flagged_only else ""))
     out.append("Detail: target_share(team=...) or target_share(player=...); "
                "ad-hoc questions: query_data on tables targets / vacated.")
+    out.append("Flags are historical, not confirmed vacancies. Midgame injuries can be missed; use injury_check then receiving_opportunity for pickups.")
     return "\n".join(out)
 
 

@@ -88,7 +88,7 @@ class ToolIntegration(unittest.TestCase):
                 "s.DATA=Path(sys.argv[1]); s._state=lambda:(2026,2); "
                 "import datastore; datastore.DATA=Path(sys.argv[1]); "
                 "evidence.CACHE=Path(sys.argv[1]); "
-                "s.load_env=lambda:{}; s.mcp.run()")
+                "s._league=lambda season:None; s.load_env=lambda:{}; s.mcp.run()")
             params = StdioServerParameters(
                 command=sys.executable, args=["-c", code, str(self.root)],
                 cwd=str(Path(server.__file__).parent))
@@ -96,7 +96,17 @@ class ToolIntegration(unittest.TestCase):
                 async with stdio_client(params, errlog=errors) as (read, write):
                     async with ClientSession(read, write) as client:
                         await client.initialize()
-                        names = {t.name for t in (await client.list_tools()).tools}
+                        discovered = {t.name: t for t in (await client.list_tools()).tools}
+                        names = set(discovered)
+                        receiving = discovered["receiving_opportunity"].model_dump(by_alias=True)
+                        self.assertTrue(receiving["annotations"]["readOnlyHint"])
+                        self.assertEqual(receiving["inputSchema"]["properties"]["top"]["maximum"], 8)
+                        self.assertTrue({"team", "week", "season"} <= set(receiving["inputSchema"]["required"]))
+                        self.assertIn("candidates", receiving["outputSchema"]["properties"])
+                        injury = discovered["injury_check"].model_dump(by_alias=True)
+                        self.assertTrue(injury["annotations"]["readOnlyHint"])
+                        self.assertFalse(injury["inputSchema"]["properties"]["detail"]["default"])
+                        self.assertEqual(injury["inputSchema"]["properties"]["week"]["maximum"], 18)
                         self.assertTrue({"team_context", "fantasypros_rankings", "player_lookup",
                                          "practice_report", "player_news", "research_sources", "team_roster",
                                          "target_share", "injury_check", "schedule", "depth_chart",
@@ -121,6 +131,28 @@ class ToolIntegration(unittest.TestCase):
                             self.assertFalse(result.is_error, result)
                             output = "\n".join(c.text for c in result.content if hasattr(c, "text"))
                             self.assertIn(expected, output)
+                        result = await client.call_tool("receiving_opportunity", {
+                            "team": "DET", "week": 3, "season": 2026, "concern": "Test Player"})
+                        self.assertFalse(result.is_error, result)
+                        payload = result.model_dump(by_alias=True)["structuredContent"]
+                        self.assertEqual(payload["concern"]["name"], "Test Player")
+                        self.assertEqual(payload["concern"]["absence"], "not_established")
+                        self.assertEqual(payload["concern"]["availability"], "unknown")
+                        self.assertEqual(payload["observed_weeks"], [1])
+                        for args in [{"top": 9}, {"concern": "Player"}, {"team": "ZZ"}]:
+                            failed = await client.call_tool("receiving_opportunity", {
+                                "team": "DET", "week": 3, "season": 2026, **args})
+                            self.assertTrue(failed.is_error)
+                            error_text = "\n".join(c.text for c in failed.content if hasattr(c, "text"))
+                            if "concern" in args:
+                                self.assertIn("full player name", error_text)
+                            if "team" in args:
+                                self.assertIn("one NFL team", error_text)
+                        unresolved = await client.call_tool("injury_check", {"names": "Unique Unknown Fixture", "week": 3})
+                        self.assertFalse(unresolved.is_error)
+                        self.assertIn('"status": "unresolved"', "\n".join(c.text for c in unresolved.content if hasattr(c, "text")))
+                        invalid = await client.call_tool("injury_check", {"names": "Test Player", "week": 19})
+                        self.assertTrue(invalid.is_error)
         asyncio.run(asyncio.wait_for(run(), timeout=30))
 
 

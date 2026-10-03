@@ -236,7 +236,7 @@ class TargetShareText(unittest.TestCase):
         result = {**ts.build(self.USAGE, []), "season": 2026}
         text = ts.league_text(result)
         self.assertEqual(sum(ln.startswith("  LA") for ln in text.splitlines()), 1)
-        self.assertIn("vacated .33: Star WR WR .33 (no usage in week 2)", text)
+        self.assertIn("historical flags: Star WR WR .33 (no usage in week 2)", text)
         self.assertIn("no team matches", ts.league_text(result, position="RB", flagged_only=True))
 
     def test_team_and_player_views(self):

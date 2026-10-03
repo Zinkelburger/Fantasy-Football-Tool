@@ -114,6 +114,14 @@ class EvidenceTools(unittest.TestCase):
             self.assertEqual(evidence.news('Player One', 2026, 3, hours=24)['posts'], [])
         fetch.assert_called_once()
 
+    def test_news_matches_accents_and_punctuation_in_resolved_names(self):
+        post = {'url': 'https://example.test/post', 'text': 'Eddy Pineiro and J.J. McCarthy practice',
+                'created_at': datetime.now(timezone.utc).isoformat()}
+        with patch.object(evidence.bluesky, 'ACCOUNTS', {'reporter': ''}), \
+                patch.object(evidence.bluesky, 'author_feed', return_value=[post]):
+            for name in ['Eddy Piñeiro', 'JJ McCarthy']:
+                self.assertEqual(len(evidence.news(name, 2026, 4)['posts']), 1)
+
     def test_offline_news_revisits_the_original_snapshot_window(self):
         old = datetime.now(timezone.utc) - timedelta(days=10)
         post = {'url': 'https://example.test/old', 'text': 'Player One out',

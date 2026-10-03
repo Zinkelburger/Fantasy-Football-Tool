@@ -19,12 +19,25 @@ from __future__ import annotations
 import re
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
+from typing import Annotated, Literal
 
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
+from mcp.types import ToolAnnotations
+from pydantic import Field
 
 import weather as W
 
-mcp = MCPServer("ff-weather", version="1.0.0")
+
+class InputError(ToolError, ValueError):
+    """Expected, safe-to-display argument failure; never wrap provider secrets."""
+
+
+mcp = MCPServer("ff-weather", version="1.0.0", instructions=(
+    "NFL question: game_weather(week, season, team) uses the saved stadium and kickoff. "
+    "Other places: weather(place). Forecast flags are context only, never a player-ranking adjustment. "
+    "Read source/retrieval dates; missing forecasts are unknown, not good weather."
+))
 UTC = timezone.utc
 
 
@@ -44,8 +57,9 @@ def _window(start: str, hours: int, tz: ZoneInfo) -> tuple[datetime, datetime]:
     return begin, begin + timedelta(hours=hours or 12)
 
 
-@mcp.tool()
-def weather(place: str, start: str = "", hours: int = 0, source: str = "auto",
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+def weather(place: str, start: str = "", hours: Annotated[int, Field(ge=0, le=168)] = 0,
+            source: Literal["auto", "nws", "open-meteo"] = "auto",
             refresh: bool = False) -> str:
     """Hourly weather for a place.
 
@@ -60,13 +74,18 @@ def weather(place: str, start: str = "", hours: int = 0, source: str = "auto",
     Forecasts persist locally for 20 minutes across sessions. refresh=True
     rechecks early when needed; output shows actual retrieval time and cache reuse.
     """
+    if not 0 <= hours <= 168 or source not in {"auto", "nws", "open-meteo"}:
+        raise InputError("Use hours=0–168 and source=auto, nws or open-meteo")
     p = W.resolve_place(place)
     tz = ZoneInfo(p["tz"]) if p.get("tz") else UTC
-    begin, end = _window(start, min(max(hours, 0), 168), tz)
+    try:
+        begin, end = _window(start, hours, tz)
+    except ValueError:
+        raise InputError("Use start='' for now, YYYY-MM-DD, or YYYY-MM-DD HH:MM in the place's local time.") from None
     src, issued, rows = W.hours(p["lat"], p["lon"], begin, end, p.get("us"), source, refresh=refresh)
     if not rows:
         return f"{p['name']}: no hourly data for {begin:%Y-%m-%d %H:%M} to {end:%H:%M}"
-    head = [f"{p['name']}  ({p['lat']:.4f}, {p['lon']:.4f}, {tz.key})",
+    head = [f"{p['name']}  ({p['lat']:.4f}, {p['lon']:.4f}, {getattr(tz, 'key', 'UTC')})",
             f"source: {src}" + (f", issued {issued}" if issued else "")]
     if p.get("roof") == "fixed":
         head.append("note: fixed roof; the field is indoors, weather does not reach play")
@@ -78,8 +97,9 @@ def weather(place: str, start: str = "", hours: int = 0, source: str = "auto",
     return "\n".join(head + W.fmt_rows(rows, tz, 1 if len(rows) <= 48 else 3))
 
 
-@mcp.tool()
-def game_weather(week: int = 0, team: str = "", season: int = 0, refresh: bool = False) -> str:
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+def game_weather(week: Annotated[int, Field(ge=0, le=18)] = 0, team: str = "",
+                 season: Annotated[int, Field(ge=0, le=2100)] = 0, refresh: bool = False) -> str:
     """Weather at every NFL game in a week, kickoff to about 3.5 hours after,
     at the venue's own coordinates and local time.
 
@@ -94,10 +114,13 @@ def game_weather(week: int = 0, team: str = "", season: int = 0, refresh: bool =
     cur_season, cur_week = W.current_week()
     season, week = season or cur_season, week or cur_week
     if not 1 <= week <= 18 or not 2000 <= season <= 2100:
-        raise ValueError("Use a regular-season week 1–18 and valid season")
+        raise InputError("Use a regular-season week 1–18 and valid season")
     games = W.week_games(season, week)
     if team:
-        t = team.strip().upper()
+        from common import TEAMS, norm_team
+        t = norm_team(team.strip())
+        if t not in TEAMS:
+            raise InputError("Use an NFL team abbreviation, e.g. GB. Unknown teams are not byes.")
         games = [g for g in games if t in (g["away"], g["home"])]
         if not games:
             return f"no {t} game in {season} week {week} (bye?)"

@@ -199,6 +199,17 @@ class ResearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             N.read_thread(self.cache, self.factory, 'https://example.com', 5)
 
+    def test_pasted_permalink_reuses_the_id_cache_without_fetching_the_url(self):
+        self.client.submission = Mock(return_value=Post())
+        N.read_thread(self.cache, self.factory, 'abc', 0)
+        for link in ['https://www.reddit.com/r/nfl/comments/abc/title/?utm_source=x', 'https://redd.it/abc']:
+            self.assertTrue(N.read_thread(self.cache, self.factory, link, 0)['retrieval']['cache_hit'])
+        self.client.submission.assert_called_once_with(id='abc')
+        for link in ['https://reddit.com.evil.test/comments/abc/', 'https://user@reddit.com/comments/abc/',
+                     'https://www.reddit.com/r/nfl/s/opaque', 'file:///comments/abc']:
+            with self.assertRaises(ValueError):
+                N.submission_id(link)
+
     def test_shortlist_relevance_duplicates_player_coverage(self):
         players = ['Breece Hall', "De'Von Achane"]
         posts = [Post('aaa'), Post('bbb', age=120, url='https://example.com/report?utm_source=reddit'),
