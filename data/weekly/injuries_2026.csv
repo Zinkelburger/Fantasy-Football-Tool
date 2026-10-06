@@ -741,11 +741,13 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 4,ARI,00-0036568,Roy Lopez,DT,,,Full Participation in Practice,Groin
 4,ARI,00-0039864,Dadrion Taylor-Demerson,S,Out,Back,Did Not Participate In Practice,Back
 4,ARI,00-0040706,Walter Nolen,DT,,,Full Participation in Practice,Shoulder
-4,ATL,00-0031576,Za'Darius Smith,DE,,,Limited Participation in Practice,Not injury related - resting player
-4,ATL,00-0033945,Samson Ebukam,DE,,,Limited Participation in Practice,Hamstring
-4,ATL,00-0035237,Jawaan Taylor,T,,,Did Not Participate In Practice,Not injury related - resting player
-4,ATL,00-0036990,Divine Deablo,LB,,,Limited Participation in Practice,Hamstring
-4,ATL,00-0041066,Kendal Daniels,LB,,,Limited Participation in Practice,Achilles
+4,ATL,00-0031279,Jake Matthews,T,,,Did Not Participate In Practice,Not injury related - resting player
+4,ATL,00-0031576,Za'Darius Smith,DE,,,Full Participation in Practice,Not injury related - resting player
+4,ATL,00-0033945,Samson Ebukam,DE,Questionable,Hamstring,Full Participation in Practice,Hamstring
+4,ATL,00-0035237,Jawaan Taylor,T,,,Full Participation in Practice,Not injury related - resting player
+4,ATL,00-0036990,Divine Deablo,LB,Questionable,Hamstring,Limited Participation in Practice,Hamstring
+4,ATL,00-0038580,Yasir Abdullah,LB,Questionable,Illness,Full Participation in Practice,Illness
+4,ATL,00-0041066,Kendal Daniels,LB,,,Full Participation in Practice,Achilles
 4,BAL,00-0026190,Calais Campbell,DT,,,Full Participation in Practice,Not injury related - resting player
 4,BAL,00-0032398,Chris Moore,WR,Questionable,Ankle,Limited Participation in Practice,Ankle
 4,BAL,00-0032965,Ronnie Stanley,T,Questionable,Toe,Did Not Participate In Practice,Toe
@@ -941,16 +943,19 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 4,NE,00-0040716,Craig Woodson,S,Questionable,Shoulder,Limited Participation in Practice,Shoulder
 4,NE,00-0041316,Channing Canada,CB,Questionable,Hamstring,Limited Participation in Practice,Hamstring
 4,NE,00-0041395,Eli Raridon,TE,Questionable,Thigh,Limited Participation in Practice,Thigh
-4,NO,00-0033860,Davon Godchaux,DT,,,Did Not Participate In Practice,Not injury related - resting player
-4,NO,00-0035316,Kaden Elliss,LB,,,Did Not Participate In Practice,Calf
-4,NO,00-0035402,Carl Granderson,LB,,,Did Not Participate In Practice,Ankle
-4,NO,00-0035644,Noah Fant,TE,,,Limited Participation in Practice,Abdomen
-4,NO,00-0036193,Anfernee Jennings,LB,,,Did Not Participate In Practice,Knee
+4,NO,00-0033860,Davon Godchaux,DT,,,Full Participation in Practice,Not injury related - resting player
+4,NO,00-0034760,Nathan Shepherd,DT,,,Did Not Participate In Practice,Not injury related - resting player
+4,NO,00-0035316,Kaden Elliss,LB,Out,Calf,Did Not Participate In Practice,Calf
+4,NO,00-0035402,Carl Granderson,LB,Out,Ankle,Did Not Participate In Practice,Ankle
+4,NO,00-0035644,Noah Fant,TE,Questionable,Abdomen,Limited Participation in Practice,Abdomen
+4,NO,00-0036193,Anfernee Jennings,LB,Out,Knee,Did Not Participate In Practice,Knee
 4,NO,00-0036253,Julian Blackmon,S,,,Full Participation in Practice,Calf
-4,NO,00-0036927,Pete Werner,LB,,,Did Not Participate In Practice,Shoulder
+4,NO,00-0036927,Pete Werner,LB,Questionable,Shoulder,Did Not Participate In Practice,Shoulder
 4,NO,00-0037250,Martin Emerson,CB,,,Full Participation in Practice,Shoulder
-4,NO,00-0041099,Barion Brown,WR,,,Limited Participation in Practice,Hamstring
-4,NO,00-0041390,Christen Miller,DT,,,Limited Participation in Practice,Toe
+4,NO,00-0039518,Treyton Welch,TE,,,Did Not Participate In Practice,Not injury related - personal matter
+4,NO,00-0039725,Jayden Price,CB,,,Limited Participation in Practice,Ankle
+4,NO,00-0041099,Barion Brown,WR,,,Full Participation in Practice,Hamstring
+4,NO,00-0041390,Christen Miller,DT,,,Full Participation in Practice,Toe
 4,NYG,00-0033376,Patrick Ricard,FB,,,Full Participation in Practice,Nose
 4,NYG,00-0034248,Elijah Campbell,S,,,Full Participation in Practice,Foot
 4,NYG,00-0036386,Andrew Thomas,T,,,Limited Participation in Practice,Groin
