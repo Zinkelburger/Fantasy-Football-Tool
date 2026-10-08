@@ -36,6 +36,7 @@ class InputError(ToolError, ValueError):
 
 
 mcp = MCPServer("ff-weekly", version="1.0.0", instructions=(
+    "Start/sit question (A or B?): start_sit first; quote answer and run its next_calls. "
     "Injury question: injury_check first; quote summary and follow next_step. "
     "Other team questions: weekly_checklist(task=...) gives a short path and stop rule; "
     "research_sources() gives a short source map. Use full guides only when needed. "
@@ -276,7 +277,7 @@ def _load_proposal(token: str) -> dict:
 
 # ------------------------------------------------------------ tools: status
 @mcp.tool(annotations=READ_ONLY)
-def weekly_checklist(task: Literal["quick", "injury", "receiving", "lineup", "waivers", "matchup", "history", "defense", "reddit", "full"] = "quick") -> str:
+def weekly_checklist(task: Literal["quick", "startsit", "injury", "receiving", "lineup", "waivers", "matchup", "history", "defense", "reddit", "full"] = "quick") -> str:
     """START HERE for the short path for one task. Default is a small routing map.
     Select the relevant task for steps and a stop rule; full returns the complete runbook.
     Injury questions can start directly with injury_check. Do not load full for a narrow question."""
@@ -691,27 +692,250 @@ def refresh_week(week: int = 0) -> str:
 
 # ------------------------------------------------------------ tools: public data
 @mcp.tool(annotations=READ_ONLY)
-def vegas_lines(week: int = 0) -> str:
-    """Every game's spread, total and implied team totals for the week."""
+def vegas_lines(week: int = 0, refresh: bool = False) -> str:
+    """Every game's total, spread and implied team totals for the week, read
+    live: The Odds API median across US books (cached 3 h, ODDS_API_KEY) and
+    ESPN's public scoreboard (one book, cached 30 min), with the weekly
+    build's saved file as the fallback. Each source prints its retrieval
+    time; the chosen column is the freshest multi-book line available.
+    refresh=True refetches both feeds now (costs Odds API credits)."""
+    import lines as lines_mod
     season, week = _week(week)
-    rows = _lines_week(season, week)
+    live = lines_mod.live_week(season, week, refresh)
+    rows = live["teams"]
+    out = [f"{season} week {week} lines (implied = expected points; spread is the home team's, negative = favoured)"]
+    for s in live["sources"]:
+        out.append(f"  source {s['source']:7} {s['status']:11} retrieved {s['retrieved_at'] or '-'}  "
+                   f"{s['games']} games  {s['what']}"
+                   + (f"  [{s['note']}]" if s.get("note") else "")
+                   + (f"  quota left {s['quota_remaining']}" if s.get("quota_remaining") else ""))
     if not rows:
-        return f"no lines on file for {season} week {week}; refresh_week()"
-    seen, out = set(), [f"{season} week {week} lines (home margin = spread; implied = expected points)"]
-    for t, r in sorted(rows.items(), key=lambda kv: kv[1]["kickoff"] or ""):
+        return "\n".join(out + [f"no lines for {season} week {week} from any source"])
+    seen = set()
+    for t, r in sorted(rows.items(), key=lambda kv: (kv[1]["kickoff"] or "", kv[0])):
         key = tuple(sorted((t, r["opp"])))
         if key in seen:
             continue
         seen.add(key)
         home, away = (t, r["opp"]) if r["home"] else (r["opp"], t)
         h, a = rows[home], rows[away]
-        out.append(f"  {away}@{home:4} total {h['total']:5} | {home} {h['imp_own']:5} vs {away} {a['imp_own']:5} "
-                   f"| {'dome' if h['dome'] else 'outdoors':8} {h['kickoff']} {h['provider']}"
-                   f"{'  (played)' if h['played'] else ''}")
+        others = " ".join(f"{n} {v['total']}/{v['spread']:+g}" for n, v in h["by_source"].items() if n != h["source"])
+        out.append(f"  {away}@{home:4} total {h['total']:5} | {home} {h['spread']:+5.1f}, implied {home} {h['imp_own']:5} vs "
+                   f"{away} {a['imp_own']:5} | {h['kickoff']} from {h['source']}{' (STALE)' if h['stale'] else ''}"
+                   + (f" | other sources total/{home} spread: {others}" if others else ""))
     byes = _byes(season, week)
     if byes:
         out.append("  bye: " + ", ".join(sorted(byes)))
     return "\n".join(out)
+
+
+@mcp.tool(annotations=READ_ONLY)
+def start_sit(
+    players: Annotated[str, Field(max_length=200, description="2–4 comma-separated full names competing for one lineup spot.")] = "",
+    position: Annotated[str, Field(max_length=4, description="Instead of players: compare every player on YOUR roster at this position (QB/RB/WR/TE).")] = "",
+    week: Annotated[int, Field(ge=0, le=18, description="Decision week; 0 = current NFL week.")] = 0,
+    season: Annotated[int, Field(ge=0, le=2100)] = 0,
+    last: Annotated[int, Field(ge=2, le=6, description="Recent team games for usage, results and offence.")] = 3,
+    teammates: Annotated[int, Field(ge=0, le=6, description="Top RB/WR/TE teammates (by usage) checked per team, plus the QB.")] = 4,
+) -> dict:
+    """START HERE for "should I start A or B?" One call, no judgment needed.
+
+    For each player, from data only: live ESPN identity/team/projection,
+    official club injury report (via injury_check), this week's line
+    (Odds API median + ESPN, with retrieval time), his last-N-game usage
+    (targets, carries, snap %), the team's results and offence by week,
+    and the official report for the QB and his top usage teammates
+    (teammates are taken from the play-by-play usage file, never from
+    memory; anyone ESPN now lists elsewhere is dropped).
+
+    `answer` is the whole report in plain text: quote it. The default pick
+    follows a fixed published rule (highest adjusted projection among
+    players not officially Out/Doubtful whose game has not started; a gap
+    under 1.0 is a toss-up). `not_in_projection` lists facts the number
+    ignores. Then run the exact `next_calls` (Reddit, weather) and report
+    what they add; do not add players, teams or numbers that are not in
+    this output. No ESPN write happens here.
+    """
+    import lines as lines_mod
+    import schedule_view
+    import start_sit as ss
+    from datetime import datetime, timezone
+    season, week = _week(week, season)
+    asked = [n.strip() for n in players.split(",") if n.strip()]
+    pos_filter = position.strip().upper()
+    if bool(asked) == bool(pos_filter):
+        raise InputError("Give players='A, B' (2–4 names) or position='TE' for your roster, not both")
+    if pos_filter and pos_filter not in SKILL:
+        raise InputError("position must be QB, RB, WR or TE")
+    if asked and not 2 <= len(asked) <= 4:
+        raise InputError("Compare 2–4 players")
+    now = datetime.now(timezone.utc)
+    lg, settings, attach = projector(season, week)
+    fmt = settings["scoring_format"]
+    rosters = lg.rosters(week)
+    owners = {t["id"]: t["name"] for t in settings["teams"]}
+    pool = [dict(p, on_team_id=tid) for tid, rows in rosters.items() for p in rows]
+    try:
+        pool += lg.free_agents(week, limit=300)
+    except Exception:  # noqa: BLE001 - rostered identities still resolve
+        pass
+    if pos_filter:
+        chosen = [p for p in rosters[settings["my_team_id"]] if p["pos"] == pos_filter][:4]
+        if len(chosen) < 2:
+            raise InputError(f"You roster fewer than two {pos_filter}s; name the players instead")
+    else:
+        chosen = []
+        for n in asked:
+            hits = {p["id"]: p for p in pool if _norm_name(p["name"]) == _norm_name(n)}
+            if len(hits) != 1:
+                found = ", ".join(f"{p['name']} ({p['pos']} {p['team']})" for p in hits.values()) or "no match in the ESPN league pool"
+                raise InputError(f"{n!r}: {found}. Use the exact full name.")
+            chosen.append(next(iter(hits.values())))
+    if any(not p.get("team") for p in chosen):
+        raise InputError("A player has no NFL team in ESPN (free agent); start/sit needs a team")
+    # Live team by name for every player ESPN knows, to drop moved teammates.
+    live_team: dict[str, set] = {}
+    for p in pool:
+        live_team.setdefault(_norm_name(p["name"]), set()).add(p.get("team"))
+
+    lines_live = lines_mod.live_week(season, week)
+    usage = _read_csv(DATA / f"advanced_usage_{season}_weekly.csv")
+    tc_rows = _read_csv(DATA / f"team_context_{season}.csv")
+    try:
+        games = schedule_view.games(season)
+    except Exception:  # noqa: BLE001
+        games = []
+    try:
+        xw = _crosswalk()
+    except Exception:  # noqa: BLE001
+        xw = {}
+    opp_rows = _opportunity(season)
+
+    def checks(names: list[str], team: str) -> list[dict]:
+        out = []
+        for i in range(0, len(names), 6):
+            got = injury_check(names=",".join(names[i:i + 6]), team=team, week=week,
+                               season=season, detail=True)
+            out += got["players"]
+        return out
+
+    def report_text(item: dict) -> str:
+        cur = item.get("official_report_next_game")
+        if item["status"] == "not_listed":
+            return "not on this week's report"
+        if not cur:
+            return item["status"]
+        prac = " ".join(f"{d.title()} {v or '-'}" for d, v in cur["practice"].items())
+        return f"{cur['injury'] or 'injury n/a'}; {prac}; designation {cur['designation'] or 'not yet'}"
+
+    results = []
+    by_team_usage = {}
+    for p in chosen:
+        team = p["team"]
+        tu = by_team_usage.setdefault(team, ss.team_usage(usage, team, week, last))
+        gsis = xw.get(str(p["id"]))
+        if not gsis or gsis not in tu["players"]:
+            gsis = next((pid for pid, u in tu["players"].items()
+                         if _norm_name(u["name"]) == _norm_name(p["name"])), gsis)
+        line = lines_live["teams"].get(team)
+        own = checks([p["name"]], team)[0]
+        designation = ((own.get("official_report_next_game") or {}).get("designation") or "")
+        opp_row = opp_rows.get(gsis) if gsis else None
+        proj = ss.projection(p.get("espn_proj"), (opp_row or {}).get(f"ewma_ep_{fmt}"),
+                             (line or {}).get("imp_own"), designation)
+        # Teammates: top usage on this team, minus anyone ESPN lists elsewhere.
+        mates, moved = [], []
+        for pid in ss.top_teammates(tu, {gsis} if gsis else set(), teammates):
+            u = tu["players"][pid]
+            teams_now = live_team.get(_norm_name(u["name"]), set())
+            if teams_now and team not in teams_now:
+                moved.append(f"{u['name']} (ESPN now: {', '.join(sorted(t or 'no team' for t in teams_now))})")
+                continue
+            mates.append({"player_id": pid, "name": u["name"], "pos": u["pos"],
+                          "in_espn_pool": bool(teams_now), **ss.player_usage(tu, pid)})
+        for m, item in zip(mates, checks([m["name"] for m in mates], team) if mates else []):
+            m["status"], m["report"] = item["status"], report_text(item)
+        timeline = own.get("timeline") or {}
+        ko = ss.kickoff_utc((line or {}).get("kickoff"))
+        tc_weeks = sorted({int(r["week"]) for r in tc_rows if r["team"] == team and int(r["week"]) < week})[-last:]
+        row = {
+            "name": p["name"], "pos": p["pos"], "team": team, "espn_id": p["id"],
+            "fantasy_owner": owners.get(p.get("on_team_id"), "free agent / waivers"),
+            "slot": p.get("slot_name"), "locked": bool(p.get("locked")),
+            "opp": (line or {}).get("opp"), "home": (line or {}).get("home"),
+            "kickoff_utc": ko, "kickoff_et": ss.et(ko),
+            "line": line and {k: line[k] for k in ("total", "spread", "imp_own", "imp_opp", "source",
+                                                   "retrieved_at", "stale", "by_source")},
+            "status": own["status"], "injury_summary": own["summary"],
+            "final_report": timeline.get("final_report_with_designation"),
+            "inactives": timeline.get("inactives_about"),
+            "espn_tag": p.get("injury"),
+            "usage": ss.player_usage(tu, gsis),
+            "projection": proj,
+            "team_results": ss.results(games, team, week, last),
+            "offense_by_week": ss.offense_by_week(tc_rows, team, tc_weeks),
+            "teammates": mates, "teammates_dropped_moved": moved,
+        }
+        row["not_in_projection"] = ss.not_in_projection(row, mates, line)
+        results.append(row)
+
+    decision = ss.decide(results, now)
+    swap = ss.swap_window(results, decision["pick"])
+    flagged = [m["name"] for r in results for m in r["teammates"] if ss.teammate_flag(m)]
+    reddit_names = list(dict.fromkeys([r["name"] for r in results] + flagged))[:6]
+    next_calls = [f"ff-reddit.research_brief(players={reddit_names!r}, focus='weekly', days=3)"]
+    next_calls += [f"ff-weather.game_weather(week={week}, season={season}, team={t!r})"
+                   for t in dict.fromkeys(r["team"] for r in results)]
+
+    def pct(v):
+        return f"{v:.0%}" if v is not None else "n/a"
+
+    def seq(xs, suffix=""):
+        return "/".join("-" if x is None else f"{x:g}{suffix}" for x in xs)
+    text = [f"START/SIT {season} week {week} ({fmt} scoring): " + " vs ".join(r["name"] for r in results)
+            + f"   as of {now.isoformat(timespec='minutes')}",
+            f"Rule: highest adjusted projection among players not officially Out/Doubtful and not locked; "
+            f"gap under {ss.TOSS_UP:g} = toss-up. News, Reddit and teammate injuries are NOT in the number.",
+            f"DEFAULT PICK: {decision['text']}"]
+    if swap:
+        text.append(f"Timing: {swap}")
+    for r in results:
+        ln = r["line"]
+        u = r["usage"]
+        text.append("")
+        text.append(f"{r['name']} — {r['pos']} {r['team']} {'vs' if r['home'] else '@'}{r['opp']} {r['kickoff_et']}; "
+                    f"fantasy owner {r['fantasy_owner']}" + (f", slot {r['slot']}" if r["slot"] else ""))
+        if ln:
+            others = "; ".join(f"{n} {v['total']}/{v['spread']:+g}" for n, v in ln["by_source"].items() if n != ln["source"])
+            text.append(f"  line: total {ln['total']}, {r['team']} {ln['spread']:+g}, implied {r['team']} {ln['imp_own']} vs "
+                        f"{r['opp']} {ln['imp_opp']} ({ln['source']}, retrieved {ln['retrieved_at']}"
+                        f"{', STALE' if ln['stale'] else ''})" + (f"; other sources total/spread: {others}" if others else ""))
+        else:
+            text.append("  line: none found")
+        text.append(f"  injury ({r['status']}): {r['injury_summary']}")
+        text.append(f"  usage wks {seq(u['weeks'])}: targets {seq(u['targets'])}, carries {seq(u['carries'])}, "
+                    f"snap {seq(u['snap_pct'], '%')}; target share {pct(u['target_share'])}, carry share {pct(u['carry_share'])}")
+        text.append(f"  projection: {ss.projection_text(r['projection'])}")
+        text.append(f"  team results: {', '.join(r['team_results']) or 'none on file'}")
+        for o in r["offense_by_week"]:
+            text.append(f"  offence {o}")
+        for m in r["teammates"]:
+            text.append(f"  teammate {m['name']} {m['pos']}: target share {pct(m['target_share'])}, carry share "
+                        f"{pct(m['carry_share'])}, snaps {seq(m['snap_pct'], '%')} -> {m.get('report', 'not checked')}"
+                        + ("" if m["in_espn_pool"] else " [not in ESPN league pool; team unverified]"))
+        if r["teammates_dropped_moved"]:
+            text.append(f"  dropped (on another team per ESPN): {'; '.join(r['teammates_dropped_moved'])}")
+        for f in r["not_in_projection"]:
+            text.append(f"  not in projection: {f}")
+    text.append("")
+    text.append("Line sources: " + "; ".join(f"{s['source']} {s['status']} {s['retrieved_at'] or '-'}"
+                                             for s in lines_live["sources"]))
+    text.append("Next: " + " | ".join(next_calls))
+    text.append("p = percentile among 2021-2025 team-games (higher is better). Projections are not win probabilities.")
+    for r in results:
+        r["kickoff_utc"] = r["kickoff_utc"].isoformat() if r["kickoff_utc"] else None
+    return {"answer": "\n".join(text), "decision": decision, "timing": swap, "players": results,
+            "line_sources": lines_live["sources"], "next_calls": next_calls}
 
 
 @mcp.tool(annotations=READ_ONLY)

@@ -10,6 +10,10 @@
   the relevant task path. `docs/TEAM-QUESTIONS.md` (`research_sources()`) maps
   questions to tools and explains local caches/refresh. Live data establish current
   facts; old chats and memory are context, not current roster/status evidence.
+- "Start A or B?" questions start with `ff-weekly.start_sit(players=...)`: quote
+  its `answer`, then run its `next_calls`. Never name a player, team, line or
+  stat that did not come from a tool output in this session; memory of rosters
+  and depth charts is out of date by definition.
 - Verify season, decision week, scoring and actual league availability. Pass
   the decision week explicitly; Monday pickup planning usually means next week.
 - Recommendations do not authorize ESPN writes. Use the existing exact

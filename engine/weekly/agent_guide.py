@@ -1,6 +1,12 @@
 """Small task guides for tool callers. Detailed policy stays in the repository docs."""
 
 ROUTES = {
+    "startsit": (
+        "START: start_sit(players='Full Name, Full Name', week=..., season=...) or start_sit(position='TE', week=...) for your own roster.",
+        "READ: quote `answer`. It already holds live identity, official reports for the players and their top usage teammates, the live line with retrieval time, usage, team results/offence and the projection term by term.",
+        "NEXT: run the exact `next_calls` (Reddit brief, weather) and add only what they report. Do not name a player, team, line or number that is not in tool output from this session.",
+        "STOP: give the default pick and the listed facts outside the projection; a toss-up stays a toss-up. Recommendations do not change the lineup.",
+    ),
     "injury": (
         "START: injury_check(names=..., week=..., season=...). For a roster use roster='mine' or 'opponent'.",
         "READ: status + summary + decision_week. pending/unavailable/not_listed are not healthy or out. Quote the summary.",
@@ -61,7 +67,8 @@ def checklist(task: str) -> str:
                 "Choose one path with weekly_checklist(task=...):\n"
                 "injury: will someone play? -> injury_check\n"
                 "receiving: who benefits from a receiver's absence? -> injury_check, receiving_opportunity\n"
-                "lineup: who should start? -> my_roster, injury_check, lineup_recommendation\n"
+                "startsit: A or B for one spot? -> start_sit (one call), then its next_calls\n"
+                "lineup: whole lineup? -> my_roster, injury_check, lineup_recommendation\n"
                 "waivers: whom should I add/drop? -> waiver_recommendations; named availability -> free_agents(names=...)\n"
                 "matchup: team/opponent strength -> my_roster, team_roster, power_rankings\n"
                 "history: prior points/usage -> player_lookup(name=...), league_points\n"
@@ -69,7 +76,7 @@ def checklist(task: str) -> str:
                 "reddit: unresolved reporting/discussion -> ff-reddit.research_brief\n"
                 + COMMON + "\nFull runbook only when needed: weekly_checklist(task='full').")
     if task not in ROUTES:
-        raise ValueError("Choose quick, injury, receiving, lineup, waivers, matchup, history, defense, reddit or full")
+        raise ValueError("Choose quick, startsit, injury, receiving, lineup, waivers, matchup, history, defense, reddit or full")
     return f"Weekly decision workflow — {task}\n" + "\n".join(ROUTES[task]) + "\n" + COMMON
 
 

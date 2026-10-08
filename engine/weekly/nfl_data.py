@@ -103,5 +103,59 @@ def espn_scoreboard_odds(season: int, week: int) -> list[dict]:
     return out
 
 
+ODDS_API = "https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds"
+
+
+def _team_from_full_name(full: str) -> str | None:
+    """'Philadelphia Eagles' -> 'PHI' by nickname, the only part every
+    source spells the same way."""
+    nick = (full or "").split()[-1].lower() if full else ""
+    return next((abbr for abbr, n in TEAMS.items() if n.lower() == nick), None)
+
+
+def odds_api_lines(api_key: str) -> tuple[list[dict], dict]:
+    """Every upcoming game's consensus line from The Odds API: the median
+    home spread and total across US books. Two credits per call on the
+    free tier, so callers cache it. Errors never include the URL (it
+    carries the key). Rows match espn_scoreboard_odds:
+      {away, home, kickoff, spread_home, total, provider, books}
+    """
+    import statistics
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+    q = urllib.parse.urlencode({"apiKey": api_key, "regions": "us",
+                                "markets": "spreads,totals", "oddsFormat": "american"})
+    try:
+        with urllib.request.urlopen(f"{ODDS_API}?{q}", timeout=30) as r:
+            events = json.loads(r.read().decode())
+            quota = {"requests_remaining": r.headers.get("x-requests-remaining"),
+                     "requests_used": r.headers.get("x-requests-used")}
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"Odds API HTTP {e.code}") from None
+    except Exception as e:  # noqa: BLE001 - never echo the keyed URL
+        raise RuntimeError(f"Odds API failed ({type(e).__name__})") from None
+    out = []
+    for e in events:
+        home, away = _team_from_full_name(e.get("home_team")), _team_from_full_name(e.get("away_team"))
+        if not home or not away:
+            continue
+        spreads, totals = [], []
+        for b in e.get("bookmakers", []):
+            for m in b.get("markets", []):
+                if m["key"] == "spreads":
+                    pt = next((o.get("point") for o in m["outcomes"] if o["name"] == e["home_team"]), None)
+                    if pt is not None:
+                        spreads.append(-float(pt))      # home -3.5 -> home margin +3.5
+                elif m["key"] == "totals" and m["outcomes"]:
+                    if m["outcomes"][0].get("point") is not None:
+                        totals.append(float(m["outcomes"][0]["point"]))
+        out.append({"away": away, "home": home, "kickoff": e.get("commence_time"),
+                    "spread_home": statistics.median(spreads) if spreads else None,
+                    "total": statistics.median(totals) if totals else None,
+                    "provider": "Odds API median", "books": len(e.get("bookmakers", []))})
+    return out, quota
+
+
 def write_json(path: Path, obj) -> None:
     path.write_text(json.dumps(obj, indent=1, sort_keys=True))

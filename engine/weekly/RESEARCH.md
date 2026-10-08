@@ -25,6 +25,7 @@ Honor explicitly retrospective questions rather than silently changing the week.
 | How did he do last week / in earlier weeks / last year? | `player_lookup(name=..., weekly=True, seasons="2023-2025")` (kickers too) | `league_points(names=...)` for this league's exact scoring |
 | Who else is on that team / who backs him up? | `depth_chart(team, position)`: depth, usage, league owner | `target_share(team=...)` for who actually gets the ball |
 | Is X available in my league? | `free_agents(names="A,B")` | `propose_transaction(add_name=..., drop_name=...)` when the user wants the move |
+| Should I start A or B? | `start_sit(players="A, B", week=N, season=YEAR)`, then its `next_calls` | Quote `answer`; add only what Reddit/weather report |
 | Who should I start? | `league_settings()`, `my_roster(week=N)`, `lineup_recommendation(week=N)` | Usage, injuries and relevant rankings for close calls |
 | Who should I add/drop? | Settings, roster, `waiver_recommendations(week=N)`, `free_agents(week=N)` | Current role, actual availability, drop cost, immediate need versus stash |
 | Is my team good / can I beat this opponent? | Settings, roster/matchup, `power_rankings(week=N)` | `team_roster(team_id, week=N)` for the opponent, scored by the same recipe |

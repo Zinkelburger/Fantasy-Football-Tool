@@ -21,7 +21,7 @@ import sys
 
 import polars as pl
 
-from common import DATA, TEAMS
+from common import CACHE, DATA, TEAMS, now_iso
 import nfl_data
 
 DOME_BONUS = 0.7
@@ -80,6 +80,128 @@ def build(season: int, current_week: int, refresh: bool = True) -> pl.DataFrame:
     df = pl.DataFrame(rows).sort(["week", "team"])
     df.write_csv(DATA / f"lines_{season}.csv")
     return df
+
+
+LIVE_DIR = CACHE / "lines_live"
+ESPN_TTL = 30 * 60          # the free scoreboard: cheap, re-read every half hour
+ODDS_API_TTL = 3 * 3600     # two credits a call on the free tier
+
+
+def _age_seconds(stamp: str | None) -> float | None:
+    from datetime import datetime, timezone
+    if not stamp:
+        return None
+    try:
+        return (datetime.now(timezone.utc) - datetime.fromisoformat(stamp.replace("Z", "+00:00"))).total_seconds()
+    except ValueError:
+        return None
+
+
+def _cached_fetch(path, ttl: int, fetch, refresh: bool) -> dict:
+    """{games, fetched_at, status, note}. A failed fetch falls back to the
+    last good copy, labelled stale; it never pretends to be current."""
+    import json
+    old = json.loads(path.read_text()) if path.exists() else None
+    age = _age_seconds(old.get("fetched_at")) if old else None
+    if old and not refresh and age is not None and age < ttl:
+        return {**old, "status": "cached"}
+    try:
+        games, extra = fetch()
+        new = {"games": games, "fetched_at": now_iso(), **extra}
+        LIVE_DIR.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(new))
+        return {**new, "status": "fresh"}
+    except Exception as e:  # noqa: BLE001 - report, fall back to the last copy
+        note = f"fetch failed ({type(e).__name__}: {str(e)[:80]})"
+        if old:
+            return {**old, "status": "stale", "note": note}
+        return {"games": [], "fetched_at": None, "status": "unavailable", "note": note}
+
+
+def live_week(season: int, week: int, refresh: bool = False) -> dict:
+    """This week's lines from every source we have, each with its own
+    retrieval time, plus one chosen line per team.
+
+      espn     ESPN's public scoreboard (one book, DraftKings), cached 30 min
+      oddsapi  The Odds API median across US books (ODDS_API_KEY), cached 3 h
+      saved    data/weekly/lines_<season>.csv from the last weekly build
+
+    The chosen line is the Odds API median when it is under 3 hours old
+    (several books beat one), else the ESPN line, else the saved file.
+    Returns {"teams": {team: row}, "sources": [...]} where each row has
+    opp, home, kickoff, total, spread (own, negative = favoured),
+    imp_own, imp_opp, source, retrieved_at, plus `by_source`.
+    """
+    from common import load_env
+    sched = {}
+    try:
+        s = nfl_data.schedules(season).filter(
+            (pl.col("game_type") == "REG") & (pl.col("week") == week))
+        sched = {(g["away_team"], g["home_team"]): g for g in s.iter_rows(named=True)}
+    except Exception:  # noqa: BLE001 - schedule only filters the Odds API feed
+        pass
+    espn = _cached_fetch(LIVE_DIR / f"espn_{season}_wk{week:02d}.json", ESPN_TTL,
+                         lambda: (nfl_data.espn_scoreboard_odds(season, week), {}), refresh)
+    key = load_env().get("ODDS_API_KEY")
+    if key:
+        def odds():
+            games, quota = nfl_data.odds_api_lines(key)
+            return games, {"quota": quota}
+        oapi = _cached_fetch(LIVE_DIR / f"oddsapi_{season}.json", ODDS_API_TTL, odds, refresh)
+        oapi["games"] = [g for g in oapi["games"] if (g["away"], g["home"]) in sched] if sched else []
+        if not sched:
+            oapi["note"] = "schedule unavailable, so Odds API games could not be matched to this week"
+    else:
+        oapi = {"games": [], "fetched_at": None, "status": "no key",
+                "note": "ODDS_API_KEY not set in the environment or an engine .env"}
+    saved_path = DATA / f"lines_{season}.csv"
+    saved_rows = []
+    saved_at = None
+    if saved_path.exists():
+        from datetime import datetime, timezone
+        saved_at = datetime.fromtimestamp(saved_path.stat().st_mtime, timezone.utc).isoformat(timespec="seconds")
+        saved_rows = load(season).filter(pl.col("week") == week).to_dicts()
+
+    by_team: dict[str, dict] = {}
+
+    def put(name, team, opp, home, spread_home, total, kickoff, provider, fetched):
+        if total is None or spread_home is None:
+            return
+        own = total / 2 + (spread_home if home else -spread_home) / 2
+        row = by_team.setdefault(team, {"team": team, "opp": opp, "home": home,
+                                        "kickoff": kickoff, "by_source": {}})
+        row["by_source"][name] = {"total": total, "spread": round(-spread_home if home else spread_home, 1),
+                                  "imp_own": round(own, 1), "imp_opp": round(total - own, 1),
+                                  "provider": provider, "retrieved_at": fetched}
+        if kickoff and name != "saved":
+            row["kickoff"] = kickoff
+
+    for name, feed in (("espn", espn), ("oddsapi", oapi)):
+        for g in feed["games"]:
+            for team, opp, home in ((g["home"], g["away"], True), (g["away"], g["home"], False)):
+                put(name, team, opp, home, g["spread_home"], g["total"], g["kickoff"],
+                    g.get("provider") or name, feed["fetched_at"])
+    for r in saved_rows:
+        spread_home = -r["spread"] if r["home"] else r["spread"]
+        put("saved", r["team"], r["opp"], r["home"], spread_home, r["total"], r["kickoff"],
+            f"{r['provider']} (saved file)", saved_at)
+
+    status = {"oddsapi": oapi["status"], "espn": espn["status"], "saved": "file"}
+    current = {n for n, st in status.items() if st in ("fresh", "cached")}
+    order = [n for n in ("oddsapi", "espn") if n in current] + ["oddsapi", "espn", "saved"]
+    for row in by_team.values():
+        pick = next(n for n in order if n in row["by_source"])
+        row.update(row["by_source"][pick], source=pick, stale=pick not in current)
+    sources = [
+        {"source": "oddsapi", "what": "median of US books (The Odds API)", "status": oapi["status"],
+         "retrieved_at": oapi["fetched_at"], "games": len(oapi["games"]), "note": oapi.get("note"),
+         "quota_remaining": (oapi.get("quota") or {}).get("requests_remaining")},
+        {"source": "espn", "what": "ESPN public scoreboard (one book)", "status": espn["status"],
+         "retrieved_at": espn["fetched_at"], "games": len(espn["games"]), "note": espn.get("note")},
+        {"source": "saved", "what": f"data/weekly/lines_{season}.csv (weekly build)", "status": "file",
+         "retrieved_at": saved_at, "games": len(saved_rows) // 2, "note": None},
+    ]
+    return {"season": season, "week": week, "teams": by_team, "sources": sources}
 
 
 def load(season: int) -> pl.DataFrame:
