@@ -1082,18 +1082,19 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 5,BAL,00-0038112,Cam Jurgens,C,Out,Concussion,Did Not Participate In Practice,Concussion
 5,BAL,00-0038383,Andrew Vorhees,G,Questionable,Foot,Limited Participation in Practice,Foot
 5,BAL,00-0039064,Zay Flowers,WR,Questionable,Foot,Limited Participation in Practice,Foot
-5,BUF,00-0034827,DJ Moore,WR,,,Did Not Participate In Practice,Shoulder
+5,BUF,00-0034827,DJ Moore,WR,Questionable,Shoulder,Limited Participation in Practice,Shoulder
 5,BUF,00-0034832,Bradley Chubb,LB,,,Full Participation in Practice,Thumb
-5,BUF,00-0035230,Ed Oliver,DE,,,Did Not Participate In Practice,Knee
+5,BUF,00-0035230,Ed Oliver,DE,Out,Knee,Did Not Participate In Practice,Knee
 5,BUF,00-0036888,Damar Hamlin,S,,,Full Participation in Practice,Rib
-5,BUF,00-0037034,Dee Alford,CB,,,Did Not Participate In Practice,Ankle
-5,BUF,00-0037254,Terrel Bernard,LB,,,Full Participation in Practice,Knee
-5,BUF,00-0037288,Christian Benford,CB,,,Limited Participation in Practice,Toe
+5,BUF,00-0036988,Josh Palmer,WR,Out,Shoulder,Did Not Participate In Practice,Shoulder
+5,BUF,00-0037034,Dee Alford,CB,Questionable,Ankle,Limited Participation in Practice,Ankle
+5,BUF,00-0037254,Terrel Bernard,LB,,,Did Not Participate In Practice,Knee
+5,BUF,00-0037288,Christian Benford,CB,,,Full Participation in Practice,Toe
 5,BUF,00-0038557,Dorian Williams,LB,,,Full Participation in Practice,Hip
 5,BUF,00-0039763,Joe Andreessen,LB,,,Full Participation in Practice,Knee
 5,BUF,00-0039875,Ray Davis,RB,,,Full Participation in Practice,Hamstring
 5,BUF,00-0039901,Keon Coleman,WR,,,Full Participation in Practice,Ankle
-5,BUF,00-0040132,Landon Jackson,DE,,,Limited Participation in Practice,Knee
+5,BUF,00-0040132,Landon Jackson,DE,Questionable,Knee,Full Participation in Practice,Knee
 5,BUF,00-0040724,T.J. Sanders,DE,,,Full Participation in Practice,Illness
 5,BUF,00-0041128,Ar'maj Reed-Adams,G,,,Full Participation in Practice,Elbow
 5,CHI,00-0031583,Grady Jarrett,DT,,,Full Participation in Practice,Not injury related - resting player
@@ -1206,14 +1207,17 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 5,JAX,00-0038934,Anton Harrison,T,,,Full Participation in Practice,Elbow
 5,JAX,00-0039353,Jarrian Jones,CB,,,Limited Participation in Practice,Foot
 5,JAX,00-0040238,LeQuint Allen Jr.,RB,,,Full Participation in Practice,Hip
-5,LA,00-0031381,Davante Adams,WR,,,Did Not Participate In Practice,Not injury related - resting player
-5,LA,00-0031388,Aaron Donald,DT,,,Limited Participation in Practice,Back
-5,LA,00-0036244,Colby Parkinson,TE,,,Limited Participation in Practice,Knee
-5,LA,00-0036672,Grant Stuard,LB,,,Did Not Participate In Practice,Hamstring
-5,LA,00-0037195,Jaylen Watson,CB,,,Limited Participation in Practice,Shoulder
-5,LA,00-0037587,Nate Landman,LB,,,Did Not Participate In Practice,Shoulder
-5,LA,00-0037841,Quentin Lake,S,,,Did Not Participate In Practice,Hip
-5,LA,00-0040580,Josaiah Stewart,LB,,,Did Not Participate In Practice,Groin
+5,LA,00-0031381,Davante Adams,WR,,,Full Participation in Practice,Not injury related - resting player
+5,LA,00-0031388,Aaron Donald,DT,,,Did Not Participate In Practice,Back
+5,LA,00-0033110,Tyler Higbee,TE,,,Did Not Participate In Practice,Not injury related - resting player
+5,LA,00-0036244,Colby Parkinson,TE,,,Full Participation in Practice,Knee
+5,LA,00-0036603,Alaric Jackson,T,,,Did Not Participate In Practice,Not injury related - resting player
+5,LA,00-0036672,Grant Stuard,LB,,,Limited Participation in Practice,Hamstring
+5,LA,00-0037195,Jaylen Watson,CB,,,Full Participation in Practice,Shoulder
+5,LA,00-0037587,Nate Landman,LB,,,Full Participation in Practice,Shoulder
+5,LA,00-0037841,Quentin Lake,S,Questionable,Hip,Limited Participation in Practice,Hip
+5,LA,00-0039137,Byron Young,LB,,,Did Not Participate In Practice,Not injury related - resting player
+5,LA,00-0040580,Josaiah Stewart,LB,,,Limited Participation in Practice,Groin
 5,LA,00-0040590,Konata Mumpfield,WR,,,Full Participation in Practice,Shoulder
 5,LAC,00-0031040,Khalil Mack,DE,,,Full Participation in Practice,Not injury related - resting player
 5,LAC,00-0033546,Dalvin Tomlinson,DT,,,Full Participation in Practice,Hamstring
