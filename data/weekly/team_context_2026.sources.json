@@ -1,6 +1,6 @@
 {
   "season": 2026,
-  "generated_at": "2026-10-13T17:27:46Z",
+  "generated_at": "2026-10-17T15:12:40Z",
   "source": "nflverse play-by-play (nflfastR), computed locally",
   "baseline": {
     "fit_seasons": [
@@ -57,6 +57,12 @@
       "teams": 30,
       "plays": 1968,
       "teams_above_play_floor": 30
+    },
+    {
+      "week": 6,
+      "teams": 2,
+      "plays": 141,
+      "teams_above_play_floor": 2
     }
   ]
 }
