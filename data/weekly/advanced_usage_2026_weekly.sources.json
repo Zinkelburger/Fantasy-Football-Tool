@@ -1,51 +1,51 @@
 {
   "season": 2026,
-  "generated_at": "2026-10-24T15:35:24Z",
+  "generated_at": "2026-10-27T15:48:18Z",
   "sources": {
     "pbp_2026": {
       "status": "available",
       "error": null,
-      "rows": 16551,
-      "sha256": "ebbd0b96823c1ba65af41e440822c0d374e3c578e8913d0654cc8ee8820caf6c",
-      "cache_written_at": "2026-10-24T15:35:22.611335+00:00"
+      "rows": 18738,
+      "sha256": "3bb2c2944fb670cd16f8ab5ff3b10916244fe50297ca1ad7d463277b14053b1a",
+      "cache_written_at": "2026-10-27T15:48:16.031314+00:00"
     },
     "player_stats_2026": {
       "status": "available",
       "error": null,
-      "rows": 6558,
-      "sha256": "d788c3f95984432c5e1212636a324eabad0a913975af2d4097e39c458e9cddf1",
-      "cache_written_at": "2026-10-24T15:35:22.699337+00:00"
+      "rows": 7447,
+      "sha256": "8ae52d5ce3ad8cb3fb8e1cc8c11ce7cde4da69dd278e2f93faaed08056667f01",
+      "cache_written_at": "2026-10-27T15:48:16.240316+00:00"
     },
     "ftn_2026": {
       "status": "available",
       "error": null,
-      "rows": 16070,
-      "sha256": "5ab64ada56b3688e4abef39e48cd700742d3ea58ef0bfeb728888993cf604335",
-      "cache_written_at": "2026-10-24T15:35:24.345369+00:00"
+      "rows": 18019,
+      "sha256": "2a5b0148b8df5f953311fb6e4527999d900883bff1b7405a334fe39d676fba37",
+      "cache_written_at": "2026-10-27T15:48:18.295339+00:00"
     },
     "pfr_rush_week_2026": {
       "status": "available",
       "error": null,
-      "rows": 736,
-      "sha256": "b69aa7dd842b7dddd95eace6028d8f444092902582ac8353b44cf757bb89e853",
-      "cache_written_at": "2026-10-24T15:35:24.477371+00:00"
+      "rows": 744,
+      "sha256": "33fe587cc43a161a659bc7717f40dfb297dc4f26990f2b0141362207c4b087aa",
+      "cache_written_at": "2026-10-27T15:48:18.432340+00:00"
     },
     "pfr_ids": {
       "status": "available",
       "error": null,
       "rows": 24861,
-      "sha256": "c8d1912351eca09cc279b3b2423c393bbb0092972e93e23bd9618a927a5fb982",
-      "cache_written_at": "2026-10-24T15:35:24.548373+00:00"
+      "sha256": "30c36abf4581b9cd9a6eb88d2f3477fd8e82ebfdea0599aed8addaa8cb46916a",
+      "cache_written_at": "2026-10-27T15:48:18.615342+00:00"
     },
     "snaps_2026": {
       "status": "available",
       "error": null,
-      "rows": 8763,
-      "sha256": "3c0ad96ca93a35f1c1f1f8df13666e24b8f3222de80e10d56df6f355e8a8c422",
-      "cache_written_at": "2026-10-24T15:35:24.601374+00:00"
+      "rows": 9981,
+      "sha256": "ee8876643fbea3cb24b31a6516efa6463877b1692aefbe72bc450baf66ee0240",
+      "cache_written_at": "2026-10-27T15:48:18.755344+00:00"
     }
   },
-  "output_sha256": "563fb2bc5812e8b6f89db8dc6ae3656ba2390a391b08170580d87a525f519236",
+  "output_sha256": "aaf1d9a3fbef77551469adbc08a11182f244f8f2c27e86b6604ffe058432b5af",
   "attribution": "FTN Data via nflverse (CC-BY-SA 4.0); PFR advanced rushing and snap counts via nflverse; nflverse play-by-play/player stats",
   "source_documentation": {
     "ftn": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
@@ -121,12 +121,12 @@
     },
     {
       "week": 7,
-      "games": 1,
-      "player_rows": 18,
-      "targeted_players": 14,
-      "players_with_complete_catchability": 14,
-      "players_with_ybcon": 0,
-      "players_with_snaps": 18
+      "games": 14,
+      "player_rows": 266,
+      "targeted_players": 222,
+      "players_with_complete_catchability": 207,
+      "players_with_ybcon": 7,
+      "players_with_snaps": 265
     }
   ]
 }

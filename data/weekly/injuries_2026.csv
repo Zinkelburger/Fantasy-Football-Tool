@@ -1815,15 +1815,15 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,ATL,00-0039070,Gervon Dexter Sr.,DT,Questionable,Hamstring,Limited Participation in Practice,Hamstring
 7,ATL,00-0039842,Michael Jerrell,T,Out,Biceps,Did Not Participate In Practice,Biceps
 7,ATL,00-0040156,Billy Bowman Jr.,CB,Out,Hamstring,Did Not Participate In Practice,Hamstring
-7,ATL,00-0040432,Beaux Collins,WR,Questionable,Hip,Full Participation in Practice,Hip
-7,ATL,00-0040687,Cameron Williams,T,Questionable,Ankle,Limited Participation in Practice,Ankle
+7,ATL,00-0040432,Beaux Collins,WR,Out,Hip,Full Participation in Practice,Hip
+7,ATL,00-0040687,Cameron Williams,T,Out,Ankle,Limited Participation in Practice,Ankle
 7,ATL,00-0041066,Kendal Daniels,LB,Questionable,Neck,Full Participation in Practice,Neck
 7,ATL,00-0041469,Avieon Terrell,CB,Questionable,Back,Limited Participation in Practice,Back
 7,BAL,00-0026190,Calais Campbell,DT,,,Did Not Participate In Practice,Not injury related - resting player
 7,BAL,00-0032965,Ronnie Stanley,T,,,Did Not Participate In Practice,Toe
 7,BAL,00-0033935,Trey Hendrickson,LB,,,Full Participation in Practice,Finger
 7,BAL,00-0034753,Mark Andrews,TE,,,Full Participation in Practice,Hand
-7,BAL,00-0034796,Lamar Jackson,QB,Questionable,Ankle,Limited Participation in Practice,Ankle
+7,BAL,00-0034796,Lamar Jackson,QB,Out,Ankle,Limited Participation in Practice,Ankle
 7,BAL,00-0036081,Broderick Washington,DE,Questionable,Ankle,Limited Participation in Practice,Ankle
 7,BAL,00-0036302,Jaylinn Hawkins,S,Out,Knee,Did Not Participate In Practice,Knee
 7,BAL,00-0036369,John Simpson,G,,,Full Participation in Practice,Groin
@@ -1860,11 +1860,11 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,CLE,00-0035234,Tytus Howard,T,,,Full Participation in Practice,Knee
 7,CLE,00-0035526,Elgton Jenkins,C,,,Full Participation in Practice,Knee
 7,CLE,00-0035680,Quincy Williams,LB,Questionable,Neck,Limited Participation in Practice,Neck
-7,CLE,00-0036282,Grant Delpit,S,Questionable,Concussion,Limited Participation in Practice,Concussion
+7,CLE,00-0036282,Grant Delpit,S,,,Limited Participation in Practice,Concussion
 7,CLE,00-0036953,Teven Jenkins,G,Out,Back,Did Not Participate In Practice,Back
 7,CLE,00-0037832,Kalia Davis,DT,Out,Quadricep,Did Not Participate In Practice,Quadricep
 7,CLE,00-0039895,Mike Hall Jr.,DT,Out,Ankle,Did Not Participate In Practice,Ankle
-7,CLE,00-0040162,Dylan Sampson,RB,Questionable,Knee,Full Participation in Practice,Knee
+7,CLE,00-0040162,Dylan Sampson,RB,,,Full Participation in Practice,Knee
 7,CLE,00-0040579,Carson Schwesinger,LB,,,Limited Participation in Practice,Ankle
 7,CLE,00-0040685,Mason Graham,DT,,,Full Participation in Practice,Knee
 7,CLE,00-0040704,Dillon Gabriel,QB,Out,Back,Full Participation in Practice,Back
@@ -1873,19 +1873,19 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,CLE,00-0041075,Justin Jefferson,LB,,,Full Participation in Practice,Hip
 7,CLE,00-0041547,KC Concepcion,WR,,,Full Participation in Practice,Calf
 7,DAL,00-0027940,Von Miller,LB,,,Did Not Participate In Practice,Not injury related - resting player
-7,DAL,00-0035227,P.J. Locke,S,,,Limited Participation in Practice,Foot
+7,DAL,00-0035227,P.J. Locke,S,Questionable,Foot,Limited Participation in Practice,Foot
 7,DAL,00-0037247,George Pickens,WR,,,Full Participation in Practice,Shoulder
-7,DAL,00-0037801,KaVontae Turpin,WR,,,Did Not Participate In Practice,Ribs
+7,DAL,00-0037801,KaVontae Turpin,WR,Out,Ribs,Did Not Participate In Practice,Ribs
 7,DAL,00-0037839,Cobie Durant,CB,,,Full Participation in Practice,Hamstring
 7,DAL,00-0038556,DeMarvion Overshown,LB,,,Full Participation in Practice,Hamstring
 7,DAL,00-0038624,Ameer Speed,CB,,,Full Participation in Practice,Knee
-7,DAL,00-0038625,Dee Winters,LB,,,Did Not Participate In Practice,Calf
-7,DAL,00-0039109,Broderick Jones,T,,,Limited Participation in Practice,Wrist
+7,DAL,00-0038625,Dee Winters,LB,Out,Calf,Did Not Participate In Practice,Calf
+7,DAL,00-0039109,Broderick Jones,T,,,Full Participation in Practice,Wrist
 7,DAL,00-0039167,Joey Porter Jr.,CB,,,Full Participation in Practice,Ankle
 7,DAL,00-0039341,Tyler Guyton,T,,,Full Participation in Practice,Calf
-7,DAL,00-0039352,Marist Liufau,LB,,,Full Participation in Practice,Forearm
+7,DAL,00-0039352,Marist Liufau,LB,Questionable,Forearm,Full Participation in Practice,Forearm
 7,DAL,00-0040045,Alijah Clark,S,,,Full Participation in Practice,Hamstring
-7,DAL,00-0040874,Drew Shelton,T,,,Did Not Participate In Practice,Hamstring
+7,DAL,00-0040874,Drew Shelton,T,Out,Hamstring,Did Not Participate In Practice,Hamstring
 7,DEN,00-0035248,Zach Allen,DE,,,Full Participation in Practice,Not injury related - resting player
 7,DEN,00-0036564,Talanoa Hufanga,S,Out,Ankle,Did Not Participate In Practice,Ankle
 7,DEN,00-0036613,Jaylen Waddle,WR,,,Full Participation in Practice,Chest
@@ -1926,7 +1926,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,HOU,00-0039857,Blake Fisher,T,Out,Thumb,Did Not Participate In Practice,Thumb
 7,IND,00-0030279,Keenan Allen,WR,,,Full Participation in Practice,Not injury related - resting player
 7,IND,00-0032378,DeForest Buckner,DT,,,Did Not Participate In Practice,Not injury related - resting player
-7,IND,00-0033269,Rigoberto Sanchez,P,Questionable,Foot,Did Not Participate In Practice,Foot
+7,IND,00-0033269,Rigoberto Sanchez,P,,,Did Not Participate In Practice,Foot
 7,IND,00-0033952,Grover Stewart,DT,,,Full Participation in Practice,Not injury related - resting player
 7,IND,00-0034573,Charvarius Ward,CB,,,Full Participation in Practice,Not injury related - resting player
 7,IND,00-0035021,Ashton Dulin,WR,,,Full Participation in Practice,Hamstring
@@ -1941,7 +1941,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,IND,00-0040128,Tyler Warren,TE,Out,Groin,Did Not Participate In Practice,Groin
 7,IND,00-0040139,Justin Walley,CB,Questionable,Knee,Limited Participation in Practice,Knee
 7,IND,00-0040163,Jalen Travis,T,,,Full Participation in Practice,Foot
-7,IND,00-0041039,CJ Allen,LB,Questionable,Ankle,Did Not Participate In Practice,Ankle
+7,IND,00-0041039,CJ Allen,LB,Out,Ankle,Did Not Participate In Practice,Ankle
 7,IND,00-0041518,Bryce Boettcher,LB,Questionable,Groin,Did Not Participate In Practice,Groin
 7,KC,00-0030506,Travis Kelce,TE,,,Limited Participation in Practice,Ankle
 7,KC,00-0033873,Patrick Mahomes,QB,,,Full Participation in Practice,Knee
@@ -1964,7 +1964,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,LA,00-0039772,Josh Wallace,CB,,,Full Participation in Practice,Calf
 7,LV,00-0034275,Foley Fatukasi,DT,,,Full Participation in Practice,Shoulder
 7,LV,00-0034759,Kolton Miller,T,,,Full Participation in Practice,Shoulder
-7,LV,00-0037074,Quay Walker,LB,,,Full Participation in Practice,Chest
+7,LV,00-0037074,Quay Walker,LB,Questionable,Chest,Full Participation in Practice,Chest
 7,LV,00-0037527,Segun Olubi,LB,,,Full Participation in Practice,Wrist
 7,LV,00-0037829,Spencer Burford,G,,,Full Participation in Practice,Knee
 7,LV,00-0039338,Brock Bowers,TE,,,Full Participation in Practice,Hamstring
@@ -2003,6 +2003,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,NE,00-0036813,Christian Elliss,LB,Questionable,Chest,Full Participation in Practice,Chest
 7,NE,00-0036979,Alijah Vera-Tucker,G,Out,Hamstring,Did Not Participate In Practice,Hamstring
 7,NE,00-0037413,Ben Brown,C,Out,Knee,Did Not Participate In Practice,Knee
+7,NE,00-0039147,Christian Gonzalez,CB,Questionable,Illness,,
 7,NE,00-0039851,Drake Maye,QB,,,Full Participation in Practice,Shoulder
 7,NE,00-0040171,Joshua Farmer,DT,,,Full Participation in Practice,Not injury related - personal matter
 7,NE,00-0040200,Andy Borregales,K,,,Full Participation in Practice,Not injury related - personal matter
@@ -2031,7 +2032,7 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,NYG,00-0036386,Andrew Thomas,T,,,Limited Participation in Practice,Groin
 7,NYG,00-0036937,Paulson Adebo,CB,Questionable,Knee,Limited Participation in Practice,Knee
 7,NYG,00-0036996,Greg Newsome II,CB,Out,Concussion,Did Not Participate In Practice,Concussion
-7,NYG,00-0036998,Jevon Holland,S,Questionable,Concussion,Limited Participation in Practice,Concussion
+7,NYG,00-0036998,Jevon Holland,S,Out,Concussion,Limited Participation in Practice,Concussion
 7,NYG,00-0037611,Kayvon Thibodeaux,LB,,,Full Participation in Practice,Illness
 7,NYG,00-0038094,Jordan Stout,P,,,Full Participation in Practice,Knee
 7,NYG,00-0038576,Charlie Jones,WR,,,Full Participation in Practice,Achilles
@@ -2051,31 +2052,31 @@ week,team,gsis_id,full_name,position,report_status,report_primary_injury,practic
 7,NYJ,00-0039886,T'Vondre Sweat,DT,,,Full Participation in Practice,Elbow
 7,NYJ,00-0039890,Adonai Mitchell,WR,,,Full Participation in Practice,Finger
 7,NYJ,00-0040186,Francisco Mauigoa,LB,Out,Quadricep,Did Not Participate In Practice,Quadricep
-7,PHI,00-0034351,Dallas Goedert,TE,,,Did Not Participate In Practice,Knee
-7,PHI,00-0034844,Saquon Barkley,RB,,,Limited Participation in Practice,Hamstring
-7,PHI,00-0034951,Fred Johnson,T,,,Limited Participation in Practice,Illness
+7,PHI,00-0034351,Dallas Goedert,TE,,,Full Participation in Practice,Knee
+7,PHI,00-0034844,Saquon Barkley,RB,Questionable,Hamstring,Full Participation in Practice,Hamstring
+7,PHI,00-0034951,Fred Johnson,T,,,Full Participation in Practice,Illness
 7,PHI,00-0035662,Marquise Brown,WR,,,Full Participation in Practice,Ankle
-7,PHI,00-0036192,A.J. Epenesa,DE,,,Limited Participation in Practice,Back
-7,PHI,00-0036224,Jonathan Greenard,LB,,,Did Not Participate In Practice,Ankle
+7,PHI,00-0036192,A.J. Epenesa,DE,,,Full Participation in Practice,Back
+7,PHI,00-0036224,Jonathan Greenard,LB,Questionable,Ankle,Did Not Participate In Practice,Ankle
 7,PHI,00-0036418,Zack Baun,LB,,,Full Participation in Practice,Shoulder
-7,PHI,00-0036501,Michael Carter II,CB,,,Did Not Participate In Practice,Abdomen
-7,PHI,00-0036912,DeVonta Smith,WR,,,Did Not Participate In Practice,Hamstring
-7,PHI,00-0037002,Landon Dickerson,G,,,Limited Participation in Practice,Knee
+7,PHI,00-0036501,Michael Carter II,CB,Out,Abdomen,Did Not Participate In Practice,Abdomen
+7,PHI,00-0036912,DeVonta Smith,WR,Out,Hamstring,Did Not Participate In Practice,Hamstring
+7,PHI,00-0037002,Landon Dickerson,G,Questionable,Knee,Full Participation in Practice,Knee
 7,PHI,00-0037073,Jordan Davis,DT,,,Full Participation in Practice,Shin
-7,PHI,00-0037086,Grant Calcaterra,TE,,,Full Participation in Practice,Back
+7,PHI,00-0037086,Grant Calcaterra,TE,Questionable,Back,Full Participation in Practice,Back
 7,PHI,00-0037132,Britain Covey,WR,,,Full Participation in Practice,Shoulder
 7,PHI,00-0038116,Arnold Ebiketie,LB,,,Full Participation in Practice,Shoulder
 7,PHI,00-0038386,Jalen Carter,DT,,,Full Participation in Practice,Wrist
-7,PHI,00-0038393,Dontayvion Wicks,WR,,,Did Not Participate In Practice,Ankle
-7,PHI,00-0038412,Moro Ojomo,DT,,,Limited Participation in Practice,Abdomen
-7,PHI,00-0039001,Tyler Steen,G,,,Limited Participation in Practice,Shoulder
-7,PHI,00-0039013,Nolan Smith,LB,,,Did Not Participate In Practice,Concussion
-7,PHI,00-0039072,Jakorian Bennett,CB,,,Full Participation in Practice,Knee
-7,PHI,00-0039740,Jalyx Hunt,LB,,,Limited Participation in Practice,Knee
+7,PHI,00-0038393,Dontayvion Wicks,WR,Out,Ankle,Did Not Participate In Practice,Ankle
+7,PHI,00-0038412,Moro Ojomo,DT,,,Full Participation in Practice,Abdomen
+7,PHI,00-0039001,Tyler Steen,G,,,Full Participation in Practice,Shoulder
+7,PHI,00-0039013,Nolan Smith,LB,Out,Concussion,Did Not Participate In Practice,Concussion
+7,PHI,00-0039072,Jakorian Bennett,CB,Questionable,Knee,Full Participation in Practice,Knee
+7,PHI,00-0039740,Jalyx Hunt,LB,Questionable,Knee,Limited Participation in Practice,Knee
 7,PHI,00-0040587,Drew Kendall,C,,,Full Participation in Practice,Knee
-7,PHI,00-0040631,Willie Lampkin,C,,,Limited Participation in Practice,Illness
+7,PHI,00-0040631,Willie Lampkin,C,,,Full Participation in Practice,Illness
 7,PHI,00-0040708,Jihaad Campbell,LB,,,Full Participation in Practice,Wrist
-7,PHI,00-0041483,Eli Stowers,TE,,,Full Participation in Practice,Quadricep
+7,PHI,00-0041483,Eli Stowers,TE,Questionable,Quadricep,Full Participation in Practice,Quadricep
 7,PIT,00-0027969,Cameron Heyward,DT,,,Full Participation in Practice,Not injury related - resting player
 7,PIT,00-0033055,Jalen Ramsey,CB,,,Full Participation in Practice,Wrist
 7,PIT,00-0033886,T.J. Watt,LB,,,Full Participation in Practice,Not injury related - resting player
