@@ -19,9 +19,46 @@ The draft pipeline below is for building a season-wide corpus.
 1. Identify unresolved decisions from the current roster and weekly data.
 2. `research_brief(players=["Full Name", ...], focus="weekly", days=3)` batches
    up to six players into one title/body search of fantasyfootball + nfl, with
-   **zero comment fetches**. It returns at most six threads by default, filtered
-   for player matches and injury/usage/transaction language, with reasons,
-   dates, source links and missing coverage. Upvotes do not affect selection.
+   **zero comment fetches**. The query sends every single-word alias that
+   reaches only that player — unique surname, unique first name, Nickname
+   column — because titles say "Perine" and "Jamo", not "Samaje Perine"
+   (`query_terms` in the result shows what was sent). Shared surnames stay
+   out of the query; the resolver places them afterwards from team words
+   and the coach/coordinator surnames registered with a `team` in
+   `non_players.json`. It returns at most six threads by default, filtered
+   for player matches and injury/usage/transaction language (a post titled
+   after the player counts as a `title` signal), with reasons, dates, source
+   links and missing coverage. **Every post that named a requested player
+   and was then dropped is listed in `filtered_titles` with its reason**, so
+   a filter can be second-guessed; a bare count once hid a 655-upvote
+   "touch share" thread. **`ambiguous_titles`** lists posts where a requested
+   player is only one possible owner of a bare name ("Brown", "JJ"): leads
+   for the candidate set, never evidence about the player. Settle one with
+   `read_research_thread(id, max_comments=0)` + `resolve_text`, or report it
+   as unresolved. A shared nickname is recorded in `alias_overrides.json` as
+   a list (`"jj": ["Justin Jefferson", "J.J. McCarthy"]`): no default, no
+   ADP tie-break, resolved by context or adjudicated per occurrence; a
+   mention settled only by an adjudicated default carries the tier
+   `default`, which the weekly tools do not count as evidence. Upvotes do
+   not affect selection.
+   When the window fills before the date cutoff, the brief re-queries each
+   player who got nothing, alone, with only his own terms — at most three
+   extra retrievals (`extra_queries`), stopping at the budget.
+   **The pool is kept current by the weekly build** (`build_week.py` →
+   `expand_pool.py`, which appends every ESPN depth-chart QB/RB/WR/TE the
+   pool lacks with ADP 999 and the live team, then `refresh_pool.py`, which
+   corrects teams and byes from Sleeper and drops the ranking cache when
+   anything changed). All 32 head coaches and coordinators are registered in
+   `non_players.json` with `team`, `title` and `source` (Wikipedia, fetched
+   2026-10-28); a staff surname that is also a player's name is never used
+   as team evidence. `live_mentions` and `latest_threads` list bare shared
+   names under *unsettled* / `[ambiguous: …]` instead of dropping them.
+   `nickname_candidates()` mines the local corpus for capitalized words that
+   resolve to nobody, with the players they co-occur with; confirm with the
+   user and record with `add_nickname(player, alias)`, which refuses anything
+   that is already someone else's name, a registered non-player's surname, a
+   team word or jargon (`python resolve_names.py --check-nicknames` audits
+   the column).
 3. Verify the original reports. If needed, make one targeted follow-up search
    in the current team subreddit and read at most two selected threads with
    `read_research_thread(id, max_comments=5)`.

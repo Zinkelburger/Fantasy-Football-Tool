@@ -71,13 +71,15 @@ mcp = MCPServer("ff-reddit-scraper", version="1.0.0", instructions=(
 ))
 
 _pool = None
+POOL_CSV = HERE / "combined_with_depth.csv"
+MAX_SPLIT_QUERIES = 3   # per-player follow-ups research_brief may spend when its window fills
 
 
 def pool():
     """Alias table is ~2.4k keys over 337 players; build once per process."""
     global _pool
     if _pool is None:
-        _pool = R.load_pool(str(HERE / "combined_with_depth.csv"))
+        _pool = R.load_pool(str(POOL_CSV))
     return _pool
 
 
@@ -151,7 +153,8 @@ def fetch_thread(url_or_id: str, replace_more: int = 20) -> str:
             f.write(json.dumps({
                 "id": s.id, "title": s.title, "selftext": s.selftext,
                 "score": s.score, "num_comments": s.num_comments,
-                "created_utc": s.created_utc, "permalink": s.permalink}) + "\n")
+                "created_utc": s.created_utc, "permalink": s.permalink,
+                "subreddit": str(s.subreddit)}) + "\n")
         added_p = 1
 
     added_c = 0
@@ -238,7 +241,8 @@ def sweep_subreddit(subreddit: str = "fantasyfootball", top: int = 50,
             pf.write(json.dumps({
                 "id": s.id, "title": s.title, "selftext": s.selftext,
                 "score": s.score, "num_comments": s.num_comments,
-                "created_utc": s.created_utc, "permalink": s.permalink}) + "\n")
+                "created_utc": s.created_utc, "permalink": s.permalink,
+                "subreddit": str(s.subreddit)}) + "\n")
             for c in comments:
                 if c.id in seen_c:
                     continue
@@ -276,9 +280,15 @@ def corpus_stats() -> str:
         tiers[m.tier] += 1
     players = pool()[0]
     zero = sum(1 for p in players if per.get(p.player_name, 0) == 0)
+    try:
+        stamp = json.loads(NICKNAME_SCAN_STAMP.read_text())
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(stamp["scanned_at"])
+        scan = f"nickname scan: {age.days} day(s) ago, {stamp.get('candidates', '?')} candidates"
+    except (OSError, ValueError, KeyError):
+        scan = "nickname scan: never run (nickname_candidates())"
     lines = [f"corpus: {len(_read_jsonl(POSTS))} posts, "
              f"{len(_read_jsonl(COMMENTS))} comments",
-             f"tiers: {dict(tiers)}",
+             f"tiers: {dict(tiers)}", scan,
              f"players with mentions: {len(per)}/{len(players)} ({zero} with none)",
              "", "busiest:"]
     lines += [f"  {n:26s} {c}" for n, c in per.most_common(25)]
@@ -792,7 +802,24 @@ def _names_in(text, title=""):
     return {m.player.player_name
             for m in R.scan(text or "", aliases, keys, thread_title=title,
                             cap_required=cap, defaults=defaults, first_names=firsts)
-            if m.tier not in ("review", "ambiguous")}
+            if m.tier not in ("review", "ambiguous", "default")}
+
+
+def _uncertain_in(text, title=""):
+    """Bare names several players own, unsettled here: {player: (token, [candidates])}.
+
+    The companion of _names_in. What that function drops as not confident is
+    not nothing — it is a lead for every candidate, and a tool that stays
+    silent about it leaves an agent to assume the famous one was meant."""
+    players, aliases, keys, cap, defaults, firsts = pool()
+    out = {}
+    for m in R.scan(text or "", aliases, keys, thread_title=title,
+                    cap_required=cap, defaults=defaults, first_names=firsts):
+        if m.tier in ("review", "ambiguous", "default"):
+            cands = [c.player_name for c in m.candidates]
+            for c in cands:
+                out.setdefault(c, (m.raw, cands))
+    return out
 
 
 def _vote_tally(post_id, title):
@@ -1554,9 +1581,11 @@ def release_thread(post_id: str, reason: str = "") -> str:
 
 
 @mcp.tool()
-def report_non_player(name: str, role: str = "", note: str = "") -> str:
+def report_non_player(name: str, role: str = "", note: str = "", team: str = "") -> str:
     """Record someone who is NOT a draftable player: a coach, a beat writer, a
-    retired player, anyone outside the 337-man pool.
+    retired player, anyone outside the 337-man pool. team= (an NFL code such
+    as CIN) makes a coach's or coordinator's surname context for that team, so
+    "Pitcher said Brown keeps the lead role" resolves to the Bengals' Brown.
 
     This is the fix for the resolver's last real error class. The pool cannot
     represent a person it does not contain, so every such person gets shredded
@@ -1580,15 +1609,196 @@ def report_non_player(name: str, role: str = "", note: str = "") -> str:
         reg = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         reg = {}
-    if name in reg:
+    team = team.strip().upper()
+    if team and team not in R.TEAM_WORDS:
+        return f"unknown team code {team!r}; use one of {', '.join(sorted(R.TEAM_WORDS))}."
+    if name in reg and not (team and not reg[name].get("team")):
         return f"{name!r} already registered as {reg[name].get('role','?')}."
-    reg[name] = {k: v for k, v in (("role", role.strip()), ("note", note.strip())) if v}
+    entry = reg.setdefault(name, {})
+    entry.update({k: v for k, v in (("role", role.strip()), ("note", note.strip()),
+                                    ("team", team)) if v})
     path.write_text(json.dumps(reg, indent=1, sort_keys=True), encoding="utf-8")
     R.NON_PLAYER_NAMES, R.NON_PLAYER_FIRSTS = R.load_non_players()
+    R.PEOPLE_CONTEXT = R.load_people_context()
     global _pool
     _pool = None
     return (f"registered {name!r}" + (f" ({role})" if role else "")
+            + (f" as {team} staff" if team else "")
             + f"; registry now {len(reg)} names. Resolver reloaded.")
+
+
+NICKNAME_SCAN_STAMP = CORPUS / "nickname_scan.json"
+
+
+def _recent_comment_texts(limit, subreddit=""):
+    """(body, title, source) texts: retained research threads first — those are
+    the r/fantasyfootball threads an agent actually opened — then the newest
+    corpus comments, optionally only from posts saved with that subreddit."""
+    out = []
+    try:
+        import sqlite3
+        db = sqlite3.connect(CORPUS / "research.sqlite3", timeout=5)
+        try:
+            for (raw,) in db.execute("SELECT data FROM cache WHERE key LIKE '[\"detail-v1\",%'"):
+                data = json.loads(raw)
+                title = (data.get("thread") or {}).get("title", "")
+                out.append(((data.get("thread") or {}).get("excerpt", ""), title, "research"))
+                out.extend((c.get("body", ""), title, "research") for c in data.get("comments", []))
+        finally:
+            db.close()
+    except Exception as exc:  # the corpus half still runs; say why this half did not
+        out.append(("", f"[research cache unavailable: {exc}]", "research"))
+    posts = {p.get("id"): p for p in _read_jsonl(POSTS)}
+    rows = _read_jsonl(COMMENTS)
+    if subreddit:
+        want = subreddit.lower().lstrip("r/")
+        rows = [c for c in rows
+                if (posts.get(c.get("post_id")) or {}).get("subreddit", "").lower() == want]
+    rows.sort(key=lambda c: -(c.get("created_utc") or 0))
+    for c in rows[:limit]:
+        out.append((c.get("body") or "", (posts.get(c.get("post_id")) or {}).get("title", ""), "corpus"))
+    return out
+
+
+@mcp.tool()
+def nickname_candidates(limit: int = 25, min_count: int = 3, comments: int = 8000,
+                        player: str = "", subreddit: str = "") -> str:
+    """Capitalized words people keep writing that resolve to nobody — the raw
+    material for new Nickname-column entries ("Jamo", "Hock", "Jettas") and
+    for report_non_player (coaches, GMs, players outside the pool).
+
+    No Reddit call: scans retained research threads first (the
+    r/fantasyfootball threads an agent opened this season), then the newest
+    corpus comments (subreddit= limits those to posts saved with that
+    subreddit; older sweeps did not record one). For each token: occurrences,
+    the pool player named in the SAME SENTENCE most often with the share of
+    occurrences that holds for, and two sample sentences. Dictionary words,
+    jargon, team words, registered non-players and sentence-initial capitals
+    are excluded.
+
+    Run once after each weekly pass, and whenever research_brief returns
+    players_without_selected_evidence for a player you expected news on.
+
+    A candidate is confirmable only when ALL hold: >=3 occurrences; one pool
+    player shares the sentence in a majority of them; no second player shares
+    it more than once; and the user says yes. Anything else: report_non_player
+    if it is plainly a person outside the pool, otherwise leave it. Never
+    add_nickname from co-mention counts alone."""
+    NEWS.bounded(limit, 1, 100, "limit")
+    NEWS.bounded(min_count, 1, 1000, "min_count")
+    NEWS.bounded(comments, 100, 200000, "comments")
+    players, aliases, keys, cap, defaults, firsts = pool()
+    want = _canon_name(player) if player else None
+    if player and not want:
+        return f"{player!r} is not in the pool"
+    non_player_tokens = {t for k in R.NON_PLAYER_NAMES for t in k.split()}
+    counts, co, samples, sources = Counter(), defaultdict(Counter), defaultdict(list), Counter()
+    notes = []
+    for body, title, source in _recent_comment_texts(comments, subreddit):
+        if not body:
+            if title.startswith("["):
+                notes.append(title)
+            continue
+        sources[source] += 1
+        for sentence in (s.strip() for s in R.SENT_SPLIT.split(body) if s.strip()):
+            named = {m.player.player_name for m in R.scan(
+                sentence, aliases, keys, thread_title=title, cap_required=cap,
+                defaults=defaults, first_names=firsts)
+                if m.tier in ("exact", "unique", "context")}
+            if want and want not in named:
+                continue
+            for i, (raw, _) in enumerate(R.tokenize_spans(sentence)):
+                word = raw.strip("'’.,!?:;()[]\"")
+                key = R._strip(raw)
+                stem = re.sub(r"(\d+|s)$", "", key)   # WRs, QBs, RB1, WR2 -> jargon
+                if (i == 0 or len(key) < 3 or not word[:1].isupper() or word.isupper() and len(word) > 4
+                        or key in aliases or key in R.COMMON_WORDS or key in R.JARGON
+                        or stem in R.JARGON or key in R._DICT_WORDS or key in R.TEAM_SENSE_TOKENS
+                        or key in non_player_tokens or key.isdigit()):
+                    continue
+                counts[key] += 1
+                co[key].update(named)
+                if len(samples[key]) < 2:
+                    samples[key].append(sentence.replace("\n", " ")[:160])
+
+    def concentration(k):
+        top = co[k].most_common(1)
+        return top[0][1] / counts[k] if top else 0.0
+
+    rows = sorted(((k, n) for k, n in counts.items() if n >= min_count),
+                  key=lambda kn: (-concentration(kn[0]), -kn[1]))[:limit]
+    try:
+        NICKNAME_SCAN_STAMP.write_text(json.dumps({
+            "scanned_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "texts": dict(sources), "candidates": len(rows)}))
+    except OSError:
+        pass
+    if not rows:
+        return "no unresolved capitalized tokens met the threshold" + ("; " + "; ".join(notes) if notes else "")
+    out = [f"unresolved capitalized tokens — {sources.get('research', 0)} research-thread texts, "
+           f"{sources.get('corpus', 0)} corpus comments" + (f" from r/{subreddit}" if subreddit else ""),
+           "count  share  token          same-sentence player (confirmable needs share > 50%, one player)",
+           "=" * 90]
+    for k, n in rows:
+        top = co[k].most_common(2)
+        owner = (f"{top[0][0]} x{top[0][1]}" + (f"; also {top[1][0]} x{top[1][1]}" if len(top) > 1 else "")
+                 if top else "nobody in the same sentence")
+        out.append(f"{n:>5}  {concentration(k):>4.0%}  {k:<14} {owner}")
+        for s in samples[k]:
+            out.append(f"              · {s}")
+    out += notes + ["", "Candidates, not nicknames. A token with no same-sentence player is usually a "
+                        "person outside the pool: report_non_player(full name). Confirm nicknames with "
+                        "the user before add_nickname(player, alias)."]
+    return "\n".join(out)
+
+
+@mcp.tool()
+def add_nickname(player: str, alias: str) -> str:
+    """Record a confirmed nickname in the pool's Nickname column so the
+    resolver and research_brief's search terms both pick it up.
+
+    Refuses an alias that is already another player's name token or
+    nickname, a registered non-player's surname, a team word, jargon or a
+    stopword: "Chubb" for Chuba Hubbard would have been refused. Only call
+    after the user has confirmed the alias means this player."""
+    import copy
+    import csv
+    canon = _canon_name(player)
+    if not canon:
+        return f"{player!r} is not in the pool"
+    alias = " ".join(alias.split())
+    if not 2 <= len(alias) <= 20 or "|" in alias or "," in alias or not R._key(alias):
+        return "alias must be 2–20 characters with at least one letter and no '|' or ','"
+    caveat = (f" Note: {alias!r} is an English word, so it will only match when written "
+              f"with a capital that is not the start of a sentence."
+              if R._key(alias) in R._DICT_WORDS else "")
+    players = pool()[0]
+    target = next(p for p in players if p.player_name == canon)
+    if R._key(alias) in {R._key(n) for n in str(target.player_nickname or "").split("|")}:
+        return f"{alias!r} is already a nickname for {canon}"
+    trial = []
+    for p in players:
+        q = copy.copy(p)
+        if p is target:
+            q.player_nickname = "|".join(x for x in [str(p.player_nickname or ""), alias] if x)
+        trial.append(q)
+    problems = [(n, w, why) for n, w, why in R.nickname_collisions(trial)
+                if w == canon and R._key(n) == R._key(alias)]
+    if problems:
+        return f"refused: {alias!r} is the {problems[0][2]}"
+    with open(POOL_CSV, newline="", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        rows, fields = list(reader), reader.fieldnames
+    for row in rows:
+        if row["Player"] == canon:
+            row["Nickname"] = "|".join(x for x in [row.get("Nickname", ""), alias] if x)
+    with open(POOL_CSV, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=fields)
+        w.writeheader()
+        w.writerows(rows)
+    global _pool
+    _pool = None
+    return f"added {alias!r} to {canon}; pool reloaded." + caveat
 
 
 @mcp.tool()
@@ -1700,6 +1910,36 @@ def _research_text(result, limit, comments_per_thread):
     return "\n".join(out)
 
 
+def _search_aliases(name, aliases, cap):
+    """Single-word terms worth sending to Reddit's title/body search for one player.
+
+    Titles use surnames and nicknames — "touch share between Perine, Chase
+    Brown", "Jamo's red-zone role" — so a full-name query misses them. Any
+    alias that reaches only this player qualifies: a unique surname, a unique
+    first name (Bijan, Saquon, Rhamondre), or a Nickname-column entry. Shared
+    tokens ('brown', 'allen'), dictionary-gated ones ('love'), two-letter
+    initialisms and the generated initial+surname forms ('sperine') stay out:
+    they flood the 100-post window or match nothing anyone types."""
+    toks = R._tok(name)
+    generated = {f"{toks[0][0]}{toks[-1]}"} if len(toks) >= 2 else set()
+    surname = toks[-1] if toks else ""
+    out = set()
+    for alias, owners in aliases.items():
+        if (len(owners) == 1 and owners[0].player_name == name
+                and alias not in cap and " " not in alias
+                and len(alias) >= 3 and alias not in generated
+                and alias not in R.COMMON_WORDS and alias not in R.JARGON
+                # "dallas" (Goedert) is a unique first name and a city; "hock"
+                # and "tet" are words. Reddit search is case-blind, so either
+                # would fill the 100-post window with noise. A word that is
+                # the surname itself (perine is not one; "hall" is) is kept
+                # only when the resolver does not gate it, which `cap` covers.
+                and alias not in R.TEAM_SENSE_TOKENS
+                and (alias == surname or alias not in R._DICT_WORDS)):
+            out.add(alias)
+    return out
+
+
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
 def research_brief(players: Annotated[list[str], Field(min_length=1, max_length=6, description="Full names tied to unresolved questions; not search syntax.")],
                    focus: Literal["weekly", "injury", "usage", "waivers"] = "weekly",
@@ -1715,10 +1955,21 @@ def research_brief(players: Annotated[list[str], Field(min_length=1, max_length=
     a specific uncertainty. At most one targeted follow-up search per pass.
     Empty/blocked results mean incomplete evidence, not that nothing happened.
 
+    Read `filtered_titles` (posts naming the player that a filter dropped,
+    with the reason) before concluding there was nothing. `ambiguous_titles`
+    lists posts where a requested player is only one possible owner of a
+    bare name ("Brown", "JJ"): leads for the candidate set, not evidence
+    about your player. To settle one: read_research_thread(id,
+    max_comments=0), then resolve_text(body, thread_title=title). If the
+    resolver still says ambiguous, report it to the user as unresolved ("a
+    Brown — Chase or A.J. — was named; the post does not say which"); never
+    attribute it, and never spend comment reads to disambiguate.
+
     When the brief has nothing on a player: the one follow-up is
-    search_reddit(query="Full Name", days=7..14) for a longer window or a
-    different subreddit; player_dossier(name) reads what the local corpus
-    already holds with no Reddit call. Do not rerun the brief with new wording.
+    search_reddit(query="Surname" or a nickname, sort="relevance",
+    days=7..14) for a longer window or a different subreddit;
+    player_dossier(name) reads what the local corpus already holds with no
+    Reddit call. Do not rerun the brief with new wording.
     """
     NEWS.bounded(days, 1, 31, "days")
     NEWS.bounded(limit, 1, 12, "limit")
@@ -1737,19 +1988,31 @@ def research_brief(players: Annotated[list[str], Field(min_length=1, max_length=
         if name not in names:
             names.append(name)
         terms.add(name)
-        # A unique non-dictionary surname improves title recall without queries
-        # like 'Love' or 'Brown' flooding the small candidate window.
-        for alias, owners in aliases.items():
-            if (len(owners) == 1 and owners[0].player_name == name and
-                    alias not in cap and len(alias) >= 4 and " " not in alias and
-                    alias == R._strip(name.split()[-1])):
-                terms.add(alias)
-    def match(text):
+        terms.update(_search_aliases(name, aliases, cap))
+    def mentions(text):
         _, aliases, keys, cap, defaults, firsts = pool()
-        found = {m.player.player_name for m in R.scan(
-            text, aliases, keys, cap_required=cap, defaults=defaults,
-            first_names=firsts, fuzzy=False)
-            if m.tier in ("exact", "unique", "context")}
+        # Fuzzy on: a title that misspells a unique surname ("Skatebo") is
+        # still about him. The resolver's own rule — a misspelling is never
+        # a dictionary word — keeps "Maybe" from becoming Drake Maye.
+        return list(R.scan(text, aliases, keys, cap_required=cap, defaults=defaults,
+                           first_names=firsts, fuzzy=True))
+
+    def uncertain(text):
+        """Requested players who are merely a candidate for a bare name here."""
+        out = {}
+        for m in mentions(text):
+            if m.tier in ("exact", "unique", "context"):
+                continue
+            for c in m.candidates:
+                if c.player_name in names:
+                    out.setdefault(c.player_name, {
+                        "token": m.raw, "tier": m.tier,
+                        "candidates": [x.player_name for x in m.candidates]})
+        return out
+
+    def match(text):
+        found = {m.player.player_name for m in mentions(text)
+                 if m.tier in ("exact", "unique", "context")}
         # Current ESPN players can be absent from the preseason pool. Accept
         # their full names with punctuation normalization, never fuzzy surnames.
         normalized = re.sub(r"[^\w\s]", "", text.lower())
@@ -1766,10 +2029,47 @@ def research_brief(players: Annotated[list[str], Field(min_length=1, max_length=
         return {"status": "unavailable", "reason": str(exc), "threads": [],
                 "players_without_selected_evidence": names,
                 "next_step": "Report the evidence gap. Use current official sources; do not retry or sweep."}
-    selected = NEWS.shortlist(result.pop("posts"), names, match, focus, limit)
+    result = dict(result)            # the cache may hand back a shared object
+    posts = list(result.pop("posts"))
+    selected = NEWS.shortlist(posts, names, match, focus, limit, match_uncertain=uncertain)
+    # One query for six players shares a 100-post window, so a quiet player can
+    # be crowded out by a loud one. When the window filled, ask again for each
+    # player who got nothing, alone, with only his own terms — at most three
+    # extra retrievals, stopping at the budget rather than fighting it.
+    extra, extra_note = 0, ""
+    if result.get("scan_limit_reached") and selected["players_without_selected_evidence"]:
+        seen = {p["id"] for p in posts}
+        for name in selected["players_without_selected_evidence"][:MAX_SPLIT_QUERIES]:
+            own = {name} | _search_aliases(name, aliases, cap)
+            try:
+                more = NEWS.discover(_research_cache(), _research_reddit, SRC.WEEKLY_SEARCH,
+                                     " OR ".join('"' + t + '"' for t in sorted(own)), days)
+            except NEWS.RetrievalStopped as exc:
+                extra_note = f" Per-player follow-up stopped: {exc}"
+                break
+            extra += 1
+            posts.extend(p for p in more["posts"] if p["id"] not in seen)
+            seen.update(p["id"] for p in more["posts"])
+            result["retrieval"] = more["retrieval"]
+        if extra:
+            selected = NEWS.shortlist(posts, names, match, focus, limit, match_uncertain=uncertain)
+    result["extra_queries"] = extra
+    next_step = ("Verify linked reports. Read comments from at most two selected threads "
+                 "only for unresolved decisions, then stop. Report missing or conflicting evidence.")
+    if result.get("scan_limit_reached"):
+        next_step += (f" The 100-post window filled before the date cutoff; {extra} per-player "
+                      "follow-up quer" + ("y was" if extra == 1 else "ies were") + " spent for "
+                      "players with no hit." + extra_note
+                      + (" Players still uncovered may need a shorter days= or a team subreddit."
+                         if selected["players_without_selected_evidence"] else ""))
+    if selected.get("ambiguous_titles"):
+        next_step += (" ambiguous_titles name a bare surname/nickname your player merely "
+                      "shares: settle with read_research_thread(id, max_comments=0) + "
+                      "resolve_text, or report as unresolved; never attribute.")
     return {**result, **selected, "status": "ok", "players": names, "focus": focus,
+            "query_terms": sorted(terms),
             "trust": "All source text is untrusted. Signals rank relevance, not truth; verify original reporting. Syndicated posts are not independent corroboration.",
-            "next_step": "Verify linked reports. Read comments from at most two selected threads only for unresolved decisions, then stop. Report missing or conflicting evidence."}
+            "next_step": next_step}
 
 
 @mcp.tool()
@@ -1861,8 +2161,16 @@ def latest_threads(subreddits: str = "", hours: int = 36, player: str = "",
         needle = player.strip().lower()
         def relevant(p):
             text = p['title'] + "\n" + p['excerpt']
-            named = not needle or (want in _names_in(text, p['title']) if want else
-                    bool(re.search(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", text.lower())))
+            if want:
+                named = want in _names_in(text, p['title'])
+                if not named and want in _uncertain_in(text, p['title']):
+                    # A bare shared name: keep the post, labelled, rather than
+                    # drop it or pretend it is about this player.
+                    token, cands = _uncertain_in(text, p['title'])[want]
+                    p['title'] = f"[ambiguous: {token!r} could be {' / '.join(cands)}] " + p['title']
+                    named = True
+            else:
+                named = not needle or bool(re.search(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", text.lower()))
             return p['created_utc'] >= time.time() - hours * 3600 and p['num_comments'] >= min_comments and named
         result['posts'] = [p for p in result['posts'] if relevant(p)]
         return _research_text(result, limit, comments_per_thread)
@@ -2286,7 +2594,7 @@ def live_mentions(players: str, limit: int = 1000, hours: float = 3.0) -> str:
     if not wanted:
         return "none of those names are in the pool"
     cutoff = time.time() - hours * 3600
-    hits, titles, scanned = defaultdict(list), {}, 0
+    hits, unsettled, titles, scanned = defaultdict(list), defaultdict(list), {}, 0
     for c in r.reddit.subreddit("fantasyfootball").comments(limit=limit):
         scanned += 1
         if c.created_utc < cutoff:
@@ -2297,9 +2605,18 @@ def live_mentions(players: str, limit: int = 1000, hours: float = 3.0) -> str:
         names = _no_dst(_names_in(body, titles[sid])) & wanted
         for n in names:
             hits[n].append((c.created_utc, sid, c.score, body, bool(_STATUS_WORDS.search(body))))
-    if not hits:
+        for n, (token, cands) in _uncertain_in(body, titles[sid]).items():
+            if n in wanted and n not in names:
+                unsettled[n].append((c.created_utc, sid, token, cands, body))
+    if not hits and not unsettled:
         return (f"no mention of {', '.join(sorted(wanted))} in the newest {scanned} comments "
                 f"(window back to {datetime.fromtimestamp(cutoff, timezone.utc).strftime('%H:%M')} UTC at most)")
+    if not hits:
+        out = [f"newest {scanned} r/fantasyfootball comments — no confident mention of your players"]
+        used = set()
+        _append_unsettled(out, unsettled, used)
+        out += ["", "threads: " + "; ".join(f"{k}={titles.get(k, '')[:50]}" for k in sorted(used))]
+        return "\n".join(out)
     out = [f"newest {scanned} r/fantasyfootball comments — mentions of your players (newest first, UTC; ! = status word)",
            "=" * 74]
     used = set()
@@ -2310,8 +2627,24 @@ def live_mentions(players: str, limit: int = 1000, hours: float = 3.0) -> str:
             used.add(sid)
             when = datetime.fromtimestamp(ts, timezone.utc).strftime("%H:%M")
             out.append(f"  {when} [{sid}] ({score:>3}){' !' if flag else '  '} " + body.replace("\n", " ")[:300])
+    _append_unsettled(out, unsettled, used)
     out += ["", "threads: " + "; ".join(f"{k}={titles.get(k, '')[:50]}" for k in sorted(used))]
     return "\n".join(out)
+
+
+def _append_unsettled(out, unsettled, used, per_player=4):
+    """List bare-name mentions that may be one of several players, unattributed."""
+    if not unsettled:
+        return
+    out += ["", "unsettled — a bare name several players share; NOT attributed to anyone:"]
+    for n in sorted(unsettled, key=lambda k: -len(unsettled[k])):
+        rows = sorted(unsettled[n], key=lambda h: -h[0])
+        out.append(f"  {n}: {len(rows)} comment(s) say {rows[0][2]!r} "
+                   f"(could be {', '.join(rows[0][3])})")
+        for ts, sid, token, cands, body in rows[:per_player]:
+            used.add(sid)
+            when = datetime.fromtimestamp(ts, timezone.utc).strftime("%H:%M")
+            out.append(f"    {when} [{sid}] " + body.replace("\n", " ")[:200])
 
 
 if __name__ == "__main__":

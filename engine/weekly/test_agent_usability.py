@@ -22,11 +22,18 @@ class GuidedCalls(unittest.TestCase):
         for task in ["quick", *agent_guide.ROUTES]:
             for name, args in re.findall(r"\b([a-z_]+)\(([^()]*)\)", S.weekly_checklist(task)):
                 if not hasattr(S, name):  # Explicitly named ff-reddit tools.
-                    self.assertIn(name, {"research_brief", "read_research_thread"})
+                    self.assertIn(name, {"research_brief", "read_research_thread", "resolve_text",
+                                         "nickname_candidates", "add_nickname", "report_non_player"})
                     continue
                 call = ast.parse(f"{name}({args})", mode="eval").body
                 parameters = inspect.signature(getattr(S, name)).parameters
                 self.assertTrue({k.arg for k in call.keywords} <= set(parameters), (task, name, args))
+
+    def test_reddit_route_carries_the_uncertainty_and_nickname_rules(self):
+        guide = S.weekly_checklist("reddit")
+        for phrase in ("filtered_titles", "ambiguous_titles", "never attribute",
+                       "nickname_candidates", "add_nickname", "report_non_player"):
+            self.assertIn(phrase, guide)
 
     def test_bad_team_is_repairable_input_not_an_invitation_to_refresh(self):
         with patch.object(S, "_state", return_value=(2026, 4)):

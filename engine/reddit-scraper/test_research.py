@@ -214,7 +214,9 @@ class ResearchTests(unittest.TestCase):
         players = ['Breece Hall', "De'Von Achane"]
         posts = [Post('aaa'), Post('bbb', age=120, url='https://example.com/report?utm_source=reddit'),
                  Post('ccc', 'Breece Hall hype train'), Post('ddd', 'Josh Allen injury report'),
-                 Post('eee', 'Breece Hall is my favorite player'),
+                 # Titled after the player, so eligible on the title signal alone,
+                 # but outranked by the posts carrying injury/usage language.
+                 Post('eee', 'Breece Hall is my favorite player', url='https://example.com/fav'),
                  Post('fff', 'Breece Hall game thread', body='injury'),
                  Post('ggg', "De'Von Achane gets 70 percent of snaps", url='https://example.com/snaps')]
         result = N.shortlist([N.post_record(p) for p in posts], players,
@@ -257,6 +259,24 @@ class ResearchTests(unittest.TestCase):
                              lambda _: {'Breece Hall'}, limit=1)
         self.assertEqual(result['threads'][0]['id'], 'new')
         self.assertEqual(result['filtered']['generic_or_noise'], 1)
+
+
+    def test_usage_title_without_keyword_is_kept_and_drops_are_listed(self):
+        # The Perine thread: titled after the player, "touch share" in the
+        # title, no body, external source. focus=usage used to drop it silently.
+        posts = [Post('ts', "Bengals will 'continually assess' touch share between Perine, Chase Brown",
+                      url='https://example.com/touch-share'),
+                 Post('hyp', 'Samaje Perine hype train', age=30),
+                 Post('fav', 'Samaje Perine is my favourite player', age=20)]
+        match = lambda text: {'Samaje Perine'} if 'Perine' in text else set()
+        result = N.shortlist([N.post_record(p) for p in posts], ['Samaje Perine'], match, focus='usage')
+        self.assertEqual([p['id'] for p in result['threads']], ['ts'])
+        self.assertIn('usage', result['threads'][0]['signals'])
+        listed = {d['id']: d['reason'] for d in result['filtered_titles']['Samaje Perine']}
+        self.assertEqual(listed, {'hyp': 'generic_or_noise', 'fav': 'no_usage_signal'})
+        # With the weekly focus a post titled after the player is evidence on its own.
+        weekly = N.shortlist([N.post_record(posts[2])], ['Samaje Perine'], match)
+        self.assertEqual(weekly['threads'][0]['signals'], ['title'])
 
 
 class ToolIntegrationTests(unittest.TestCase):
@@ -310,6 +330,207 @@ class ToolIntegrationTests(unittest.TestCase):
         with patch.object(self.server.NEWS, 'discover', side_effect=N.RetrievalStopped('budget')):
             result = asyncio.run(self.server.mcp.call_tool('research_brief', {'players': ['Breece Hall']}))
         self.assertEqual(result.structured_content['status'], 'unavailable')
+
+    def test_search_terms_include_nicknames_and_unique_first_names(self):
+        s = self.server
+        data = {'posts': [], 'retrieval': {'cache_hit': False}, 'scanned': 0}
+        with patch.object(s.NEWS, 'discover', return_value=data) as fetch:
+            result = s.research_brief(['Jameson Williams', 'Bijan Robinson', 'Josh Allen'])
+        query = fetch.call_args.args[3]
+        for term in ('"jamo"', '"bijan"', '"Josh Allen"'):
+            self.assertIn(term, query)
+        for term in ('"williams"', '"allen"', '"jwilliams"', '"brobinson"'):
+            self.assertNotIn(term, query)
+        self.assertEqual(result['query_terms'], sorted(set(result['query_terms'])))
+        self.assertIn('filtered_titles', result)
+
+    def test_nickname_column_is_clean_and_collisions_are_caught(self):
+        import copy
+        R = self.server.R
+        players = self.server.pool()[0]
+        self.assertEqual(R.nickname_collisions(players), [])
+        trial = [copy.copy(p) for p in players]
+        hubbard = next(p for p in trial if p.player_name == 'Chuba Hubbard')
+        hubbard.player_nickname = 'Chubb|Allen|Bengals|Skat'
+        found = {nick: why for nick, who, why in R.nickname_collisions(trial) if who == 'Chuba Hubbard'}
+        self.assertEqual(found['Chubb'], 'surname of a registered non-player')
+        self.assertTrue(found['Allen'].startswith('name of '))
+        self.assertEqual(found['Bengals'], 'team word')
+        self.assertEqual(found['Skat'], 'name of Cam Skattebo')
+
+    def test_staff_surname_places_a_shared_surname(self):
+        R = self.server.R
+        players, aliases, keys, cap, defaults, firsts = self.server.pool()
+        self.assertIn('pitcher', R.PEOPLE_CONTEXT.get('CIN', set()))
+        # Zac Taylor is CIN staff, but "Taylor" is a player surname: never team evidence.
+        self.assertNotIn('taylor', R.PEOPLE_CONTEXT.get('CIN', set()))
+        def resolve(text):
+            return [(m.player.player_name, m.tier) for m in R.scan(
+                text, aliases, keys, cap_required=cap, defaults=defaults, first_names=firsts)
+                if m.alias == 'brown']
+        self.assertEqual(resolve('Pitcher said Brown keeps the lead role this week.'),
+                         [('Chase Brown', 'context')])
+        self.assertEqual([t for _, t in resolve('I think Brown keeps the lead role this week.')],
+                         ['ambiguous'])
+
+    def test_add_nickname_refuses_collisions_and_writes_the_pool(self):
+        import shutil
+        s = self.server
+        temp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, temp)
+        copy_csv = temp / 'pool.csv'
+        shutil.copy(s.POOL_CSV, copy_csv)
+        with patch.object(s, 'POOL_CSV', copy_csv):
+            s._pool = None
+            self.assertTrue(s.add_nickname('Chuba Hubbard', 'Chubb').startswith('refused'))
+            self.assertTrue(s.add_nickname('Chuba Hubbard', 'Allen').startswith('refused'))
+            self.assertIn('not in the pool', s.add_nickname('Example Newcomer', 'Newk'))
+            self.assertTrue(s.add_nickname('Chuba Hubbard', 'Chuubs').startswith('added'))
+            self.assertEqual(s.add_nickname('Chuba Hubbard', 'Chuubs'), "'Chuubs' is already a nickname for Chuba Hubbard")
+            self.assertEqual(s._names_in('I think Chuubs looked great in the fourth quarter'), {'Chuba Hubbard'})
+            self.assertIn('Chuubs', copy_csv.read_text())
+        s._pool = None
+        self.assertNotIn('Chuubs', s.POOL_CSV.read_text())
+
+    def test_shared_nickname_has_no_default_and_is_adjudicated_by_context(self):
+        s = self.server
+        R = s.R
+        players, aliases, keys, cap, defaults, firsts = s.pool()
+        self.assertEqual({p.player_name for p in aliases['jj']}, {'Justin Jefferson', 'J.J. McCarthy'})
+        self.assertNotIn('jj', defaults)
+        def tiers(text):
+            return [(m.player.player_name, m.tier) for m in R.scan(
+                text, aliases, keys, cap_required=cap, defaults=defaults, first_names=firsts)
+                if m.alias == 'jj']
+        self.assertEqual([t for _, t in tiers('Praying JJ learns the playbook this week')], ['ambiguous'])
+        self.assertEqual(tiers('Our QB JJ learns the playbook this week'), [('J.J. McCarthy', 'context')])
+        self.assertEqual(tiers('Start JJ at WR this week'), [('Justin Jefferson', 'context')])
+        # promote() must not recreate a default for a token recorded as shared.
+        import adjudicate as A
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'ov.json'
+            path.write_text('{"jj": ["Justin Jefferson", "J.J. McCarthy"]}')
+            decisions = {str(i): {'token': 'jj', 'player': 'Justin Jefferson'} for i in range(5)}
+            self.assertEqual(A.promote(decisions, players, path), [])
+            self.assertIsInstance(__import__('json').loads(path.read_text())['jj'], list)
+
+    def test_default_only_resolution_is_labelled_not_context(self):
+        s = self.server
+        R = s.R
+        players, aliases, keys, cap, defaults, firsts = s.pool()
+        self.assertEqual(defaults.get('allen'), 'Josh Allen')
+        [m] = [m for m in R.scan('Allen is a lock this week.', aliases, keys, cap_required=cap,
+                                 defaults=defaults, first_names=firsts) if m.alias == 'allen']
+        self.assertEqual((m.player.player_name, m.tier), ('Josh Allen', 'default'))
+        self.assertNotIn('Josh Allen', s._names_in('Allen is a lock this week.'))
+
+    def test_staff_context_needs_a_capital(self):
+        s = self.server
+        R = s.R
+        players, aliases, keys, cap, defaults, firsts = s.pool()
+        def brown(text):
+            return [(m.player.player_name, m.tier) for m in R.scan(
+                text, aliases, keys, cap_required=cap, defaults=defaults, first_names=firsts)
+                if m.alias == 'brown']
+        self.assertEqual(brown('Coach Pitcher trusts Brown in the red zone.'), [('Chase Brown', 'context')])
+        self.assertEqual([t for _, t in brown('What a pitcher; anyway Brown in the red zone.')], ['ambiguous'])
+
+    def test_search_aliases_skip_team_words_and_dictionary_nicknames(self):
+        s = self.server
+        _, aliases, _, cap, _, _ = s.pool()
+        self.assertNotIn('dallas', s._search_aliases('Dallas Goedert', aliases, cap))
+        self.assertIn('goedert', s._search_aliases('Dallas Goedert', aliases, cap))
+        self.assertNotIn('hock', s._search_aliases('T.J. Hockenson', aliases, cap))
+        self.assertIn('hockenson', s._search_aliases('T.J. Hockenson', aliases, cap))
+        self.assertIn('perine', s._search_aliases('Samaje Perine', aliases, cap))
+
+    def test_ambiguous_surname_posts_are_listed_not_dropped(self):
+        s = self.server
+        data = {'posts': [N.post_record(Post('amb', 'Brown struggles against the Ravens secondary', url='https://example.com/b')),
+                          N.post_record(Post('sure', 'Chase Brown gets 62% of the carries', url='https://example.com/c'))],
+                'retrieval': {'cache_hit': False}, 'scanned': 2}
+        with patch.object(s.NEWS, 'discover', return_value=data):
+            result = s.research_brief(['Chase Brown'], focus='usage')
+        self.assertEqual([t['id'] for t in result['threads']], ['sure'])
+        [lead] = result['ambiguous_titles']['Chase Brown']
+        self.assertEqual((lead['id'], lead['token']), ('amb', 'Brown'))
+        self.assertIn('Chase Brown', lead['candidates'])
+        self.assertGreater(len(lead['candidates']), 1)
+        self.assertIn('never attribute', result['next_step'])
+
+    def test_window_full_triggers_bounded_per_player_followups(self):
+        s = self.server
+        first = {'posts': [N.post_record(Post('a', 'Jameson Williams scores twice', url='https://example.com/a'))],
+                 'retrieval': {'cache_hit': False}, 'scanned': 100, 'scan_limit_reached': True}
+        second = {'posts': [N.post_record(Post('b', 'Perine takes over the Bengals backfield', url='https://example.com/b'))],
+                  'retrieval': {'cache_hit': False}, 'scanned': 3, 'scan_limit_reached': False}
+        with patch.object(s.NEWS, 'discover', side_effect=[first, second, N.RetrievalStopped('budget')]) as fetch:
+            result = s.research_brief(['Jameson Williams', 'Samaje Perine', 'Bijan Robinson'])
+        self.assertEqual(fetch.call_count, 3)
+        self.assertEqual(result['extra_queries'], 1)
+        self.assertEqual({t['id'] for t in result['threads']}, {'a', 'b'})
+        self.assertEqual(result['players_without_selected_evidence'], ['Bijan Robinson'])
+        self.assertIn('stopped: budget', result['next_step'])
+        # The follow-up query is the quiet player's own terms only.
+        q = fetch.call_args_list[1].args[3]
+        self.assertIn('"perine"', q)
+        self.assertNotIn('Jameson', q)
+        # No follow-up when the window did not fill.
+        with patch.object(s.NEWS, 'discover', return_value=dict(first, scan_limit_reached=False)) as fetch:
+            result = s.research_brief(['Jameson Williams', 'Samaje Perine'])
+        self.assertEqual((fetch.call_count, result['extra_queries']), (1, 0))
+
+    def test_misspelled_title_still_matches_a_unique_surname(self):
+        s = self.server
+        data = {'posts': [N.post_record(Post('m', 'Cam Skatebo tweaks hamstring in OT', url='https://example.com/m'))],
+                'retrieval': {'cache_hit': False}, 'scanned': 1}
+        with patch.object(s.NEWS, 'discover', return_value=data):
+            result = s.research_brief(['Cam Skattebo'], focus='injury')
+        self.assertEqual([t['id'] for t in result['threads']], ['m'])
+
+    def test_live_mentions_lists_shared_names_as_unsettled(self):
+        s = self.server
+        now = __import__('time').time()
+        comments = [SimpleNamespace(created_utc=now - 60, link_id='t3_x1', link_title='WDIS', score=3,
+                                    body='Brown is a lock this week'),
+                    SimpleNamespace(created_utc=now - 30, link_id='t3_x2', link_title='WDIS', score=1,
+                                    body='Chase Brown gets the Titans, start him')]
+        sub = SimpleNamespace(comments=lambda limit: comments)
+        fake = SimpleNamespace(reddit=SimpleNamespace(subreddit=lambda name: sub))
+        with patch.object(s, '_reddit', return_value=fake):
+            text = s.live_mentions('Chase Brown', hours=1)
+        self.assertIn('Chase Brown  x1', text)
+        self.assertIn('unsettled', text)
+        self.assertIn("'Brown'", text)
+        self.assertIn('NOT attributed', text)
+
+    def test_latest_threads_labels_ambiguous_posts_for_a_player_filter(self):
+        s = self.server
+        data = {'posts': [N.post_record(Post('p1', 'Brown struggles against the Ravens secondary', age=10)),
+                          N.post_record(Post('p2', 'Chase Brown gets 62% of the carries', age=20)),
+                          N.post_record(Post('p3', 'Bijan Robinson is fine', age=30))],
+                'retrieval': {'cache_hit': False, 'fetched_at': 'now', 'remaining_hourly_operations': 9},
+                'scanned': 3, 'scan_limit': 100, 'sources': ['fantasyfootball'], 'coverage_note': ''}
+        with patch.object(s.NEWS, 'discover', return_value=data), \
+                patch.object(s.time, 'time', return_value=NOW):
+            text = s.latest_threads(player='Chase Brown', hours=24)
+        self.assertIn('[ambiguous:', text)
+        self.assertIn('Chase Brown gets 62%', text)
+        self.assertNotIn('Bijan', text)
+
+    def test_expand_pool_adds_only_missing_skill_players(self):
+        import expand_pool as X
+        pool = [{'Player': 'Marvin Harrison', 'Team': 'HOU', 'Bye': '14', 'POS': 'WR34', 'Average_ADP': '84.0',
+                 'Depth': 'WR2', 'Depth_Rank': '2', 'Nickname': 'MHJ', 'espn_id': ''}]
+        depth = [{'player_name': 'Marvin Harrison Jr.', 'team': 'HOU', 'pos_abb': 'WR', 'pos_rank': '1', 'espn_id': '1'},
+                 {'player_name': 'Kendrick Bourne', 'team': 'HOU', 'pos_abb': 'WR', 'pos_rank': '3', 'espn_id': '2'},
+                 {'player_name': '', 'team': 'NYG', 'pos_abb': 'TE', 'pos_rank': '3', 'espn_id': '3'},
+                 {'player_name': 'Some Lineman', 'team': 'NYG', 'pos_abb': 'OT', 'pos_rank': '1', 'espn_id': '4'}]
+        new, skipped = X.expand(pool, depth)
+        self.assertEqual([r['Player'] for r in new], ['Kendrick Bourne'])
+        self.assertEqual((new[0]['Average_ADP'], new[0]['Depth'], new[0]['Bye'], new[0]['espn_id']),
+                         ('999', 'WR3', '14', '2'))
+        self.assertEqual(dict(skipped), {'already in pool': 1, 'blank name': 1, 'position OT': 1})
 
 
 if __name__ == '__main__':

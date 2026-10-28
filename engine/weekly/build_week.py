@@ -32,6 +32,7 @@ import lines as lines_mod
 import opportunity
 import advanced_usage
 import team_context
+import team_strength
 
 TOP_PER_POS = {"QB": 40, "RB": 70, "WR": 90, "TE": 40}
 
@@ -70,9 +71,45 @@ def skill_rows(tbl: pl.DataFrame, weekly: pl.DataFrame, lines_wk: pl.DataFrame,
     return out
 
 
+def reddit_pool_maintenance() -> list[str]:
+    """Keep the ff-reddit resolver's player pool current with the snapshot just saved.
+
+    expand_pool.py appends every ESPN depth-chart player the pool lacks;
+    refresh_pool.py corrects teams and byes against Sleeper. Both are
+    stdlib-only scripts run with this interpreter. When the pool changes the
+    corpus ranking cache is dropped so mentions re-resolve with the new teams.
+    """
+    import pathlib
+    import subprocess
+    scraper = pathlib.Path(__file__).resolve().parents[1] / "reddit-scraper"
+    pool = scraper / "combined_with_depth.csv"
+    before = pool.read_bytes() if pool.exists() else b""
+    out = []
+    for script in ("expand_pool.py", "refresh_pool.py"):
+        proc = subprocess.run([sys.executable, str(scraper / script)], cwd=scraper,
+                              capture_output=True, text=True, timeout=300)
+        summary = [ln for ln in proc.stdout.splitlines() if ln.strip()]
+        out.append(f"{script}: " + (summary[-1] if summary else f"exit {proc.returncode}"))
+        if proc.returncode:
+            out.append(f"  stderr: {proc.stderr.strip()[-300:]}")
+    if pool.exists() and pool.read_bytes() != before:
+        cache = scraper / "corpus" / "index_cache.json"
+        if cache.exists():
+            cache.unlink()
+            out.append("pool changed: dropped corpus/index_cache.json")
+    return out
+
+
 def build(season: int, week: int, refresh: bool = True) -> dict:
     print(f"» lines {season} wk{week}")
     ln = lines_mod.build(season, week, refresh)
+    if refresh:
+        print(f"» nfelo ratings {season}")
+        try:
+            elo = team_strength.refresh_nfelo(season)
+            print(f"  week {elo['week']}, {len(elo['ratings'])} teams")
+        except Exception as e:  # noqa: BLE001 - future-week forecasts fall back to the lines fit
+            print(f"  nfelo skipped: {e}", file=sys.stderr)
     print(f"» opportunity {season}")
     weekly, tbl = opportunity.write(season, refresh)
     print(f"» advanced usage {season}")
@@ -87,6 +124,13 @@ def build(season: int, week: int, refresh: bool = True) -> dict:
         print(f"  team context skipped: {e}", file=sys.stderr)
     print(f"» injuries/depth {season}")
     inj_all, depth = inj_mod.build(season, refresh)
+    if refresh:
+        print("» reddit resolver pool (depth-chart players, live teams)")
+        try:
+            for line in reddit_pool_maintenance():
+                print(f"  {line}")
+        except Exception as e:  # noqa: BLE001 - resolver upkeep never blocks the build
+            print(f"  reddit pool maintenance skipped: {e}", file=sys.stderr)
     inj_wk = inj_all.filter(pl.col("week") == week)
     lines_wk = ln.filter(pl.col("week") == week)
     print("» expert consensus ranks")

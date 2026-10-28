@@ -50,7 +50,9 @@ ROUTES = {
     "reddit": (
         "START: ff-reddit.research_brief(players=[full_names], focus='injury'|'usage'|'waivers'|'weekly', days=3), only for an unresolved question or requested Reddit discussion.",
         "NEXT: verify material claims at the linked original source. If comments can answer a specific question, read_research_thread(thread_id=..., max_comments=5), at most two threads per pass.",
-        "STOP: at resolution, retrieval failure or the pass limit. One targeted search follow-up is allowed. Empty samples are not no news. Do not replace this workflow with corpus sweeps or external Reddit requests.",
+        "READ: filtered_titles (posts naming the player that a filter dropped, with reasons) before calling coverage empty. ambiguous_titles are posts where the player merely shares a bare name (Brown, JJ): settle with read_research_thread(id, max_comments=0) + resolve_text, or report as unresolved; never attribute.",
+        "AFTER THE PASS: run ff-reddit.nickname_candidates(min_count=5) once; also when a player you expected news on is in players_without_selected_evidence. Confirm any nickname with the user before add_nickname; a token with no same-sentence player is a report_non_player candidate.",
+        "STOP: at resolution, retrieval failure or the pass limit. One targeted search follow-up is allowed (surname or nickname, sort=relevance). Empty samples are not no news. Do not replace this workflow with corpus sweeps or external Reddit requests.",
     ),
 }
 

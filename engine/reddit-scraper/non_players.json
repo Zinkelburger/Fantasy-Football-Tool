@@ -2,6 +2,12 @@
  "Aaron Donald": {
   "role": "retired"
  },
+ "Aaron Glenn": {
+  "role": "coach",
+  "team": "NYJ",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
  "Aaron Wilson": {
   "note": "Houston beat writer; resolver was pulling Garrett Wilson off the surname",
   "role": "reporter"
@@ -16,8 +22,22 @@
   "note": "Buccaneers beat writer, PewterReport",
   "role": "reporter"
  },
+ "Adam Stenavich": {
+  "role": "coach",
+  "team": "GB",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_GB infobox/staff section (fetched 2026-10-28)",
+  "note": "from the page's staff section; infobox had no OC/DC"
+ },
  "Adam Vinatieri": {
   "role": "retired"
+ },
+ "Aden Durde": {
+  "role": "coach",
+  "team": "SEA",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_SEA infobox/staff section (fetched 2026-10-28)",
+  "note": "from the page's staff section; infobox had no OC/DC"
  },
  "Adrian Peterson": {
   "role": "retired"
@@ -26,7 +46,10 @@
   "role": "retired"
  },
  "Al Golden": {
-  "role": "coach"
+  "role": "coach",
+  "team": "CIN",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CIN infobox/staff section (fetched 2026-10-28)"
  },
  "Alain Poupart": {
   "note": "Dolphins beat writer, SI",
@@ -60,6 +83,12 @@
   "note": "Patriots beat writer, Boston Herald",
   "role": "reporter"
  },
+ "Andrew Janocko": {
+  "role": "coach",
+  "team": "LV",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LV infobox/staff section (fetched 2026-10-28)"
+ },
  "Andrew Thomas": {
   "role": "not in pool"
  },
@@ -67,13 +96,28 @@
   "role": "coach"
  },
  "Andy Reid": {
-  "role": "coach"
+  "role": "coach",
+  "team": "KC",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
+ "Anthony Campanile": {
+  "role": "coach",
+  "team": "JAC",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_JAC infobox/staff section (fetched 2026-10-28)"
  },
  "Anthony Richardson": {
   "role": "not in pool"
  },
  "Anthony Richardson Sr.": {
   "role": "not in pool"
+ },
+ "Anthony Weaver": {
+  "role": "coach",
+  "team": "BAL",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_BAL infobox/staff section (fetched 2026-10-28)"
  },
  "Antoine Winfield": {
   "role": "not in pool"
@@ -116,7 +160,10 @@
   "role": "not in pool"
  },
  "Ben Johnson": {
-  "role": "coach"
+  "role": "coach",
+  "team": "CHI",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Ben McAdoo": {
   "role": "coach"
@@ -143,6 +190,12 @@
  "Blake Bortles": {
   "role": "retired"
  },
+ "Bobby Slowik": {
+  "role": "coach",
+  "team": "MIA",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_MIA infobox/staff section (fetched 2026-10-28)"
+ },
  "Boston College": {
   "role": "not in pool"
  },
@@ -151,6 +204,12 @@
  },
  "Brad Holmes": {
   "role": "not in pool"
+ },
+ "Brad Idzik": {
+  "role": "coach",
+  "team": "CAR",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CAR infobox/staff section (fetched 2026-10-28)"
  },
  "Braden Smith": {
   "role": "not in pool"
@@ -173,11 +232,23 @@
   "note": "RotoBaller analyst hosting the AMA; 'Hey Brandon' resolved onto kicker Brandon Aubrey (thread 1w5cn8y)",
   "role": "reporter"
  },
+ "Brandon Staley": {
+  "role": "coach",
+  "team": "NO",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NO infobox/staff section (fetched 2026-10-28)"
+ },
  "Brett Favre": {
   "role": "retired"
  },
  "Brett Veach": {
   "role": "not in pool"
+ },
+ "Brian Angelichio": {
+  "role": "coach",
+  "team": "PIT",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_PIT infobox/staff section (fetched 2026-10-28)"
  },
  "Brian Branch": {
   "role": "not in pool"
@@ -186,13 +257,41 @@
   "role": "coach"
  },
  "Brian Daboll": {
-  "role": "coach"
+  "role": "coach",
+  "team": "TEN",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_TEN infobox/staff section (fetched 2026-10-28)"
+ },
+ "Brian Duker": {
+  "role": "coach",
+  "team": "NYJ",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NYJ infobox/staff section (fetched 2026-10-28)"
+ },
+ "Brian Fleury": {
+  "role": "coach",
+  "team": "SEA",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_SEA infobox/staff section (fetched 2026-10-28)",
+  "note": "from the page's staff section; infobox had no OC/DC"
+ },
+ "Brian Flores": {
+  "role": "coach",
+  "team": "MIN",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_MIN infobox/staff section (fetched 2026-10-28)"
  },
  "Brian Gutekunst": {
   "role": "front office"
  },
  "Brian Hoyer": {
   "role": "retired"
+ },
+ "Brian Schottenheimer": {
+  "role": "coach",
+  "team": "DAL",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Brock Osweiler": {
   "role": "retired"
@@ -263,6 +362,10 @@
   "note": "listed among QBs who declined after a good year",
   "role": "not in pool"
  },
+ "Case Keenum": {
+  "note": "QB named in full in game threads",
+  "role": "not in pool"
+ },
  "Cedric Tillman": {
   "role": "not in pool"
  },
@@ -290,8 +393,20 @@
  "Chris Jones": {
   "role": "not in pool"
  },
+ "Chris O'Leary": {
+  "role": "coach",
+  "team": "LAC",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LAC infobox/staff section (fetched 2026-10-28)"
+ },
  "Chris Oladokun": {
   "role": "not in pool"
+ },
+ "Chris Shula": {
+  "role": "coach",
+  "team": "LAR",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LAR infobox/staff section (fetched 2026-10-28)"
  },
  "Chris T Jones": {
   "note": "1990s Eagles WR; mapped onto Aaron Jones in 1w3isp0",
@@ -299,6 +414,12 @@
  },
  "Christian Gonzalez": {
   "role": "not in pool"
+ },
+ "Christian Parker": {
+  "role": "coach",
+  "team": "DAL",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DAL infobox/staff section (fetched 2026-10-28)"
  },
  "Christian Ponder": {
   "role": "retired"
@@ -353,7 +474,10 @@
  },
  "Dan Campbell": {
   "note": "Lions head coach, took over play calling week 10",
-  "role": "coach"
+  "role": "coach",
+  "team": "DET",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Dan Graziano": {
   "role": "reporter"
@@ -362,9 +486,19 @@
   "note": "former Dolphins QB in 1w5e2ap",
   "role": "retired"
  },
+ "Dan Pitcher": {
+  "note": "Bengals offensive coordinator (Fantasy Guru touch-share quote, 2026-10-21)",
+  "role": "coach",
+  "team": "CIN",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CIN infobox/staff section (fetched 2026-10-28)"
+ },
  "Dan Quinn": {
   "note": "Commanders head coach",
-  "role": "coach"
+  "role": "coach",
+  "team": "WAS",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Daniel Dopp": {
   "role": "reporter"
@@ -385,6 +519,12 @@
  "Darius Taylor": {
   "role": "not in pool"
  },
+ "Daronte Jones": {
+  "role": "coach",
+  "team": "WAS",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_WAS infobox/staff section (fetched 2026-10-28)"
+ },
  "Darren Waller": {
   "role": "not in pool"
  },
@@ -393,13 +533,22 @@
  },
  "Dave Canales": {
   "note": "Panthers head coach quoted in 1w4fy4o",
-  "role": "coach"
+  "role": "coach",
+  "team": "CAR",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Dave Toub": {
   "role": "coach"
  },
  "David Andrews": {
   "role": "retired"
+ },
+ "David Blough": {
+  "role": "coach",
+  "team": "WAS",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_WAS infobox/staff section (fetched 2026-10-28)"
  },
  "Davis Allen": {
   "role": "not in pool"
@@ -410,7 +559,10 @@
  },
  "Davis Webb": {
   "note": "Broncos offensive coordinator/QB coach cited on Evan Engram usage",
-  "role": "coach"
+  "role": "coach",
+  "team": "DEN",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DEN infobox/staff section (fetched 2026-10-28)"
  },
  "Dawson Knox": {
   "role": "not in pool"
@@ -429,18 +581,40 @@
   "role": "not in pool"
  },
  "DeMeco Ryans": {
-  "role": "coach"
+  "role": "coach",
+  "team": "HOU",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Dean Connors": {
   "role": "not in pool"
  },
  "Declan Doyle": {
-  "role": "coach"
+  "role": "coach",
+  "team": "BAL",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_BAL infobox/staff section (fetched 2026-10-28)"
  },
  "Demarcus Robinson": {
   "role": "not in pool"
  },
  "Demario Douglas": {
+  "role": "not in pool"
+ },
+ "Dennard Wilson": {
+  "role": "coach",
+  "team": "NYG",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NYG infobox/staff section (fetched 2026-10-28)"
+ },
+ "Dennis Allen": {
+  "role": "coach",
+  "team": "CHI",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CHI infobox/staff section (fetched 2026-10-28)"
+ },
+ "Deonte Banks": {
+  "note": "CB named in full in Giants threads",
   "role": "not in pool"
  },
  "Derek Carr": {
@@ -473,11 +647,21 @@
   "note": "Colts beat writer",
   "role": "reporter"
  },
+ "Dominic Zvada": {
+  "note": "kicker named in full in game threads",
+  "role": "not in pool"
+ },
  "Donovan Edwards": {
   "role": "not in pool"
  },
  "Dont'e Thornton Jr.": {
   "role": "not in pool"
+ },
+ "Doug Nussmeier": {
+  "role": "coach",
+  "team": "NO",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NO infobox/staff section (fetched 2026-10-28)"
  },
  "Doug Pederson": {
   "note": "former Eagles head coach in 1w3gwzg",
@@ -491,7 +675,11 @@
   "role": "not in pool"
  },
  "Drew Petzing": {
-  "role": "coach"
+  "note": "Lions offensive coordinator (Pride of Detroit film study, 2026-10-27)",
+  "role": "coach",
+  "team": "DET",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DET infobox/staff section (fetched 2026-10-28)"
  },
  "Duce Staley": {
   "role": "coach"
@@ -515,6 +703,12 @@
  },
  "Efton Chism": {
   "role": "not in pool"
+ },
+ "Ejiro Evero": {
+  "role": "coach",
+  "team": "CAR",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CAR infobox/staff section (fetched 2026-10-28)"
  },
  "Eli Heidenreich": {
   "role": "not in pool"
@@ -540,7 +734,10 @@
  },
  "Eric Bieniemy": {
   "note": "Chiefs assistant cited on run-heavy plans",
-  "role": "coach"
+  "role": "coach",
+  "team": "KC",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_KC infobox/staff section (fetched 2026-10-28)"
  },
  "Eric Moulds": {
   "role": "retired"
@@ -572,7 +769,10 @@
  },
  "Frank Reich": {
   "note": "Jets coach",
-  "role": "coach"
+  "role": "coach",
+  "team": "NYJ",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NYJ infobox/staff section (fetched 2026-10-28)"
  },
  "Frank Smith": {
   "role": "coach"
@@ -586,6 +786,12 @@
  "Grant Calcaterra": {
   "note": "Eagles TE on IR in 1w3gwzg",
   "role": "not in pool"
+ },
+ "Grant Udinski": {
+  "role": "coach",
+  "team": "JAC",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_JAC infobox/staff section (fetched 2026-10-28)"
  },
  "Greg Bedard": {
   "role": "reporter"
@@ -602,6 +808,12 @@
  "Gregg Bell": {
   "note": "Seahawks beat writer, News Tribune",
   "role": "reporter"
+ },
+ "Gus Bradley": {
+  "role": "coach",
+  "team": "TEN",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_TEN infobox/staff section (fetched 2026-10-28)"
  },
  "Hayden Conner": {
   "role": "not in pool"
@@ -700,6 +912,10 @@
  "Jamaal Williams": {
   "role": "not in pool"
  },
+ "Jameis Winston": {
+  "note": "QB named in full in Giants game threads",
+  "role": "not in pool"
+ },
  "James Robinson": {
   "role": "retired"
  },
@@ -730,6 +946,12 @@
  "Jaylon Moore": {
   "role": "not in pool"
  },
+ "Jeff Hafley": {
+  "role": "coach",
+  "team": "MIA",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
  "Jeff Mueller": {
   "note": "injury analyst quoted on Rome Odunze",
   "role": "reporter"
@@ -740,6 +962,12 @@
  },
  "Jeff Stoutland": {
   "role": "coach"
+ },
+ "Jeff Ulbrich": {
+  "role": "coach",
+  "team": "ATL",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_ATL infobox/staff section (fetched 2026-10-28)"
  },
  "Jeff Wilson": {
   "role": "not in pool"
@@ -764,8 +992,23 @@
   "note": "cited on age-33 production; collides with Rashee Rice",
   "role": "retired"
  },
+ "Jesse Minter": {
+  "role": "coach",
+  "team": "BAL",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
+ "Jim Bob Cooter": {
+  "role": "coach",
+  "team": "IND",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_IND infobox/staff section (fetched 2026-10-28)"
+ },
  "Jim Harbaugh": {
-  "role": "coach"
+  "role": "coach",
+  "team": "LAC",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Jim Kelly": {
   "note": "former Bills QB in 1w5e2ap",
@@ -773,7 +1016,10 @@
  },
  "Jim Leonhard": {
   "note": "Bills defensive coordinator in 1w5e2ap",
-  "role": "coach"
+  "role": "coach",
+  "team": "BUF",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_BUF infobox/staff section (fetched 2026-10-28)"
  },
  "Jim Schwartz": {
   "role": "coach"
@@ -789,7 +1035,10 @@
   "role": "not in pool"
  },
  "Joe Brady": {
-  "role": "coach"
+  "role": "coach",
+  "team": "BUF",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Joe Flacco": {
   "role": "not in pool"
@@ -801,6 +1050,10 @@
  "Joe Person": {
   "role": "reporter"
  },
+ "Joe Schoen": {
+  "note": "Giants GM",
+  "role": "executive"
+ },
  "Joey Galloway": {
   "note": "retired WR in an anecdote",
   "role": "retired"
@@ -809,7 +1062,10 @@
   "role": "reporter"
  },
  "John Harbaugh": {
-  "role": "coach"
+  "role": "coach",
+  "team": "NYG",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "John Harris": {
   "note": "Texans broadcaster/writer quoted in 1w4r1pl; resolves onto Tre Harris",
@@ -836,6 +1092,13 @@
  },
  "Jonathan Cooper": {
   "role": "not in pool"
+ },
+ "Jonathan Gannon": {
+  "role": "coach",
+  "team": "GB",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_GB infobox/staff section (fetched 2026-10-28)",
+  "note": "from the page's staff section; infobox had no OC/DC"
  },
  "Jonnu Smith": {
   "role": "not in pool"
@@ -867,7 +1130,10 @@
  },
  "Josh McDaniels": {
   "note": "Chargers coach quoted on hot-hand RB usage",
-  "role": "coach"
+  "role": "coach",
+  "team": "NE",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NE infobox/staff section (fetched 2026-10-28)"
  },
  "Josh Simmons": {
   "role": "not in pool"
@@ -921,10 +1187,19 @@
   "role": "coach"
  },
  "Kellen Moore": {
-  "role": "coach"
+  "role": "coach",
+  "team": "NO",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Kelvin Benjamin": {
   "role": "retired"
+ },
+ "Kelvin Sheppard": {
+  "role": "coach",
+  "team": "DET",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DET infobox/staff section (fetched 2026-10-28)"
  },
  "Kenny Golladay": {
   "role": "retired"
@@ -937,30 +1212,55 @@
  },
  "Kevin O'Connell": {
   "note": "Vikings head coach",
-  "role": "coach"
+  "role": "coach",
+  "team": "MIN",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Kevin Patullo": {
   "role": "coach"
  },
  "Kevin Stefanski": {
-  "role": "coach"
+  "role": "coach",
+  "team": "ATL",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Kevin White": {
   "role": "retired"
+ },
+ "Klay Kubiak": {
+  "role": "coach",
+  "team": "SF",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_SF infobox/staff section (fetched 2026-10-28)"
+ },
+ "Klayton Adams": {
+  "role": "coach",
+  "team": "DAL",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DAL infobox/staff section (fetched 2026-10-28)"
  },
  "Kliff Kingsbury": {
   "note": "former Commanders OC",
   "role": "coach"
  },
  "Klint Kubiak": {
-  "role": "coach"
+  "note": "Raiders head coach (Athlon, 2026-10-21)",
+  "role": "coach",
+  "team": "LV",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Kris Rhim": {
   "note": "Chargers beat writer",
   "role": "reporter"
  },
  "Kyle Shanahan": {
-  "role": "coach"
+  "role": "coach",
+  "team": "SF",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Kyle Youmans": {
   "note": "Ravens beat writer",
@@ -994,10 +1294,19 @@
   "role": "retired"
  },
  "Liam Coen": {
-  "role": "coach"
+  "role": "coach",
+  "team": "JAC",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Liz Loza": {
   "role": "reporter"
+ },
+ "Lou Anarumo": {
+  "role": "coach",
+  "team": "IND",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_IND infobox/staff section (fetched 2026-10-28)"
  },
  "Louis Moore": {
   "role": "not in pool"
@@ -1073,6 +1382,12 @@
  "Matt Barrows": {
   "role": "reporter"
  },
+ "Matt Burke": {
+  "role": "coach",
+  "team": "HOU",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_HOU infobox/staff section (fetched 2026-10-28)"
+ },
  "Matt Canada": {
   "role": "coach"
  },
@@ -1084,10 +1399,16 @@
   "role": "reporter"
  },
  "Matt LaFleur": {
-  "role": "coach"
+  "role": "coach",
+  "team": "GB",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Matt Nagy": {
-  "role": "coach"
+  "role": "coach",
+  "team": "NYG",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NYG infobox/staff section (fetched 2026-10-28)"
  },
  "Matt Zenitz": {
   "role": "reporter"
@@ -1150,21 +1471,42 @@
   "note": "Panthers beat writer who reported 1w4fy4o",
   "role": "reporter"
  },
+ "Mike LaFleur": {
+  "role": "coach",
+  "team": "ARI",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
  "Mike Macdonald": {
-  "role": "coach"
+  "role": "coach",
+  "team": "SEA",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Mike Maher": {
   "role": "reporter"
  },
  "Mike McCarthy": {
   "note": "Steelers coach",
-  "role": "coach"
+  "role": "coach",
+  "team": "PIT",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Mike McDaniel": {
-  "role": "coach"
+  "role": "coach",
+  "team": "LAC",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LAC infobox/staff section (fetched 2026-10-28)"
  },
  "Mike Reiss": {
   "role": "reporter"
+ },
+ "Mike Rutenberg": {
+  "role": "coach",
+  "team": "CLE",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CLE infobox/staff section (fetched 2026-10-28)"
  },
  "Mike Spofford": {
   "note": "Packers.com writer",
@@ -1175,7 +1517,10 @@
  },
  "Mike Vrabel": {
   "note": "Patriots head coach, coached A.J. Brown in Tennessee",
-  "role": "coach"
+  "role": "coach",
+  "team": "NE",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Miles Sanders": {
   "role": "not in pool"
@@ -1197,7 +1542,7 @@
   "role": "not in pool"
  },
  "Myers Briggs": {
-  "note": "AMA joke question 'who is the most Myers Briggs player' \u2014 resolver mapped Myers onto kicker Jason Myers (thread 1vz62qu)",
+  "note": "AMA joke question 'who is the most Myers Briggs player' — resolver mapped Myers onto kicker Jason Myers (thread 1vz62qu)",
   "role": "not in pool"
  },
  "Myles Garrett": {
@@ -1207,9 +1552,31 @@
   "note": "Vikings WR; collides with Jadarian Price",
   "role": "not in pool"
  },
+ "Nakobe Dean": {
+  "note": "LB named in full in Eagles threads",
+  "role": "not in pool"
+ },
+ "Nathan Scheelhaase": {
+  "role": "coach",
+  "team": "LAR",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LAR infobox/staff section (fetched 2026-10-28)"
+ },
+ "Nathaniel Hackett": {
+  "role": "coach",
+  "team": "ARI",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_ARI infobox/staff section (fetched 2026-10-28)"
+ },
  "Nick Andrews": {
   "note": "Texans center named in thread 1w4r1pl; resolves onto Mark Andrews",
   "role": "not in pool"
+ },
+ "Nick Caley": {
+  "role": "coach",
+  "team": "HOU",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_HOU infobox/staff section (fetched 2026-10-28)"
  },
  "Nick Caserio": {
   "note": "Texans general manager quoted in 1w4r1pl",
@@ -1218,8 +1585,17 @@
  "Nick Chubb": {
   "role": "not in pool"
  },
+ "Nick Rallis": {
+  "role": "coach",
+  "team": "ARI",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_ARI infobox/staff section (fetched 2026-10-28)"
+ },
  "Nick Sirianni": {
-  "role": "coach"
+  "role": "coach",
+  "team": "PHI",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Nick Underhill": {
   "note": "Saints beat writer",
@@ -1252,6 +1628,12 @@
  "Pat Leonard": {
   "role": "reporter"
  },
+ "Patrick Graham": {
+  "role": "coach",
+  "team": "PIT",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_PIT infobox/staff section (fetched 2026-10-28)"
+ },
  "Patrick Kane": {
   "role": "not in pool"
  },
@@ -1268,17 +1650,32 @@
  "Paul Pierce": {
   "role": "not in pool"
  },
+ "Pete Carmichael Jr.": {
+  "role": "coach",
+  "team": "BUF",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_BUF infobox/staff section (fetched 2026-10-28)"
+ },
  "Pierre Strong": {
   "role": "not in pool"
  },
  "Pop Douglas": {
   "role": "not in pool"
  },
+ "Press Taylor": {
+  "role": "coach",
+  "team": "CHI",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CHI infobox/staff section (fetched 2026-10-28)"
+ },
  "Preston Williams": {
   "role": "retired"
  },
  "Raheem Morris": {
-  "role": "coach"
+  "role": "coach",
+  "team": "SF",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_SF infobox/staff section (fetched 2026-10-28)"
  },
  "Randall Cobb": {
   "role": "retired"
@@ -1312,6 +1709,12 @@
  "Rob Gronkowski": {
   "role": "retired"
  },
+ "Rob Leonard": {
+  "role": "coach",
+  "team": "LV",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_LV infobox/staff section (fetched 2026-10-28)"
+ },
  "Robert Griffin": {
   "note": "listed among QBs who declined after a good year",
   "role": "retired"
@@ -1324,6 +1727,12 @@
  },
  "Robert Mays": {
   "role": "analyst"
+ },
+ "Robert Saleh": {
+  "role": "coach",
+  "team": "TEN",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Rodney Thomas": {
   "role": "not in pool"
@@ -1356,22 +1765,43 @@
  "Savion Williams": {
   "role": "not in pool"
  },
+ "Sean Duggan": {
+  "role": "coach",
+  "team": "MIA",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_MIA infobox/staff section (fetched 2026-10-28)"
+ },
  "Sean Evans": {
   "role": "not in pool"
  },
  "Sean Mannion": {
   "note": "Eagles play caller cited in the Saquon Barkley case",
-  "role": "coach"
+  "role": "coach",
+  "team": "PHI",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_PHI infobox/staff section (fetched 2026-10-28)"
  },
  "Sean McDermott": {
   "note": "Bills HC",
   "role": "coach"
  },
  "Sean McVay": {
-  "role": "coach"
+  "role": "coach",
+  "team": "LAR",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Sean Payton": {
-  "role": "coach"
+  "role": "coach",
+  "team": "DEN",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
+ "Shane Steichen": {
+  "role": "coach",
+  "team": "IND",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Shaq Mason": {
   "note": "Texans guard from the 2023 OL, referred to as just Mason in 1w4r1pl; resolves onto Jordan Mason",
@@ -1403,6 +1833,12 @@
  },
  "Steve Smith": {
   "role": "retired"
+ },
+ "Steve Spagnuolo": {
+  "role": "coach",
+  "team": "KC",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_KC infobox/staff section (fetched 2026-10-28)"
  },
  "TY Hilton": {
   "note": "retired WR used as a boom-bust comparison",
@@ -1452,7 +1888,16 @@
   "role": "retired"
  },
  "Todd Bowles": {
-  "role": "coach"
+  "role": "coach",
+  "team": "TB",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
+ },
+ "Todd Monken": {
+  "role": "coach",
+  "team": "CLE",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Tom Brady": {
   "role": "retired"
@@ -1463,11 +1908,23 @@
  "Tom Pelissero": {
   "role": "reporter"
  },
+ "Tommy Rees": {
+  "role": "coach",
+  "team": "ATL",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_ATL infobox/staff section (fetched 2026-10-28)"
+ },
  "Tony Romo": {
   "role": "retired"
  },
  "Travis Jones": {
   "role": "not in pool"
+ },
+ "Travis Switzer": {
+  "role": "coach",
+  "team": "CLE",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_CLE infobox/staff section (fetched 2026-10-28)"
  },
  "Trent McDuffie": {
   "role": "not in pool"
@@ -1512,6 +1969,18 @@
  "Uar Bernard": {
   "role": "not in pool"
  },
+ "Vance Joseph": {
+  "role": "coach",
+  "team": "DEN",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_DEN infobox/staff section (fetched 2026-10-28)"
+ },
+ "Vic Fangio": {
+  "role": "coach",
+  "team": "PHI",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_PHI infobox/staff section (fetched 2026-10-28)"
+ },
  "Vince Papale": {
   "role": "retired"
  },
@@ -1533,6 +2002,12 @@
  },
  "Wayshawn Parker": {
   "role": "not in pool"
+ },
+ "Wes Phillips": {
+  "role": "coach",
+  "team": "MIN",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_MIN infobox/staff section (fetched 2026-10-28)"
  },
  "Will Campbell": {
   "role": "not in pool"
@@ -1563,8 +2038,17 @@
  "Xavier Nwankpa": {
   "role": "not in pool"
  },
+ "Zac Robinson": {
+  "role": "coach",
+  "team": "TB",
+  "title": "offensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_TB infobox/staff section (fetched 2026-10-28)"
+ },
  "Zac Taylor": {
-  "role": "coach"
+  "role": "coach",
+  "team": "CIN",
+  "title": "head coach",
+  "source": "https://en.wikipedia.org/wiki/List_of_current_National_Football_League_head_coaches (fetched 2026-10-28)"
  },
  "Zach Ertz": {
   "note": "used as a career comparison for Isaiah Likely",
@@ -1582,6 +2066,12 @@
  },
  "Zaire Franklin": {
   "role": "not in pool"
+ },
+ "Zak Kuhr": {
+  "role": "coach",
+  "team": "NE",
+  "title": "defensive coordinator",
+  "source": "https://en.wikipedia.org/wiki/2026_season_page_for_NE infobox/staff section (fetched 2026-10-28)"
  },
  "Zamir White": {
   "role": "not in pool"

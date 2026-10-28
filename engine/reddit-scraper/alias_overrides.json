@@ -1,6 +1,10 @@
 {
  "allen": "Josh Allen",
  "caleb": "Caleb Williams",
+ "jj": [
+  "Justin Jefferson",
+  "J.J. McCarthy"
+ ],
  "qj": "Quentin Johnston",
  "tlaw": "Trevor Lawrence"
 }

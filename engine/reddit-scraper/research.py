@@ -11,7 +11,7 @@ import json
 import re
 import sqlite3
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
@@ -22,6 +22,7 @@ MAX_FETCHES_PER_HOUR = 24
 MAX_DETAILS_PER_HOUR = 8
 SCAN_LIMIT = 100
 MAX_SOURCES = 8
+DROPPED_PER_PLAYER = 5   # titles listed per player in filtered_titles
 COMMENT_LIMIT = 25
 RETENTION = 30 * 86400  # retain expired snapshots for explicit offline review
 
@@ -258,7 +259,10 @@ def read_thread(cache, reddit_factory, thread_id, max_comments=5, *, refresh=Fal
 
 SIGNALS = {
     "injury": re.compile(r"\b(injur\w*|practic\w*|questionable|doubtful|ruled out|inactive|concuss\w*|hamstring|ankle|knee|limited|healthy|cleared|return\w*)\b", re.I),
-    "usage": re.compile(r"\b(snaps?|targets?|carries|routes?|touches|backfield|committee|starter|starting|benched|depth chart|goal.line|red.zone|workload|role)\b", re.I),
+    # "touch share", "rush share" and "split" are how usage posts are actually
+    # titled: "Bengals will 'continually assess' touch share between Perine,
+    # Chase Brown" (655 upvotes) was dropped here for lacking "touches".
+    "usage": re.compile(r"\b(snaps?|targets?|carries|attempts?|routes?|touch(?:es)?|share|split|timeshare|usage|reps|backfield|committee|starter|starting|benched|depth chart|goal.line|red.zone|workload|role|lead back)\b", re.I),
     "transaction": re.compile(r"\b(signed|signing|traded|released|waived|activated|promoted)\b", re.I),
 }
 NOISE = re.compile(r"\b(game thread|megathread|index thread|rate my team|wdis|who do i start|should i|trade advice|trade help|meme|shitpost|hype train|upvote party)\b", re.I)
@@ -277,20 +281,48 @@ def story_key(p):
     return p["id"]
 
 
-def shortlist(posts, players, match_names, focus="weekly", limit=6):
-    """Transparent relevance heuristic; a score is never a truth/confidence score."""
+def shortlist(posts, players, match_names, focus="weekly", limit=6, match_uncertain=None):
+    """Transparent relevance heuristic; a score is never a truth/confidence score.
+
+    match_uncertain(text) -> {player: {"token", "tier", "candidates"}} reports
+    requested players who are merely one owner of a bare name in the text;
+    such posts are listed under ambiguous_titles rather than dropped as
+    unrelated, so "Brown struggles vs Ravens" is visible to a Chase Brown
+    question as a lead to settle, never as evidence."""
     if focus not in {"weekly", "injury", "usage", "waivers"}:
         raise ValueError("focus must be weekly, injury, usage or waivers")
     bounded(limit, 1, 12, "limit")
     counts, candidates = Counter(), []
+    # Every post that names a requested player and is then dropped is listed
+    # by title, so a caller can see what the filters took rather than a bare
+    # count. A silent `no_matching_signal: 15` hid the Perine thread.
+    dropped = defaultdict(list)
+    ambiguous = defaultdict(list)
+
+    def drop(p, matched, reason):
+        counts[reason] += 1
+        for name in matched:
+            if len(dropped[name]) < DROPPED_PER_PLAYER:
+                dropped[name].append({"id": p["id"], "title": p["title"][:140],
+                                      "posted_at": p["posted_at"], "reason": reason})
+
     for p in posts:
         text = p["title"] + "\n" + p["excerpt"]
         matched = sorted(set(match_names(text)) & set(players))
         if not matched:
-            counts["unrelated_player"] += 1
+            unsure = match_uncertain(text) if match_uncertain else {}
+            if unsure and not NOISE.search(p["title"] + " " + p["flair"]):
+                counts["ambiguous_player"] += 1
+                for name, info in unsure.items():
+                    if len(ambiguous[name]) < DROPPED_PER_PLAYER:
+                        ambiguous[name].append({"id": p["id"], "title": p["title"][:140],
+                                                "posted_at": p["posted_at"],
+                                                "permalink": p["permalink"], **info})
+            else:
+                counts["unrelated_player"] += 1
             continue
         if NOISE.search(p["title"] + " " + p["flair"]):
-            counts["generic_or_noise"] += 1
+            drop(p, matched, "generic_or_noise")
             continue
         # Roundups mention many players: another player's injury elsewhere in
         # the post must not become this player's injury signal. Keep the actual
@@ -304,8 +336,15 @@ def shortlist(posts, players, match_names, focus="weekly", limit=6):
             relevant = paragraphs[:1]
         context += "\n" + "\n".join(relevant)
         signals = [name for name, pattern in SIGNALS.items() if pattern.search(context)]
-        if not signals or (focus in {"injury", "usage"} and focus not in signals):
-            counts["no_matching_signal"] += 1
+        # A post titled after the player is about him whatever words it uses;
+        # the keyword gate exists for roundups that mention him in passing.
+        if title_names and "title" not in signals:
+            signals.append("title")
+        if focus in {"injury", "usage"} and focus not in signals:
+            drop(p, matched, f"no_{focus}_signal")
+            continue
+        if not signals:
+            drop(p, matched, "no_matching_signal")
             continue
         host = urlsplit(p["source_url"]).hostname
         external = bool(host and host.lower() not in {
@@ -316,7 +355,8 @@ def shortlist(posts, players, match_names, focus="weekly", limit=6):
                            "body_truncated": p["body_truncated"] or excerpt != p["excerpt"] or len(excerpt) > 1000,
                            "players": matched, "signals": signals,
                            "selection_reason": f"Names requested player; {', '.join(signals)} language" + ("; linked source to verify" if external else ""),
-                           "evidence_status": "unverified_report" if external else "community_discussion",
+                           "evidence_status": ("titled_mention" if signals == ["title"] else
+                                               "unverified_report" if external else "community_discussion"),
                            "_priority": len(signals) + int(external)})
     # Once relevance passes, preserve chronology: an older multi-signal rumor
     # must not crowd out the latest practice/status update for the same player.
@@ -325,7 +365,7 @@ def shortlist(posts, players, match_names, focus="weekly", limit=6):
     for p in candidates:
         key = story_key(p)
         if key in seen or p["id"] in seen:
-            counts["duplicate_story"] += 1
+            drop(p, p["players"], "duplicate_story")
             continue
         seen.update((key, p["id"]))
         p.pop("_priority")
@@ -342,5 +382,7 @@ def shortlist(posts, players, match_names, focus="weekly", limit=6):
         if p not in selected:
             selected.append(p)
     return {"threads": selected, "filtered": dict(counts),
+            "filtered_titles": {name: dropped[name] for name in players if dropped.get(name)},
+            "ambiguous_titles": {name: ambiguous[name] for name in players if ambiguous.get(name)},
             "players_without_selected_evidence": [p for p in players if p not in covered],
             "eligible_threads": len(unique)}

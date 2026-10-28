@@ -122,6 +122,11 @@ def promote(decisions, players, overrides_path=None):
             continue
         if who not in names:
             continue
+        if isinstance(table.get(token), list):
+            # Recorded as context-dependent ("jj": [Jefferson, McCarthy]).
+            # Three Jefferson verdicts from fantasy threads must not quietly
+            # recreate the default that was removed on purpose.
+            continue
         if table.get(token, "__unset__") != who:
             table[token] = who
             promoted.append(f"{token} -> {who or '(not a player)'}")

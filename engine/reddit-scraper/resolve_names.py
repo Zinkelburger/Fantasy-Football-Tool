@@ -52,7 +52,7 @@ TEAM_WORDS = {
     "ARI": "arizona cardinals cards", "ATL": "atlanta falcons",
     "BAL": "baltimore ravens", "BUF": "buffalo bills",
     "CAR": "carolina panthers", "CHI": "chicago bears",
-    "CIN": "cincinnati bengals", "CLE": "cleveland browns",
+    "CIN": "cincinnati bengals cincy", "CLE": "cleveland browns",
     "DAL": "dallas cowboys", "DEN": "denver broncos",
     "DET": "detroit lions", "GB": "green bay packers gb",
     "HOU": "houston texans", "IND": "indianapolis colts",
@@ -61,7 +61,7 @@ TEAM_WORDS = {
     "LV": "las vegas raiders lv", "MIA": "miami dolphins fins",
     "MIN": "minnesota vikings vikes", "NE": "new england patriots pats",
     "NO": "new orleans saints", "NYG": "giants nyg",
-    "NYJ": "jets nyj", "PHI": "philadelphia eagles birds",
+    "NYJ": "jets nyj", "PHI": "philadelphia eagles birds philly",
     "PIT": "pittsburgh steelers", "SEA": "seattle seahawks hawks",
     "SF": "san francisco 49ers niners", "TB": "tampa bay buccaneers bucs",
     "TEN": "tennessee titans", "WAS": "washington commanders commies",
@@ -312,7 +312,13 @@ def build_aliases(players):
         # So abbreviations come from the CSV, not from a rule. Pipe-separate to
         # give one player several: "Sun God|ARSB".
         for nick in str(p.player_nickname or "").split("|"):
-            add(_key(nick), p)
+            k = _key(nick)
+            add(k, p)
+            # "Hock", "Tet", "Pop" and "Zeus" are English words. Like the
+            # dictionary surnames above, they count only when written with a
+            # capital that is not merely the start of a sentence.
+            if k and k in _DICT_WORDS:
+                cap_required.setdefault(k, "strict")
 
     # Keys reachable ONLY as somebody's first name. Bijan, Puka, Saquon and
     # Rhamondre are how people actually write those players; Matt, Adam, Mike
@@ -398,6 +404,31 @@ def load_non_players(path=NON_PLAYERS_FILE):
 
 NON_PLAYER_NAMES, NON_PLAYER_FIRSTS = load_non_players()
 
+
+def load_people_context(path=NON_PLAYERS_FILE):
+    """Surnames of coaches and coordinators that place a sentence on a team.
+
+    "Pitcher said the touch share between Perine and Brown will be assessed"
+    names no team, but Dan Pitcher is Cincinnati's coordinator, which is the
+    evidence that separates Chase Brown from A.J. Brown. Read from the same
+    registry as the non-player names: an entry with a "team" code
+    contributes its surname. Returns {team: {surname, ...}}."""
+    try:
+        with open(pathlib.Path(__file__).resolve().parent / path, encoding="utf-8") as fh:
+            reg = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    out = defaultdict(set)
+    for name, info in reg.items():
+        team = (info or {}).get("team") if isinstance(info, dict) else None
+        k = _key(name)
+        if team and " " in k:
+            out[team.upper()].add(k.split()[-1])
+    return dict(out)
+
+
+PEOPLE_CONTEXT = load_people_context()
+
 # Team cities and abbreviations that are also somebody's first name. Two
 # players in the 2026 pool are named for the team they are not on — Dallas
 # Goedert plays in Philadelphia, KC Concepcion in Carolina — so "Dallas cut
@@ -475,6 +506,14 @@ def _score_candidate(p, ctx):
     if (TEAM_TOKENS.get(p.team_name, set()) & ctx["sent_words"]
             or TEAM_ABBRS.get(p.team_name) in ctx["upper_words"]):
         s += 2; why.append(f"team {p.team_name}")
+    else:
+        # Staff surnames are often plain words (Pitcher, Quinn), so only a
+        # capitalized one counts — a baseball aside must not place a sentence
+        # in Cincinnati.
+        staff = PEOPLE_CONTEXT.get(p.team_name, set())
+        named = staff & (ctx.get("cap_words", set()) | ctx.get("title_cap_words", set()))
+        if named:
+            s += 2; why.append(f"{p.team_name} staff {sorted(named)[0]}")
     pos = re.sub(r"\d+", "", str(p.player_depth or ""))
     if POSITION_WORDS.get(pos, set()) & ctx["sent_words"]:
         s += 2; why.append(f"pos {pos}")
@@ -549,12 +588,23 @@ def resolve(alias, raw_token, candidates, ctx, sentence, sent_idx=0, word_idx=0)
     else:
         top, second = scored[0], scored[1]
         if top[0] > second[0]:
-            score += 2 + top[0]; why.append("context picks one"); why += top[2]
-            tier = "context"
+            score += 2 + top[0]; why += top[2]
+            if ("adjudicated default" in top[2]
+                    and top[0] - DEFAULT_BONUS <= second[0]):
+                # Only the prior separated them. That is a reasonable guess
+                # for a dossier and not evidence for a lineup decision, so
+                # it carries its own label rather than borrowing "context".
+                why.append("default picks one")
+                tier = "default"
+            else:
+                why.append("context picks one")
+                tier = "context"
         else:
-            # no contextual separation — fall back to draft cost
+            # no contextual separation — fall back to draft cost, unless the
+            # token was recorded as context-dependent, where draft cost is
+            # exactly the prior the ruling says not to apply
             ratio = second[1].player_adp / max(top[1].player_adp, 0.1)
-            if ratio >= 2.5:
+            if ratio >= 2.5 and alias not in SHARED_ALIASES:
                 score += 1
                 why.append(f"ADP-dominant ({top[1].player_adp:.0f} vs "
                            f"{second[1].player_adp:.0f})")
@@ -684,6 +734,8 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
     comment_norm = _norm(text)
     thread_norm = _norm(thread_title)
     title_words = set(thread_norm.split())
+    title_cap_words = {_strip(w) for w in thread_title.split()
+                       if w.strip("'’\"")[:1].isupper() and _strip(w)}
 
     for sent_idx, sentence in enumerate(
             s.strip() for s in SENT_SPLIT.split(text) if s.strip()):
@@ -696,14 +748,22 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
         for j, w in enumerate(words):
             if re.search(r"[’']s\b", w):
                 keep = _strip_keep_s(w)
-                if keep in aliases and keep != normed[j]:
+                # ...unless the stripped form is itself a surname the pool
+                # knows: "Cook's weekly output" is James Cook's, not Brandin
+                # Cooks, once both are in the pool. "adam" is reachable only
+                # as a first name, so "Adam's" still goes to Adams.
+                stripped_is_surname = normed[j] in aliases and normed[j] not in first_names
+                if keep in aliases and keep != normed[j] and not stripped_is_surname:
                     normed[j] = keep
         sent_words = set(w for w in normed if w)
         upper_words = {n for w, n in zip(words, normed)
                        if n and w.strip("'’").isupper()}
+        cap_words = {n for w, n in zip(words, normed)
+                     if n and w.strip("'’")[:1].isupper()}
         ctx_base = {"comment_norm": comment_norm, "thread_norm": thread_norm,
                     "sent_words": sent_words, "title_words": title_words,
-                    "upper_words": upper_words}
+                    "upper_words": upper_words, "cap_words": cap_words,
+                    "title_cap_words": title_cap_words}
         consumed = set()
         # longest n-gram first so "josh allen" beats "allen"
         for n in range(max_ngram, 0, -1):
@@ -797,6 +857,9 @@ def scan(text, aliases, alias_keys, thread_title="", max_ngram=3, fuzzy=True,
 
 
 OVERRIDES_FILE = "alias_overrides.json"
+# Tokens alias_overrides.json records as context-dependent (a list value).
+# resolve() never breaks their ties on draft cost; filled by apply_overrides.
+SHARED_ALIASES = set()
 
 
 def apply_overrides(aliases, cap_required, players, path=OVERRIDES_FILE):
@@ -824,6 +887,17 @@ def apply_overrides(aliases, cap_required, players, path=OVERRIDES_FILE):
     for tok, who in table.items():
         if who is None:
             aliases.pop(tok, None)
+        elif isinstance(who, list):
+            # A shared alias with NO default: "jj" is Justin Jefferson in a
+            # fantasy thread and J.J. McCarthy in a Giants thread, and only
+            # the context can say which. Every listed owner stays reachable;
+            # a mention with no separating evidence is ambiguous, as it
+            # should be, and goes to adjudication per occurrence.
+            owners = [by_name[n] for n in who if n in by_name]
+            if owners:
+                aliases[tok] = owners
+                cap_required.pop(tok, None)
+                SHARED_ALIASES.add(tok)
         elif who in by_name and tok in aliases:
             defaults[tok] = who
             cap_required.pop(tok, None)
@@ -834,10 +908,66 @@ def apply_overrides(aliases, cap_required, players, path=OVERRIDES_FILE):
     return defaults
 
 
+def nickname_collisions(players):
+    """Hand-written nicknames that would steal mentions from someone else.
+
+    "Chubb" sat in the Nickname column for Chuba Hubbard; every "Chubb" in a
+    Browns thread became a Panthers running back. A nickname is rejected when
+    it is already another pool player's name token, a registered non-player's
+    surname, a team word, jargon or a stopword. Returns
+    [(nickname, player_name, conflict), ...]; empty means the column is clean."""
+    tokens = defaultdict(set)
+    for p in players:
+        if str(p.player_depth or "").startswith("DST"):
+            continue
+        for tok in _tok(p.player_name):
+            tokens[tok].add(p.player_name)
+        for nick in str(p.player_nickname or "").split("|"):
+            if _key(nick):
+                tokens[_key(nick)].add(p.player_name)
+    non_player_last = {k.split()[-1] for k in NON_PLAYER_NAMES}
+    # A nickname that is also a pool player's name token is allowed only when
+    # alias_overrides.json has adjudicated the token to the nickname's owner:
+    # "JJ" is Justin Jefferson by default and J.J. McCarthy when the context
+    # says quarterback. That is a recorded decision, not an accident.
+    adjudicated = {}
+    try:
+        adjudicated = json.loads((pathlib.Path(__file__).resolve().parent
+                                  / OVERRIDES_FILE).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        pass
+    problems = []
+    for p in players:
+        for nick in str(p.player_nickname or "").split("|"):
+            k = _key(nick)
+            if not k:
+                continue
+            others = tokens.get(k, set()) - {p.player_name}
+            ruling = adjudicated.get(k)
+            if others and (ruling == p.player_name
+                           or isinstance(ruling, list) and p.player_name in ruling):
+                continue
+            if others:
+                problems.append((nick, p.player_name, "name of " + ", ".join(sorted(others))))
+            elif k in non_player_last:
+                problems.append((nick, p.player_name, "surname of a registered non-player"))
+            elif k in TEAM_SENSE_TOKENS:
+                problems.append((nick, p.player_name, "team word"))
+            elif k in JARGON or k in STOPWORDS:
+                problems.append((nick, p.player_name, "jargon or stopword"))
+    return problems
+
+
 def load_pool(csv_path="combined_with_depth.csv"):
     players = FootballPlayer.from_csv(csv_path)
     aliases, cap_required, first_names = build_aliases(players)
     defaults = apply_overrides(aliases, cap_required, players)
+    # A staff surname that is also a player's name is no evidence of a team:
+    # "Taylor and Brown" is Jonathan Taylor far more often than Zac Taylor,
+    # and Dennis Allen must not pull every Brown toward Chicago. Keep only the
+    # surnames nobody in the pool answers to (pitcher, nagy, harbaugh...).
+    for team, surnames in PEOPLE_CONTEXT.items():
+        PEOPLE_CONTEXT[team] = {s for s in surnames if s not in aliases}
     # Fuzzy matching searches these keys; weak ones would turn every typo into a
     # nickname collision, so they are excluded from the search space.
     fuzzy_keys = [k for k in aliases if k not in cap_required and " " not in k]
@@ -903,9 +1033,17 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--text", help="resolve names in an ad-hoc string")
+    ap.add_argument("--check-nicknames", action="store_true",
+                    help="list Nickname-column entries that collide with another name")
     args = ap.parse_args()
     if args.selftest:
         raise SystemExit(1 if selftest() else 0)
+    if args.check_nicknames:
+        problems = nickname_collisions(load_pool()[0])
+        for nick, who, why in problems:
+            print(f"{nick!r} for {who}: {why}")
+        print(f"{len(problems)} collision(s)")
+        raise SystemExit(1 if problems else 0)
     if args.text:
         players, aliases, keys, cap, defaults, firsts = load_pool()
         for m in scan(args.text, aliases, keys, cap_required=cap, defaults=defaults,

@@ -31,7 +31,7 @@ Honor explicitly retrospective questions rather than silently changing the week.
 | Is my team good / can I beat this opponent? | Settings, roster/matchup, `power_rankings(week=N)` | `team_roster(team_id, week=N)` for the opponent, scored by the same recipe |
 | Can I make the playoffs? | `standings()`: records, points for, playoff line, remaining schedule | `power_rankings` for roster strength; no playoff probability exists |
 | Why did a player score well/badly? | `player_lookup(name, weekly=True)` and `team_context(team)` | News, `schedule(team)` for the game, requested Reddit discussion |
-| Schedule, scores, byes, upcoming matchups | `schedule(team, weeks="4-9")` or `schedule(week=N)` | Far weeks show a labelled preseason prior, not a line |
+| Schedule, scores, byes, upcoming matchups | `schedule(team, weeks="4-9")` or `schedule(week=N)` | Far weeks show a labelled in-season forecast (posted lines + nfelo), not a line |
 | Top-scoring kickers/defences, points in league scoring | `league_points(position="K", available_only=True)` | Finding 04/28: past kicker points do not predict |
 | Weather / defense | `ff-weather.game_weather(week=N, season=YEAR)` / `dst_rankings(week=N, season=YEAR)`; `dst_rankings(week=N, horizon=3)` to plan several weeks | Weather is context only; D/ST uses finding 27 and `docs/DEFENSE-PUBLISHING.md` |
 | Have we studied X? | `findings(topic)` | Read the file's latest correction before quoting |
@@ -142,6 +142,32 @@ Call `research_brief(players=[full names], focus="weekly", days=3)` once for the
 batch; use `injury`, `usage` or `waivers` for narrower questions. It discovers
 leads, not verified facts, and fetches no comments. Team queries use current
 roster teams. Unknown players need full names.
+
+Read two fields before concluding a player had no coverage. `filtered_titles`
+lists every post that named the player and was then dropped, with the reason
+(`generic_or_noise`, `no_usage_signal`, `duplicate_story`): a dropped title you
+disagree with is a lead, open it. `ambiguous_titles` lists posts where the
+player is only one possible owner of a bare name ("Brown", "JJ"); they are
+leads for the candidate set, not evidence about your player. To settle one,
+`read_research_thread(id, max_comments=0)` (post body and source link, no
+comments), then `resolve_text(body, thread_title=title)`. If the resolver still
+says ambiguous, report it as unresolved ("a Brown — Chase or A.J. — was named;
+the post does not say which"); never attribute it, and never spend comment
+reads to disambiguate. `query_terms` shows what was actually searched
+(surname, unique first name and nicknames, never shared surnames), and
+`extra_queries` how many per-player follow-ups the brief spent because the
+100-post window filled. The resolver's pool is refreshed by the weekly build
+(every ESPN depth-chart player, live teams); a player still missing can be
+checked by full name but gets no surname/nickname terms — say so.
+
+After the weekly pass, run `nickname_candidates(min_count=5)` once, and again
+whenever `players_without_selected_evidence` names a player you expected news
+on. A candidate is confirmable only when it has at least three occurrences, one
+pool player shares the sentence in a majority of them, no second player shares
+it more than once, and the user says yes; then `add_nickname(player, alias)`.
+A token with no same-sentence player is usually a person outside the pool:
+`report_non_player(full name, role, team=)`. Never add a nickname from
+co-mention counts alone.
 
 Open the original club/league/beat report for material claims. If inaccessible,
 label it unverified and avoid treating it as settled availability. Check event
